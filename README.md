@@ -1,21 +1,16 @@
-MIT License
+Для разворачивания проекта создайте папку "C3D" и разместите в ней новейшую версию ядра (паки Kernel и Vision)
 
-Copyright (c) 2024 Moscow Polytechnic University
+После установите CMake, выбрав в процессе установки опцию "Add CMake to the system PATH for all users".
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Создайте проект приложения, выполнив следующие действия: 
+   1. Запустите CMake.
+   2. Для "Where is the source code" укажите корневой каталог application\ .
+   3. Для "Where to build the binaries" укажите каталог application\build.
+   4. Нажмите кнопку "Configure" для конфигурирования проекта.
+   5. На запрос "Create Directory" подтвердите согласие на создание каталога application\build.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+   По запросу "Specify the generator for this project" укажите конфигурацию среды разработки для соответствующей версии C3D.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+   Нажмите кнопку "Generate" для генерации файлов проекта.
+
+   !!Обратите внимание на то, чтобы путь до проекта не содержал папок, в названиях которых есть кириллица!!
