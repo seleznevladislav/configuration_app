@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/filterbody24x24.png</file>
+        <file>res/filterseg24x24.png</file>
+        <file>res/add_fromfile_32.png</file>
+        <file>res/save_file32.png</file>
+        <file>res/perspctv.png</file>
+        <file>res/zoombox.png</file>
+        <file>res/rotate.png</file>
+    </qresource>
+</RCC>

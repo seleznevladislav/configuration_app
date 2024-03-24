@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>../res/crystal.ico</file>
+        <file>../res/view_all_32.png</file>
+        <file>../res/isometry_x.png</file>
+        <file>../res/view_back_32.png</file>
+        <file>../res/view_bottom_32.png</file>
+        <file>../res/view_front_32.png</file>
+        <file>../res/view_left_32.png</file>
+        <file>../res/view_right_32.png</file>
+        <file>../res/view_top_32.png</file>
+        <file>../res/perspctv_32.png</file>
+    </qresource>
+</RCC>
