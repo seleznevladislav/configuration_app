@@ -46,6 +46,13 @@ static void createCommandActions(QWidget* pOpenScene, QToolBar* commandBar, QWid
     QObject::connect(pFixingAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommands()));
 
 
+    QAction* pCoincidenceAction = new QAction(QIcon(":/res/rotate.png"), QObject::tr("&Coincident"), parent);
+    pCoincidenceAction->setProperty("Commands", QVariant((int)ExplodeWidget::Coincident));
+    parent->addAction(pCoincidenceAction);
+    commandBar->addAction(pCoincidenceAction);
+    pCoincidenceAction->setCheckable(true);
+    QObject::connect(pCoincidenceAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommands()));
+
 }
 
 static QWidget* labelEdit(QVBoxLayout* vGroupLayout, const QString& str, bool doubleEdit, bool readOnly, int strMaxWidth)

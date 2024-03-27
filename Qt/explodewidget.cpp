@@ -17,6 +17,7 @@
 #include "explodewidget.h"
 #include "solver/assemblysolver.h"
 #include "solver/prbase.h"
+#include "solver/prbinconstraint.h"
 #include "explodemanager.h"
 
 #include <last.h>
@@ -261,22 +262,22 @@ void ExplodeWidget::viewCommands(Commands cmd)
     }
 
     //// Commands to create assembly mates.
-    //case ExplodeWidget::Coincident:
-    //case ExplodeWidget::Coaxial:
-    //case ExplodeWidget::Parallel:
-    //case ExplodeWidget::Perpendicular:
-    //case ExplodeWidget::Angular:
-    //case ExplodeWidget::Distance:
-    //{
-    //    if (m_pCurrentProcess != nullptr)
-    //        m_pCurrentProcess->CancelObject();
-    //    VSN_DELETE_AND_NULL(m_pCurrentProcess);
-    //    bool bRuning = false;
-    //    m_pCurrentProcess = new PrBinConstraint(value, this, bRuning);
-    //    if (!bRuning)
-    //        viewCommands(AssmSolverSceneWidget::Select);
-    //    break;
-    //}
+    case ExplodeWidget::Coincident:
+    case ExplodeWidget::Coaxial:
+    case ExplodeWidget::Parallel:
+    case ExplodeWidget::Perpendicular:
+    case ExplodeWidget::Angular:
+    case ExplodeWidget::Distance:
+    {
+        if (m_pCurrentProcess != nullptr)
+            m_pCurrentProcess->CancelObject();
+        VSN_DELETE_AND_NULL(m_pCurrentProcess);
+        bool bRuning = false;
+        m_pCurrentProcess = new PrBinConstraint(value, this, bRuning);
+        if (!bRuning)
+            viewCommands(ExplodeWidget::Select);
+        break;
+    }
     //case ExplodeWidget::Rotation:
     //{
     //    if (m_pCurrentProcess != nullptr)
