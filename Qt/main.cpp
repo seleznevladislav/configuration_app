@@ -55,6 +55,18 @@ static void createCommandActions(QWidget* pOpenScene, QToolBar* commandBar, QWid
 
 }
 
+static QAction* createButton(const QString& fileName, QGroupBox* groupFilter, QHBoxLayout* fGroupLayout)
+{
+    QToolButton* filterBut = new QToolButton(groupFilter);
+    filterBut->setIconSize(QSize(24, 24));
+    QAction* actFilter = new QAction(QIcon(fileName), "", groupFilter);
+    actFilter->setObjectName(QString("ID_") + fileName);
+    actFilter->setCheckable(true);
+    filterBut->setDefaultAction(actFilter);
+    fGroupLayout->addWidget(filterBut);
+    return actFilter;
+}
+
 static QWidget* labelEdit(QVBoxLayout* vGroupLayout, const QString& str, bool doubleEdit, bool readOnly, int strMaxWidth)
 {
     QHBoxLayout* hGroupLayout = new QHBoxLayout();
@@ -152,6 +164,23 @@ int main(int argc, char** argv)
     int heightButton = (rcFont.height() + rcFont.width()) + 4;
     QGroupBox* groupExpl = pOpenScene->createGroupExplode(widget, heightButton, "View");
 
+    // Actions on select
+    QGroupBox* groupFilter = new QGroupBox();
+    groupFilter->setTitle(QStringLiteral("Filter"));
+    QHBoxLayout* fGroupLayout = new QHBoxLayout(groupFilter);
+    fGroupLayout->setMargin(0); fGroupLayout->setSpacing(0);
+
+    QActionGroup* actionGroupFilter = new QActionGroup(pOpenScene);
+    actionGroupFilter->setExclusive(false);
+
+    actionGroupFilter->addAction(createButton(":/res/filterbody24x24.png", groupFilter, fGroupLayout))->setToolTip("Body");
+    actionGroupFilter->addAction(createButton(":/res/filterface24x24.png", groupFilter, fGroupLayout))->setToolTip("Face");
+    actionGroupFilter->addAction(createButton(":/res/filteredge24x24.png", groupFilter, fGroupLayout))->setToolTip("Edge");
+    actionGroupFilter->addAction(createButton(":/res/filtervertex24x24.png", groupFilter, fGroupLayout))->setToolTip("Vertex");
+
+    pOpenScene->setGroupFilter(actionGroupFilter);
+    QObject::connect(actionGroupFilter, SIGNAL(triggered(QAction*)), pOpenScene, SLOT(slotFilterTriggered(QAction*)));
+
     // Create commandBar
     QToolBar* commandBar = new QToolBar();
     commandBar->setBaseSize(sizeIcons);
@@ -163,6 +192,7 @@ int main(int argc, char** argv)
     // add
     vLayout->addWidget(groupFile, 0, Qt::AlignTop);
     vLayout->addWidget(groupExpl, 0, Qt::AlignTop);
+    vLayout->addWidget(groupFilter, 0, Qt::AlignTop);
 
     // Show window
     QtVision::setWindowPosition(mainWindow);

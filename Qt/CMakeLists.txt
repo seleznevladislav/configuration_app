@@ -19,14 +19,6 @@ IF(C3DVision_GUI_QT5_EXAMPLES)
     # Set Rcc files files
     SET(RCC_Files_Explode ./explodewidget.qrc)
     QT5_ADD_RESOURCES(RCC_Gui ${RCC_Files_Explode})
-
-    # Add all details source files
-        #file(GLOB SRC_Details_cpp CONFIGURE_DEPENDS "./details/*.cpp")
-        #SOURCE_GROUP(Sources FILES ${SRC_Details_cpp})
-	
-	# Add all detailsZarubin source files
-    file(GLOB SRC_detailsZarubin_cpp CONFIGURE_DEPENDS "./detailsZarubin/*.cpp")
-    SOURCE_GROUP(Sources FILES ${SRC_detailsZarubin_cpp})
 	
 	# Add all header files of SOLVER
     file(GLOB SRC_Solver_h CONFIGURE_DEPENDS "./solver/*.h")
@@ -35,6 +27,18 @@ IF(C3DVision_GUI_QT5_EXAMPLES)
     # Add all source files of SOLVER
     file(GLOB SRC_Solver_cpp CONFIGURE_DEPENDS "./solver/*.cpp")
     SOURCE_GROUP(Sources FILES ${SRC_Solver_cpp})
+		
+	########################################################################	
+	# Details
+	########################################################################	
+	# Add all detailsZarubin source files
+    file(GLOB SRC_detailsZarubin_cpp CONFIGURE_DEPENDS "./detailsZarubin/*.cpp")
+    SOURCE_GROUP(Sources FILES ${SRC_detailsZarubin_cpp})
+	    
+	# Add all details source files
+    #file(GLOB SRC_Details_cpp CONFIGURE_DEPENDS "./details/*.cpp")
+    #SOURCE_GROUP(Sources FILES ${SRC_Details_cpp})
+	
 	
 	ADD_EXECUTABLE(
 	${ConfigureApplication} WIN32 

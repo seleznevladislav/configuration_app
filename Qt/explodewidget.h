@@ -1,19 +1,27 @@
 ﻿#ifndef __VSN_EXPLODEWIDGET_H
 #define __VSN_EXPLODEWIDGET_H
 
-#include <QListWidget>
+// C3D
 #include <model_entity.h>
 #include <scenegenerator.h>
 #include <vsn_prcamerazoombox.h>
 #include <vsn_mathgroupgeometry.h>
 #include <vsn_mathgrouprepresentation.h>
-#include <qt_openglwidget.h>
-#include "explodetree.h"
-
-//
 #include <model.h>
 #include <model_item.h>
-//
+
+// QT
+#include <qt_openglwidget.h>
+#include <QListWidget>
+#include <QColorDialog>
+#include <QResizeEvent>
+#include <QActionGroup>
+#include <QPushButton>
+#include <QTableWidget>
+#include <QFile>
+
+// USERS
+#include "explodetree.h"
 
 struct ParamsParser;
 class ExplodeManager;
@@ -55,6 +63,21 @@ public:
 protected:
     SceneSegment* m_pSegModel;
     MathGroupItem* m_pData;
+};
+
+/*ColorButton*/
+class ColorButton : public QPushButton
+{
+    Q_OBJECT
+public:
+    ColorButton(QWidget* parent);
+public Q_SLOTS:
+    void chooseColor();
+    void setColor(const QColor& clr);
+Q_SIGNALS:
+    void colorChanged(const QColor& color);
+private:
+    QColor m_color;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -99,15 +122,18 @@ public:
     QGroupBox* createGroupExplode(QWidget& widget, const int heightButton, const std::string& mainTabName);
     void showContextMenu(const QPoint& pos);
     ExplodeTreeView* createGeometryList(QWidget* parent);
+    inline void setGroupFilter(QActionGroup* groupFilter);
 public Q_SLOTS:
     void viewCommands(Commands cmd = None);
     void openModel();
     void setRenderingMode();
+    void slotFilterTriggered(QAction*);
 public:
     VSN_SLOT(Public, slotUpdateCommands, void slotUpdateCommands());
 protected:
     void slotItemSelectModified();
     void slotCurrentItemsModified(std::list<SelectionItem*>& oldItems, std::list<SelectionItem*>& newItems);
+    void updateActionCheckFilter();
 private:
     virtual void initializeGL();
     void loadFiles(const QStringList& files);
@@ -138,9 +164,15 @@ private:
     ExplodeManager* m_pExplodeManager;
     SelectionManagerPtr m_ptrSelectManager;
     ExplodeTreeView* m_pTreeWidget;
+    QActionGroup* m_pGroupFilter;
     std::string m_modelPath;
 private:
     Q_DISABLE_COPY(ExplodeWidget)
 };
+
+inline void ExplodeWidget::setGroupFilter(QActionGroup* groupFilter)
+{
+    m_pGroupFilter = groupFilter;
+}
 
 #endif // __VSN_EXPLODEWIDGET_H
