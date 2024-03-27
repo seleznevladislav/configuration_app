@@ -25,6 +25,29 @@
 
 static QSize sizeIcons = QSize(32, 32);
 
+static void createCommandActions(QWidget* pOpenScene, QToolBar* commandBar, QWidget* parent)
+{
+    QAction* pOpenAction = new QAction(QIcon(":/res/save_file32.png"), QObject::tr("&Open"), parent);
+    pOpenAction->setProperty("Commands", QVariant((int)ExplodeWidget::Open));
+    //  (int)ExplodeWidget::Open
+    parent->addAction(pOpenAction);
+    commandBar->addAction(pOpenAction);
+    QObject::connect(pOpenAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommands()));
+
+
+    commandBar->addSeparator();
+
+    QAction* pFixingAction = new QAction(QIcon(":/res/rotate.png"), QObject::tr("&Fix component"), parent);
+    pFixingAction->setProperty("Commands", QVariant((int)ExplodeWidget::FixItem));
+    // (int)ExplodeWidget::FixItem
+    parent->addAction(pFixingAction);
+    commandBar->addAction(pFixingAction);
+    pFixingAction->setCheckable(true);
+    QObject::connect(pFixingAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommands()));
+
+
+}
+
 static QWidget* labelEdit(QVBoxLayout* vGroupLayout, const QString& str, bool doubleEdit, bool readOnly, int strMaxWidth)
 {
     QHBoxLayout* hGroupLayout = new QHBoxLayout();
@@ -121,6 +144,12 @@ int main(int argc, char** argv)
     QRect rcFont = fm.boundingRect('X');
     int heightButton = (rcFont.height() + rcFont.width()) + 4;
     QGroupBox* groupExpl = pOpenScene->createGroupExplode(widget, heightButton, "View");
+
+    // Create commandBar
+    QToolBar* commandBar = new QToolBar();
+    commandBar->setBaseSize(sizeIcons);
+    ::createCommandActions(pOpenScene, commandBar, &mainWindow);
+    mainWindow.addToolBar(Qt::LeftToolBarArea, commandBar);
     
     
     ///////////////////////////////////////////////////////////////////////////
