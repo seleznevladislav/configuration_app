@@ -10,6 +10,11 @@
 #include <qt_openglwidget.h>
 #include "explodetree.h"
 
+//
+#include <model.h>
+#include <model_item.h>
+//
+
 struct ParamsParser;
 class ExplodeManager;
 class QPushButton;
@@ -19,6 +24,12 @@ class QGroupBox;
 class QLabel;
 
 VSN_USE_NAMESPACE
+
+class PrBase;
+class AssemblySolver;
+
+using AssemblySolverPtr = std::shared_ptr<AssemblySolver>;
+using AssemblySolverConstPtr = std::shared_ptr<const AssemblySolver>;
 
 /* ListGroupGeometryItem */
 class ListGroupGeometryItem : public QListWidgetItem
@@ -58,12 +69,42 @@ public:
     explicit ExplodeWidget(QWidget* parent = nullptr);
     virtual ~ExplodeWidget();
 public:
+    enum Commands
+    {
+        None,
+        Open,
+        Save,
+        Select,
+        Cancel,
+        Comfirm,
+        // Input processes.
+        InsertItem,
+        FixItem,
+        Coincident,
+        Coaxial,
+        Parallel,
+        Perpendicular,
+        Distance,
+        Angular,
+        Rotation,
+    };
+public:
+    SPtr<MbModel> model() { return m_pModel; }
+    AssemblySolverConstPtr solver() const { return m_pSolver; }
+    AssemblySolverPtr solver() { return m_pSolver; }
+    SceneSegment* modelSegment() const { return m_pModelSeg; }
+    SceneSegment* assemblySegment() const; // Get the main assembly node.
+    SelectionManagerPtr selectManager() const { return m_ptrSelectManager; }
+
     QGroupBox* createGroupExplode(QWidget& widget, const int heightButton, const std::string& mainTabName);
     void showContextMenu(const QPoint& pos);
     ExplodeTreeView* createGeometryList(QWidget* parent);
 public Q_SLOTS:
+    void viewCommands(Commands cmd = None);
     void openModel();
     void setRenderingMode();
+public:
+    VSN_SLOT(Public, slotUpdateCommands, void slotUpdateCommands());
 protected:
     void slotItemSelectModified();
     void slotCurrentItemsModified(std::list<SelectionItem*>& oldItems, std::list<SelectionItem*>& newItems);
@@ -88,6 +129,9 @@ public:
 protected:
     virtual void contextMenuEvent(QContextMenuEvent* event) override;
 private:
+    AssemblySolverPtr m_pSolver;
+    SceneSegment* m_pModelSeg;
+    PrBase* m_pCurrentProcess;
     SPtr<MbModel> m_pModel;
     SceneSegment* m_pSegmModel;
     SceneGenerator* m_pSceneGenerator;
