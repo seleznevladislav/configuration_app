@@ -17,6 +17,7 @@
 #include "explodewidget.h"
 #include "solver/assemblysolver.h"
 #include "solver/prbase.h"
+#include "solver/prbinconstraint.h"
 #include "explodemanager.h"
 
 #include <last.h>
@@ -65,6 +66,7 @@ ExplodeWidget::ExplodeWidget(QWidget* pParent)
     , m_pSolver(nullptr)
     , m_pModelSeg(nullptr)
     , m_pCurrentProcess(nullptr)
+    , m_pGroupFilter(nullptr)
 {
     m_pModel = new MbModel;
     m_pSolver = std::make_shared<AssemblySolver>(UniteToMainAssembly(m_pModel));
@@ -261,22 +263,22 @@ void ExplodeWidget::viewCommands(Commands cmd)
     }
 
     //// Commands to create assembly mates.
-    //case ExplodeWidget::Coincident:
-    //case ExplodeWidget::Coaxial:
-    //case ExplodeWidget::Parallel:
-    //case ExplodeWidget::Perpendicular:
-    //case ExplodeWidget::Angular:
-    //case ExplodeWidget::Distance:
-    //{
-    //    if (m_pCurrentProcess != nullptr)
-    //        m_pCurrentProcess->CancelObject();
-    //    VSN_DELETE_AND_NULL(m_pCurrentProcess);
-    //    bool bRuning = false;
-    //    m_pCurrentProcess = new PrBinConstraint(value, this, bRuning);
-    //    if (!bRuning)
-    //        viewCommands(AssmSolverSceneWidget::Select);
-    //    break;
-    //}
+    case ExplodeWidget::Coincident:
+    case ExplodeWidget::Coaxial:
+    case ExplodeWidget::Parallel:
+    case ExplodeWidget::Perpendicular:
+    case ExplodeWidget::Angular:
+    case ExplodeWidget::Distance:
+    {
+        if (m_pCurrentProcess != nullptr)
+            m_pCurrentProcess->CancelObject();
+        VSN_DELETE_AND_NULL(m_pCurrentProcess);
+        bool bRuning = false;
+        m_pCurrentProcess = new PrBinConstraint(value, this, bRuning);
+        if (!bRuning)
+            viewCommands(ExplodeWidget::Select);
+        break;
+    }
     //case ExplodeWidget::Rotation:
     //{
     //    if (m_pCurrentProcess != nullptr)
@@ -611,4 +613,93 @@ void ExplodeWidget::slotCurrentItemsModified(std::list<SelectionItem*>& oldItems
         m_pExplodeManager->onSelectItem(nullptr);
     }
     update();
+}
+
+////---------------------------------------------------------------------------
+////
+//// ---
+void ExplodeWidget::slotFilterTriggered(QAction* action)
+{
+    Filter filer = m_ptrSelectManager->GetFilterObject();
+    if (action->objectName() == QString("ID_:/res/filter24x24.png"))
+    {
+        if (action->isChecked())
+            filer = SubPrim;
+    }
+    else if (action->objectName() == QString("ID_:/res/filterseg24x24.png"))
+    {
+    }
+    else if (action->objectName() == QString("ID_:/res/filterbody24x24.png"))
+        m_ptrSelectManager->SetBodySelectionEnabled(action->isChecked());
+    else if (action->objectName() == QString("ID_:/res/filterface24x24.png"))
+        m_ptrSelectManager->SetFaceSelectionEnabled(action->isChecked());
+    else if (action->objectName() == QString("ID_:/res/filteredge24x24.png"))
+        m_ptrSelectManager->SetEdgeSelectionEnabled(action->isChecked());
+    else if (action->objectName() == QString("ID_:/res/filtervertex24x24.png"))
+        m_ptrSelectManager->SetVertexSelectionEnabled(action->isChecked());
+    updateActionCheckFilter();
+}
+
+//---------------------------------------------------------------------------
+//
+// ---
+void ExplodeWidget::updateActionCheckFilter()
+{
+    Filter filer = m_ptrSelectManager->GetFilterObject();
+    auto lstActions = m_pGroupFilter->actions();
+    for (auto it = lstActions.begin(); it != lstActions.end(); ++it)
+    {
+        QAction* action = (*it);
+        if (action->objectName() == QString("ID_:/res/filter24x24.png"))
+            action->setChecked(filer.CheckFlag(SubPrim));
+        //        else if (action->objectName() == QString("ID_:/res/filterseg24x24.png"))
+        //            action->setChecked(filer.checkFlag(SubSegment));
+        else if (action->objectName() == QString("ID_:/res/filterbody24x24.png"))
+            action->setChecked(filer.CheckFlag(SubBody));
+        else if (action->objectName() == QString("ID_:/res/filterface24x24.png"))
+            action->setChecked(filer.CheckFlag(SubFace));
+        else if (action->objectName() == QString("ID_:/res/filteredge24x24.png"))
+            action->setChecked(filer.CheckFlag(SubEdge));
+        else if (action->objectName() == QString("ID_:/res/filtervertex24x24.png"))
+            action->setChecked(filer.CheckFlag(SubVertex));
+    }
+}
+
+
+/*ColorButton*/
+ColorButton::ColorButton(QWidget* parent)
+    : QPushButton(parent)
+{
+    setAutoFillBackground(true);
+    QFontMetrics fm(font());
+    QRect rc = fm.boundingRect("XXXXXX");
+    QSize sz(150, rc.height() + 4);
+    setIconSize(sz);
+    QObject::connect(this, SIGNAL(released()), this, SLOT(chooseColor()));
+}
+
+void ColorButton::chooseColor()
+{
+    QColor newCol = QColorDialog::getColor(m_color, this);
+    if (newCol.isValid())
+        setColor(newCol);
+}
+
+void ColorButton::setColor(const QColor& clr)
+{
+    if (m_color != clr)
+    {
+        m_color = clr;
+
+        QFontMetrics fm(font());
+        QRect rc = fm.boundingRect(text());
+
+        QSize sz = iconSize();
+        QPixmap px(sz);
+        QPainter p(&px);
+        p.fillRect(QRect(QPoint(0, 0), sz), m_color);
+        QIcon icon; icon.addPixmap(px);
+        setIcon(icon);
+        emit colorChanged(m_color);
+    }
 }

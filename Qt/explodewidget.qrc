@@ -7,5 +7,13 @@
         <file>res/perspctv.png</file>
         <file>res/zoombox.png</file>
         <file>res/rotate.png</file>
+        <file>res/cursors/edge.cur</file>
+        <file>res/cursors/face.cur</file>
+        <file>res/cursors/point_cur.cur</file>
+        <file>res/cursors/vertex.cur</file>
+        <file>res/filter24x24.png</file>
+        <file>res/filteredge24x24.png</file>
+        <file>res/filterface24x24.png</file>
+        <file>res/filtervertex24x24.png</file>
     </qresource>
 </RCC>
