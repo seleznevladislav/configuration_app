@@ -282,7 +282,8 @@ void ExplodeWidget::loadFiles(const QStringList& files)
 // ---
 void ExplodeWidget::createScene()
 {
-    MbModel* pModel = ParametricModelCreator::CreatePneymocylinderModel(BuildParams());
+    //MbModel* pModel = ParametricModelCreator::CreatePneymocylinderModel(BuildParams());
+    MbModel* pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsZarubin());
     SPtr<MbModel> model(pModel);
 
     SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
