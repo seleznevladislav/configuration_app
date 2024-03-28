@@ -162,6 +162,7 @@ public:
     VSN_SLOT(Public, slotFinishBuildRep, void slotFinishBuildRep())
 protected:
     virtual void contextMenuEvent(QContextMenuEvent* event) override;
+    virtual void mouseMoveEvent(QMouseEvent* event);
 private:
     AssemblySolverPtr m_pSolver;
     SceneSegment* m_pModelSeg;
@@ -174,6 +175,11 @@ private:
     ExplodeTreeView* m_pTreeWidget;
     QActionGroup* m_pGroupFilter;
     std::string m_modelPath;
+
+    QCursor m_curEdge;
+    QCursor m_curFace;
+    QCursor m_curVertex;
+    QCursor m_curPoint;
 private:
     Q_DISABLE_COPY(ExplodeWidget)
 };
