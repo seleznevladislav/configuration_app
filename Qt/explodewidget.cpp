@@ -67,6 +67,10 @@ ExplodeWidget::ExplodeWidget(QWidget* pParent)
     , m_pModelSeg(nullptr)
     , m_pCurrentProcess(nullptr)
     , m_pGroupFilter(nullptr)
+    , m_curPoint(QtVision::findCursor(16)/*QCursor(QPixmap(":/res/point_cur.cur"))*/)
+    , m_curEdge(QCursor(QPixmap(":/res/cursors/edge.cur")))
+    , m_curFace(QCursor(QPixmap(":/res/cursors/face.cur")))
+    , m_curVertex(QCursor(QPixmap(":/res/cursors/vertex.cur")))
 {
     m_pModel = new MbModel;
     m_pSolver = std::make_shared<AssemblySolver>(UniteToMainAssembly(m_pModel));
@@ -716,6 +720,29 @@ void ExplodeWidget::slotToggleVisibility(bool checked, QGroupBox* groupBox) {
     if (groupBox) {
         groupBox->setVisible(checked); // Set visibility based on the checkbox state
     }
+}
+
+
+//---------------------------------------------------------------------------
+//  Change cursor depends on selector
+// ---
+void ExplodeWidget::mouseMoveEvent(QMouseEvent* event)
+{
+    QtVision::QtOpenGLSceneWidget::mouseMoveEvent(event);
+
+    ObjectType type = ObjectType::None;
+    if (SelectionItem* item = m_ptrSelectManager->GetHighlightItem())
+        type = item->GetType();
+
+    QCursor curCursor;
+    switch (type)
+    {
+    case ObjectType::Vertex: curCursor = m_curVertex; break;
+    case ObjectType::Edge:   curCursor = m_curEdge;   break;
+    case ObjectType::Face:   curCursor = m_curFace;   break;
+    default: curCursor = m_curPoint; break;
+    }
+    setCursor(curCursor);
 }
 
 
