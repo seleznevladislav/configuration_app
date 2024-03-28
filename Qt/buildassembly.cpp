@@ -18,7 +18,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     //SPtr<MbSolid> innerPipeSolid(create_inner_pipe_001());
     //SPtr<MbSolid> supportSolid(create_support_003());
     //SPtr<MbSolid> curvedPipeSolid(create_curved_pipe_007());
-
+    
     //// Крышки
     //SPtr<MbInstance> capItem(new MbInstance(*capSolid, lcs));
     //SPtr<MbInstance> capItem2(new MbInstance(*capSolid, lcs));
