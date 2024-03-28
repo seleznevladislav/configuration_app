@@ -19,6 +19,10 @@
 #include <QRadioButton>
 #include <QToolButton>
 #include <QTabWidget>
+#include <QMenu>
+#include <QMenuBar>
+#include <QWidgetAction>
+#include <QCheckBox>
 #include <iostream>
 
 #include <last.h>
@@ -139,6 +143,17 @@ int main(int argc, char** argv)
 
     hLayout->addWidget(pOpenScene, 1);
     hLayout->addLayout(vLayout);
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Toolbar left position
+    ///////////////////////////////////////////////////////////////////////////
+    QToolBar* commandBar = new QToolBar();
+    commandBar->setBaseSize(sizeIcons);
+    ::createCommandActions(pOpenScene, commandBar, &mainWindow);
+    mainWindow.addToolBar(Qt::LeftToolBarArea, commandBar);
+
+    ///////////////////////////////////////////////////////////////////////////
     // Create control widgets
     ///////////////////////////////////////////////////////////////////////////
     // File 
@@ -181,18 +196,66 @@ int main(int argc, char** argv)
     pOpenScene->setGroupFilter(actionGroupFilter);
     QObject::connect(actionGroupFilter, SIGNAL(triggered(QAction*)), pOpenScene, SLOT(slotFilterTriggered(QAction*)));
 
-    // Create commandBar
-    QToolBar* commandBar = new QToolBar();
-    commandBar->setBaseSize(sizeIcons);
-    ::createCommandActions(pOpenScene, commandBar, &mainWindow);
-    mainWindow.addToolBar(Qt::LeftToolBarArea, commandBar);
-    
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Colors for selection
+    ///////////////////////////////////////////////////////////////////////////
+    QGroupBox* colorsGroupBox = new QGroupBox();
+    QVBoxLayout* vGroupLayoutColors = new QVBoxLayout(colorsGroupBox);
+    colorsGroupBox->setTitle(QStringLiteral("Options"));
+    QCheckBox* highlightBox = new QCheckBox(QObject::tr("dynamic highlighting"));
+    highlightBox->setChecked(true);
+    QObject::connect(highlightBox, SIGNAL(stateChanged(int)), pOpenScene, SLOT(slotDynamicHighlighting(int)));
+
+    ColorButton* highlightColor = new ColorButton(colorsGroupBox);
+    highlightColor->setText(QObject::tr("Highlight"));
+    highlightColor->setColor(pOpenScene->highlightColor());
+    QObject::connect(highlightColor, SIGNAL(colorChanged(const QColor&)), pOpenScene, SLOT(slotHighlightColor(const QColor&)));
+    ColorButton* selectionColor = new ColorButton(colorsGroupBox);
+    selectionColor->setText(QObject::tr("Selection"));
+    selectionColor->setColor(pOpenScene->selectionColor());
+    QObject::connect(selectionColor, SIGNAL(colorChanged(const QColor&)), pOpenScene, SLOT(slotSelectionColor(const QColor&)));
+    vGroupLayoutColors->addWidget(highlightBox);
+    vGroupLayoutColors->addWidget(highlightColor);
+    vGroupLayoutColors->addWidget(selectionColor);    
     
     ///////////////////////////////////////////////////////////////////////////
-    // add
+    // Add all containers in right menu
+    ///////////////////////////////////////////////////////////////////////////
     vLayout->addWidget(groupFile, 0, Qt::AlignTop);
     vLayout->addWidget(groupExpl, 0, Qt::AlignTop);
     vLayout->addWidget(groupFilter, 0, Qt::AlignTop);
+    vLayout->addWidget(colorsGroupBox, 0, Qt::AlignTop);
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Create menu bar and menus
+    ///////////////////////////////////////////////////////////////////////////
+    QMenuBar* menuBar = new QMenuBar(&mainWindow);
+    mainWindow.setMenuBar(menuBar);
+
+    QMenu* fileMenu = menuBar->addMenu(QObject::tr("File"));
+    QMenu* viewMenu = menuBar->addMenu(QObject::tr("View"));
+    QMenu* optionsMenu = menuBar->addMenu(QObject::tr("Options"));
+
+    // Add actions in menus
+    QAction* showUnshowColors = new QAction(QObject::tr("Show/Hide Colors"), optionsMenu);
+    showUnshowColors->setCheckable(true);
+    showUnshowColors->setChecked(true);
+    optionsMenu->addAction(showUnshowColors);
+
+    QAction* showUnshowSelectors = new QAction(QObject::tr("Show/Hide Selectors"), optionsMenu);
+    showUnshowSelectors->setCheckable(true);
+    showUnshowSelectors->setChecked(true);
+    optionsMenu->addAction(showUnshowSelectors);
+
+    // Connect the Qslots with previous actions
+    QObject::connect(showUnshowColors, &QAction::triggered, pOpenScene, [=]() {
+        pOpenScene->slotToggleVisibility(showUnshowColors->isChecked(), colorsGroupBox);
+    });
+    QObject::connect(showUnshowSelectors, &QAction::triggered, pOpenScene, [=]() {
+        pOpenScene->slotToggleVisibility(showUnshowSelectors->isChecked(), groupFilter);
+    });
+
 
     // Show window
     QtVision::setWindowPosition(mainWindow);
