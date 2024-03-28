@@ -115,6 +115,19 @@ void ExplodeWidget::initializeGL()
     Object::Connect(m_ptrSelectManager.get(), &SelectionManager::signalStateModified, this, &QtOpenGLWidget::updateWidget);
 }
 
+// TODO: неиспользуемая функция
+void ExplodeWidget::configureModel(int index)
+{
+    SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
+    Q_ASSERT(pTopSegment != nullptr);
+    const QString lastUserPath;
+    QStringList filters = QtVision::openSaveFilters();
+    QString oneLineFilters = filters.join("\n");
+
+    createScene();
+    fillGeometryList();
+}
+
 //-----------------------------------------------------------------------------
 //
 // ---
@@ -282,14 +295,22 @@ void ExplodeWidget::loadFiles(const QStringList& files)
 // ---
 void ExplodeWidget::createScene()
 {
-    MbModel* pModel = ParametricModelCreator::CreatePneymocylinderModel(BuildParams());
-    SPtr<MbModel> model(pModel);
+    m_pModel.reset();
+    m_pTreeWidget->clear();
+
+    // TODO: Здесь перед построением модели смотрит индекс выбранного варианта конфигурации 
+    int index = m_pExplodeManager->m_comboConfigure->currentIndex();
+   
+    ConfigParams config = m_pExplodeManager->configuration[index];
+
+    // TODO: Делать ничего не нужно
+    m_pModel = ParametricModelCreator::CreatePneymocylinderModel(config);
 
     SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
     Q_ASSERT(pTopSegment != nullptr);
     ProgressBuild* pProgressBuild = m_pSceneGenerator->CreateProgressBuild();
     Object::Connect(pProgressBuild, &ProgressBuild::BuildAllCompleted, this, &ExplodeWidget::slotFinishBuildRep);
-    m_pSegmModel = m_pSceneGenerator->CreateSceneSegment(model, pTopSegment, false);
+    m_pSegmModel = m_pSceneGenerator->CreateSceneSegment(m_pModel, pTopSegment, false);
     m_pSceneGenerator->StartBuildGeometry();
 }
 

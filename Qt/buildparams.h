@@ -17,4 +17,12 @@ namespace BuildMathModel {
 		int length0;
 		int LENGTH;
 	};
+	// TODO: 1) Прописываем здесь свою структуру данных 
+	//struct testConfigParams
+	//{
+	//	std::string name; // Название аппарата ТТРМ 455 4.5 32
+	//	int lengthK; // Параметр из таблицы
+	//	int length0; //  Параметр из таблицы
+	//	int LENGTH; // Параметр из таблицы
+	//};
 }

@@ -7,6 +7,7 @@
 #include <QObject>
 #include <QGroupBox>
 #include "BuildParams.h"
+#include "QComboBox"
 
 using namespace BuildMathModel;
 
@@ -40,6 +41,14 @@ public:
     bool isSelectionEnabled() const;
     bool isCreateGroupGeometry() const;
     bool onSelectItem(const SceneSegment* pSegm);
+    QComboBox* m_comboConfigure = nullptr;
+    // TODO: 2) Прописываем здесь через такой же тип переменную, в которую прописываем значения.
+    // Важно! чтобы количество переменных в элементе совпадало количеством описанных переменных в структуре struct 
+    // Количество элементов может быть любое
+    std::vector<ConfigParams> configuration = {
+       {u8"ТТРМ 25/57-6,3/1,6", 3000, 750, 2150},
+       {u8"ТТРМ 38/89-6,3/4,0", 1500, 1500, 3820},
+    };
 private:
     void initWidgets();
     void applyParameter(const ExplodeDispatcher::ControlParameterType paramType, const Variant& data, std::array<bool, 3> params);
@@ -64,7 +73,6 @@ private:
     void checkboxAutoRebuildToggled(bool checked);
     void checkboxRefineAxisSymmetryToggled(bool checked);
     void checkboxesToggled(bool checked);
-    //void checkboxCreateGroupGeometryToggled(bool checked);
     ExplodeDispatcher::ControlParameterType GetParameterType(const QObject* widg) const;
 private:
     QGroupBox* createGroupBox(const char* title, const bool flat, const bool checkable, const bool checked);
@@ -94,10 +102,6 @@ private:
     const std::string m_tabNameSeparator = "_";
     bool m_isSelectionDisabled = true;
     int m_heightButton = 0;
-    std::vector<ConfigParams> configuration = {
-        {u8"ТТРМ 25/57-6,3/1,6", 1500, 750, 2150},
-        {u8"ТТРМ 38/89-6,3/4,0", 3000, 1500, 3820},
-    };
 };
 
 #endif // __VSN_EXPLODEGROUP_H

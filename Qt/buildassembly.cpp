@@ -2,14 +2,19 @@
 
 using namespace BuildMathModel;
 
-SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(BuildParams params)
+SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigParams params)
 {
+    // TODO: 3) Здесь деструктуризируете ваши переменные и уже вставляете куда вам нужно
+    const int lengthK = params.lengthK;
+    const int length0 = params.length0;
+    const int LENGTH = params.LENGTH;
+    
     MbPlacement3D lcs;
 
     SPtr<MbSolid> capSolid(create_cup_005());
     SPtr<MbSolid> headExhangerGridSolid(create_outer_pipes_grid_004());
     SPtr<MbSolid> headExhangerGridSecondSolid(create_inner_pipes_grid_006());
-    SPtr<MbSolid> outerPipeSolid(create_outer_pipe_002());
+    SPtr<MbSolid> outerPipeSolid(create_outer_pipe_002(lengthK));
     SPtr<MbSolid> innerPipeSolid(create_inner_pipe_001());
     SPtr<MbSolid> supportSolid(create_support_003());
     SPtr<MbSolid> curvedPipeSolid(create_curved_pipe_007());

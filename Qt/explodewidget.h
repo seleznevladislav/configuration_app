@@ -64,6 +64,7 @@ public:
 public Q_SLOTS:
     void openModel();
     void setRenderingMode();
+    void configureModel(int index);
 protected:
     void slotItemSelectModified();
     void slotCurrentItemsModified(std::list<SelectionItem*>& oldItems, std::list<SelectionItem*>& newItems);

@@ -176,13 +176,13 @@ namespace BuildMathModel {
 		static int variantsConf;
 		static int variantsConfB;
 	public:
-		static MbModel* CreatePneymocylinderModel(BuildParams params);
+		static MbModel* CreatePneymocylinderModel(ConfigParams params);
 	private:
-		static  SPtr<MbAssembly> CreatePneumocylinderAssembly(BuildParams params);
+		static  SPtr<MbAssembly> CreatePneumocylinderAssembly(ConfigParams params);
 	private:
 		// details
         static SPtr<MbSolid> ParametricModelCreator::create_inner_pipe_001();
-        static SPtr<MbSolid> ParametricModelCreator::create_outer_pipe_002();
+        static SPtr<MbSolid> ParametricModelCreator::create_outer_pipe_002(int lenghtK);
         static SPtr<MbSolid> ParametricModelCreator::create_support_003();
         static SPtr<MbSolid> ParametricModelCreator::create_outer_pipes_grid_004();
         static SPtr<MbSolid> ParametricModelCreator::create_cup_005();
