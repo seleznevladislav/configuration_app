@@ -1,7 +1,4 @@
-﻿#include "explodewidget.h"
-
-#include "explodemanager.h"
-#include <QFileDialog>
+﻿#include <QFileDialog>
 #include <QToolButton>
 #include <QMenu>
 #include <qevent.h>
@@ -17,6 +14,11 @@
 
 #include "BuildMathModel.h"
 #include "BuildParams.h"
+#include "explodewidget.h"
+#include "solver/assemblysolver.h"
+#include "solver/prbase.h"
+#include "solver/prbinconstraint.h"
+#include "explodemanager.h"
 
 #include <last.h>
 
@@ -61,7 +63,17 @@ ExplodeWidget::ExplodeWidget(QWidget* pParent)
     , m_pExplodeManager(new ExplodeManager(this))
     , m_ptrSelectManager(std::make_shared<SelectionManager>())
     , m_pTreeWidget(nullptr)
+    , m_pSolver(nullptr)
+    , m_pModelSeg(nullptr)
+    , m_pCurrentProcess(nullptr)
+    , m_pGroupFilter(nullptr)
+    , m_curPoint(QtVision::findCursor(16)/*QCursor(QPixmap(":/res/point_cur.cur"))*/)
+    , m_curEdge(QCursor(QPixmap(":/res/cursors/edge.cur")))
+    , m_curFace(QCursor(QPixmap(":/res/cursors/face.cur")))
+    , m_curVertex(QCursor(QPixmap(":/res/cursors/vertex.cur")))
 {
+    m_pModel = new MbModel;
+    m_pSolver = std::make_shared<AssemblySolver>(UniteToMainAssembly(m_pModel));
     QtVision::ProcessTypes ptTypes = QtVision::pt_Pan | QtVision::pt_Zoom | QtVision::pt_Rotate;
     QtVision::createProcessesCameraControls(this, ptTypes);
 }
@@ -113,6 +125,206 @@ void ExplodeWidget::initializeGL()
     Object::Connect(m_ptrSelectManager.get(), &SelectionManager::signalCurrentItemsModified, this, &ExplodeWidget::slotCurrentItemsModified);
     Object::Connect(m_ptrSelectManager.get(), &SelectionManager::signalItemSelectModified, this, &ExplodeWidget::slotItemSelectModified);
     Object::Connect(m_ptrSelectManager.get(), &SelectionManager::signalStateModified, this, &QtOpenGLWidget::updateWidget);
+}
+
+
+//---------------------------------------------------------------------------------------
+// 
+// ---
+void ExplodeWidget::slotUpdateCommands()
+{
+    if (m_pCurrentProcess == nullptr)
+        return;
+    QWidget* parentWidget = qobject_cast<QWidget*>(parent());
+    QList<QAction*> lstAction = parentWidget->actions();
+    for (QAction* pAction : lstAction)
+    {
+        Commands value = static_cast<Commands>(pAction->property("Commands").toInt());
+
+        if (m_pCurrentProcess != nullptr)
+        {
+            const MbAssembly* assm = GetMainAssembly(m_pModel);  // The main assembly.
+            VSN_ASSERT(assm != nullptr);
+            switch (value)
+            {
+            case Save:
+            case FixItem:
+            case Rotation:
+                pAction->setEnabled(assm != nullptr && assm->ItemsCount() > 0);
+                break;
+            case Cancel:
+                pAction->setEnabled(m_pCurrentProcess->IsReady());
+                break;
+            case Comfirm:
+                pAction->setEnabled(m_pCurrentProcess->IsReady());
+                break;
+            case InsertItem:
+                pAction->setEnabled(m_pCurrentProcess != nullptr &&
+                    m_pCurrentProcess->GetCustomKey() == NodeKey(Select));
+                break;
+            case Coincident:
+            case Coaxial:
+            case Parallel:
+            case Perpendicular:
+            case Angular:
+            case Distance:
+                pAction->setEnabled(assm != nullptr && (assm->ItemsCount() > 1));
+                break;
+                /*
+                case Rotation:
+                    const bool bEnabledAxis = (assm != nullptr) && (assm->ItemsCount() > 1) &&
+                         PrRotationAboutAxis::SelectedAxialGeom(this,nullptr).SubGeomRecord().type != GCM_NULL_GTYPE;
+                    pAction->setEnabled(bEnabledAxis);
+                    break;
+                */
+            }
+        }
+
+        if (pAction->isCheckable())
+        {
+            if (value == static_cast<Commands>(m_pCurrentProcess->GetCustomKey().GetKey()))
+                pAction->setChecked(true);
+            else
+                pAction->setChecked(false);
+        }
+    }
+}
+
+
+//---------------------------------------------------------------------------------------
+//
+// ---
+void ExplodeWidget::viewCommands(Commands cmd)
+{
+    Commands value = Select;
+    if (cmd == None)
+    {
+        QObject* action = sender();
+        value = static_cast<Commands>(action->property("Commands").toInt());
+    }
+
+    switch (value)
+    {
+    case ExplodeWidget::Open:
+    {
+        viewCommands(ExplodeWidget::Select);
+        createScene();
+        // loadModel();
+        break;
+    }
+    case ExplodeWidget::Save:
+    {
+        viewCommands(ExplodeWidget::Select);
+        // saveModel();
+        break;
+    }
+    case ExplodeWidget::Select:
+    {
+        if (m_pCurrentProcess != nullptr)
+            m_pCurrentProcess->CancelObject();
+        VSN_DELETE_AND_NULL(m_pCurrentProcess);
+        m_pCurrentProcess = new PrBase(this);
+        m_pCurrentProcess->SetCustomKey(NodeKey(ExplodeWidget::Select));
+        break;
+    }
+    /*
+            case AssmSolverSceneWidget::Cancel:
+            {
+                if (m_pCurrentProcess != nullptr)
+                    m_pCurrentProcess->CancelObject();
+                viewCommands(AssmSolverSceneWidget::Select);
+                break;
+            }
+    */
+    /*case ExplodeWidget::Comfirm:
+    {
+        if (m_pCurrentProcess != nullptr)
+            m_pCurrentProcess->CreateObject();
+        VSN_DELETE_AND_NULL(m_pCurrentProcess);
+        viewCommands(AssmSolverSceneWidget::Select);
+        break;
+    }
+    case ExplodeWidget::InsertItem:
+    {
+        QString fileName = openSelectModel();
+        if (!fileName.isEmpty())
+        {
+            VSN_DELETE_AND_NULL(m_pCurrentProcess);
+            bool bRuning = false;
+            m_pCurrentProcess = new PrInsertItem(c3d::WToPathstring(fileName.toStdWString()), this, bRuning);
+            if (!bRuning)
+                viewCommands(ExplodeWidget::Select);
+        }
+        break;
+    }*/
+    case ExplodeWidget::FixItem:
+    {
+        VSN_DELETE_AND_NULL(m_pCurrentProcess);
+        m_pCurrentProcess = StartFixingProcess(this);
+        if (m_pCurrentProcess == nullptr)
+            viewCommands(ExplodeWidget::Select);
+        break;
+    }
+
+    //// Commands to create assembly mates.
+    case ExplodeWidget::Coincident:
+    case ExplodeWidget::Coaxial:
+    case ExplodeWidget::Parallel:
+    case ExplodeWidget::Perpendicular:
+    case ExplodeWidget::Angular:
+    case ExplodeWidget::Distance:
+    {
+        if (m_pCurrentProcess != nullptr)
+            m_pCurrentProcess->CancelObject();
+        VSN_DELETE_AND_NULL(m_pCurrentProcess);
+        bool bRuning = false;
+        m_pCurrentProcess = new PrBinConstraint(value, this, bRuning);
+        if (!bRuning)
+            viewCommands(ExplodeWidget::Select);
+        break;
+    }
+    //case ExplodeWidget::Rotation:
+    //{
+    //    if (m_pCurrentProcess != nullptr)
+    //        m_pCurrentProcess->CancelObject();
+    //    VSN_DELETE_AND_NULL(m_pCurrentProcess);
+    //    bool bRuning = false;
+    //    m_pCurrentProcess = new PrRotationAboutAxis(value, this, bRuning);
+    //    if (!bRuning)
+    //        viewCommands(AssmSolverSceneWidget::Select);
+    //    break;
+    //}
+    default:
+        break;
+    };
+    slotUpdateCommands();
+    update();
+}
+
+
+//---------------------------------------------------------------------------------------
+// Get a single assembly node.
+// ---
+SceneSegment* ExplodeWidget::assemblySegment() const
+{
+    if (m_pModelSeg == nullptr)
+    {
+        return nullptr;
+    }
+
+    if (const MbAssembly* rootAssm = GetMainAssembly(m_pModel))
+    {
+        auto childList = m_pModelSeg->GetChildSegments();
+        // Single assembly node is required.
+        if (childList.size() == 1)
+        {
+            // Check the assembly segment must have property C3D_PATHITEM_ID.
+            if (childList.front()->GetProperty(C3D_PATHITEM_ID) == rootAssm->GetItemName())
+                return childList.front();
+        }
+    }
+
+    return nullptr;
 }
 
 // TODO: неиспользуемая функция
@@ -425,4 +637,169 @@ void ExplodeWidget::slotCurrentItemsModified(std::list<SelectionItem*>& oldItems
         m_pExplodeManager->onSelectItem(nullptr);
     }
     update();
+}
+
+////---------------------------------------------------------------------------
+////
+//// ---
+void ExplodeWidget::slotFilterTriggered(QAction* action)
+{
+    Filter filer = m_ptrSelectManager->GetFilterObject();
+    if (action->objectName() == QString("ID_:/res/filter24x24.png"))
+    {
+        if (action->isChecked())
+            filer = SubPrim;
+    }
+    else if (action->objectName() == QString("ID_:/res/filterseg24x24.png"))
+    {
+    }
+    else if (action->objectName() == QString("ID_:/res/filterbody24x24.png"))
+        m_ptrSelectManager->SetBodySelectionEnabled(action->isChecked());
+    else if (action->objectName() == QString("ID_:/res/filterface24x24.png"))
+        m_ptrSelectManager->SetFaceSelectionEnabled(action->isChecked());
+    else if (action->objectName() == QString("ID_:/res/filteredge24x24.png"))
+        m_ptrSelectManager->SetEdgeSelectionEnabled(action->isChecked());
+    else if (action->objectName() == QString("ID_:/res/filtervertex24x24.png"))
+        m_ptrSelectManager->SetVertexSelectionEnabled(action->isChecked());
+    updateActionCheckFilter();
+}
+
+//---------------------------------------------------------------------------
+//
+// ---
+void ExplodeWidget::updateActionCheckFilter()
+{
+    Filter filer = m_ptrSelectManager->GetFilterObject();
+    auto lstActions = m_pGroupFilter->actions();
+    for (auto it = lstActions.begin(); it != lstActions.end(); ++it)
+    {
+        QAction* action = (*it);
+        if (action->objectName() == QString("ID_:/res/filter24x24.png"))
+            action->setChecked(filer.CheckFlag(SubPrim));
+        //        else if (action->objectName() == QString("ID_:/res/filterseg24x24.png"))
+        //            action->setChecked(filer.checkFlag(SubSegment));
+        else if (action->objectName() == QString("ID_:/res/filterbody24x24.png"))
+            action->setChecked(filer.CheckFlag(SubBody));
+        else if (action->objectName() == QString("ID_:/res/filterface24x24.png"))
+            action->setChecked(filer.CheckFlag(SubFace));
+        else if (action->objectName() == QString("ID_:/res/filteredge24x24.png"))
+            action->setChecked(filer.CheckFlag(SubEdge));
+        else if (action->objectName() == QString("ID_:/res/filtervertex24x24.png"))
+            action->setChecked(filer.CheckFlag(SubVertex));
+    }
+}
+
+//---------------------------------------------------------------------------
+//
+// ---
+QColor ExplodeWidget::highlightColor() const
+{
+    Color clr = m_ptrSelectManager->GetHighlightColor();
+    return QColor(clr.GetRed(), clr.GetGreen(), clr.GetBlue());
+}
+
+//---------------------------------------------------------------------------
+//
+// ---
+QColor ExplodeWidget::selectionColor() const
+{
+    Color clr = m_ptrSelectManager->GetSelectionColor();
+    return QColor(clr.GetRed(), clr.GetGreen(), clr.GetBlue());
+}
+
+//---------------------------------------------------------------------------
+//
+// ---
+void ExplodeWidget::slotHighlightColor(const QColor& clr)
+{
+    m_ptrSelectManager->SetHighlightColor(Color(clr.red(), clr.green(), clr.blue()));
+}
+
+//---------------------------------------------------------------------------
+//
+// ---
+void ExplodeWidget::slotSelectionColor(const QColor& clr)
+{
+    m_ptrSelectManager->SetSelectionColor(Color(clr.red(), clr.green(), clr.blue()));
+}
+
+//---------------------------------------------------------------------------
+//  
+// ---
+void ExplodeWidget::slotDynamicHighlighting(int state)
+{
+    m_ptrSelectManager->SetDynamicHighlighting(state == Qt::Checked);
+    update();
+}
+
+//---------------------------------------------------------------------------
+//  Make hidden/show QGroupBox'es
+// ---
+void ExplodeWidget::slotToggleVisibility(bool checked, QGroupBox* groupBox) {
+    // Check if the checkbox is checked
+    if (groupBox) {
+        groupBox->setVisible(checked); // Set visibility based on the checkbox state
+    }
+}
+
+
+//---------------------------------------------------------------------------
+//  Change cursor depends on selector
+// ---
+void ExplodeWidget::mouseMoveEvent(QMouseEvent* event)
+{
+    QtVision::QtOpenGLSceneWidget::mouseMoveEvent(event);
+
+    ObjectType type = ObjectType::None;
+    if (SelectionItem* item = m_ptrSelectManager->GetHighlightItem())
+        type = item->GetType();
+
+    QCursor curCursor;
+    switch (type)
+    {
+    case ObjectType::Vertex: curCursor = m_curVertex; break;
+    case ObjectType::Edge:   curCursor = m_curEdge;   break;
+    case ObjectType::Face:   curCursor = m_curFace;   break;
+    default: curCursor = m_curPoint; break;
+    }
+    setCursor(curCursor);
+}
+
+
+/*ColorButton*/
+ColorButton::ColorButton(QWidget* parent)
+    : QPushButton(parent)
+{
+    setAutoFillBackground(true);
+    QFontMetrics fm(font());
+    QRect rc = fm.boundingRect("XXXXXX");
+    QSize sz(150, rc.height() + 4);
+    setIconSize(sz);
+    QObject::connect(this, SIGNAL(released()), this, SLOT(chooseColor()));
+}
+
+void ColorButton::chooseColor()
+{
+    QColor newCol = QColorDialog::getColor(m_color, this);
+    if (newCol.isValid())
+        setColor(newCol);
+}
+
+void ColorButton::setColor(const QColor& clr)
+{
+    if (m_color != clr)
+    {
+        m_color = clr;
+
+        QFontMetrics fm(font());
+        QRect rc = fm.boundingRect(text());
+
+        QSize sz = iconSize();
+        QPixmap px(sz);
+        QPainter p(&px);
+        p.fillRect(QRect(QPoint(0, 0), sz), m_color);
+        QIcon icon; icon.addPixmap(px);
+        setIcon(icon);
+        emit colorChanged(m_color);
+    }
 }

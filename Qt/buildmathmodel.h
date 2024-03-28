@@ -131,7 +131,7 @@
 #include <cdet_data.h>
 #include <cdet_utility.h>
 #include <part_solid.h>
-//для сборки
+//пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 #include <mb_class_traits.h>
 #include <tool_time_test.h>
 #include <constraint.h>
@@ -172,16 +172,18 @@ using namespace std;
 
 namespace BuildMathModel {
 	class ParametricModelCreator {
-		static int colorScheme; // статическое поле инициализируется вне класса, в .cpp
+		static int colorScheme; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅ .cpp
 		static int variantsConf;
 		static int variantsConfB;
 	public:
 		static MbModel* CreatePneymocylinderModel(ConfigParams params);
+		static MbModel* CreatePneymocylinderModelZarubin(BuildParamsZarubin params);
 	private:
 		static  SPtr<MbAssembly> CreatePneumocylinderAssembly(ConfigParams params);
+		static  SPtr<MbAssembly> CreateTTOR(BuildParamsZarubin params);
 	private:
 		// details
-        static SPtr<MbSolid> ParametricModelCreator::create_inner_pipe_001();
+        /*static SPtr<MbSolid> ParametricModelCreator::create_inner_pipe_001();
         static SPtr<MbSolid> ParametricModelCreator::create_outer_pipe_002(int lenghtK);
         static SPtr<MbSolid> ParametricModelCreator::create_support_003();
         static SPtr<MbSolid> ParametricModelCreator::create_outer_pipes_grid_004();
@@ -190,6 +192,19 @@ namespace BuildMathModel {
 		static SPtr<MbSolid> ParametricModelCreator::create_curved_pipe_007();
 
 		static SPtr<MbSolid> ParametricModelCreator::create_007_FlanecKozhux();
-		static SPtr<MbSolid> ParametricModelCreator::create_008_FlanecSpecial();
+		static SPtr<MbSolid> ParametricModelCreator::create_008_FlanecSpecial();*/
+
+		// detailsZarubin
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_001_tubeTeploobmen();
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_002_tubeKozhux();
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora();
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_004_reshetkaKozhux();
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_005_kamera();
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_006_RezhetkaTeplTube();
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_007_FlanecKozhux();
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_008_FlanecSpecial();
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_009_curevedTube();
+
+
 	};
 }

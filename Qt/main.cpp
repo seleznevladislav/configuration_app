@@ -19,11 +19,57 @@
 #include <QRadioButton>
 #include <QToolButton>
 #include <QTabWidget>
+#include <QMenu>
+#include <QMenuBar>
+#include <QWidgetAction>
+#include <QCheckBox>
 #include <iostream>
 
 #include <last.h>
 
 static QSize sizeIcons = QSize(32, 32);
+
+static void createCommandActions(QWidget* pOpenScene, QToolBar* commandBar, QWidget* parent)
+{
+    QAction* pOpenAction = new QAction(QIcon(":/res/save_file32.png"), QObject::tr("&Open"), parent);
+    pOpenAction->setProperty("Commands", QVariant((int)ExplodeWidget::Open));
+    //  (int)ExplodeWidget::Open
+    parent->addAction(pOpenAction);
+    commandBar->addAction(pOpenAction);
+    QObject::connect(pOpenAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommands()));
+
+
+    commandBar->addSeparator();
+
+    QAction* pFixingAction = new QAction(QIcon(":/res/rotate.png"), QObject::tr("&Fix component"), parent);
+    pFixingAction->setProperty("Commands", QVariant((int)ExplodeWidget::FixItem));
+    // (int)ExplodeWidget::FixItem
+    parent->addAction(pFixingAction);
+    commandBar->addAction(pFixingAction);
+    pFixingAction->setCheckable(true);
+    QObject::connect(pFixingAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommands()));
+
+
+    QAction* pCoincidenceAction = new QAction(QIcon(":/res/rotate.png"), QObject::tr("&Coincident"), parent);
+    pCoincidenceAction->setProperty("Commands", QVariant((int)ExplodeWidget::Coincident));
+    parent->addAction(pCoincidenceAction);
+    commandBar->addAction(pCoincidenceAction);
+    pCoincidenceAction->setCheckable(true);
+    QObject::connect(pCoincidenceAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommands()));
+
+}
+
+static QAction* createButton(const QString& fileName, QGroupBox* groupFilter, QHBoxLayout* fGroupLayout)
+{
+    QToolButton* filterBut = new QToolButton(groupFilter);
+    filterBut->setIconSize(QSize(24, 24));
+    QAction* actFilter = new QAction(QIcon(fileName), "", groupFilter);
+    actFilter->setObjectName(QString("ID_") + fileName);
+    actFilter->setCheckable(true);
+    filterBut->setDefaultAction(actFilter);
+    fGroupLayout->addWidget(filterBut);
+    return actFilter;
+}
 
 static QWidget* labelEdit(QVBoxLayout* vGroupLayout, const QString& str, bool doubleEdit, bool readOnly, int strMaxWidth)
 {
@@ -97,6 +143,17 @@ int main(int argc, char** argv)
 
     hLayout->addWidget(pOpenScene, 1);
     hLayout->addLayout(vLayout);
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Toolbar left position
+    ///////////////////////////////////////////////////////////////////////////
+    QToolBar* commandBar = new QToolBar();
+    commandBar->setBaseSize(sizeIcons);
+    ::createCommandActions(pOpenScene, commandBar, &mainWindow);
+    mainWindow.addToolBar(Qt::LeftToolBarArea, commandBar);
+
+    ///////////////////////////////////////////////////////////////////////////
     // Create control widgets
     ///////////////////////////////////////////////////////////////////////////
     // File 
@@ -121,12 +178,84 @@ int main(int argc, char** argv)
     QRect rcFont = fm.boundingRect('X');
     int heightButton = (rcFont.height() + rcFont.width()) + 4;
     QGroupBox* groupExpl = pOpenScene->createGroupExplode(widget, heightButton, "View");
-    
+
+    // Actions on select
+    QGroupBox* groupFilter = new QGroupBox();
+    groupFilter->setTitle(QStringLiteral("Filter"));
+    QHBoxLayout* fGroupLayout = new QHBoxLayout(groupFilter);
+    fGroupLayout->setMargin(0); fGroupLayout->setSpacing(0);
+
+    QActionGroup* actionGroupFilter = new QActionGroup(pOpenScene);
+    actionGroupFilter->setExclusive(false);
+
+    actionGroupFilter->addAction(createButton(":/res/filterbody24x24.png", groupFilter, fGroupLayout))->setToolTip("Body");
+    actionGroupFilter->addAction(createButton(":/res/filterface24x24.png", groupFilter, fGroupLayout))->setToolTip("Face");
+    actionGroupFilter->addAction(createButton(":/res/filteredge24x24.png", groupFilter, fGroupLayout))->setToolTip("Edge");
+    actionGroupFilter->addAction(createButton(":/res/filtervertex24x24.png", groupFilter, fGroupLayout))->setToolTip("Vertex");
+
+    pOpenScene->setGroupFilter(actionGroupFilter);
+    QObject::connect(actionGroupFilter, SIGNAL(triggered(QAction*)), pOpenScene, SLOT(slotFilterTriggered(QAction*)));
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Colors for selection
+    ///////////////////////////////////////////////////////////////////////////
+    QGroupBox* colorsGroupBox = new QGroupBox();
+    QVBoxLayout* vGroupLayoutColors = new QVBoxLayout(colorsGroupBox);
+    colorsGroupBox->setTitle(QStringLiteral("Options"));
+    QCheckBox* highlightBox = new QCheckBox(QObject::tr("dynamic highlighting"));
+    highlightBox->setChecked(true);
+    QObject::connect(highlightBox, SIGNAL(stateChanged(int)), pOpenScene, SLOT(slotDynamicHighlighting(int)));
+
+    ColorButton* highlightColor = new ColorButton(colorsGroupBox);
+    highlightColor->setText(QObject::tr("Highlight"));
+    highlightColor->setColor(pOpenScene->highlightColor());
+    QObject::connect(highlightColor, SIGNAL(colorChanged(const QColor&)), pOpenScene, SLOT(slotHighlightColor(const QColor&)));
+    ColorButton* selectionColor = new ColorButton(colorsGroupBox);
+    selectionColor->setText(QObject::tr("Selection"));
+    selectionColor->setColor(pOpenScene->selectionColor());
+    QObject::connect(selectionColor, SIGNAL(colorChanged(const QColor&)), pOpenScene, SLOT(slotSelectionColor(const QColor&)));
+    vGroupLayoutColors->addWidget(highlightBox);
+    vGroupLayoutColors->addWidget(highlightColor);
+    vGroupLayoutColors->addWidget(selectionColor);    
     
     ///////////////////////////////////////////////////////////////////////////
-    // add
+    // Add all containers in right menu
+    ///////////////////////////////////////////////////////////////////////////
     vLayout->addWidget(groupFile, 0, Qt::AlignTop);
     vLayout->addWidget(groupExpl, 0, Qt::AlignTop);
+    vLayout->addWidget(groupFilter, 0, Qt::AlignTop);
+    vLayout->addWidget(colorsGroupBox, 0, Qt::AlignTop);
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Create menu bar and menus
+    ///////////////////////////////////////////////////////////////////////////
+    QMenuBar* menuBar = new QMenuBar(&mainWindow);
+    mainWindow.setMenuBar(menuBar);
+
+    QMenu* fileMenu = menuBar->addMenu(QObject::tr("File"));
+    QMenu* viewMenu = menuBar->addMenu(QObject::tr("View"));
+    QMenu* optionsMenu = menuBar->addMenu(QObject::tr("Options"));
+
+    // Add actions in menus
+    QAction* showUnshowColors = new QAction(QObject::tr("Show/Hide Colors"), optionsMenu);
+    showUnshowColors->setCheckable(true);
+    showUnshowColors->setChecked(true);
+    optionsMenu->addAction(showUnshowColors);
+
+    QAction* showUnshowSelectors = new QAction(QObject::tr("Show/Hide Selectors"), optionsMenu);
+    showUnshowSelectors->setCheckable(true);
+    showUnshowSelectors->setChecked(true);
+    optionsMenu->addAction(showUnshowSelectors);
+
+    // Connect the Qslots with previous actions
+    QObject::connect(showUnshowColors, &QAction::triggered, pOpenScene, [=]() {
+        pOpenScene->slotToggleVisibility(showUnshowColors->isChecked(), colorsGroupBox);
+    });
+    QObject::connect(showUnshowSelectors, &QAction::triggered, pOpenScene, [=]() {
+        pOpenScene->slotToggleVisibility(showUnshowSelectors->isChecked(), groupFilter);
+    });
+
 
     // Show window
     QtVision::setWindowPosition(mainWindow);
