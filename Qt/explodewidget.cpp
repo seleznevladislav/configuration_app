@@ -665,6 +665,59 @@ void ExplodeWidget::updateActionCheckFilter()
     }
 }
 
+//---------------------------------------------------------------------------
+//
+// ---
+QColor ExplodeWidget::highlightColor() const
+{
+    Color clr = m_ptrSelectManager->GetHighlightColor();
+    return QColor(clr.GetRed(), clr.GetGreen(), clr.GetBlue());
+}
+
+//---------------------------------------------------------------------------
+//
+// ---
+QColor ExplodeWidget::selectionColor() const
+{
+    Color clr = m_ptrSelectManager->GetSelectionColor();
+    return QColor(clr.GetRed(), clr.GetGreen(), clr.GetBlue());
+}
+
+//---------------------------------------------------------------------------
+//
+// ---
+void ExplodeWidget::slotHighlightColor(const QColor& clr)
+{
+    m_ptrSelectManager->SetHighlightColor(Color(clr.red(), clr.green(), clr.blue()));
+}
+
+//---------------------------------------------------------------------------
+//
+// ---
+void ExplodeWidget::slotSelectionColor(const QColor& clr)
+{
+    m_ptrSelectManager->SetSelectionColor(Color(clr.red(), clr.green(), clr.blue()));
+}
+
+//---------------------------------------------------------------------------
+//  
+// ---
+void ExplodeWidget::slotDynamicHighlighting(int state)
+{
+    m_ptrSelectManager->SetDynamicHighlighting(state == Qt::Checked);
+    update();
+}
+
+//---------------------------------------------------------------------------
+//  Make hidden/show QGroupBox'es
+// ---
+void ExplodeWidget::slotToggleVisibility(bool checked, QGroupBox* groupBox) {
+    // Check if the checkbox is checked
+    if (groupBox) {
+        groupBox->setVisible(checked); // Set visibility based on the checkbox state
+    }
+}
+
 
 /*ColorButton*/
 ColorButton::ColorButton(QWidget* parent)

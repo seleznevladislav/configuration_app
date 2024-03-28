@@ -112,6 +112,9 @@ public:
         Rotation,
     };
 public:
+    QColor highlightColor() const;
+    QColor selectionColor() const;
+
     SPtr<MbModel> model() { return m_pModel; }
     AssemblySolverConstPtr solver() const { return m_pSolver; }
     AssemblySolverPtr solver() { return m_pSolver; }
@@ -128,6 +131,11 @@ public Q_SLOTS:
     void openModel();
     void setRenderingMode();
     void slotFilterTriggered(QAction*);
+
+    void slotToggleVisibility(bool checked, QGroupBox* groupBox);
+    void slotHighlightColor(const QColor& clr);
+    void slotSelectionColor(const QColor& clr);
+    void slotDynamicHighlighting(int state);
 public:
     VSN_SLOT(Public, slotUpdateCommands, void slotUpdateCommands());
 protected:
