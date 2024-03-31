@@ -8,6 +8,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     const int lengthK = params.lengthK;
     const int length0 = params.length0;
     const int LENGTH = params.LENGTH;
+    const int length1 = params.length1;
     
     MbPlacement3D lcs;
 
@@ -22,6 +23,8 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     // Крышки
     SPtr<MbInstance> capItem(new MbInstance(*capSolid, lcs));
     SPtr<MbInstance> capItem2(new MbInstance(*capSolid, lcs));
+    capItem->SetItemName(123);
+ 
     // Решетки
     SPtr<MbInstance> headExhangerGridItem(new MbInstance(*headExhangerGridSolid, lcs));
     SPtr<MbInstance> headExhangerGridSecondItem(new MbInstance(*headExhangerGridSecondSolid, lcs));
@@ -118,8 +121,8 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
         assm->AddConstraint(GCM_CONCENTRIC, GeomArgPipe8Conc, GeomArgSupport8Conc);
 
         // Head Exhanger Grid 
-        double length1 = -(415 + (10 / 2));
-        MtParVariant ArgLength1(length1);
+        double distanse_length1 = -(length1 + (10 / 2));
+        MtParVariant ArgLength1(distanse_length1);
 
         MtGeomArgument Plane1(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
         MtGeomArgument Plane2(supportSolid->GetFace(33), supportItem);
@@ -158,7 +161,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
         assm->AddConstraint(GCM_COINCIDENT, GeomArgPipe4Coinc, GeomArgGrid4Coinc, MtParVariant(GCM_OPPOSITE));
 
         // Outer Pipe Distanse
-        double lengthBetweenInnerPipesAndGrid = 2150 - 230 - 1500 - 250 - 50;
+        double lengthBetweenInnerPipesAndGrid = 2150 - 230 - lengthK - 250 - 50;
         MtParVariant ArgLengthBetweenPipesAndGrid(lengthBetweenInnerPipesAndGrid);
 
         MtGeomArgument PlaneGrid(headExhangerGridSolid->GetFace(38), headExhangerGridItem);
@@ -198,7 +201,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
         assm->AddConstraint(GCM_CONCENTRIC, GeomArgRoundGridConc, GeomArgRoundGridAndCapConc);
         assm->AddConstraint(GCM_CONCENTRIC, GeomArgRoundGridConc2, GeomArgRoundGridAndCapConc2);
 
-        double lengthBetweenGrids = -(1500 + 250);
+        double lengthBetweenGrids = -(lengthK + 250);
         MtParVariant ArgLengthBetweenGrids(lengthBetweenGrids);
         assm->AddConstraint(GCM_DISTANCE, GeomArgRoundGridAndCapConc3, GeomArgRoundGridConc3, MtParVariant(ArgLengthBetweenGrids));
 

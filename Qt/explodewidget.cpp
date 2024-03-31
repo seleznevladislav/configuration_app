@@ -297,6 +297,7 @@ void ExplodeWidget::createScene()
 {
     m_pModel.reset();
     m_pTreeWidget->clear();
+    sceneContent()->Clear();
 
     // TODO: Здесь перед построением модели смотрит индекс выбранного варианта конфигурации 
     int index = m_pExplodeManager->m_comboConfigure->currentIndex();

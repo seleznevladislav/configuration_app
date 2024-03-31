@@ -16,6 +16,7 @@ namespace BuildMathModel {
 		int lengthK;
 		int length0;
 		int LENGTH;
+		int length1;
 	};
 	// TODO: 1) ѕрописываем здесь свою структуру данных 
 	//struct testConfigParams
