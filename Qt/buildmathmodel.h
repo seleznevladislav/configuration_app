@@ -131,7 +131,7 @@
 #include <cdet_data.h>
 #include <cdet_utility.h>
 #include <part_solid.h>
-//для сборки
+//Г¤Г«Гї Г±ГЎГ®Г°ГЄГЁ
 #include <mb_class_traits.h>
 #include <tool_time_test.h>
 #include <constraint.h>
@@ -172,7 +172,7 @@ using namespace std;
 
 namespace BuildMathModel {
 	class ParametricModelCreator {
-		static int colorScheme; // статическое поле инициализируется вне класса, в .cpp
+		static int colorScheme; // Г±ГІГ ГІГЁГ·ГҐГ±ГЄГ®ГҐ ГЇГ®Г«ГҐ ГЁГ­ГЁГ¶ГЁГ Г«ГЁГ§ГЁГ°ГіГҐГІГ±Гї ГўГ­ГҐ ГЄГ«Г Г±Г±Г , Гў .cpp
 		static int variantsConf;
 		static int variantsConfB;
 	public:
