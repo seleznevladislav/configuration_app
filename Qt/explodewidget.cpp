@@ -512,7 +512,7 @@ void ExplodeWidget::createScene()
     ConfigParams config = m_pExplodeManager->configuration[index];
 
     // TODO: Делать ничего не нужно
-    m_pModel = ParametricModelCreator::CreatePneymocylinderModel(config);
+    m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsZarubin());
 
     SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
     Q_ASSERT(pTopSegment != nullptr);

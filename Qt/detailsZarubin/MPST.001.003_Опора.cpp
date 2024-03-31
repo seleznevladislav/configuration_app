@@ -2,7 +2,9 @@
 
 using namespace BuildMathModel;
 
-const double thickness = 10;
+// TOZO: Необходимо избавиться от этой переменной thickness
+double thickness = -1;
+
 const double DEG_TO_RAD = M_PI / 180.0;
 
 SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora()
