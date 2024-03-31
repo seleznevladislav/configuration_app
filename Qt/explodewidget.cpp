@@ -217,7 +217,7 @@ void ExplodeWidget::viewCommands(Commands cmd)
     case ExplodeWidget::Open:
     {
         viewCommands(ExplodeWidget::Select);
-        createScene();
+        createSceneZarubin();
         // loadModel();
         break;
     }
@@ -514,10 +514,24 @@ void ExplodeWidget::createScene()
     // TODO: Делать ничего не нужно
     m_pModel = ParametricModelCreator::CreatePneymocylinderModel(config);
 
-    //MbModel* pModel = ParametricModelCreator::CreatePneymocylinderModel(BuildParams());
-    //MbModel* pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsZarubin());
-    //SPtr<MbModel> model(pModel);
-  
+    SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
+    Q_ASSERT(pTopSegment != nullptr);
+    ProgressBuild* pProgressBuild = m_pSceneGenerator->CreateProgressBuild();
+    Object::Connect(pProgressBuild, &ProgressBuild::BuildAllCompleted, this, &ExplodeWidget::slotFinishBuildRep);
+    m_pSegmModel = m_pSceneGenerator->CreateSceneSegment(m_pModel, pTopSegment, false);
+    m_pSceneGenerator->StartBuildGeometry();
+}
+
+void ExplodeWidget::createSceneZarubin()
+{
+    m_pModel.reset();
+    m_pTreeWidget->clear();
+    sceneContent()->Clear();
+
+    // TOZO: Завести переменную для определения сборки и добавить кнопки в main toolbar left srea
+    // TOZO: Не работает дерево, хз почему
+    m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsZarubin());
+
     SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
     Q_ASSERT(pTopSegment != nullptr);
     ProgressBuild* pProgressBuild = m_pSceneGenerator->CreateProgressBuild();

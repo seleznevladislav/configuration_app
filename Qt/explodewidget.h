@@ -146,6 +146,7 @@ private:
     virtual void initializeGL();
     void loadFiles(const QStringList& files);
     void createScene();
+    void createSceneZarubin();
     void fillGeometryList();
     void hideSelectedObjects();
     void showAllObjects();
