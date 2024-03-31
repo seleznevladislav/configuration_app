@@ -13,16 +13,23 @@ namespace BuildMathModel {
 
 	struct BuildParamsZarubin
 	{
-		double diam = 50.0;
-		double length = 265;
-		int colorScheme = 1;
-		int variantsConf = 1;
-		int variantsConfB = 1;
+		std::string name;
 
-		double l0 = 3000.0;
-		double distanceRezhetka = 500.0;
-		double distanceTubesKozhux = (-1) * (distanceRezhetka + 90.0);
-		double distanceTubesTeploobmen = -660.0;
+		double ttDiam;         // 2  - Диаметр Теплообменные трубы
+		double ttThickness;    // 3  - Толщина Теплообменные трубы
+		double ktDiam;         // 4  - Диаметр Кожуховые трубы
+		double ktThickness;    // 5  - Толщина Кожуховые трубы
+		double lK;             // 6  - Длина Калжуховые трубы
+		double L;              // 7  - Диаметр Аппарата примерно
+		double dV;             // 8  - Диаметр камеры
+		double dU;             // 9  - 
+		double H;              // 10 - 
+		double H1;             // 11 - 
+		double l0;             // 12 - 
+		double l1;             // 13 - 
+		double l2;             // 14 - 
+		double l3;             // 15 - 
+		double t;              // 16 - 
 	};
 	struct ConfigParams
 	{

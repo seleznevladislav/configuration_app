@@ -19,5 +19,21 @@
         <file>res/iconsForHeat Exchangers/TRKM.png</file>
         <file>res/iconsForHeat Exchangers/TTOR.png</file>
         <file>res/iconsForHeat Exchangers/TTRM.png</file>
+        <file>res/constraints/open_fromfile_32.png</file>
+        <file>res/constraints/proc_ang_32.png</file>
+        <file>res/constraints/proc_cancel_32.png</file>
+        <file>res/constraints/proc_coax_32.png</file>
+        <file>res/constraints/proc_coin_32.png</file>
+        <file>res/constraints/proc_dis_32.png</file>
+        <file>res/constraints/proc_fix_32.png</file>
+        <file>res/constraints/proc_insert_32.png</file>
+        <file>res/constraints/proc_ok_32.png</file>
+        <file>res/constraints/proc_parll_32.png</file>
+        <file>res/constraints/proc_perp_32.png</file>
+        <file>res/constraints/proc_rotate_32.png</file>
+        <file>res/constraints/proc_select_32.png</file>
+        <file>res/constraints/rotate.png</file>
+        <file>res/constraints/save_file32.png</file>
+        <file>res/constraints/select_32.png</file>
     </qresource>
 </RCC>

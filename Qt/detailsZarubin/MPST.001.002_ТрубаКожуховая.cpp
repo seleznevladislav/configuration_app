@@ -4,17 +4,12 @@ using namespace BuildMathModel;
 
 const double DEG_TO_RAD = M_PI / 180.0;
 
-SPtr<MbSolid> ParametricModelCreator::Zarubincreate_002_tubeKozhux()
+SPtr<MbSolid> ParametricModelCreator::Zarubincreate_002_tubeKozhux(double lK, double ktDiam, double ktThickness)
 {
-    //Теплообменная
-    /*const double length = 5000;
-    const double inner = 89;
-    const double outer = 99;*/
-
     //Кожуховая
-    const double length = 4500;
-    const double inner = 133;
-    const double outer = 143;
+    const double length = lK;
+    const double inner = ktDiam;
+    const double outer = ktDiam + 2 * ktThickness;
 
 
     MbSNameMaker blockNames(1, MbSNameMaker::i_SideNone, 0);
