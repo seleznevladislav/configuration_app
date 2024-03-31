@@ -246,15 +246,26 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
 
 SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
 {
-
 #pragma region PARAMS
-
-    /*double param_length = params.length;
+    double ttDiam = params.ttDiam;
+    double ttThickness = params.ttThickness;
+    double ktDiam = params.ktDiam;
+    double ktThickness = params.ktThickness;
+    double lK = params.lK;
+    double L = params.L;
+    double dV = params.dV;
+    double dU = params.dU;
+    double H = params.H;
+    double H1 = params.H1;
     double l0 = params.l0;
-    double distanceRezhetka = params.distanceRezhetka;
-    double distanceTubesKozhux = params.distanceTubesKozhux;
-    double distanceTubesTeploobmen = params.distanceTubesTeploobmen;*/
+    double l1 = params.l1;
+    double l2 = params.l2;
+    double l3 = params.l3;
+    double t = params.t;
 
+    double distanceRezhetka = 500.0;
+    double distanceTubesKozhux = (-1) * (distanceRezhetka + 90.0);
+    double distanceTubesTeploobmen = -660.0;
 #pragma endregion
 
     MbPlacement3D lcs;
@@ -264,15 +275,15 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
     // MbAxis3D ayVert(MbVector3D(0, 1, 0));
     // MbAxis3D azVert(MbVector3D(0, 0, 1));
 
-    SPtr<MbSolid> Detail_001(Zarubincreate_001_tubeTeploobmen());
-    SPtr<MbSolid> Detail_002(Zarubincreate_002_tubeKozhux());
-    SPtr<MbSolid> Detail_003(Zarubincreate_003_opora());
-    SPtr<MbSolid> Detail_004(Zarubincreate_004_reshetkaKozhux());
+    SPtr<MbSolid> Detail_001(Zarubincreate_001_tubeTeploobmen(lK, ttDiam, ttThickness));
+    SPtr<MbSolid> Detail_002(Zarubincreate_002_tubeKozhux(lK, ktDiam, ktThickness));
+    SPtr<MbSolid> Detail_003(Zarubincreate_003_opora(dV, ktDiam, ktThickness, t));
+    SPtr<MbSolid> Detail_004(Zarubincreate_004_reshetkaKozhux(ktDiam, ktThickness, t));
     SPtr<MbSolid> Detail_005(Zarubincreate_005_kamera());
     SPtr<MbSolid> Detail_006(Zarubincreate_006_RezhetkaTeplTube());
     SPtr<MbSolid> Detail_007(Zarubincreate_007_FlanecKozhux());
     SPtr<MbSolid> Detail_008(Zarubincreate_008_FlanecSpecial());
-    SPtr<MbSolid> Detail_009(Zarubincreate_009_curevedTube());
+    SPtr<MbSolid> Detail_009(Zarubincreate_009_curevedTube(ttDiam, ttThickness, t));
 
     std::vector<SPtr<MbItem>> pair;
 
@@ -357,11 +368,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
 
     SPtr<MbAssembly> assm(new MbAssembly(pair));
     {
-
-        double l0 = 3000.0;
-        double distanceRezhetka = 500.0;
-        double distanceTubesKozhux = (-1) * (distanceRezhetka + 90.0);
-        double distanceTubesTeploobmen = -660.0;
 
         // Расстояние Опора - Опора
         {

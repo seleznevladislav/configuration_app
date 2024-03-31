@@ -4,12 +4,13 @@ using namespace BuildMathModel;
 
 const double DEG_TO_RAD = M_PI / 180.0;
 
-SPtr<MbSolid> ParametricModelCreator::Zarubincreate_001_tubeTeploobmen()
+SPtr<MbSolid> ParametricModelCreator::Zarubincreate_001_tubeTeploobmen(double Lk, double ttDiam, double ttThickness)
 {
     //Теплообменная
-    const double length = 5000;
-    const double inner = 89;
-    const double outer = 99;
+    //TOZO: Вычислить нормальную длинутруб теплообменных (было 5000)
+    const double length = Lk+500;
+    const double inner = ttDiam;
+    const double outer = ttDiam + 2 * ttThickness;
 
     MbSNameMaker blockNames(1, MbSNameMaker::i_SideNone, 0);
 

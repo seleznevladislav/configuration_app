@@ -52,7 +52,7 @@ static void createCommandActions(QWidget* pOpenScene, QToolBar* commandBar, QWid
 
     commandBar->addSeparator();
 
-    QAction* pFixingAction = new QAction(QIcon(":/res/rotate.png"), QObject::tr("&Fix component"), parent);
+    QAction* pFixingAction = new QAction(QIcon(":/res/constraints/proc_fix_32.png"), QObject::tr("&Fix component"), parent);
     pFixingAction->setProperty("Commands", QVariant((int)ExplodeWidget::FixItem));
     // (int)ExplodeWidget::FixItem
     parent->addAction(pFixingAction);
@@ -61,7 +61,7 @@ static void createCommandActions(QWidget* pOpenScene, QToolBar* commandBar, QWid
     QObject::connect(pFixingAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommands()));
 
 
-    QAction* pCoincidenceAction = new QAction(QIcon(":/res/rotate.png"), QObject::tr("&Coincident"), parent);
+    QAction* pCoincidenceAction = new QAction(QIcon(":/res/constraints/proc_coin_32.png"), QObject::tr("&Coincident"), parent);
     pCoincidenceAction->setProperty("Commands", QVariant((int)ExplodeWidget::Coincident));
     parent->addAction(pCoincidenceAction);
     commandBar->addAction(pCoincidenceAction);

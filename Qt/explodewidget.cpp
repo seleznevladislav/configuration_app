@@ -330,8 +330,12 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
     {
     case ExplodeWidget::TTOR:
     {
-        m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsZarubin());
-        createScene();
+        int index = m_pExplodeManager->m_comboConfigureZarubin->currentIndex();
+
+        BuildParamsZarubin config = m_pExplodeManager->configurationZarubin[index];
+    
+        m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(config);
+        openModel();
         break;
     }case ExplodeWidget::TTRM:
     {
@@ -339,7 +343,7 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
 
         ConfigParams config = m_pExplodeManager->configuration[index];
         m_pModel = ParametricModelCreator::CreatePneymocylinderModel(config);
-        createScene();
+        openModel();
         break;
     }
     default:
