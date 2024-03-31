@@ -15,5 +15,9 @@
         <file>res/filteredge24x24.png</file>
         <file>res/filterface24x24.png</file>
         <file>res/filtervertex24x24.png</file>
+        <file>res/iconsForHeat Exchangers/TRKL.png</file>
+        <file>res/iconsForHeat Exchangers/TRKM.png</file>
+        <file>res/iconsForHeat Exchangers/TTOR.png</file>
+        <file>res/iconsForHeat Exchangers/TTRM.png</file>
     </qresource>
 </RCC>

@@ -190,7 +190,6 @@ namespace BuildMathModel {
         static SPtr<MbSolid> ParametricModelCreator::create_cup_005();
 		static SPtr<MbSolid> ParametricModelCreator::create_inner_pipes_grid_006();
 		static SPtr<MbSolid> ParametricModelCreator::create_curved_pipe_007();
-
 		static SPtr<MbSolid> ParametricModelCreator::create_007_FlanecKozhux();
 		static SPtr<MbSolid> ParametricModelCreator::create_008_FlanecSpecial();
 

@@ -31,13 +31,24 @@ static QSize sizeIcons = QSize(32, 32);
 
 static void createCommandActions(QWidget* pOpenScene, QToolBar* commandBar, QWidget* parent)
 {
+    QAction* TTORAction = new QAction(QIcon(":/res/iconsForHeat Exchangers/TTOR.png"), QObject::tr("&TTOR"), parent);
+    TTORAction->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::TTOR));
+    parent->addAction(TTORAction);
+    commandBar->addAction(TTORAction);
+    QObject::connect(TTORAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommandsHeats()));
+
+    QAction* TTRMAction = new QAction(QIcon(":/res/iconsForHeat Exchangers/TTRM.png"), QObject::tr("&TTRM"), parent);
+    TTRMAction->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::TTRM));
+    parent->addAction(TTRMAction);
+    commandBar->addAction(TTRMAction);
+    QObject::connect(TTRMAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommandsHeats()));
+
     QAction* pOpenAction = new QAction(QIcon(":/res/save_file32.png"), QObject::tr("&Open"), parent);
     pOpenAction->setProperty("Commands", QVariant((int)ExplodeWidget::Open));
     //  (int)ExplodeWidget::Open
     parent->addAction(pOpenAction);
     commandBar->addAction(pOpenAction);
     QObject::connect(pOpenAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommands()));
-
 
     commandBar->addSeparator();
 

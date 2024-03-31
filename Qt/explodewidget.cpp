@@ -310,6 +310,44 @@ void ExplodeWidget::viewCommands(Commands cmd)
     update();
 }
 
+
+//---------------------------------------------------------------------------------------
+//
+// ---
+void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
+{
+    m_pModel.reset();
+    m_pTreeWidget->clear();
+    sceneContent()->Clear();
+    Exhanchares value = NoneOfOne;
+    if (cmd == NoneOfOne)
+    {
+        QObject* action = sender();
+        value = static_cast<Exhanchares>(action->property("CommandsHeatExhanger").toInt());
+    }
+
+    switch (value)
+    {
+    case ExplodeWidget::TTOR:
+    {
+        m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsZarubin());
+        createScene();
+        break;
+    }case ExplodeWidget::TTRM:
+    {
+        int index = m_pExplodeManager->m_comboConfigure->currentIndex();
+
+        ConfigParams config = m_pExplodeManager->configuration[index];
+        m_pModel = ParametricModelCreator::CreatePneymocylinderModel(config);
+        createScene();
+        break;
+    }
+    default:
+        break;
+    };
+    update();
+}
+
 //---------------------------------------------------------------------------------------
 // Get a single assembly node.
 // ---
@@ -502,18 +540,6 @@ void ExplodeWidget::loadFiles(const QStringList& files)
 // ---
 void ExplodeWidget::createScene()
 {
-    m_pModel.reset();
-    m_pTreeWidget->clear();
-    sceneContent()->Clear();
-
-    // TODO: Здесь перед построением модели смотрит индекс выбранного варианта конфигурации 
-    int index = m_pExplodeManager->m_comboConfigure->currentIndex();
-   
-    ConfigParams config = m_pExplodeManager->configuration[index];
-
-    // TODO: Делать ничего не нужно
-    m_pModel = ParametricModelCreator::CreatePneymocylinderModel(config);
-
     SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
     Q_ASSERT(pTopSegment != nullptr);
     ProgressBuild* pProgressBuild = m_pSceneGenerator->CreateProgressBuild();

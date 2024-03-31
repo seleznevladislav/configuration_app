@@ -11,7 +11,6 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_001_tubeTeploobmen()
     const double inner = 89;
     const double outer = 99;
 
-
     MbSNameMaker blockNames(1, MbSNameMaker::i_SideNone, 0);
 
     SolidSPtr outerPipe, bigRadiusCyl, smallRadiusCyl;
