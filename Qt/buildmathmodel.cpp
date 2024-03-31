@@ -20,13 +20,13 @@ MbModel* ParametricModelCreator::CreatePneymocylinderModel(ConfigParams params)
 	return model;
 }
 
-MbModel* ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsZarubin params)
-{
-	ParametricModelCreator::colorScheme = params.colorScheme;
-	ParametricModelCreator::variantsConf = params.variantsConf;
-	ParametricModelCreator::variantsConfB = params.variantsConfB;
-	MbModel* model = new MbModel();
-	auto pneumocylinderAssembly = CreateTTOR(params);
-	model->AddItem(*pneumocylinderAssembly);
-	return model;
-}
+//MbModel* ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsZarubin params)
+//{
+//	ParametricModelCreator::colorScheme = params.colorScheme;
+//	ParametricModelCreator::variantsConf = params.variantsConf;
+//	ParametricModelCreator::variantsConfB = params.variantsConfB;
+//	MbModel* model = new MbModel();
+//	auto pneumocylinderAssembly = CreateTTOR(params);
+//	model->AddItem(*pneumocylinderAssembly);
+//	return model;
+//}

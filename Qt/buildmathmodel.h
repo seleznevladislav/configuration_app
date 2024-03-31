@@ -191,5 +191,15 @@ namespace BuildMathModel {
 
 		static SPtr<MbSolid> ParametricModelCreator::create_007_FlanecKozhux();
 		static SPtr<MbSolid> ParametricModelCreator::create_008_FlanecSpecial();
+
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_001_tubeTeploobmen();
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_002_tubeKozhux();
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora();
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_004_reshetkaKozhux();
+		//static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_005_kamera();
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_006_RezhetkaTeplTube();
+		//static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_007_FlanecKozhux();
+		//static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_008_FlanecSpecial();
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_009_curevedTube();
 	};
 }
