@@ -131,7 +131,7 @@
 #include <cdet_data.h>
 #include <cdet_utility.h>
 #include <part_solid.h>
-//для сборки
+//Г¤Г«Гї Г±ГЎГ®Г°ГЄГЁ
 #include <mb_class_traits.h>
 #include <tool_time_test.h>
 #include <constraint.h>
@@ -172,19 +172,19 @@ using namespace std;
 
 namespace BuildMathModel {
 	class ParametricModelCreator {
-		static int colorScheme; // статическое поле инициализируется вне класса, в .cpp
+		static int colorScheme;
 		static int variantsConf;
 		static int variantsConfB;
 	public:
-		static MbModel* CreatePneymocylinderModel(BuildParams params);
+		static MbModel* CreatePneymocylinderModel(ConfigParams params);
 		static MbModel* CreatePneymocylinderModelZarubin(BuildParamsZarubin params);
 	private:
-		static  SPtr<MbAssembly> CreatePneumocylinderAssembly(BuildParams params);
+		static  SPtr<MbAssembly> CreatePneumocylinderAssembly(ConfigParams params);
 		static  SPtr<MbAssembly> CreateTTOR(BuildParamsZarubin params);
 	private:
 		// details
-        /*static SPtr<MbSolid> ParametricModelCreator::create_inner_pipe_001();
-        static SPtr<MbSolid> ParametricModelCreator::create_outer_pipe_002();
+        static SPtr<MbSolid> ParametricModelCreator::create_inner_pipe_001();
+        static SPtr<MbSolid> ParametricModelCreator::create_outer_pipe_002(int lenghtK);
         static SPtr<MbSolid> ParametricModelCreator::create_support_003();
         static SPtr<MbSolid> ParametricModelCreator::create_outer_pipes_grid_004();
         static SPtr<MbSolid> ParametricModelCreator::create_cup_005();
@@ -192,9 +192,8 @@ namespace BuildMathModel {
 		static SPtr<MbSolid> ParametricModelCreator::create_curved_pipe_007();
 
 		static SPtr<MbSolid> ParametricModelCreator::create_007_FlanecKozhux();
-		static SPtr<MbSolid> ParametricModelCreator::create_008_FlanecSpecial();*/
+		static SPtr<MbSolid> ParametricModelCreator::create_008_FlanecSpecial();
 
-		// detailsZarubin
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_001_tubeTeploobmen();
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_002_tubeKozhux();
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora();
@@ -204,7 +203,5 @@ namespace BuildMathModel {
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_007_FlanecKozhux();
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_008_FlanecSpecial();
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_009_curevedTube();
-
-
 	};
 }

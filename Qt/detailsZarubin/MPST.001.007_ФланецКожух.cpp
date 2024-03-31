@@ -4,7 +4,7 @@ using namespace BuildMathModel;
 
 const double DEG_TO_RAD = M_PI / 180.0;
 
-SolidSPtr HolyHole3(SolidSPtr* previus, int holes, double DiametrCircle, double radius) {
+SolidSPtr HolyHole312(SolidSPtr* previus, int holes, double DiametrCircle, double radius) {
 
     // Именователь граней для построения тела с помощью булевой операции 
     MbSNameMaker operBoolNames(ct_BooleanSolid, MbSNameMaker::i_SideNone);
@@ -64,7 +64,7 @@ SolidSPtr HolyHole3(SolidSPtr* previus, int holes, double DiametrCircle, double 
     return news;
 }
 
-void CreateSketcherFlanecKozhuh(RPArray<MbContour>& _arrContours)
+void CreateSketcherFlanecKozhuhdif(RPArray<MbContour>& _arrContours)
 {
 
     double ANG1 = 90 * DEG_TO_RAD;
@@ -142,7 +142,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_007_FlanecKozhux()
 
     // Создание образующей для тела выдавливания
     RPArray<MbContour> arrContours;
-    CreateSketcherFlanecKozhuh(arrContours);
+    CreateSketcherFlanecKozhuhdif(arrContours);
 
     //Плоскость
     MbPlane* pPlaneXY = new MbPlane(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, 1, 0), MbCartPoint3D(0, 0, 1));
@@ -164,7 +164,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_007_FlanecKozhux()
 
     SolidSPtr Solid(pSolid);
 
-    SolidSPtr result = HolyHole3(&Solid, 4, 200, 9);
+    SolidSPtr result = HolyHole312(&Solid, 4, 200, 9);
 
     //TestVariables::viewManager->AddObject(TestVariables::SURFACECURVE_Style, arrContours[0]);
     // TestVariables::viewManager->AddObject(TestVariables::SURFACECURVE_Style, result);

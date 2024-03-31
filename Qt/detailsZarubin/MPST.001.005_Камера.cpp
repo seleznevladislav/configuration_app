@@ -6,7 +6,7 @@ const int startX = 75;
 const int startY = 30;
 const double DEG_TO_RAD = M_PI / 180.0;
 
-SolidSPtr HolyHole1(SolidSPtr* previus, int holes, double DiametrCircle, double radius) {
+SolidSPtr HolyHole112(SolidSPtr* previus, int holes, double DiametrCircle, double radius) {
     // Именователь граней для построения тела с помощью булевой операции 
     MbSNameMaker operBoolNames(ct_BooleanSolid, MbSNameMaker::i_SideNone);
     MbBooleanOperationParams parameters(bo_Union, true, operBoolNames);
@@ -65,7 +65,7 @@ SolidSPtr HolyHole1(SolidSPtr* previus, int holes, double DiametrCircle, double 
     return news;
 }
 
-void CreateSketcher1(RPArray<MbContour>& _arrContours)
+void CreateSketcher1dif(RPArray<MbContour>& _arrContours)
 {
     SArray<MbCartPoint> arrPnts(100);
     arrPnts.Add(MbCartPoint(0, 400));
@@ -132,7 +132,7 @@ void CreateSketcher1(RPArray<MbContour>& _arrContours)
     _arrContours.push_back(pContour);
 }
 
-void CreateSketcher2(RPArray<MbContour>& _arrContours)
+void CreateSketcher2dif(RPArray<MbContour>& _arrContours)
 {
     SArray<MbCartPoint> arrPnts(100);
     arrPnts.Add(MbCartPoint(0, 386));
@@ -183,7 +183,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_005_kamera()
 
     // Создание образующей для тела выдавливания
     RPArray<MbContour> arrContours;
-    CreateSketcher1(arrContours);
+    CreateSketcher1dif(arrContours);
 
     //Плоскость
     MbPlane* pPlaneXY = new MbPlane(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, 1, 0), MbCartPoint3D(0, 0, 1));
@@ -205,7 +205,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_005_kamera()
 
     //ВЫДАВЛИВАНИЕ
     RPArray<MbContour> arrContours1;
-    CreateSketcher2(arrContours1);
+    CreateSketcher2dif(arrContours1);
 
     MbSweptData sweptData1(*pPlaneXY, arrContours1);
 
@@ -239,7 +239,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_005_kamera()
     const int holes = 32;
 
 
-    SolidSPtr result = HolyHole1(&Solid2, holes, Dcircle, radius);
+    SolidSPtr result = HolyHole112(&Solid2, holes, Dcircle, radius);
 
     return result;
 }

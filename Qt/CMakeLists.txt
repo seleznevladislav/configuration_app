@@ -36,8 +36,8 @@ IF(C3DVision_GUI_QT5_EXAMPLES)
     SOURCE_GROUP(Sources FILES ${SRC_detailsZarubin_cpp})
 	    
 	# Add all details source files
-    #file(GLOB SRC_Details_cpp CONFIGURE_DEPENDS "./details/*.cpp")
-    #SOURCE_GROUP(Sources FILES ${SRC_Details_cpp})
+    file(GLOB SRC_Details_cpp CONFIGURE_DEPENDS "./TTRMdetails/*.cpp")
+    SOURCE_GROUP(Sources FILES ${SRC_TTRMdetails_cpp})
 	
 	
 	ADD_EXECUTABLE(
@@ -46,6 +46,7 @@ IF(C3DVision_GUI_QT5_EXAMPLES)
 	${SRC_Configurator_h} ${SRC_Configurator_cpp} 
 	${SRC_Details_cpp} ${SRC_Shared} 
 	${SRC_detailsZarubin_cpp}
+	${SRC_TTRMdetails_cpp}
 	${SRC_Solver_h} ${SRC_Solver_cpp}
 	)
 	
