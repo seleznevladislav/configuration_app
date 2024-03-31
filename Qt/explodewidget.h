@@ -130,8 +130,8 @@ public Q_SLOTS:
     void viewCommands(Commands cmd = None);
     void openModel();
     void setRenderingMode();
+    void configureModel(int index);
     void slotFilterTriggered(QAction*);
-
     void slotToggleVisibility(bool checked, QGroupBox* groupBox);
     void slotHighlightColor(const QColor& clr);
     void slotSelectionColor(const QColor& clr);

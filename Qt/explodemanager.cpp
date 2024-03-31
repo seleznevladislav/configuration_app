@@ -335,7 +335,8 @@ QComboBox* ExplodeManager::createCombobox(QVBoxLayout* vLayout)
     QComboBox* combo = new QComboBox(m_pWidget);
 
     QStringList values;
-
+    // TODO: Здесь загоняются ваши элементы (варианты конфигураций) в комбобокс
+    // Здесь добавлять ничего не нужно.
     for (const auto& config : configuration) {
         values.append(QString::fromStdString(config.name));
     }
@@ -448,8 +449,10 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
     QObject::connect(tabWidget, &QTabWidget::currentChanged, this, &ExplodeManager::tabWidgetCurrentChanged);
     QObject::connect(tabWidget, &QTabWidget::tabCloseRequested, this, &ExplodeManager::tabWidgetCloseRequested);
 
-    QComboBox* configureCombobox = createCombobox(m_vLayoutConfigureTab);
-    QObject::connect(configureCombobox, SIGNAL(activated(int)), this, SLOT(openModel(int)));
+    m_comboConfigure = createCombobox(m_vLayoutConfigureTab);
+    //QObject::connect(configureCombobox, SIGNAL(activated()), this, SLOT(configureModel(int)));
+    //QObject::connect(configureCombobox, SIGNAL(), SLOT(configureModel(int)));
+    /*QObject::connect(configureCombobox, QOverload<int>::of(&QComboBox::activated), widget, &ExplodeWidget::configureModel);*/
 
     // Group for Explode options
     QGroupBox* groupExpl = createGroupBox("", true, false, true);

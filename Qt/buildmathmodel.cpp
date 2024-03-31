@@ -9,11 +9,11 @@ int ParametricModelCreator::colorScheme = 0;
 int ParametricModelCreator::variantsConf = 0;
 int ParametricModelCreator::variantsConfB = 0;
 
-MbModel* ParametricModelCreator::CreatePneymocylinderModel(BuildParams params)
+MbModel* ParametricModelCreator::CreatePneymocylinderModel(ConfigParams params)
 {
-	ParametricModelCreator::colorScheme = params.colorScheme;
+	/*ParametricModelCreator::colorScheme = params.colorScheme;
 	ParametricModelCreator::variantsConf = params.variantsConf;
-	ParametricModelCreator::variantsConfB = params.variantsConfB;
+	ParametricModelCreator::variantsConfB = params.variantsConfB;*/
 	MbModel* model = new MbModel();
 	auto pneumocylinderAssembly = CreatePneumocylinderAssembly(params);
 	model->AddItem(*pneumocylinderAssembly);
