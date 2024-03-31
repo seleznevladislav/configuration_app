@@ -168,7 +168,7 @@ int main(int argc, char** argv)
     // Create control widgets
     ///////////////////////////////////////////////////////////////////////////
     // File 
-    QGroupBox* groupFile = new QGroupBox(&widget);
+    /*QGroupBox* groupFile = new QGroupBox(&widget);
     groupFile->setTitle(QObject::tr("File"));
     QFormLayout* fileLayout = new QFormLayout(groupFile);
     fileLayout->setMargin(2); fileLayout->setSpacing(2);
@@ -181,7 +181,7 @@ int main(int argc, char** argv)
     openFullScene->setIconSize(QSize(32, 32));
     rowLayoutFile->addWidget(openFullScene);
     QObject::connect(openFullScene, SIGNAL(released()), pOpenScene, SLOT(openModel()));
-    fileLayout->addRow(rowLayoutFile);
+    fileLayout->addRow(rowLayoutFile);*/
 
     ///////////////////////////////////////////////////////////////////////////
     // Explode
@@ -233,7 +233,8 @@ int main(int argc, char** argv)
     ///////////////////////////////////////////////////////////////////////////
     // Add all containers in right menu
     ///////////////////////////////////////////////////////////////////////////
-    vLayout->addWidget(groupFile, 0, Qt::AlignTop);
+    // TOZO: кнопка для отображения модели, не нужна, есть уже в толбаре
+    // vLayout->addWidget(groupFile, 0, Qt::AlignTop);
     vLayout->addWidget(groupExpl, 0, Qt::AlignTop);
     vLayout->addWidget(groupFilter, 0, Qt::AlignTop);
     vLayout->addWidget(colorsGroupBox, 0, Qt::AlignTop);

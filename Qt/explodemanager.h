@@ -49,6 +49,11 @@ public:
        {u8"ТТРМ 25/57-6,3/1,6", 1500, 750, 2150, 415},
        {u8"ТТРМ 38/89-6,3/4,0", 3000, 1500, 3820, 745},
     };
+    std::vector<BuildParamsZarubin> configurationZarubin = {
+       {u8"ТТОР 25/57-6,3/1,6", 1500, 750, 2150, 415},
+       {u8"ТТОР 38/89-6,3/4,0", 3000, 1500, 3820, 745},
+       {u8"ТТОР 38/89-6,3/4,0", 3000, 1500, 3820, 745},
+    };
 private:
     void initWidgets();
     void applyParameter(const ExplodeDispatcher::ControlParameterType paramType, const Variant& data, std::array<bool, 3> params);

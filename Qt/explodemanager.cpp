@@ -342,7 +342,19 @@ QComboBox* ExplodeManager::createCombobox(QVBoxLayout* vLayout)
     }
 
     combo->addItems(values);
+
+    QComboBox* comboZarubinParams = new QComboBox(m_pWidget);
+    QStringList valuesZarubinParams;
+    // TODO: Здесь загоняются ваши элементы (варианты конфигураций) в комбобокс
+    // Здесь добавлять ничего не нужно.
+    for (const auto& param : configurationZarubin) {
+        valuesZarubinParams.append(QString::fromStdString(param.name));
+    }
+
+    comboZarubinParams->addItems(valuesZarubinParams);
+
     vLayout->addWidget(combo);
+    vLayout->addWidget(comboZarubinParams);
     return combo;
 }
 
