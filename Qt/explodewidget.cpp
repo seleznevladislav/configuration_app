@@ -217,7 +217,7 @@ void ExplodeWidget::viewCommands(Commands cmd)
     case ExplodeWidget::Open:
     {
         viewCommands(ExplodeWidget::Select);
-        createScene();
+        createSceneZarubin();
         // loadModel();
         break;
     }
@@ -307,6 +307,48 @@ void ExplodeWidget::viewCommands(Commands cmd)
         break;
     };
     slotUpdateCommands();
+    update();
+}
+
+
+//---------------------------------------------------------------------------------------
+//
+// ---
+void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
+{
+    m_pModel.reset();
+    m_pTreeWidget->clear();
+    sceneContent()->Clear();
+    Exhanchares value = NoneOfOne;
+    if (cmd == NoneOfOne)
+    {
+        QObject* action = sender();
+        value = static_cast<Exhanchares>(action->property("CommandsHeatExhanger").toInt());
+    }
+
+    switch (value)
+    {
+    case ExplodeWidget::TTOR:
+    {
+        int index = m_pExplodeManager->m_comboConfigureZarubin->currentIndex();
+
+        BuildParamsZarubin config = m_pExplodeManager->configurationZarubin[index];
+    
+        m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(config);
+        openModel();
+        break;
+    }case ExplodeWidget::TTRM:
+    {
+        int index = m_pExplodeManager->m_comboConfigure->currentIndex();
+
+        ConfigParams config = m_pExplodeManager->configuration[index];
+        m_pModel = ParametricModelCreator::CreatePneymocylinderModel(config);
+        openModel();
+        break;
+    }
+    default:
+        break;
+    };
     update();
 }
 
@@ -502,22 +544,24 @@ void ExplodeWidget::loadFiles(const QStringList& files)
 // ---
 void ExplodeWidget::createScene()
 {
+    SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
+    Q_ASSERT(pTopSegment != nullptr);
+    ProgressBuild* pProgressBuild = m_pSceneGenerator->CreateProgressBuild();
+    Object::Connect(pProgressBuild, &ProgressBuild::BuildAllCompleted, this, &ExplodeWidget::slotFinishBuildRep);
+    m_pSegmModel = m_pSceneGenerator->CreateSceneSegment(m_pModel, pTopSegment, false);
+    m_pSceneGenerator->StartBuildGeometry();
+}
+
+void ExplodeWidget::createSceneZarubin()
+{
     m_pModel.reset();
     m_pTreeWidget->clear();
     sceneContent()->Clear();
 
-    // TODO: Здесь перед построением модели смотрит индекс выбранного варианта конфигурации 
-    int index = m_pExplodeManager->m_comboConfigure->currentIndex();
-   
-    ConfigParams config = m_pExplodeManager->configuration[index];
+    // TOZO: Завести переменную для определения сборки и добавить кнопки в main toolbar left srea
+    // TOZO: Не работает дерево, хз почему
+    m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsZarubin());
 
-    // TODO: Делать ничего не нужно
-    m_pModel = ParametricModelCreator::CreatePneymocylinderModel(config);
-
-    //MbModel* pModel = ParametricModelCreator::CreatePneymocylinderModel(BuildParams());
-    //MbModel* pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsZarubin());
-    //SPtr<MbModel> model(pModel);
-  
     SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
     Q_ASSERT(pTopSegment != nullptr);
     ProgressBuild* pProgressBuild = m_pSceneGenerator->CreateProgressBuild();

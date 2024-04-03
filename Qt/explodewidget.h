@@ -111,6 +111,14 @@ public:
         Angular,
         Rotation,
     };
+    enum Exhanchares
+    {
+        NoneOfOne,
+        TTOR,
+        TTRM,
+        TRKL,
+        TRKM,
+    };
 public:
     QColor highlightColor() const;
     QColor selectionColor() const;
@@ -128,6 +136,7 @@ public:
     inline void setGroupFilter(QActionGroup* groupFilter);
 public Q_SLOTS:
     void viewCommands(Commands cmd = None);
+    void viewCommandsHeats(Exhanchares cmd = NoneOfOne);
     void openModel();
     void setRenderingMode();
     void configureModel(int index);
@@ -146,6 +155,7 @@ private:
     virtual void initializeGL();
     void loadFiles(const QStringList& files);
     void createScene();
+    void createSceneZarubin();
     void fillGeometryList();
     void hideSelectedObjects();
     void showAllObjects();

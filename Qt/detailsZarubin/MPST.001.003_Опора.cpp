@@ -2,31 +2,54 @@
 
 using namespace BuildMathModel;
 
-const double thickness = 10;
+// TOZO: Необходимо избавиться от этой переменной thickness
+// TOZO: Необходима конфигурация опоры для 2 типа
+
+double thickness = -1;
+
 const double DEG_TO_RAD = M_PI / 180.0;
 
-SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora()
+SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora(double dV, double ktDiam, double ktThickness, double t)
 {
-    //Parametri
-    const double depth = 200;
-    const double high = 850;
-    const double width = 750;
+    // В зависимости от диаметра камеры выбираются след параметры:
 
-    const double minsa = 300;
+    // Параметры стандартные, то есть при 600
+    double depth = 200;
+    double high = 850;
+    double width = 750;
 
-    const double backWallDepth = 10;
-    const double thikness = 10;
+    double minsa = 300;
 
-    const double distance = 10;
+    double backWallDepth = 10;
+    double thikness = 10;
 
-    const double diametr = 600;
-    const double radiusMal = 143 / 2;
+    double distance = 10;
 
-    const double t = 255;
+    double diametr = 600;
+    double radiusMal = (ktDiam + 2 * ktThickness) / 2;
 
-    const double diametrOtv = 28;
-    const double distanceP = 450;
-    const double distancePoint = (width - distanceP) / 2;
+    double diametrOtv = 28;
+    double distanceP = 450;
+    double distancePoint = (width - distanceP) / 2;
+
+    if (dV == 800.0) {
+        depth = 250;
+        high = 1070;
+        width = 976;
+
+        minsa = 400;
+
+        backWallDepth = 10;
+        thikness = 10;
+
+        distance = 10;
+
+        diametr = 800;
+        
+        diametrOtv = 28;
+        distanceP = 500;
+        distancePoint = (width - distanceP) / 2;
+    }
 
 
     MbSNameMaker blockNames(1, MbSNameMaker::i_SideNone, 0);

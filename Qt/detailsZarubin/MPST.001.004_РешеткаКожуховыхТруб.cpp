@@ -2,7 +2,8 @@
 
 using namespace BuildMathModel;
 
-
+// TOZO: надо пон€ть как правильно высчитывать depth
+// TOZO: Ќе учавствует в расчета диаметр камеры (radiusMal потом включить)
 const double DEG_TO_RAD = M_PI / 180.0;
 
 SolidSPtr HolyHole(SolidSPtr* previus, int holes, double DiametrCircle, double radius) {
@@ -96,14 +97,12 @@ void CreateSketcherResetka(RPArray<MbContour>& _arrContours)
     _arrContours.push_back(pContour);
 }
 
-SPtr<MbSolid> ParametricModelCreator::Zarubincreate_004_reshetkaKozhux()
+SPtr<MbSolid> ParametricModelCreator::Zarubincreate_004_reshetkaKozhux(double ktDiam, double ktThickness, double t)
 {
-
-    const double t = 255;
     const double depth = 90;
+    //const double radiusMal = (ktDiam + 2 * ktThickness) / 2;
     const double radiusMal = 143 / 2;
 
-    //
     MbSNameMaker blockNames(1, MbSNameMaker::i_SideNone, 0);
     MbSNameMaker operBoolNames(ct_BooleanSolid, MbSNameMaker::i_SideNone);
 
@@ -111,7 +110,6 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_004_reshetkaKozhux()
     flagsBool.InitBoolean(true);
     flagsBool.SetMergingFaces(true);
     flagsBool.SetMergingEdges(true);
-    //
 
     MbPlacement3D pl;
 
