@@ -103,29 +103,29 @@ SPtr<MbSolid> ParametricModelCreator::create_outer_pipes_grid_004()
 {
     const double DEG_TO_RAD = M_PI / 180.0;
 
-    // Локальная СК (по умолчанию совпадает с мировой СК)
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ (пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ)
     MbPlacement3D pl;
 
-    // Создание образующей для тела выдавливания
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     RPArray<MbContour> arrMainContours;
     createMainSolidSketch(arrMainContours);
 
-    //Плоскость
+    //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     MbPlane* pPlaneYZ = new MbPlane(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, 1, 0), MbCartPoint3D(0, 0, 1));
 
     MbSweptData sweptData(*pPlaneYZ, arrMainContours);
 
-    //Угол Вращения
+    //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     RevolutionValues revParms(360 * DEG_TO_RAD, 0, 0);
 
-    // Именователи для операции построения тела вращения и для контуров образующей
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     MbSNameMaker operNames(1, MbSNameMaker::i_SideNone, 0);
     PArray<MbSNameMaker> cNames(0, 1, false);
 
-    // Ось вращения для построения тела:
+    // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ:
     MbAxis3D axis(pl.GetAxisZ());
 
-    // Вызов функции-утилиты для построения твердого тела вращения
+    // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     MbSolid* pSolid;
 
     ::RevolutionSolid(sweptData, axis, revParms, operNames, cNames, pSolid);
@@ -138,7 +138,7 @@ SPtr<MbSolid> ParametricModelCreator::create_outer_pipes_grid_004()
     cylPnts.push_back(MbCartPoint3D(-50, 183, 127));
     cylPnts.push_back(MbCartPoint3D(-50, -183, 145));
 
-    // Построение трубы
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, cylPnts, namesElSolid), pCylSolid);
 
     MbSNameMaker operBoolNames(ct_BooleanSolid, MbSNameMaker::i_SideNone);
@@ -150,11 +150,11 @@ SPtr<MbSolid> ParametricModelCreator::create_outer_pipes_grid_004()
 
     SolidSPtr pMergeSolid, pMainSolid(pSolid);
 
-    // Первое объеденение
+    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     ::BooleanResult(pMainSolid, cm_Copy, pCylSolid, cm_Copy,
         MbBooleanOperationParams(bo_Union, flagsBool, operBoolNames), pMergeSolid);
 
-    ////ВЫДАВЛИВАНИЕ
+    ////пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     RPArray<MbContour> arrContours1;
     createYZWall(arrContours1);
 
@@ -173,10 +173,10 @@ SPtr<MbSolid> ParametricModelCreator::create_outer_pipes_grid_004()
 
     SolidSPtr pInnerSolid(pInner), pDifferentSolid;
 
-    // Первое вырезание
+    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     ::BooleanResult(pMergeSolid, cm_Copy, pInnerSolid, cm_Copy, MbBooleanOperationParams(bo_Difference, false, operBoolNames), pDifferentSolid);
 
-    // Главная стенка YZ
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ YZ
     ::ExtrusionSolid(sweptDataInnerCyl, dirX, NULL, NULL, false, ExtrusionValues(0, 10), operNames, cNames, pWallYZ);
 
     MbPlane* pPlaneXZ = new MbPlane(MbCartPoint3D(0, 0, 0), MbCartPoint3D(1, 0, 0), MbCartPoint3D(0, 0, 1));
@@ -184,7 +184,7 @@ SPtr<MbSolid> ParametricModelCreator::create_outer_pipes_grid_004()
     createXZWall(arrContours2);
     MbSweptData sweptDataSmallWall(*pPlaneXZ, arrContours2);
 
-    // Главная стенка XZ
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ XZ
     ::ExtrusionSolid(sweptDataSmallWall, dirY, NULL, NULL, false, ExtrusionValues(0, 10), operNames, cNames, pWallXZ);
 
     SolidSPtr SolidWallYZ(pWallYZ), SolidWallXZ(pWallXZ), mergeSolid = nullptr, mergeSolidWithWalls = nullptr;
@@ -213,7 +213,7 @@ SPtr<MbSolid> ParametricModelCreator::create_outer_pipes_grid_004()
     smallCyl4Pnts.push_back(MbCartPoint3D(-40, -40, 250));
     smallCyl4Pnts.push_back(MbCartPoint3D(-40, -52.5, 244));
 
-    // Построение трубы
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, smallCyl1Pnts, namesElSolid), pCylSmallTube1Solid);
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, smallCyl2Pnts, namesElSolid), pCylSmallTube2Solid);
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, smallCyl3Pnts, namesElSolid), pCylSmallTube3Solid);
@@ -240,7 +240,7 @@ SPtr<MbSolid> ParametricModelCreator::create_outer_pipes_grid_004()
     extractCylPnts2.push_back(MbCartPoint3D(-50, -183, 127));
     extractCylPnts2.push_back(MbCartPoint3D(-50, -50, 141));
 
-    // Построение трубы
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, extractCylPnts, namesElSolid), extractHole);
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, extractCylPnts2, namesElSolid), extractHole2);
 
@@ -251,14 +251,16 @@ SPtr<MbSolid> ParametricModelCreator::create_outer_pipes_grid_004()
     SolidSPtr resultSolid, boltCyl, boltCyl2, boltCyl3, boltCyl4, boltCyl5, boltCyl6, boltCyl7, boltCyl8;
     SolidSPtr mergeBoltCyl, mergeBoltCyl2, mergeBoltCyl3, mergeBoltCyl4, mergeBoltCyl5, mergeBoltCyl6, mergeBoltCyl7;
 
-    double boltAngle = 22.5 + DEG_TO_RAD;
-    double boltAngle2 = 22.5 + 45 * 1 * DEG_TO_RAD;
-    double boltAngle3 = 22.5 + 45 * 2 * DEG_TO_RAD;
-    double boltAngle4 = 22.5 + 45 * 3 * DEG_TO_RAD;
-    double boltAngle5 = 22.5 + 45 * 4 * DEG_TO_RAD;
-    double boltAngle6 = 22.5 + 45 * 5 * DEG_TO_RAD;
-    double boltAngle7 = 22.5 + 45 * 6 * DEG_TO_RAD;
-    double boltAngle8 = 22.5 + 45 * 7 * DEG_TO_RAD;
+    const int angle = 22.5;
+
+	double boltAngle = angle * DEG_TO_RAD;
+	double boltAngle2 = (angle + 45 * 1) * DEG_TO_RAD;
+	double boltAngle3 = (angle + 45 * 2) * DEG_TO_RAD;
+	double boltAngle4 = (angle + 45 * 3) * DEG_TO_RAD;
+	double boltAngle5 = (angle + 45 * 4) * DEG_TO_RAD;
+	double boltAngle6 = (angle + 45 * 5) * DEG_TO_RAD;
+	double boltAngle7 = (angle + 45 * 6) * DEG_TO_RAD;
+	double boltAngle8 = (angle + 45 * 7) * DEG_TO_RAD;
 
     SpacePointsVector boltCylPnts;
 

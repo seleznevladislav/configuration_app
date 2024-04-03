@@ -122,7 +122,7 @@ int main(int argc, char** argv)
         return 0;
 
     QMainWindow mainWindow;
-    mainWindow.setWindowTitle(QObject::tr("Explode Scene"));
+    mainWindow.setWindowTitle(QObject::tr(u8"Электронная модель теплоомбенника"));
 
     ExplodeWidget* pOpenScene = new ExplodeWidget();
     pOpenScene->createHeadToolbar();

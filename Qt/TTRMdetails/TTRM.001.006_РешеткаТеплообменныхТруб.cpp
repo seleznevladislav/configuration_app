@@ -11,11 +11,11 @@ void createSketchSecond(RPArray<MbContour>& _arrContours)
     arrPnts.Add(MbCartPoint(0, 239)); //0
     arrPnts.Add(MbCartPoint(0, 233)); //1
 
-    arrPnts.Add(MbCartPoint(0, 39)); //центр дуги большой 0
+    arrPnts.Add(MbCartPoint(0, 39)); //С†РµРЅС‚СЂ РґСѓРіРё Р±РѕР»СЊС€РѕР№ 0
 
     arrPnts.Add(MbCartPoint(85.23, 213.28)); //3
 
-    arrPnts.Add(MbCartPoint(54.75, 184));//центр дуги маленькой 0
+    arrPnts.Add(MbCartPoint(54.75, 184));//С†РµРЅС‚СЂ РґСѓРіРё РјР°Р»РµРЅСЊРєРѕР№ 0
 
     arrPnts.Add(MbCartPoint(103.5, 184)); //5
 
@@ -25,59 +25,50 @@ void createSketchSecond(RPArray<MbContour>& _arrContours)
     arrPnts.Add(MbCartPoint(109.5, 22)); //9
     arrPnts.Add(MbCartPoint(109.5, 184));//10
 
-    arrPnts.Add(MbCartPoint(54.75, 184));//центр дуги маленькой 14
+    arrPnts.Add(MbCartPoint(70.910221, 184));//С†РµРЅС‚СЂ РґСѓРіРё РјР°Р»РµРЅСЊРєРѕР№ 11
 
     arrPnts.Add(MbCartPoint(87.86, 218.67)); //12
 
-    arrPnts.Add(MbCartPoint(0, 39)); //центр дуги большой 14
+    arrPnts.Add(MbCartPoint(0, 39)); //С†РµРЅС‚СЂ РґСѓРіРё Р±РѕР»СЊС€РѕР№ 13
 
     arrPnts.Add(MbCartPoint(0, 239)); //14
+
+    arrPnts.Add(MbCartPoint(70.910221, 184)); // С†РµРЅС‚СЂ  15
 
 
     const double RADIUSB1 = 194;
     const double RADIUSB2 = 200;
 
-    const double RADIUSM1 = 32.59;
-    const double RADIUSM2 = 38.59;
+    const double RADIUSM1 = 32.589779;
+    const double RADIUSM2 = 38.589779;
 
-    MbLineSegment* pLine1 = new MbLineSegment(arrPnts[0], arrPnts[1]);
+    MbLineSegment* pLine1 = new MbLineSegment(arrPnts[1], arrPnts[0]);
+    MbArc* pArc1 = new MbArc(arrPnts[2], RADIUSB2, arrPnts[0], arrPnts[12], -1);
+    MbArc* pArc2 = new MbArc(arrPnts[15], RADIUSM2, arrPnts[12], arrPnts[10], -1);
 
-    MbArc* pArc1 = new MbArc(arrPnts[2], RADIUSB1, arrPnts[1], arrPnts[3], -1);
-    MbArc* pArc2 = new MbArc(arrPnts[4], RADIUSM1, arrPnts[3], arrPnts[5], -1);
-    MbLineSegment* pLine10 = new MbLineSegment(arrPnts[1], arrPnts[3]);
-    MbLineSegment* pLine11 = new MbLineSegment(arrPnts[3], arrPnts[5]);
-
-
-    MbLineSegment* pLine2 = new MbLineSegment(arrPnts[5], arrPnts[6]);
-    MbLineSegment* pLine3 = new MbLineSegment(arrPnts[6], arrPnts[7]);
-    MbLineSegment* pLine4 = new MbLineSegment(arrPnts[7], arrPnts[8]);
-    MbLineSegment* pLine5 = new MbLineSegment(arrPnts[8], arrPnts[9]);
-    MbLineSegment* pLine6 = new MbLineSegment(arrPnts[9], arrPnts[10]);
+    MbLineSegment* pLine2 = new MbLineSegment(arrPnts[10], arrPnts[9]);
+    MbLineSegment* pLine3 = new MbLineSegment(arrPnts[9], arrPnts[8]);
+    MbLineSegment* pLine4 = new MbLineSegment(arrPnts[8], arrPnts[7]);
+    MbLineSegment* pLine5 = new MbLineSegment(arrPnts[7], arrPnts[6]);
+    MbLineSegment* pLine6 = new MbLineSegment(arrPnts[6], arrPnts[5]);
 
 
-    MbArc* pArc3 = new MbArc(arrPnts[14], RADIUSM2, arrPnts[13], arrPnts[15], 1);
-    MbArc* pArc4 = new MbArc(arrPnts[16], RADIUSB2, arrPnts[15], arrPnts[17], 1);
-    MbLineSegment* pLine12 = new MbLineSegment(arrPnts[10], arrPnts[12]);
-    MbLineSegment* pLine13 = new MbLineSegment(arrPnts[12], arrPnts[14]);
+    MbArc* pArc3 = new MbArc(arrPnts[11], RADIUSM1, arrPnts[5], arrPnts[3], 1);
+    MbArc* pArc4 = new MbArc(arrPnts[2], RADIUSB1, arrPnts[3], arrPnts[1], 1);
 
 
     MbContour* pContour = new MbContour();
 
     pContour->AddSegment(pLine1);
-    pContour->AddSegment(pLine10);
-    pContour->AddSegment(pLine11);
-    //pContour->AddSegment(pArc1);
-    //pContour->AddSegment(pArc2);
+    pContour->AddSegment(pArc1);
+    pContour->AddSegment(pArc2);
     pContour->AddSegment(pLine2);
     pContour->AddSegment(pLine3);
     pContour->AddSegment(pLine4);
     pContour->AddSegment(pLine5);
     pContour->AddSegment(pLine6);
-
-    //pContour->AddSegment(pArc3);
-    //pContour->AddSegment(pArc4);
-    pContour->AddSegment(pLine12);
-    pContour->AddSegment(pLine13);
+    pContour->AddSegment(pArc3);
+    pContour->AddSegment(pArc4);
 
     _arrContours.push_back(pContour);
 }
@@ -118,29 +109,29 @@ void createWallXZSecond(RPArray<MbContour>& _arrContours)
 
 SPtr<MbSolid> ParametricModelCreator::create_inner_pipes_grid_006()
 {
-    // Локальная СК (по умолчанию совпадает с мировой СК)
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ (пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ)
     MbPlacement3D pl;
 
     RPArray<MbContour> arrMainContours;
     createSketchSecond(arrMainContours);
 
-    //Плоскость
+    //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     MbPlane* pPlaneYZ = new MbPlane(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, 1, 0), MbCartPoint3D(0, 0, 1));
     MbPlane* pPlaneXZ = new MbPlane(MbCartPoint3D(0, 0, 0), MbCartPoint3D(1, 0, 0), MbCartPoint3D(0, 0, 1));
 
     MbSweptData sweptData(*pPlaneYZ, arrMainContours);
 
-    //Угол Вращения
+    //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     RevolutionValues revParms(360 * DEG_TO_RAD, 0, 0);
 
-    // Именователи для операции построения тела вращения и для контуров образующей
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     MbSNameMaker operNames(1, MbSNameMaker::i_SideNone, 0);
     PArray<MbSNameMaker> cNames(0, 1, false);
 
-    // Ось вращения для построения тела:
+    // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ:
     MbAxis3D axis(pl.GetAxisZ());
 
-    // Вызов функции-утилиты для построения твердого тела вращения
+    // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     MbSolid* pSolid;
 
     ::RevolutionSolid(sweptData, axis, revParms, operNames, cNames, pSolid);
@@ -153,7 +144,7 @@ SPtr<MbSolid> ParametricModelCreator::create_inner_pipes_grid_006()
     cylPnts.push_back(MbCartPoint3D(0, 170, 88));
     cylPnts.push_back(MbCartPoint3D(0, -170, 98));
 
-    // Построение трубы
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, cylPnts, namesElSolid), pCylSolid);
 
     MbSNameMaker operBoolNames(ct_BooleanSolid, MbSNameMaker::i_SideNone);
@@ -165,11 +156,11 @@ SPtr<MbSolid> ParametricModelCreator::create_inner_pipes_grid_006()
 
     SolidSPtr pMergeSolid, pMainSolid(pSolid);
 
-    // Первое объеденение
+    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     ::BooleanResult(pMainSolid, cm_Copy, pCylSolid, cm_Copy,
         MbBooleanOperationParams(bo_Union, flagsBool, operBoolNames), pMergeSolid);
 
-    ////ВЫДАВЛИВАНИЕ
+    ////пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     RPArray<MbContour> arrExtrudeContours;
 
     createWallXZSecond(arrExtrudeContours);
@@ -187,14 +178,14 @@ SPtr<MbSolid> ParametricModelCreator::create_inner_pipes_grid_006()
 
     SolidSPtr pInnerSolid(pExtrudeSolid), pDifferentSolid;
 
-    // Первое вырезание
+    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     ::BooleanResult(pMergeSolid, cm_Copy, pInnerSolid, cm_Copy, MbBooleanOperationParams(bo_Difference, false, operBoolNames), pDifferentSolid);
 
-    // Главная стенка XZ
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ XZ
     ::ExtrusionSolid(sweptDataInnerWall, dirY, NULL, NULL, false, ExtrusionValues(0, 10), operNames, cNames, pWallYZ);
 
     SolidSPtr unionSolid, wallYZ(pWallYZ);
-    // Второе объеденение
+    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     ::BooleanResult(pDifferentSolid, cm_Copy, wallYZ, cm_Copy,
         MbBooleanOperationParams(bo_Union, flagsBool, operBoolNames), unionSolid);
 
@@ -210,7 +201,7 @@ SPtr<MbSolid> ParametricModelCreator::create_inner_pipes_grid_006()
     holePnts2.push_back(MbCartPoint3D(0, -170, 88));
     holePnts2.push_back(MbCartPoint3D(0, -50, 94));
 
-    // Построение трубы
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, holePnts, namesElSolid), holeSolid);
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, holePnts2, namesElSolid), holeSolid2);
 
@@ -221,14 +212,16 @@ SPtr<MbSolid> ParametricModelCreator::create_inner_pipes_grid_006()
     SolidSPtr resultSolid, boltCyl, boltCyl2, boltCyl3, boltCyl4, boltCyl5, boltCyl6, boltCyl7, boltCyl8;
     SolidSPtr mergeBoltCyl, mergeBoltCyl2, mergeBoltCyl3, mergeBoltCyl4, mergeBoltCyl5, mergeBoltCyl6, mergeBoltCyl7;
 
-    double boltAngle = 22.5 + DEG_TO_RAD;
-    double boltAngle2 = 22.5 + 45 * 1 * DEG_TO_RAD;
-    double boltAngle3 = 22.5 + 45 * 2 * DEG_TO_RAD;
-    double boltAngle4 = 22.5 + 45 * 3 * DEG_TO_RAD;
-    double boltAngle5 = 22.5 + 45 * 4 * DEG_TO_RAD;
-    double boltAngle6 = 22.5 + 45 * 5 * DEG_TO_RAD;
-    double boltAngle7 = 22.5 + 45 * 6 * DEG_TO_RAD;
-    double boltAngle8 = 22.5 + 45 * 7 * DEG_TO_RAD;
+    const int angle = 22.5;
+
+	double boltAngle = angle * DEG_TO_RAD;
+	double boltAngle2 = (angle + 45 * 1) * DEG_TO_RAD;
+	double boltAngle3 = (angle + 45 * 2) * DEG_TO_RAD;
+	double boltAngle4 = (angle + 45 * 3) * DEG_TO_RAD;
+	double boltAngle5 = (angle + 45 * 4) * DEG_TO_RAD;
+	double boltAngle6 = (angle + 45 * 5) * DEG_TO_RAD;
+	double boltAngle7 = (angle + 45 * 6) * DEG_TO_RAD;
+	double boltAngle8 = (angle + 45 * 7) * DEG_TO_RAD;
 
     SpacePointsVector boltCylPnts;
 
