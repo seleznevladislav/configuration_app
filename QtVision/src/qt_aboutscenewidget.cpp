@@ -10,10 +10,10 @@ static int vsn_margin = 5;
 
 #define VSN_NOACTIVATED_ITEM        QObject::tr("No activated")
 #define VSN_RENDER_ITEM             QObject::tr("Render:")
-#define VSN_RENDER_FPS_ITEM         QObject::tr("Render Fps")
-#define VSN_RENDER_BODIES_ITEM      QObject::tr("Render Bodies:")
-#define VSN_RENDER_TRIANGLES_ITEM   QObject::tr("Render Triangles:")
-#define VSN_LOADED_BODIES_ITEM      QObject::tr("Loaded Bodies:")
+#define VSN_RENDER_FPS_ITEM         QStringLiteral("Кол-во Fps")
+#define VSN_RENDER_BODIES_ITEM      QStringLiteral("Кол-во тел")
+#define VSN_RENDER_TRIANGLES_ITEM   QStringLiteral("Кол-во треугольников")
+#define VSN_LOADED_BODIES_ITEM      QStringLiteral("Загружено тел")
 
 // ----------------------------------------------------------------------------
 // Default constructor.
