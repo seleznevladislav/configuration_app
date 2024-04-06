@@ -183,13 +183,13 @@ namespace BuildMathModel {
 		static  SPtr<MbAssembly> CreateTTOR(BuildParamsZarubin params);
 	private:
 		// details
-        static SPtr<MbSolid> ParametricModelCreator::create_inner_pipe_001();
+		static SPtr<MbSolid> ParametricModelCreator::create_inner_pipe_001(double ttDiam, double ttThickness, double length);
         static SPtr<MbSolid> ParametricModelCreator::create_outer_pipe_002(int lenghtK);
         static SPtr<MbSolid> ParametricModelCreator::create_support_003();
         static SPtr<MbSolid> ParametricModelCreator::create_outer_pipes_grid_004();
         static SPtr<MbSolid> ParametricModelCreator::create_cup_005();
 		static SPtr<MbSolid> ParametricModelCreator::create_inner_pipes_grid_006();
-		static SPtr<MbSolid> ParametricModelCreator::create_curved_pipe_007();
+		static SPtr<MbSolid> ParametricModelCreator::create_curved_pipe_007(double ttDiam, double ttThickness, double t);
 		static SPtr<MbSolid> ParametricModelCreator::create_007_FlanecKozhux();
 		static SPtr<MbSolid> ParametricModelCreator::create_008_FlanecSpecial();
 

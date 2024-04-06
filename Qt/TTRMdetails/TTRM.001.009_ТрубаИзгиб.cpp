@@ -4,25 +4,26 @@ using namespace BuildMathModel;
 
 const double DEG_TO_RAD = M_PI / 180.0;
 
-void CreateSketch(RPArray<MbContour>& _arrContours)
+void CreateSketchCurvedPipe(RPArray<MbContour>& _arrContours, double ttDiam, double ttThickness, double t)
 {
-    // Построение образующей в виде двух концентрических окружностей
-    const double RAD_EXT = 99.0 / 2; // Радиус внешней окружности
-    const double RAD_INT = 89.0 / 2; // Радиус внутренней окружности
+    // РџРѕСЃС‚СЂРѕРµРЅРёРµ РѕР±СЂР°Р·СѓСЋС‰РµР№ РІ РІРёРґРµ РґРІСѓС… РєРѕРЅС†РµРЅС‚СЂРёС‡РµСЃРєРёС… РѕРєСЂСѓР¶РЅРѕСЃС‚РµР№
+    const double RAD_EXT = ttDiam / 2; // Р Р°РґРёСѓСЃ РІРЅРµС€РЅРµР№ РѕРєСЂСѓР¶РЅРѕСЃС‚Рё
+    const double RAD_INT = (ttDiam - 2 * ttThickness) / 2; // Р Р°РґРёСѓСЃ РІРЅСѓС‚СЂРµРЅРЅРµР№ РѕРєСЂСѓР¶РЅРѕСЃС‚Рё
 
-    //По оси Y сдвинута вверх (параметр t/2)
-    MbArc* pCircleExt = new MbArc(MbCartPoint(0, 127.5), RAD_EXT);
-    MbArc* pCircleInt = new MbArc(MbCartPoint(0, 127.5), RAD_INT);
+    //РџРѕ РѕСЃРё Y СЃРґРІРёРЅСѓС‚Р° РІРІРµСЂС… (РїР°СЂР°РјРµС‚СЂ t/2)
+    MbArc* pCircleExt = new MbArc(MbCartPoint(0, t / 2), RAD_EXT);
+    MbArc* pCircleInt = new MbArc(MbCartPoint(0, t / 2), RAD_INT);
 
     _arrContours.push_back(new MbContour(*pCircleExt, true));
     _arrContours.push_back(new MbContour(*pCircleInt, true));
 }
 
-SPtr<MbSolid> ParametricModelCreator::create_curved_pipe_007()
+SPtr<MbSolid> ParametricModelCreator::create_curved_pipe_007(double ttDiam, double ttThickness, double t)
 {
+
     MbPlacement3D* plLine = new MbPlacement3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, 0, 1), MbCartPoint3D(0, 1, 0));
 
-    const double PL = 255 / 2;
+    const double PL = t / 2;
 
     MbLineSegment* pL12D = new MbLineSegment(MbCartPoint(0, PL), MbCartPoint(20, PL));
     MbLineSegment3D* pL1 = new MbLineSegment3D(*pL12D, *plLine);
@@ -39,12 +40,12 @@ SPtr<MbSolid> ParametricModelCreator::create_curved_pipe_007()
     pLine->AddSegment(*pL3, false);
 
     RPArray<MbContour> arrContours;
-    CreateSketch(arrContours);
+    CreateSketchCurvedPipe(arrContours, ttDiam, ttThickness, t);
 
     MbPlane* pPlaneXY = new MbPlane(MbCartPoint3D(0, 0, 0), MbCartPoint3D(1, 0, 0), MbCartPoint3D(0, 1, 0));
     MbSweptData sweptData(*pPlaneXY, arrContours);
 
-    //Именователи - параметры
+    //РРјРµРЅРѕРІР°С‚РµР»Рё - РїР°СЂР°РјРµС‚СЂС‹
     EvolutionValues evParms;
     evParms.SetKeepingAngle();
     evParms.SetBySurfaceNormal(false);

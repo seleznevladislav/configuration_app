@@ -9,6 +9,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     const int length0 = params.length0;
     const int LENGTH = params.LENGTH;
     const int length1 = params.length1;
+
+    const int assortmentInnerTubes = 25;
+    const int thicknessInnerTubes = 3;
+    const int diametr = 80;
     
     MbPlacement3D lcs;
 
@@ -16,10 +20,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     SPtr<MbSolid> headExhangerGridSolid(create_outer_pipes_grid_004());
     SPtr<MbSolid> headExhangerGridSecondSolid(create_inner_pipes_grid_006());
     SPtr<MbSolid> outerPipeSolid(create_outer_pipe_002(lengthK));
-    SPtr<MbSolid> innerPipeSolid(create_inner_pipe_001());
+    SPtr<MbSolid> innerPipeSolid(create_inner_pipe_001(assortmentInnerTubes, thicknessInnerTubes, 1930));
     SPtr<MbSolid> supportSolid(create_support_003());
-    SPtr<MbSolid> curvedPipeSolid(create_curved_pipe_007());
-    //capSolid->SetSimpleAttribute(MbAttribute)
+    SPtr<MbSolid> curvedPipeSolid(create_curved_pipe_007(assortmentInnerTubes, thicknessInnerTubes, diametr));
+    
 
     // Крышки
     SPtr<MbInstance> capItem(new MbInstance(*capSolid, lcs));
@@ -45,6 +49,8 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     SPtr<MbInstance> innerPipeItem4(new MbInstance(*innerPipeSolid, lcs));
     // Соединительная труба
     SPtr<MbInstance> curvedPipeItem(new MbInstance(*curvedPipeSolid, lcs));
+    SPtr<MbInstance> curvedPipeItem2(new MbInstance(*curvedPipeSolid, lcs));
+    SPtr<MbInstance> curvedPipeItem3(new MbInstance(*curvedPipeSolid, lcs));
 
     std::vector<SPtr<MbItem>> pair;
     //Переменные для подсборки
@@ -66,8 +72,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     pair.push_back(innerPipeItem4);
 
     // curved pipes
-    //pair.push_back(curvedPipeItem);
-    //curvedPipeItem->Move(MbVector3D(100, 100, 1850));
+    pair.push_back(curvedPipeItem);
+    pair.push_back(curvedPipeItem2);
+    pair.push_back(curvedPipeItem3);
+ 
 
     pair.push_back(supportItem);
     supportItem->SetColor(0, 0, 200);
@@ -76,6 +84,8 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
 
     MbAxis3D axxVert(MbVector3D(0, 1, 0));
 
+    curvedPipeItem2->Rotate(axxVert, M_PI);
+    curvedPipeItem3->Rotate(axxVert, M_PI);
     supportItem2->Rotate(axxVert, M_PI);
     headExhangerGridSecondItem->Rotate(axxVert, M_PI);
 
@@ -231,14 +241,55 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
         assm->AddConstraint(GCM_CONCENTRIC, GeometryArgGrid2AndCap2Conc2, GeometryArgGrid2AndCap2Conc4);
 
         // Curved Pipe
-       /* MtGeomArgument GeometryArgCurvedPipeCoinc(curvedPipeSolid->GetFace(0), curvedPipeItem);
-        MtGeomArgument GeometryArgCurvedPipeCoinc2(innerPipeSolid->GetFace(0), innerPipeItem);*/
+        MtGeomArgument GeometryArgCurvedPipeCoinc(curvedPipeSolid->GetFace(0), curvedPipeItem);
+        MtGeomArgument GeometryArgCurvedPipeCoinc2(innerPipeSolid->GetFace(0), innerPipeItem);
+        MtGeomArgument GeometryArgCurvedPipeConc(curvedPipeSolid->GetFace(3), curvedPipeItem);
+        MtGeomArgument GeometryArgCurvedPipeConc2(innerPipeSolid->GetFace(2), innerPipeItem);
 
-        /*MtGeomArgument GeometryArgCurvedPipeConc(curvedPipeSolid->GetFace(2), curvedPipeItem);
-        MtGeomArgument GeometryArgCurvedPipeConc2(innerPipeSolid->GetFace(2), innerPipeItem);*/
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgCurvedPipeCoinc, GeometryArgCurvedPipeCoinc2);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgCurvedPipeConc, GeometryArgCurvedPipeConc2);
 
-        //assm->AddConstraint(GCM_COINCIDENT, GeometryArgCurvedPipeCoinc, GeometryArgCurvedPipeCoinc2);
-        //assm->AddConstraint(GCM_CONCENTRIC, GeometryArgCurvedPipeConc, GeometryArgCurvedPipeConc2);
+        MtGeomArgument GeometryArgCurvedPipeCoinc3(curvedPipeSolid->GetFace(1), curvedPipeItem);
+        MtGeomArgument GeometryArgCurvedPipeCoinc4(innerPipeSolid->GetFace(0), innerPipeItem3);
+        MtGeomArgument GeometryArgCurvedPipeConc3(curvedPipeSolid->GetFace(2), curvedPipeItem);
+        MtGeomArgument GeometryArgCurvedPipeConc4(innerPipeSolid->GetFace(2), innerPipeItem3);
+
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgCurvedPipeCoinc3, GeometryArgCurvedPipeCoinc4);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgCurvedPipeConc3, GeometryArgCurvedPipeConc4);
+
+        // Curved Pipe grid
+        MtGeomArgument GeometryArgCurvedPipeCoinc5(curvedPipeSolid->GetFace(0), curvedPipeItem2);
+        MtGeomArgument GeometryArgCurvedPipeCoinc6(innerPipeSolid->GetFace(1), innerPipeItem);
+        MtGeomArgument GeometryArgCurvedPipeConc5(curvedPipeSolid->GetFace(3), curvedPipeItem2);
+        MtGeomArgument GeometryArgCurvedPipeConc6(innerPipeSolid->GetFace(2), innerPipeItem);
+
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgCurvedPipeCoinc5, GeometryArgCurvedPipeCoinc6);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgCurvedPipeConc5, GeometryArgCurvedPipeConc6);
+
+        MtGeomArgument GeometryArgCurvedPipeCoinc7(curvedPipeSolid->GetFace(1), curvedPipeItem2);
+        MtGeomArgument GeometryArgCurvedPipeCoinc8(innerPipeSolid->GetFace(1), innerPipeItem2);
+        MtGeomArgument GeometryArgCurvedPipeConc7(curvedPipeSolid->GetFace(2), curvedPipeItem2);
+        MtGeomArgument GeometryArgCurvedPipeConc8(innerPipeSolid->GetFace(2), innerPipeItem2);
+
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgCurvedPipeCoinc7, GeometryArgCurvedPipeCoinc8);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgCurvedPipeConc7, GeometryArgCurvedPipeConc8);
+
+        // Second Curved Pipe grid
+        MtGeomArgument GeometryArgCurvedPipeCoinc9(curvedPipeSolid->GetFace(0), curvedPipeItem3);
+        MtGeomArgument GeometryArgCurvedPipeCoinc10(innerPipeSolid->GetFace(1), innerPipeItem3);
+        MtGeomArgument GeometryArgCurvedPipeConc9(curvedPipeSolid->GetFace(3), curvedPipeItem3);
+        MtGeomArgument GeometryArgCurvedPipeConc10(innerPipeSolid->GetFace(2), innerPipeItem3);
+
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgCurvedPipeCoinc9, GeometryArgCurvedPipeCoinc10);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgCurvedPipeConc9, GeometryArgCurvedPipeConc10);
+
+        MtGeomArgument GeometryArgCurvedPipeCoinc11(curvedPipeSolid->GetFace(1), curvedPipeItem3);
+        MtGeomArgument GeometryArgCurvedPipeCoinc12(innerPipeSolid->GetFace(1), innerPipeItem4);
+        MtGeomArgument GeometryArgCurvedPipeConc11(curvedPipeSolid->GetFace(2), curvedPipeItem3);
+        MtGeomArgument GeometryArgCurvedPipeConc12(innerPipeSolid->GetFace(2), innerPipeItem4);
+
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgCurvedPipeCoinc11, GeometryArgCurvedPipeCoinc12);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgCurvedPipeConc11, GeometryArgCurvedPipeConc12);
     }
 
     assm->EvaluateConstraints();
