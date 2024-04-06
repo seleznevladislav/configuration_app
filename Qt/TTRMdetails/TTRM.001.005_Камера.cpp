@@ -7,7 +7,7 @@ const int startY = 30;
 const double DEG_TO_RAD = M_PI / 180.0;
 
 SolidSPtr HolyHole1(SolidSPtr* previus, int holes, double DiametrCircle, double radius) {
-    // Именователь граней для построения тела с помощью булевой операции 
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 
     MbSNameMaker operBoolNames(ct_BooleanSolid, MbSNameMaker::i_SideNone);
     MbBooleanOperationParams parameters(bo_Union, true, operBoolNames);
 
@@ -70,9 +70,9 @@ void CreateSketcher1(RPArray<MbContour>& _arrContours)
     SArray<MbCartPoint> arrPnts(100);
     arrPnts.Add(MbCartPoint(0, 400));
     arrPnts.Add(MbCartPoint(0, 386));
-    arrPnts.Add(MbCartPoint(0, -80)); //центр дуги большой 0
+    arrPnts.Add(MbCartPoint(0, -80)); //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ 0
     arrPnts.Add(MbCartPoint(-273.123119, 297.570870));
-    arrPnts.Add(MbCartPoint(-233.648485, 243));//центр дуги маленькой 0
+    arrPnts.Add(MbCartPoint(-233.648485, 243));//пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 0
     arrPnts.Add(MbCartPoint(-301, 243));
     arrPnts.Add(MbCartPoint(-301, 10));
     arrPnts.Add(MbCartPoint(-321, 10));
@@ -82,9 +82,9 @@ void CreateSketcher1(RPArray<MbContour>& _arrContours)
     arrPnts.Add(MbCartPoint(-340, 40));
     arrPnts.Add(MbCartPoint(-315, 65));
     arrPnts.Add(MbCartPoint(-315, 243));//13
-    arrPnts.Add(MbCartPoint(-233.648485, 243));//центр дуги маленькой 14
+    arrPnts.Add(MbCartPoint(-233.648485, 243));//пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 14
     arrPnts.Add(MbCartPoint(-281.328534, 308.914201));
-    arrPnts.Add(MbCartPoint(0, -80)); //центр дуги большой 14
+    arrPnts.Add(MbCartPoint(0, -80)); //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ 14
     arrPnts.Add(MbCartPoint(0, 400));
 
 
@@ -136,16 +136,16 @@ void CreateSketcher2(RPArray<MbContour>& _arrContours)
 {
     SArray<MbCartPoint> arrPnts(100);
     arrPnts.Add(MbCartPoint(0, 386));
-    arrPnts.Add(MbCartPoint(0, -80)); //центр дуги большой 0
+    arrPnts.Add(MbCartPoint(0, -80)); //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ 0
     arrPnts.Add(MbCartPoint(-273.123119, 297.570870));
-    arrPnts.Add(MbCartPoint(-233.648485, 243));//центр дуги маленькой 0
+    arrPnts.Add(MbCartPoint(-233.648485, 243));//пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 0
     arrPnts.Add(MbCartPoint(-301, 243));
     arrPnts.Add(MbCartPoint(-301, 10));
     arrPnts.Add(MbCartPoint(301, 10));
     arrPnts.Add(MbCartPoint(301, 243));//7
-    arrPnts.Add(MbCartPoint(233.648485, 243));//центр дуги маленькой 0
+    arrPnts.Add(MbCartPoint(233.648485, 243));//пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 0
     arrPnts.Add(MbCartPoint(273.123119, 297.570870));
-    arrPnts.Add(MbCartPoint(0, -80)); //центр дуги большой 0
+    arrPnts.Add(MbCartPoint(0, -80)); //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ 0
 
 
     const double RADIUSB1 = 466;
@@ -250,15 +250,16 @@ SPtr<MbSolid> ParametricModelCreator::create_cup_005()
 
     const double DEG_TO_RAD = M_PI / 180.0;
 
+    const int angle = 22.5;
 
-    double boltAngle = 22.5 + DEG_TO_RAD;
-    double boltAngle2 = 22.5 + 45 * 1 * DEG_TO_RAD;
-    double boltAngle3 = 22.5 + 45 * 2 * DEG_TO_RAD;
-    double boltAngle4 = 22.5 + 45 * 3 * DEG_TO_RAD;
-    double boltAngle5 = 22.5 + 45 * 4 * DEG_TO_RAD;
-    double boltAngle6 = 22.5 + 45 * 5 * DEG_TO_RAD;
-    double boltAngle7 = 22.5 + 45 * 6 * DEG_TO_RAD;
-    double boltAngle8 = 22.5 + 45 * 7 * DEG_TO_RAD;
+	double boltAngle = angle * DEG_TO_RAD;
+	double boltAngle2 = (angle + 45 * 1) * DEG_TO_RAD;
+	double boltAngle3 = (angle + 45 * 2) * DEG_TO_RAD;
+	double boltAngle4 = (angle + 45 * 3) * DEG_TO_RAD;
+	double boltAngle5 = (angle + 45 * 4) * DEG_TO_RAD;
+	double boltAngle6 = (angle + 45 * 5) * DEG_TO_RAD;
+	double boltAngle7 = (angle + 45 * 6) * DEG_TO_RAD;
+	double boltAngle8 = (angle + 45 * 7) * DEG_TO_RAD;
 
     SpacePointsVector boltCylPnts;
 

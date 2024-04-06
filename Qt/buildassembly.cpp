@@ -4,7 +4,7 @@ using namespace BuildMathModel;
 
 SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigParams params)
 {
-    // TODO: 3) Здесь деструктуризируете ваши переменные и уже вставляете куда вам нужно
+    // Набор параметров для параметризации
     const int lengthK = params.lengthK;
     const int length0 = params.length0;
     const int LENGTH = params.LENGTH;
@@ -19,6 +19,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     SPtr<MbSolid> innerPipeSolid(create_inner_pipe_001());
     SPtr<MbSolid> supportSolid(create_support_003());
     SPtr<MbSolid> curvedPipeSolid(create_curved_pipe_007());
+    //capSolid->SetSimpleAttribute(MbAttribute)
 
     // Крышки
     SPtr<MbInstance> capItem(new MbInstance(*capSolid, lcs));
@@ -28,6 +29,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     // Решетки
     SPtr<MbInstance> headExhangerGridItem(new MbInstance(*headExhangerGridSolid, lcs));
     SPtr<MbInstance> headExhangerGridSecondItem(new MbInstance(*headExhangerGridSecondSolid, lcs));
+
     // Опоры
     SPtr<MbInstance> supportItem(new MbInstance(*supportSolid, lcs));
     SPtr<MbInstance> supportItem2(new MbInstance(*supportSolid, lcs));

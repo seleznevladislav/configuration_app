@@ -134,6 +134,7 @@ int main(int argc, char** argv)
         return 0;
 
     QMainWindow mainWindow;
+
     mainWindow.setWindowTitle(QStringLiteral("Электронная модель теплообменника"));
 
     ExplodeWidget* pOpenScene = new ExplodeWidget();
