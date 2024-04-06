@@ -31,28 +31,29 @@ static QSize sizeIcons = QSize(32, 32);
 
 static void createCommandActions(QWidget* pOpenScene, QToolBar* commandBar, QWidget* parent)
 {
-    QAction* TTORAction = new QAction(QIcon(":/res/iconsForHeat Exchangers/TTOR.png"), QObject::tr("&TTOR"), parent);
-    TTORAction->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::TTOR));
-    parent->addAction(TTORAction);
-    commandBar->addAction(TTORAction);
-    QObject::connect(TTORAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommandsHeats()));
-
-    QAction* TTRMAction = new QAction(QIcon(":/res/iconsForHeat Exchangers/TTRM.png"), QObject::tr("&TTRM"), parent);
-    TTRMAction->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::TTRM));
-    parent->addAction(TTRMAction);
-    commandBar->addAction(TTRMAction);
-    QObject::connect(TTRMAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommandsHeats()));
-
-    QAction* pOpenAction = new QAction(QIcon(":/res/save_file32.png"), QObject::tr("&Open"), parent);
+    QAction* pOpenAction = new QAction(QIcon(":/res/save_file32.png"), QStringLiteral("Открыть"), parent);
     pOpenAction->setProperty("Commands", QVariant((int)ExplodeWidget::Open));
-    //  (int)ExplodeWidget::Open
     parent->addAction(pOpenAction);
     commandBar->addAction(pOpenAction);
     QObject::connect(pOpenAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommands()));
 
     commandBar->addSeparator();
 
-    QAction* pFixingAction = new QAction(QIcon(":/res/constraints/proc_fix_32.png"), QObject::tr("&Fix component"), parent);
+    QAction* TTORAction = new QAction(QIcon(":/res/iconsForHeat Exchangers/TTOR.png"), QStringLiteral("ТТОР"), parent);
+    TTORAction->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::TTOR));
+    parent->addAction(TTORAction);
+    commandBar->addAction(TTORAction);
+    QObject::connect(TTORAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommandsHeats()));
+
+    QAction* TTRMAction = new QAction(QIcon(":/res/iconsForHeat Exchangers/TTRM.png"), QStringLiteral("ТТРМ"), parent);
+    TTRMAction->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::TTRM));
+    parent->addAction(TTRMAction);
+    commandBar->addAction(TTRMAction);
+    QObject::connect(TTRMAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommandsHeats()));
+
+    commandBar->addSeparator();
+
+    QAction* pFixingAction = new QAction(QIcon(":/res/constraints/proc_fix_32.png"), QStringLiteral("Фиксирование"), parent);
     pFixingAction->setProperty("Commands", QVariant((int)ExplodeWidget::FixItem));
     // (int)ExplodeWidget::FixItem
     parent->addAction(pFixingAction);
@@ -61,7 +62,7 @@ static void createCommandActions(QWidget* pOpenScene, QToolBar* commandBar, QWid
     QObject::connect(pFixingAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommands()));
 
 
-    QAction* pCoincidenceAction = new QAction(QIcon(":/res/constraints/proc_coin_32.png"), QObject::tr("&Coincident"), parent);
+    QAction* pCoincidenceAction = new QAction(QIcon(":/res/constraints/proc_coin_32.png"), QStringLiteral("Совмещение"), parent);
     pCoincidenceAction->setProperty("Commands", QVariant((int)ExplodeWidget::Coincident));
     parent->addAction(pCoincidenceAction);
     commandBar->addAction(pCoincidenceAction);
@@ -133,12 +134,13 @@ int main(int argc, char** argv)
         return 0;
 
     QMainWindow mainWindow;
-    mainWindow.setWindowTitle(QObject::tr(u8"Электронная модель теплоомбенника"));
+
+    mainWindow.setWindowTitle(QStringLiteral("Электронная модель теплообменника"));
 
     ExplodeWidget* pOpenScene = new ExplodeWidget();
     pOpenScene->createHeadToolbar();
 
-    QDockWidget* pDockGeometryList = new QDockWidget(QObject::tr("Scene segments"));
+    QDockWidget* pDockGeometryList = new QDockWidget(QStringLiteral("Дерево компонентов"));
     pDockGeometryList->setFeatures(QDockWidget::NoDockWidgetFeatures);
     QWidget* pGeometryList = pOpenScene->createGeometryList(pDockGeometryList);
     pDockGeometryList->setWidget(pGeometryList);
@@ -192,17 +194,17 @@ int main(int argc, char** argv)
 
     // Actions on select
     QGroupBox* groupFilter = new QGroupBox();
-    groupFilter->setTitle(QStringLiteral("Filter"));
+    groupFilter->setTitle(QStringLiteral("Фильтр"));
     QHBoxLayout* fGroupLayout = new QHBoxLayout(groupFilter);
     fGroupLayout->setMargin(0); fGroupLayout->setSpacing(0);
 
     QActionGroup* actionGroupFilter = new QActionGroup(pOpenScene);
     actionGroupFilter->setExclusive(false);
 
-    actionGroupFilter->addAction(createButton(":/res/filterbody24x24.png", groupFilter, fGroupLayout))->setToolTip("Body");
-    actionGroupFilter->addAction(createButton(":/res/filterface24x24.png", groupFilter, fGroupLayout))->setToolTip("Face");
-    actionGroupFilter->addAction(createButton(":/res/filteredge24x24.png", groupFilter, fGroupLayout))->setToolTip("Edge");
-    actionGroupFilter->addAction(createButton(":/res/filtervertex24x24.png", groupFilter, fGroupLayout))->setToolTip("Vertex");
+    actionGroupFilter->addAction(createButton(":/res/filterbody24x24.png", groupFilter, fGroupLayout))->setToolTip(QStringLiteral("Тело"));
+    actionGroupFilter->addAction(createButton(":/res/filterface24x24.png", groupFilter, fGroupLayout))->setToolTip(QStringLiteral("Грань"));
+    actionGroupFilter->addAction(createButton(":/res/filteredge24x24.png", groupFilter, fGroupLayout))->setToolTip(QStringLiteral("Ребро"));
+    actionGroupFilter->addAction(createButton(":/res/filtervertex24x24.png", groupFilter, fGroupLayout))->setToolTip(QStringLiteral("Точка"));
 
     pOpenScene->setGroupFilter(actionGroupFilter);
     QObject::connect(actionGroupFilter, SIGNAL(triggered(QAction*)), pOpenScene, SLOT(slotFilterTriggered(QAction*)));
@@ -213,17 +215,17 @@ int main(int argc, char** argv)
     ///////////////////////////////////////////////////////////////////////////
     QGroupBox* colorsGroupBox = new QGroupBox();
     QVBoxLayout* vGroupLayoutColors = new QVBoxLayout(colorsGroupBox);
-    colorsGroupBox->setTitle(QStringLiteral("Options"));
-    QCheckBox* highlightBox = new QCheckBox(QObject::tr("dynamic highlighting"));
+    colorsGroupBox->setTitle(QStringLiteral("Опции селектирования"));
+    QCheckBox* highlightBox = new QCheckBox(QStringLiteral("Динамическое выделение"));
     highlightBox->setChecked(true);
     QObject::connect(highlightBox, SIGNAL(stateChanged(int)), pOpenScene, SLOT(slotDynamicHighlighting(int)));
 
     ColorButton* highlightColor = new ColorButton(colorsGroupBox);
-    highlightColor->setText(QObject::tr("Highlight"));
+    highlightColor->setText(QStringLiteral("Выделение"));
     highlightColor->setColor(pOpenScene->highlightColor());
     QObject::connect(highlightColor, SIGNAL(colorChanged(const QColor&)), pOpenScene, SLOT(slotHighlightColor(const QColor&)));
     ColorButton* selectionColor = new ColorButton(colorsGroupBox);
-    selectionColor->setText(QObject::tr("Selection"));
+    selectionColor->setText(QStringLiteral("Селектирование"));
     selectionColor->setColor(pOpenScene->selectionColor());
     QObject::connect(selectionColor, SIGNAL(colorChanged(const QColor&)), pOpenScene, SLOT(slotSelectionColor(const QColor&)));
     vGroupLayoutColors->addWidget(highlightBox);
@@ -245,17 +247,17 @@ int main(int argc, char** argv)
     QMenuBar* menuBar = new QMenuBar(&mainWindow);
     mainWindow.setMenuBar(menuBar);
 
-    QMenu* fileMenu = menuBar->addMenu(QObject::tr("File"));
-    QMenu* viewMenu = menuBar->addMenu(QObject::tr("View"));
-    QMenu* optionsMenu = menuBar->addMenu(QObject::tr("Options"));
+    QMenu* fileMenu = menuBar->addMenu(QStringLiteral("Файл"));
+    QMenu* viewMenu = menuBar->addMenu(QStringLiteral("Вид"));
+    QMenu* optionsMenu = menuBar->addMenu(QStringLiteral("Опции"));
 
     // Add actions in menus
-    QAction* showUnshowColors = new QAction(QObject::tr("Show/Hide Colors"), optionsMenu);
+    QAction* showUnshowColors = new QAction(QStringLiteral("Скрыть/показать цвета"), optionsMenu);
     showUnshowColors->setCheckable(true);
     showUnshowColors->setChecked(true);
     optionsMenu->addAction(showUnshowColors);
 
-    QAction* showUnshowSelectors = new QAction(QObject::tr("Show/Hide Selectors"), optionsMenu);
+    QAction* showUnshowSelectors = new QAction(QStringLiteral("Скрыть/показать выделение"), optionsMenu);
     showUnshowSelectors->setCheckable(true);
     showUnshowSelectors->setChecked(true);
     optionsMenu->addAction(showUnshowSelectors);
