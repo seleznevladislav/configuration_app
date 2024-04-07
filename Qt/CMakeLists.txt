@@ -31,8 +31,8 @@ IF(C3DVision_GUI_QT5_EXAMPLES)
 	########################################################################	
 	# Details
 	########################################################################	
-	# Add all detailsZarubin source files
-    file(GLOB SRC_detailsZarubin_cpp CONFIGURE_DEPENDS "./detailsZarubin/*.cpp")
+	# Add all TTOR details source files
+    file(GLOB SRC_detailsZarubin_cpp CONFIGURE_DEPENDS "./TTORdetails/*.cpp")
     SOURCE_GROUP(Sources FILES ${SRC_detailsZarubin_cpp})
 	    
 	# Add all details source files

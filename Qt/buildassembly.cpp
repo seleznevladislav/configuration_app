@@ -1,4 +1,5 @@
 #include "BuildMathModel.h"
+#include <mb_property.h>
 
 using namespace BuildMathModel;
 
@@ -265,7 +266,9 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
     double l3 = params.l3;
     double t = params.t;
 
-    double distanceRezhetka = 500.0;
+    const double visotaOpori = 850;
+    const double shirinaOpori = 200;
+    double distanceRezhetka = 500; //l2 - 400
     double distanceTubesKozhux = (-1) * (distanceRezhetka + 90.0);
     double distanceTubesTeploobmen = -660.0;
 #pragma endregion
@@ -273,23 +276,46 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
     MbPlacement3D lcs;
 
     // Item_008_001->Move(MbVector3D (3000,20,20));
-    // MbAxis3D axVert(MbVector3D(1, 0, 0));
-    // MbAxis3D ayVert(MbVector3D(0, 1, 0));
-    // MbAxis3D azVert(MbVector3D(0, 0, 1));
+    MbAxis3D axVert(MbVector3D(1, 0, 0));
+    MbAxis3D ayVert(MbVector3D(0, 1, 0));
+    MbAxis3D azVert(MbVector3D(0, 0, 1));
 
     SPtr<MbSolid> Detail_001(Zarubincreate_001_tubeTeploobmen(lK, ttDiam, ttThickness));
+    Detail_001->SetColor(235, 172, 165);
     SPtr<MbSolid> Detail_002(Zarubincreate_002_tubeKozhux(lK, ktDiam, ktThickness));
-    SPtr<MbSolid> Detail_003(Zarubincreate_003_opora(dV, ktDiam, ktThickness, t));
+    Detail_002->SetColor(165, 175, 235);
+    SPtr<MbSolid> Detail_003(Zarubincreate_003_opora(dV, ktDiam, ktThickness, t, visotaOpori, shirinaOpori));
+    Detail_003->SetColor(80, 84, 84);
     SPtr<MbSolid> Detail_004(Zarubincreate_004_reshetkaKozhux(ktDiam, ktThickness, t));
+    Detail_004->SetColor(147, 218, 136);
     SPtr<MbSolid> Detail_005(Zarubincreate_005_kamera());
+    Detail_005->SetColor(101, 150, 94);
     SPtr<MbSolid> Detail_006(Zarubincreate_006_RezhetkaTeplTube());
     SPtr<MbSolid> Detail_007(Zarubincreate_007_FlanecKozhux());
+    Detail_007->SetColor(130, 130, 130);
+
     SPtr<MbSolid> Detail_008(Zarubincreate_008_FlanecSpecial());
     SPtr<MbSolid> Detail_009(Zarubincreate_009_curevedTube(ttDiam, ttThickness, t));
-
+    Detail_009->SetColor(71, 91, 71);
+    SPtr<MbSolid> Detail_010(Zarubincreate_010_Connector(ktDiam, ktThickness, t));
+    SPtr<MbSolid> Detail_011(Zarubincreate_011_ConnectorWithFlanec(ktDiam, ktThickness, t, visotaOpori));
+    
     std::vector<SPtr<MbItem>> pair;
 
     SPtr<MbInstance> Item_001_001(new MbInstance(*Detail_001, lcs));
+
+    //MbProperties* mp = new MbProperties();
+
+    //  size_t currpos = 'Test';
+
+    //  TCHAR bc = IDS_ITEM_0733;
+
+    //  mp->SetName(bc);
+    //  c3d::string_t description;
+    //  //IDS_ITEM_0733
+
+    //  Item_001_001->GetProperties(*mp);
+
     SPtr<MbInstance> Item_001_002(new MbInstance(*Detail_001, lcs));
     SPtr<MbInstance> Item_001_003(new MbInstance(*Detail_001, lcs));
     SPtr<MbInstance> Item_001_004(new MbInstance(*Detail_001, lcs));
@@ -316,20 +342,35 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
     SPtr<MbInstance> Item_007_003(new MbInstance(*Detail_007, lcs));
     SPtr<MbInstance> Item_007_004(new MbInstance(*Detail_007, lcs));
 
-    // Камера
+    SPtr<MbInstance> Item_007_005(new MbInstance(*Detail_007, lcs));
+    SPtr<MbInstance> Item_007_006(new MbInstance(*Detail_007, lcs));
+
+    // Фланцы специальнае для камеры
     SPtr<MbInstance> Item_008_001(new MbInstance(*Detail_008, lcs));
     SPtr<MbInstance> Item_008_002(new MbInstance(*Detail_008, lcs));
     SPtr<MbInstance> Item_008_003(new MbInstance(*Detail_008, lcs));
     SPtr<MbInstance> Item_008_004(new MbInstance(*Detail_008, lcs));
-
     SPtr<MbInstance> Item_008_005(new MbInstance(*Detail_008, lcs));
     SPtr<MbInstance> Item_008_006(new MbInstance(*Detail_008, lcs));
     SPtr<MbInstance> Item_008_007(new MbInstance(*Detail_008, lcs));
     SPtr<MbInstance> Item_008_008(new MbInstance(*Detail_008, lcs));
 
+    // Фланцы специальнае для камеры
+    SPtr<MbInstance> Item_008_009(new MbInstance(*Detail_008, lcs));
+    SPtr<MbInstance> Item_008_010(new MbInstance(*Detail_008, lcs));
+    SPtr<MbInstance> Item_008_011(new MbInstance(*Detail_008, lcs));
+    SPtr<MbInstance> Item_008_012(new MbInstance(*Detail_008, lcs));
+    SPtr<MbInstance> Item_008_013(new MbInstance(*Detail_008, lcs));
+    SPtr<MbInstance> Item_008_014(new MbInstance(*Detail_008, lcs));
+    SPtr<MbInstance> Item_008_015(new MbInstance(*Detail_008, lcs));
+    SPtr<MbInstance> Item_008_016(new MbInstance(*Detail_008, lcs));
+
     SPtr<MbInstance> Item_009_001(new MbInstance(*Detail_009, lcs));
     SPtr<MbInstance> Item_009_002(new MbInstance(*Detail_009, lcs));
     SPtr<MbInstance> Item_009_003(new MbInstance(*Detail_009, lcs));
+
+    SPtr<MbInstance> Item_010_001(new MbInstance(*Detail_010, lcs));
+    SPtr<MbInstance> Item_011_001(new MbInstance(*Detail_011, lcs));
 
     //Переменные для подсборки
     pair.push_back(Item_001_001);
@@ -359,24 +400,59 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
     pair.push_back(Item_007_003);
     pair.push_back(Item_007_004);
 
+    pair.push_back(Item_007_005);
+    pair.push_back(Item_007_006);
+
     pair.push_back(Item_008_001);
     pair.push_back(Item_008_002);
     pair.push_back(Item_008_003);
     pair.push_back(Item_008_004);
+    pair.push_back(Item_008_005);
+    pair.push_back(Item_008_006);
+    pair.push_back(Item_008_007);
+    pair.push_back(Item_008_008);
+
+    pair.push_back(Item_008_009);
+    pair.push_back(Item_008_010);
+    pair.push_back(Item_008_011);
+    pair.push_back(Item_008_012);
+    pair.push_back(Item_008_013);
+    pair.push_back(Item_008_014);
+    pair.push_back(Item_008_015);
+    pair.push_back(Item_008_016);
 
     pair.push_back(Item_009_001);
     pair.push_back(Item_009_002);
     pair.push_back(Item_009_003);
+
+    pair.push_back(Item_010_001);
+    pair.push_back(Item_011_001);
 
     SPtr<MbAssembly> assm(new MbAssembly(pair));
     {
 
         // Расстояние Опора - Опора
         {
-            MtGeomArgument Face1(Detail_003->GetFace(2), Item_003_001);
-            MtGeomArgument Face2(Detail_003->GetFace(4), Item_003_002);
+            MtGeomArgument Face1(Detail_003->GetFace(8), Item_003_001);
+            MtGeomArgument Face2(Detail_003->GetFace(3), Item_003_002);
 
             assm->AddConstraint(GCM_DISTANCE, Face1, Face2, MtParVariant(l0));
+        }
+
+        // Концентричность Опора - Опора
+        {
+            MtGeomArgument Face1321(Detail_003->GetFace(30), Item_003_001);
+            MtGeomArgument Face2312(Detail_003->GetFace(30), Item_003_002);
+
+            assm->AddConstraint(GCM_CONCENTRIC, Face1321, Face2312);
+        }
+
+        // Совмещение Опора - Опора
+        {
+            MtGeomArgument Face1321ty(Detail_003->GetFace(7), Item_003_001);
+            MtGeomArgument Face2312ty(Detail_003->GetFace(7), Item_003_002);
+
+            assm->AddConstraint(GCM_COINCIDENT, Face1321ty, Face2312ty);
         }
 
         // Концентричность Опора - Трубы кожуховые
@@ -417,7 +493,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
 
         // Расстояние Опора - Решетка кожуховых труб
         {
-            MtGeomArgument Plane1(Detail_003->GetFace(2), Item_003_002);
+            MtGeomArgument Plane1(Detail_003->GetFace(8), Item_003_002);
             MtGeomArgument Plane2(Detail_004->GetFace(0), Item_004_001);
 
             assm->AddConstraint(GCM_DISTANCE, Plane1, Plane2, MtParVariant(distanceRezhetka));
@@ -425,20 +501,11 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
 
         // Концентричность Опора - Решетка кожуховых труб
         {
-            MtGeomArgument VariableForHole1(Detail_003->GetFace(36), Item_003_002);
-            MtGeomArgument VariableForHole2(Detail_003->GetFace(39), Item_003_002);
-            MtGeomArgument VariableForHole3(Detail_003->GetFace(38), Item_003_002);
-            MtGeomArgument VariableForHole4(Detail_003->GetFace(37), Item_003_002);
+            MtGeomArgument VariableForHole1(Detail_003->GetFace(30), Item_003_002);
 
-            MtGeomArgument OtvtubeTeploobmennaya1(Detail_004->GetFace(2), Item_004_001);
-            MtGeomArgument OtvtubeTeploobmennaya2(Detail_004->GetFace(4), Item_004_001);
-            MtGeomArgument OtvtubeTeploobmennaya3(Detail_003->GetFace(38), Item_003_001);
-            MtGeomArgument OtvtubeTeploobmennaya4(Detail_003->GetFace(37), Item_003_001);
+            MtGeomArgument OtvtubeTeploobmennaya1(Detail_004->GetFace(3), Item_004_001);
 
-            assm->AddConstraint(GCM_CONCENTRIC, OtvtubeTeploobmennaya1, VariableForHole1);
-            assm->AddConstraint(GCM_CONCENTRIC, OtvtubeTeploobmennaya2, VariableForHole2);
-            assm->AddConstraint(GCM_CONCENTRIC, VariableForHole3, OtvtubeTeploobmennaya3);
-            assm->AddConstraint(GCM_CONCENTRIC, VariableForHole4, OtvtubeTeploobmennaya4);
+            assm->AddConstraint(GCM_CONCENTRIC, VariableForHole1, OtvtubeTeploobmennaya1);
         }
 
         // Расстояние Опора - Кожуховые трубы
@@ -448,10 +515,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
             MtGeomArgument PlaneOfTubeKozhux3(Detail_002->GetFace(0), Item_002_003);
             MtGeomArgument PlaneOfTubeKozhux4(Detail_002->GetFace(0), Item_002_004);
 
-            MtGeomArgument PlaneOfOporaForward1(Detail_003->GetFace(2), Item_003_002);
-            MtGeomArgument PlaneOfOporaForward2(Detail_003->GetFace(2), Item_003_002);
-            MtGeomArgument PlaneOfOporaForward3(Detail_003->GetFace(2), Item_003_002);
-            MtGeomArgument PlaneOfOporaForward4(Detail_003->GetFace(2), Item_003_002);
+            MtGeomArgument PlaneOfOporaForward1(Detail_003->GetFace(8), Item_003_002);
+            MtGeomArgument PlaneOfOporaForward2(Detail_003->GetFace(8), Item_003_002);
+            MtGeomArgument PlaneOfOporaForward3(Detail_003->GetFace(8), Item_003_002);
+            MtGeomArgument PlaneOfOporaForward4(Detail_003->GetFace(8), Item_003_002);
 
             assm->AddConstraint(GCM_DISTANCE, PlaneOfTubeKozhux1, PlaneOfOporaForward1, MtParVariant(distanceTubesKozhux));
             assm->AddConstraint(GCM_DISTANCE, PlaneOfTubeKozhux2, PlaneOfOporaForward2, MtParVariant(distanceTubesKozhux));
@@ -466,27 +533,15 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
             MtGeomArgument PlaneOfTubeTeploobmeny3(Detail_001->GetFace(0), Item_001_003);
             MtGeomArgument PlaneOfTubeTeploobmeny4(Detail_001->GetFace(0), Item_001_004);
 
-            MtGeomArgument PlaneOfOporaForwards1(Detail_003->GetFace(2), Item_003_002);
-            MtGeomArgument PlaneOfOporaForwards2(Detail_003->GetFace(2), Item_003_002);
-            MtGeomArgument PlaneOfOporaForwards3(Detail_003->GetFace(2), Item_003_002);
-            MtGeomArgument PlaneOfOporaForwards4(Detail_003->GetFace(2), Item_003_002);
+            MtGeomArgument PlaneOfOporaForwards1(Detail_003->GetFace(8), Item_003_002);
+            MtGeomArgument PlaneOfOporaForwards2(Detail_003->GetFace(8), Item_003_002);
+            MtGeomArgument PlaneOfOporaForwards3(Detail_003->GetFace(8), Item_003_002);
+            MtGeomArgument PlaneOfOporaForwards4(Detail_003->GetFace(8), Item_003_002);
 
             assm->AddConstraint(GCM_DISTANCE, PlaneOfTubeTeploobmeny1, PlaneOfOporaForwards1, MtParVariant(distanceTubesTeploobmen));
             assm->AddConstraint(GCM_DISTANCE, PlaneOfTubeTeploobmeny2, PlaneOfOporaForwards2, MtParVariant(distanceTubesTeploobmen));
             assm->AddConstraint(GCM_DISTANCE, PlaneOfTubeTeploobmeny3, PlaneOfOporaForwards3, MtParVariant(distanceTubesTeploobmen));
             assm->AddConstraint(GCM_DISTANCE, PlaneOfTubeTeploobmeny4, PlaneOfOporaForwards4, MtParVariant(distanceTubesTeploobmen));
-        }
-
-        // Совмещение Решетка кожуховых труб - Камера
-        {
-            MtGeomArgument Planeofkamera1(Detail_005->GetFace(1), Item_005_001);
-            MtGeomArgument Planeofkamera2(Detail_005->GetFace(3), Item_005_001);
-
-            MtGeomArgument PlaneViaRezhetka1(Detail_004->GetFace(41), Item_004_001);
-            MtGeomArgument PlaneViaRezhetka2(Detail_004->GetFace(3), Item_004_001);
-
-            assm->AddConstraint(GCM_COINCIDENT, Planeofkamera1, PlaneViaRezhetka1);
-            assm->AddConstraint(GCM_CONCENTRIC, Planeofkamera2, PlaneViaRezhetka2);
         }
 
         // Совмещение Фланец кожуховый - Кожуховые трубы
@@ -565,7 +620,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
             assm->AddConstraint(GCM_CONCENTRIC, SubPlaneOfTubeTeploobmennaya4, SubPlaneFlanecTeploobmennaya4);
         }
 
-        // Совмещение Фланец Специальный - Труба теплообменная
+        // Совмещение Фланец Специальный - Труба теплообменная (В камере)
         {
             MtGeomArgument getPlaneOfTubeTeploobmennaya1(Detail_001->GetFace(0), Item_001_001);
             MtGeomArgument getPlaneOfTubeTeploobmennaya2(Detail_001->GetFace(0), Item_001_002);
@@ -578,90 +633,87 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
             MtGeomArgument getPlaneFlanecSpec4(Detail_008->GetFace(12), Item_008_004);
 
 
-            assm->AddConstraint(GCM_COINCIDENT, getPlaneOfTubeTeploobmennaya1, getPlaneFlanecSpec1);
-            assm->AddConstraint(GCM_COINCIDENT, getPlaneOfTubeTeploobmennaya2, getPlaneFlanecSpec2);
-            assm->AddConstraint(GCM_COINCIDENT, getPlaneOfTubeTeploobmennaya3, getPlaneFlanecSpec3);
-            assm->AddConstraint(GCM_COINCIDENT, getPlaneOfTubeTeploobmennaya4, getPlaneFlanecSpec4);
+            assm->AddConstraint(GCM_COINCIDENT, getPlaneOfTubeTeploobmennaya1, getPlaneFlanecSpec1, MtParVariant(GCM_OPPOSITE));
+            assm->AddConstraint(GCM_COINCIDENT, getPlaneOfTubeTeploobmennaya2, getPlaneFlanecSpec2, MtParVariant(GCM_OPPOSITE));
+            assm->AddConstraint(GCM_COINCIDENT, getPlaneOfTubeTeploobmennaya3, getPlaneFlanecSpec3, MtParVariant(GCM_OPPOSITE));
+            assm->AddConstraint(GCM_COINCIDENT, getPlaneOfTubeTeploobmennaya4, getPlaneFlanecSpec4, MtParVariant(GCM_OPPOSITE));
         }
 
-        // Концентричность Фланец Специальный - Труба теплообменная
+        // Концентричность Фланец Специальный - Труба теплообменная (В камере) 
         {
-            MtGeomArgument subgetPlaneOfTubeTeploobmennaya1(Detail_001->GetFace(2), Item_001_001);
-            MtGeomArgument subgetPlaneOfTubeTeploobmennaya2(Detail_001->GetFace(2), Item_001_002);
-            MtGeomArgument subgetPlaneOfTubeTeploobmennaya3(Detail_001->GetFace(2), Item_001_003);
-            MtGeomArgument subgetPlaneOfTubeTeploobmennaya4(Detail_001->GetFace(2), Item_001_004);
+            MtGeomArgument getPlaneOfTubeTeploobmennaya144(Detail_001->GetFace(2), Item_001_001);
+            MtGeomArgument getPlaneOfTubeTeploobmennaya244(Detail_001->GetFace(2), Item_001_002);
+            MtGeomArgument getPlaneOfTubeTeploobmennaya344(Detail_001->GetFace(2), Item_001_003);
+            MtGeomArgument getPlaneOfTubeTeploobmennaya444(Detail_001->GetFace(2), Item_001_004);
 
-            MtGeomArgument subgetPlaneFlanecSpec1(Detail_008->GetFace(3), Item_008_001);
-            MtGeomArgument subgetPlaneFlanecSpec2(Detail_008->GetFace(3), Item_008_002);
-            MtGeomArgument subgetPlaneFlanecSpec3(Detail_008->GetFace(3), Item_008_003);
-            MtGeomArgument subgetPlaneFlanecSpec4(Detail_008->GetFace(3), Item_008_004);
+            MtGeomArgument getPlaneFlanecSpec133(Detail_008->GetFace(14), Item_008_001);
+            MtGeomArgument getPlaneFlanecSpec233(Detail_008->GetFace(14), Item_008_002);
+            MtGeomArgument getPlaneFlanecSpec333(Detail_008->GetFace(14), Item_008_003);
+            MtGeomArgument getPlaneFlanecSpec433(Detail_008->GetFace(14), Item_008_004);
 
 
-            assm->AddConstraint(GCM_CONCENTRIC, subgetPlaneOfTubeTeploobmennaya1, subgetPlaneFlanecSpec1);
-            assm->AddConstraint(GCM_CONCENTRIC, subgetPlaneOfTubeTeploobmennaya2, subgetPlaneFlanecSpec2);
-            assm->AddConstraint(GCM_CONCENTRIC, subgetPlaneOfTubeTeploobmennaya3, subgetPlaneFlanecSpec3);
-            assm->AddConstraint(GCM_CONCENTRIC, subgetPlaneOfTubeTeploobmennaya4, subgetPlaneFlanecSpec4);
+            assm->AddConstraint(GCM_CONCENTRIC, getPlaneOfTubeTeploobmennaya144, getPlaneFlanecSpec133, MtParVariant(GCM_OPPOSITE));
+            assm->AddConstraint(GCM_CONCENTRIC, getPlaneOfTubeTeploobmennaya244, getPlaneFlanecSpec233, MtParVariant(GCM_OPPOSITE));
+            assm->AddConstraint(GCM_CONCENTRIC, getPlaneOfTubeTeploobmennaya344, getPlaneFlanecSpec333, MtParVariant(GCM_OPPOSITE));
+            assm->AddConstraint(GCM_CONCENTRIC, getPlaneOfTubeTeploobmennaya444, getPlaneFlanecSpec433, MtParVariant(GCM_OPPOSITE));
         }
 
-        //// Совмещение Фланец Специальный - Фланец Специальный (В Камере)
-        //{
-        //    MtGeomArgument PlaneOfFlanecFirst1(Detail_008->GetFace(2), Item_008_001);
-        //    MtGeomArgument PlaneOfFlanecFirst2(Detail_008->GetFace(2), Item_008_002);
-        //    MtGeomArgument PlaneOfFlanecFirst3(Detail_008->GetFace(2), Item_008_003);
-        //    MtGeomArgument PlaneOfFlanecFirst4(Detail_008->GetFace(2), Item_008_004);
+        // Совмещение Фланец Специальный - Фланец Специальный (В камере)
+        {
+            MtGeomArgument getPlaneOfTubeTeploobmennaya1123(Detail_008->GetFace(9), Item_008_001);
+            MtGeomArgument getPlaneOfTubeTeploobmennaya2123(Detail_008->GetFace(9), Item_008_002);
+            MtGeomArgument getPlaneOfTubeTeploobmennaya3123(Detail_008->GetFace(9), Item_008_003);
+            MtGeomArgument getPlaneOfTubeTeploobmennaya4123(Detail_008->GetFace(9), Item_008_004);
 
-        //    MtGeomArgument PlaneOfFlanecSecond1(Detail_008->GetFace(9), Item_008_001);
-        //    MtGeomArgument PlaneOfFlanecSecond2(Detail_008->GetFace(9), Item_008_002);
-        //    MtGeomArgument PlaneOfFlanecSecond3(Detail_008->GetFace(9), Item_008_003);
-        //    MtGeomArgument PlaneOfFlanecSecond4(Detail_008->GetFace(9), Item_008_004);
-
-
-        //    assm->AddConstraint(GCM_COINCIDENT, PlaneOfFlanecFirst1, PlaneOfFlanecSecond1);
-        //    assm->AddConstraint(GCM_COINCIDENT, PlaneOfFlanecFirst2, PlaneOfFlanecSecond2);
-        //    assm->AddConstraint(GCM_COINCIDENT, PlaneOfFlanecFirst3, PlaneOfFlanecSecond3);
-        //    assm->AddConstraint(GCM_COINCIDENT, PlaneOfFlanecFirst4, PlaneOfFlanecSecond4);
-        //}
-
-        //// Концентричность Фланец Специальный - Фланец Специальный (В Камере)
-        //{
-        //    MtGeomArgument SubPlaneOfTubeTeploobmennaya1(Detail_006->GetFace(3), Item_006_001);
-        //    MtGeomArgument SubPlaneOfTubeTeploobmennaya2(Detail_006->GetFace(3), Item_006_002);
-        //    MtGeomArgument SubPlaneOfTubeTeploobmennaya3(Detail_006->GetFace(3), Item_006_003);
-        //    MtGeomArgument SubPlaneOfTubeTeploobmennaya4(Detail_006->GetFace(3), Item_006_004);
-
-        //    MtGeomArgument SubPlaneFlanecTeploobmennaya1(Detail_007->GetFace(3), Item_007_001);
-        //    MtGeomArgument SubPlaneFlanecTeploobmennaya2(Detail_007->GetFace(3), Item_007_002);
-        //    MtGeomArgument SubPlaneFlanecTeploobmennaya3(Detail_007->GetFace(3), Item_007_003);
-        //    MtGeomArgument SubPlaneFlanecTeploobmennaya4(Detail_007->GetFace(3), Item_007_004);
+            MtGeomArgument getPlaneOfTubeTeploobmennaya1321(Detail_008->GetFace(9), Item_008_005);
+            MtGeomArgument getPlaneOfTubeTeploobmennaya2321(Detail_008->GetFace(9), Item_008_006);
+            MtGeomArgument getPlaneOfTubeTeploobmennaya3321(Detail_008->GetFace(9), Item_008_007);
+            MtGeomArgument getPlaneOfTubeTeploobmennaya4321(Detail_008->GetFace(9), Item_008_008);
 
 
-        //    assm->AddConstraint(GCM_CONCENTRIC, SubPlaneOfTubeTeploobmennaya1, SubPlaneFlanecTeploobmennaya1);
-        //    assm->AddConstraint(GCM_CONCENTRIC, SubPlaneOfTubeTeploobmennaya2, SubPlaneFlanecTeploobmennaya2);
-        //    assm->AddConstraint(GCM_CONCENTRIC, SubPlaneOfTubeTeploobmennaya3, SubPlaneFlanecTeploobmennaya3);
-        //    assm->AddConstraint(GCM_CONCENTRIC, SubPlaneOfTubeTeploobmennaya4, SubPlaneFlanecTeploobmennaya4);
-        //}
+            assm->AddConstraint(GCM_COINCIDENT, getPlaneOfTubeTeploobmennaya1123, getPlaneOfTubeTeploobmennaya1321, MtParVariant(GCM_OPPOSITE));
+            assm->AddConstraint(GCM_COINCIDENT, getPlaneOfTubeTeploobmennaya2123, getPlaneOfTubeTeploobmennaya2321, MtParVariant(GCM_OPPOSITE));
+            assm->AddConstraint(GCM_COINCIDENT, getPlaneOfTubeTeploobmennaya3123, getPlaneOfTubeTeploobmennaya3321, MtParVariant(GCM_OPPOSITE));
+            assm->AddConstraint(GCM_COINCIDENT, getPlaneOfTubeTeploobmennaya4123, getPlaneOfTubeTeploobmennaya4321, MtParVariant(GCM_OPPOSITE));
+        }
 
-        // Совмещение Изогнутая труба - Теплообменные трубы 
+        // Концентричность Фланец Специальный - Фланец Специальный (В камере) 
+        {
+            MtGeomArgument getPlaneOfTubeTeploobmennaya144ss(Detail_008->GetFace(14), Item_008_001);
+            MtGeomArgument getPlaneOfTubeTeploobmennaya244ss(Detail_008->GetFace(14), Item_008_002);
+            MtGeomArgument getPlaneOfTubeTeploobmennaya344ss(Detail_008->GetFace(14), Item_008_003);
+            MtGeomArgument getPlaneOfTubeTeploobmennaya444ss(Detail_008->GetFace(14), Item_008_004);
+
+            MtGeomArgument getPlaneFlanecSpec133t(Detail_008->GetFace(14), Item_008_005);
+            MtGeomArgument getPlaneFlanecSpec233t(Detail_008->GetFace(14), Item_008_006);
+            MtGeomArgument getPlaneFlanecSpec333t(Detail_008->GetFace(14), Item_008_007);
+            MtGeomArgument getPlaneFlanecSpec433t(Detail_008->GetFace(14), Item_008_008);
+
+
+            assm->AddConstraint(GCM_CONCENTRIC, getPlaneOfTubeTeploobmennaya144ss, getPlaneFlanecSpec133t, MtParVariant(GCM_OPPOSITE));
+            assm->AddConstraint(GCM_CONCENTRIC, getPlaneOfTubeTeploobmennaya244ss, getPlaneFlanecSpec233t, MtParVariant(GCM_OPPOSITE));
+            assm->AddConstraint(GCM_CONCENTRIC, getPlaneOfTubeTeploobmennaya344ss, getPlaneFlanecSpec333t, MtParVariant(GCM_OPPOSITE));
+            assm->AddConstraint(GCM_CONCENTRIC, getPlaneOfTubeTeploobmennaya444ss, getPlaneFlanecSpec433t, MtParVariant(GCM_OPPOSITE));
+        }
+
+        // Совмещение Изогнутая труба - Фланец Специальный (В камере) 
         {
             MtGeomArgument PlaneofCurevedTube1(Detail_009->GetFace(0), Item_009_001);
             MtGeomArgument PlaneofCurevedTube2(Detail_009->GetFace(0), Item_009_002);
-            MtGeomArgument PlaneofCurevedTube3(Detail_009->GetFace(0), Item_009_003);
 
-            MtGeomArgument PlaneForCoincedent1(Detail_001->GetFace(0), Item_001_001);
-            MtGeomArgument PlaneForCoincedent2(Detail_001->GetFace(0), Item_001_002);
-            MtGeomArgument PlaneForCoincedent3(Detail_001->GetFace(1), Item_001_003);
+            MtGeomArgument PlaneForCoincedent1(Detail_008->GetFace(12), Item_008_005);
+            MtGeomArgument PlaneForCoincedent2(Detail_008->GetFace(12), Item_008_006);
 
             assm->AddConstraint(GCM_COINCIDENT, PlaneofCurevedTube1, PlaneForCoincedent1);
             assm->AddConstraint(GCM_COINCIDENT, PlaneofCurevedTube2, PlaneForCoincedent2);
-            assm->AddConstraint(GCM_COINCIDENT, PlaneofCurevedTube3, PlaneForCoincedent3);
         }
 
-        // !!! Концентричность Изогнутая труба - Теплообменные трубы 
+        // Концентричность Изогнутая труба - Фланец Специальный (В камере) 
         {
-            /*MtGeomArgument VariableForPlany1(Detail_001->GetFace(2), Item_001_001);
-            MtGeomArgument VariableForPlany2(Detail_001->GetFace(2), Item_001_002);
-            MtGeomArgument VariableForPlany4(Detail_001->GetFace(2), Item_001_003);
-            MtGeomArgument VariableForPlany5(Detail_001->GetFace(2), Item_001_004);
+            MtGeomArgument VariableForPlany1(Detail_008->GetFace(14), Item_008_005);
+            MtGeomArgument VariableForPlany2(Detail_008->GetFace(14), Item_008_006);
+            MtGeomArgument VariableForPlany4(Detail_008->GetFace(14), Item_008_007);
+            MtGeomArgument VariableForPlany5(Detail_008->GetFace(14), Item_008_008);
 
             MtGeomArgument OtvtubeCureved1(Detail_009->GetFace(3), Item_009_001);
             MtGeomArgument OtvtubeCureved2(Detail_009->GetFace(3), Item_009_002);
@@ -671,19 +723,196 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
             assm->AddConstraint(GCM_CONCENTRIC, OtvtubeCureved1, VariableForPlany1);
             assm->AddConstraint(GCM_CONCENTRIC, OtvtubeCureved2, VariableForPlany2);
             assm->AddConstraint(GCM_CONCENTRIC, OtvtubeCureved4, VariableForPlany4);
-            assm->AddConstraint(GCM_CONCENTRIC, OtvtubeCureved5, VariableForPlany5);*/
+            assm->AddConstraint(GCM_CONCENTRIC, OtvtubeCureved5, VariableForPlany5);
 
-            MtGeomArgument VariableForPlany6(Detail_001->GetFace(1), Item_001_002);
-            MtGeomArgument OtvtubeCureved6(Detail_009->GetFace(0), Item_009_003);
-            assm->AddConstraint(GCM_COINCIDENT, OtvtubeCureved6, VariableForPlany6, MtParVariant(GCM_OPPOSITE));
+        }
 
-            MtGeomArgument VariableForPlany3(Detail_003->GetFace(36), Item_003_001);
-            MtGeomArgument OtvtubeCureved3(Detail_009->GetFace(5), Item_009_003);
-            assm->AddConstraint(GCM_CONCENTRIC, OtvtubeCureved3, VariableForPlany3);
+        // Совмещение Фланец Специальный - Труба теплообменная
+        {
+            MtGeomArgument Argument1(Detail_001->GetFace(1), Item_001_001);
+            MtGeomArgument Argument2(Detail_001->GetFace(1), Item_001_002);
+            MtGeomArgument Argument3(Detail_001->GetFace(1), Item_001_003);
+            MtGeomArgument Argument4(Detail_001->GetFace(1), Item_001_004);
+
+            MtGeomArgument Argument5(Detail_008->GetFace(12), Item_008_009);
+            MtGeomArgument Argument6(Detail_008->GetFace(12), Item_008_010);
+            MtGeomArgument Argument7(Detail_008->GetFace(12), Item_008_011);
+            MtGeomArgument Argument8(Detail_008->GetFace(12), Item_008_012);
+
+            assm->AddConstraint(GCM_COINCIDENT, Argument1, Argument5);
+            assm->AddConstraint(GCM_COINCIDENT, Argument2, Argument6);
+            assm->AddConstraint(GCM_COINCIDENT, Argument3, Argument7);
+            assm->AddConstraint(GCM_COINCIDENT, Argument4, Argument8);
+        }
+
+        // Концентричность Фланец Специальный - Труба теплообменная
+        {
+            MtGeomArgument Argument1Plane(Detail_001->GetFace(3), Item_001_001);
+            MtGeomArgument Argument2Plane(Detail_001->GetFace(3), Item_001_002);
+            MtGeomArgument Argument3Plane(Detail_001->GetFace(3), Item_001_003);
+            MtGeomArgument Argument4Plane(Detail_001->GetFace(3), Item_001_004);
+
+            MtGeomArgument Argument5Plane(Detail_008->GetFace(14), Item_008_009);
+            MtGeomArgument Argument6Plane(Detail_008->GetFace(14), Item_008_010);
+            MtGeomArgument Argument7Plane(Detail_008->GetFace(14), Item_008_011);
+            MtGeomArgument Argument8Plane(Detail_008->GetFace(14), Item_008_012);
+
+
+            assm->AddConstraint(GCM_CONCENTRIC, Argument1Plane, Argument5Plane);
+            assm->AddConstraint(GCM_CONCENTRIC, Argument2Plane, Argument6Plane);
+            assm->AddConstraint(GCM_CONCENTRIC, Argument3Plane, Argument7Plane);
+            assm->AddConstraint(GCM_CONCENTRIC, Argument4Plane, Argument8Plane);
+        }
+
+        // Совмещение Фланец Специальный - Фланец Специальный
+        {
+            MtGeomArgument FlanecCpecPlane1(Detail_008->GetFace(9), Item_008_009);
+            MtGeomArgument FlanecCpecPlane2(Detail_008->GetFace(9), Item_008_010);
+            MtGeomArgument FlanecCpecPlane3(Detail_008->GetFace(9), Item_008_011);
+            MtGeomArgument FlanecCpecPlane4(Detail_008->GetFace(9), Item_008_012);
+
+            MtGeomArgument FlanecCpecPlane5(Detail_008->GetFace(9), Item_008_013);
+            MtGeomArgument FlanecCpecPlane6(Detail_008->GetFace(9), Item_008_014);
+            MtGeomArgument FlanecCpecPlane7(Detail_008->GetFace(9), Item_008_015);
+            MtGeomArgument FlanecCpecPlane8(Detail_008->GetFace(9), Item_008_016);
+
+
+            assm->AddConstraint(GCM_COINCIDENT, FlanecCpecPlane1, FlanecCpecPlane5, MtParVariant(GCM_OPPOSITE));
+            assm->AddConstraint(GCM_COINCIDENT, FlanecCpecPlane2, FlanecCpecPlane6, MtParVariant(GCM_OPPOSITE));
+            assm->AddConstraint(GCM_COINCIDENT, FlanecCpecPlane3, FlanecCpecPlane7, MtParVariant(GCM_OPPOSITE));
+            assm->AddConstraint(GCM_COINCIDENT, FlanecCpecPlane4, FlanecCpecPlane8, MtParVariant(GCM_OPPOSITE));
+        }
+
+        // Концентричность Фланец Специальный - Фланец Специальный
+        {
+            MtGeomArgument FlanecCpecOtv1(Detail_008->GetFace(14), Item_008_009);
+            MtGeomArgument FlanecCpecOtv2(Detail_008->GetFace(14), Item_008_010);
+            MtGeomArgument FlanecCpecOtv3(Detail_008->GetFace(14), Item_008_011);
+            MtGeomArgument FlanecCpecOtv4(Detail_008->GetFace(14), Item_008_012);
+
+            MtGeomArgument FlanecCpecOtv5(Detail_008->GetFace(14), Item_008_013);
+            MtGeomArgument FlanecCpecOtv6(Detail_008->GetFace(14), Item_008_014);
+            MtGeomArgument FlanecCpecOtv7(Detail_008->GetFace(14), Item_008_015);
+            MtGeomArgument FlanecCpecOtv8(Detail_008->GetFace(14), Item_008_016);
+
+
+            assm->AddConstraint(GCM_CONCENTRIC, FlanecCpecOtv1, FlanecCpecOtv5, MtParVariant(GCM_OPPOSITE));
+            assm->AddConstraint(GCM_CONCENTRIC, FlanecCpecOtv2, FlanecCpecOtv6, MtParVariant(GCM_OPPOSITE));
+            assm->AddConstraint(GCM_CONCENTRIC, FlanecCpecOtv3, FlanecCpecOtv7, MtParVariant(GCM_OPPOSITE));
+            assm->AddConstraint(GCM_CONCENTRIC, FlanecCpecOtv4, FlanecCpecOtv8, MtParVariant(GCM_OPPOSITE));
+        }
+
+        // Совмещение Фланец Специальный - Труба теплообменная
+        {
+            MtGeomArgument FlanecCpecOtvTest1(Detail_008->GetFace(12), Item_008_015);
+            MtGeomArgument FlanecCpecOtvTest2(Detail_008->GetFace(12), Item_008_016);
+            MtGeomArgument FlanecCpecOtvTest3(Detail_009->GetFace(0), Item_009_003);
+
+            assm->AddConstraint(GCM_COINCIDENT, FlanecCpecOtvTest1, FlanecCpecOtvTest3);
+            assm->AddConstraint(GCM_COINCIDENT, FlanecCpecOtvTest2, FlanecCpecOtvTest3);
+
+            MtGeomArgument FlanecCpecOtvTest4(Detail_008->GetFace(14), Item_008_015);
+            MtGeomArgument FlanecCpecOtvTest5(Detail_008->GetFace(14), Item_008_016);
+            MtGeomArgument FlanecCpecOtvTest6(Detail_009->GetFace(2), Item_009_003);
+            MtGeomArgument FlanecCpecOtvTest7(Detail_009->GetFace(3), Item_009_003);
+
+            assm->AddConstraint(GCM_CONCENTRIC, FlanecCpecOtvTest4, FlanecCpecOtvTest6);
+            assm->AddConstraint(GCM_CONCENTRIC, FlanecCpecOtvTest5, FlanecCpecOtvTest7);
+        }
+
+        // Концентричность Фланец Специальный - Труба теплообменная
+        {
+            MtGeomArgument FlanecCpecOtv1(Detail_008->GetFace(14), Item_008_009);
+            MtGeomArgument FlanecCpecOtv2(Detail_008->GetFace(14), Item_008_010);
+            MtGeomArgument FlanecCpecOtv3(Detail_008->GetFace(14), Item_008_011);
+            MtGeomArgument FlanecCpecOtv4(Detail_008->GetFace(14), Item_008_012);
+
+            MtGeomArgument FlanecCpecOtv5(Detail_008->GetFace(14), Item_008_013);
+            MtGeomArgument FlanecCpecOtv6(Detail_008->GetFace(14), Item_008_014);
+            MtGeomArgument FlanecCpecOtv7(Detail_008->GetFace(14), Item_008_015);
+            MtGeomArgument FlanecCpecOtv8(Detail_008->GetFace(14), Item_008_016);
+
+
+            assm->AddConstraint(GCM_CONCENTRIC, FlanecCpecOtv1, FlanecCpecOtv5, MtParVariant(GCM_OPPOSITE));
+            assm->AddConstraint(GCM_CONCENTRIC, FlanecCpecOtv2, FlanecCpecOtv6, MtParVariant(GCM_OPPOSITE));
+            assm->AddConstraint(GCM_CONCENTRIC, FlanecCpecOtv3, FlanecCpecOtv7, MtParVariant(GCM_OPPOSITE));
+            assm->AddConstraint(GCM_CONCENTRIC, FlanecCpecOtv4, FlanecCpecOtv8, MtParVariant(GCM_OPPOSITE));
+        }
+
+        // Расстояние/Концентричность Решетка кожуховых труб - Камера
+        {
+            MtGeomArgument Planeofkamera1(Detail_005->GetFace(1), Item_005_001);
+            MtGeomArgument Planeofkamera2(Detail_005->GetFace(3), Item_005_001);
+
+            MtGeomArgument PlaneViaRezhetka1(Detail_004->GetFace(41), Item_004_001);
+            MtGeomArgument PlaneViaRezhetka2(Detail_004->GetFace(3), Item_004_001);
+
+            assm->AddConstraint(GCM_COINCIDENT, Planeofkamera1, PlaneViaRezhetka1);
+            assm->AddConstraint(GCM_CONCENTRIC, Planeofkamera2, PlaneViaRezhetka2);
+        }
+
+        // Расстояние/Концентричность Соединение с фланцами
+        {
+
+            MtGeomArgument Face1312(Detail_003->GetFace(3), Item_003_001);
+            MtGeomArgument Face2321(Detail_011->GetFace(2), Item_011_001);
+
+            assm->AddConstraint(GCM_DISTANCE, Face1312, Face2321, MtParVariant(l2 - shirinaOpori));
+
+            MtGeomArgument ConnectorsPlane1(Detail_002->GetFace(3), Item_002_001);
+            MtGeomArgument ConnectorsPlane2(Detail_002->GetFace(3), Item_002_002);
+
+            MtGeomArgument ConnectorsPlane3(Detail_011->GetFace(8), Item_011_001);
+            MtGeomArgument ConnectorsPlane4(Detail_011->GetFace(9), Item_011_001);
+
+            assm->AddConstraint(GCM_CONCENTRIC, ConnectorsPlane2, ConnectorsPlane3);
+            assm->AddConstraint(GCM_CONCENTRIC, ConnectorsPlane1, ConnectorsPlane4);
+        }
+
+        // Расстояние/Концентричность Соединение
+        {
+
+            MtGeomArgument Face1312(Detail_003->GetFace(3), Item_003_001);
+            MtGeomArgument Face2321(Detail_010->GetFace(2), Item_010_001);
+
+            assm->AddConstraint(GCM_DISTANCE, Face1312, Face2321, MtParVariant(l2 - shirinaOpori));
+
+            MtGeomArgument ConnectorsPlane1(Detail_002->GetFace(3), Item_002_003);
+            MtGeomArgument ConnectorsPlane2(Detail_002->GetFace(3), Item_002_004);
+
+            MtGeomArgument ConnectorsPlane3(Detail_010->GetFace(4), Item_010_001);
+            MtGeomArgument ConnectorsPlane4(Detail_010->GetFace(5), Item_010_001);
+
+            assm->AddConstraint(GCM_CONCENTRIC, ConnectorsPlane2, ConnectorsPlane3);
+            assm->AddConstraint(GCM_CONCENTRIC, ConnectorsPlane1, ConnectorsPlane4);
+        }
+
+        // Совмещение/Концентричность фланцы на соеденение
+        {
+            MtGeomArgument facebody1(Detail_007->GetFace(12), Item_007_005);
+            MtGeomArgument facebody2(Detail_007->GetFace(12), Item_007_006);
+            MtGeomArgument facebody3(Detail_011->GetFace(5), Item_011_001);
+            MtGeomArgument facebody4(Detail_011->GetFace(0), Item_011_001);
+
+            assm->AddConstraint(GCM_COINCIDENT, facebody1, facebody3);
+            assm->AddConstraint(GCM_COINCIDENT, facebody2, facebody4);
+
+            MtGeomArgument ConnectorsPlane1(Detail_007->GetFace(3), Item_007_005);
+            MtGeomArgument ConnectorsPlane2(Detail_007->GetFace(3), Item_007_006);
+
+            MtGeomArgument ConnectorsPlane3(Detail_011->GetFace(12), Item_011_001);
+            MtGeomArgument ConnectorsPlane4(Detail_011->GetFace(17), Item_011_001);
+
+            assm->AddConstraint(GCM_CONCENTRIC, ConnectorsPlane1, ConnectorsPlane3);
+            assm->AddConstraint(GCM_CONCENTRIC, ConnectorsPlane2, ConnectorsPlane4);
         }
     }
 
     assm->EvaluateConstraints();
+
+
+    assm->Rotate(axVert, M_PI/2);
+    assm->Rotate(ayVert, M_PI);
 
     return assm;
 }
