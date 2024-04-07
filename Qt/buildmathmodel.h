@@ -195,12 +195,14 @@ namespace BuildMathModel {
 
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_001_tubeTeploobmen(double Lk, double ttDiam, double ttThickness);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_002_tubeKozhux(double lK, double ktDiam, double ktThickness);
-		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora(double dV, double ktDiam, double ktThickness, double t);
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora(double dV, double ktDiam, double ktThickness, double t, double visotaOpori, double shirinaOpori);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_004_reshetkaKozhux(double ktDiam, double ktThickness, double t);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_005_kamera();
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_006_RezhetkaTeplTube();
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_007_FlanecKozhux();
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_008_FlanecSpecial();
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_009_curevedTube(double ttDiam, double ttThickness, double t);
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_010_Connector(double ktDiam, double ktThickness, double t);
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_011_ConnectorWithFlanec(double ktDiam, double ktThickness, double t, double visotaOpori);
 	};
 }

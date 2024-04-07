@@ -1,4 +1,5 @@
 #include "BuildMathModel.h"
+#include <mb_property.h>
 
 using namespace BuildMathModel;
 
@@ -265,7 +266,9 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
     double l3 = params.l3;
     double t = params.t;
 
-    double distanceRezhetka = 500.0;
+    const double visotaOpori = 850;
+    const double shirinaOpori = 200;
+    double distanceRezhetka = 500; //l2 - 400
     double distanceTubesKozhux = (-1) * (distanceRezhetka + 90.0);
     double distanceTubesTeploobmen = -660.0;
 #pragma endregion
@@ -273,23 +276,46 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
     MbPlacement3D lcs;
 
     // Item_008_001->Move(MbVector3D (3000,20,20));
-    // MbAxis3D axVert(MbVector3D(1, 0, 0));
-    // MbAxis3D ayVert(MbVector3D(0, 1, 0));
-    // MbAxis3D azVert(MbVector3D(0, 0, 1));
+    MbAxis3D axVert(MbVector3D(1, 0, 0));
+    MbAxis3D ayVert(MbVector3D(0, 1, 0));
+    MbAxis3D azVert(MbVector3D(0, 0, 1));
 
     SPtr<MbSolid> Detail_001(Zarubincreate_001_tubeTeploobmen(lK, ttDiam, ttThickness));
+    Detail_001->SetColor(235, 172, 165);
     SPtr<MbSolid> Detail_002(Zarubincreate_002_tubeKozhux(lK, ktDiam, ktThickness));
-    SPtr<MbSolid> Detail_003(Zarubincreate_003_opora(dV, ktDiam, ktThickness, t));
+    Detail_002->SetColor(165, 175, 235);
+    SPtr<MbSolid> Detail_003(Zarubincreate_003_opora(dV, ktDiam, ktThickness, t, visotaOpori, shirinaOpori));
+    Detail_003->SetColor(80, 84, 84);
     SPtr<MbSolid> Detail_004(Zarubincreate_004_reshetkaKozhux(ktDiam, ktThickness, t));
+    Detail_004->SetColor(147, 218, 136);
     SPtr<MbSolid> Detail_005(Zarubincreate_005_kamera());
+    Detail_005->SetColor(101, 150, 94);
     SPtr<MbSolid> Detail_006(Zarubincreate_006_RezhetkaTeplTube());
     SPtr<MbSolid> Detail_007(Zarubincreate_007_FlanecKozhux());
+    Detail_007->SetColor(130, 130, 130);
+
     SPtr<MbSolid> Detail_008(Zarubincreate_008_FlanecSpecial());
     SPtr<MbSolid> Detail_009(Zarubincreate_009_curevedTube(ttDiam, ttThickness, t));
-
+    Detail_009->SetColor(71, 91, 71);
+    SPtr<MbSolid> Detail_010(Zarubincreate_010_Connector(ktDiam, ktThickness, t));
+    SPtr<MbSolid> Detail_011(Zarubincreate_011_ConnectorWithFlanec(ktDiam, ktThickness, t, visotaOpori));
+    
     std::vector<SPtr<MbItem>> pair;
 
     SPtr<MbInstance> Item_001_001(new MbInstance(*Detail_001, lcs));
+
+    //MbProperties* mp = new MbProperties();
+
+    //  size_t currpos = 'Test';
+
+    //  TCHAR bc = IDS_ITEM_0733;
+
+    //  mp->SetName(bc);
+    //  c3d::string_t description;
+    //  //IDS_ITEM_0733
+
+    //  Item_001_001->GetProperties(*mp);
+
     SPtr<MbInstance> Item_001_002(new MbInstance(*Detail_001, lcs));
     SPtr<MbInstance> Item_001_003(new MbInstance(*Detail_001, lcs));
     SPtr<MbInstance> Item_001_004(new MbInstance(*Detail_001, lcs));
@@ -316,6 +342,9 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
     SPtr<MbInstance> Item_007_003(new MbInstance(*Detail_007, lcs));
     SPtr<MbInstance> Item_007_004(new MbInstance(*Detail_007, lcs));
 
+    SPtr<MbInstance> Item_007_005(new MbInstance(*Detail_007, lcs));
+    SPtr<MbInstance> Item_007_006(new MbInstance(*Detail_007, lcs));
+
     // Фланцы специальнае для камеры
     SPtr<MbInstance> Item_008_001(new MbInstance(*Detail_008, lcs));
     SPtr<MbInstance> Item_008_002(new MbInstance(*Detail_008, lcs));
@@ -339,6 +368,9 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
     SPtr<MbInstance> Item_009_001(new MbInstance(*Detail_009, lcs));
     SPtr<MbInstance> Item_009_002(new MbInstance(*Detail_009, lcs));
     SPtr<MbInstance> Item_009_003(new MbInstance(*Detail_009, lcs));
+
+    SPtr<MbInstance> Item_010_001(new MbInstance(*Detail_010, lcs));
+    SPtr<MbInstance> Item_011_001(new MbInstance(*Detail_011, lcs));
 
     //Переменные для подсборки
     pair.push_back(Item_001_001);
@@ -368,6 +400,9 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
     pair.push_back(Item_007_003);
     pair.push_back(Item_007_004);
 
+    pair.push_back(Item_007_005);
+    pair.push_back(Item_007_006);
+
     pair.push_back(Item_008_001);
     pair.push_back(Item_008_002);
     pair.push_back(Item_008_003);
@@ -390,13 +425,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
     pair.push_back(Item_009_002);
     pair.push_back(Item_009_003);
 
+    pair.push_back(Item_010_001);
+    pair.push_back(Item_011_001);
+
     SPtr<MbAssembly> assm(new MbAssembly(pair));
-
-    //MbCartPoint3D p[3];
-    //p.x = 1.0;
-
-    //MbPlacement3D tmpPlace(p[0], p[1], p[2], false);
-    //assm->SetPlacement(tmpPlace);
     {
 
         // Расстояние Опора - Опора
@@ -807,8 +839,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
             assm->AddConstraint(GCM_CONCENTRIC, FlanecCpecOtv4, FlanecCpecOtv8, MtParVariant(GCM_OPPOSITE));
         }
 
-
-        // Совмещение/Концентричность Решетка кожуховых труб - Камера
+        // Расстояние/Концентричность Решетка кожуховых труб - Камера
         {
             MtGeomArgument Planeofkamera1(Detail_005->GetFace(1), Item_005_001);
             MtGeomArgument Planeofkamera2(Detail_005->GetFace(3), Item_005_001);
@@ -820,9 +851,68 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
             assm->AddConstraint(GCM_CONCENTRIC, Planeofkamera2, PlaneViaRezhetka2);
         }
 
+        // Расстояние/Концентричность Соединение с фланцами
+        {
+
+            MtGeomArgument Face1312(Detail_003->GetFace(3), Item_003_001);
+            MtGeomArgument Face2321(Detail_011->GetFace(2), Item_011_001);
+
+            assm->AddConstraint(GCM_DISTANCE, Face1312, Face2321, MtParVariant(l2 - shirinaOpori));
+
+            MtGeomArgument ConnectorsPlane1(Detail_002->GetFace(3), Item_002_001);
+            MtGeomArgument ConnectorsPlane2(Detail_002->GetFace(3), Item_002_002);
+
+            MtGeomArgument ConnectorsPlane3(Detail_011->GetFace(8), Item_011_001);
+            MtGeomArgument ConnectorsPlane4(Detail_011->GetFace(9), Item_011_001);
+
+            assm->AddConstraint(GCM_CONCENTRIC, ConnectorsPlane2, ConnectorsPlane3);
+            assm->AddConstraint(GCM_CONCENTRIC, ConnectorsPlane1, ConnectorsPlane4);
+        }
+
+        // Расстояние/Концентричность Соединение
+        {
+
+            MtGeomArgument Face1312(Detail_003->GetFace(3), Item_003_001);
+            MtGeomArgument Face2321(Detail_010->GetFace(2), Item_010_001);
+
+            assm->AddConstraint(GCM_DISTANCE, Face1312, Face2321, MtParVariant(l2 - shirinaOpori));
+
+            MtGeomArgument ConnectorsPlane1(Detail_002->GetFace(3), Item_002_003);
+            MtGeomArgument ConnectorsPlane2(Detail_002->GetFace(3), Item_002_004);
+
+            MtGeomArgument ConnectorsPlane3(Detail_010->GetFace(4), Item_010_001);
+            MtGeomArgument ConnectorsPlane4(Detail_010->GetFace(5), Item_010_001);
+
+            assm->AddConstraint(GCM_CONCENTRIC, ConnectorsPlane2, ConnectorsPlane3);
+            assm->AddConstraint(GCM_CONCENTRIC, ConnectorsPlane1, ConnectorsPlane4);
+        }
+
+        // Совмещение/Концентричность фланцы на соеденение
+        {
+            MtGeomArgument facebody1(Detail_007->GetFace(12), Item_007_005);
+            MtGeomArgument facebody2(Detail_007->GetFace(12), Item_007_006);
+            MtGeomArgument facebody3(Detail_011->GetFace(5), Item_011_001);
+            MtGeomArgument facebody4(Detail_011->GetFace(0), Item_011_001);
+
+            assm->AddConstraint(GCM_COINCIDENT, facebody1, facebody3);
+            assm->AddConstraint(GCM_COINCIDENT, facebody2, facebody4);
+
+            MtGeomArgument ConnectorsPlane1(Detail_007->GetFace(3), Item_007_005);
+            MtGeomArgument ConnectorsPlane2(Detail_007->GetFace(3), Item_007_006);
+
+            MtGeomArgument ConnectorsPlane3(Detail_011->GetFace(12), Item_011_001);
+            MtGeomArgument ConnectorsPlane4(Detail_011->GetFace(17), Item_011_001);
+
+            assm->AddConstraint(GCM_CONCENTRIC, ConnectorsPlane1, ConnectorsPlane3);
+            assm->AddConstraint(GCM_CONCENTRIC, ConnectorsPlane2, ConnectorsPlane4);
+        }
     }
 
     assm->EvaluateConstraints();
+
+
+    assm->Rotate(axVert, M_PI/2);
+    assm->Rotate(ayVert, M_PI);
 
     return assm;
 }
