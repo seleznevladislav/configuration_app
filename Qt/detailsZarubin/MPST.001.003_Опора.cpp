@@ -240,5 +240,5 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora(double dV, double 
     ::BooleanResult(pMergeBoltCyllBlock3, cm_Copy, pBoltCyl4, cm_Copy,
         MbBooleanOperationParams(bo_Difference, flagsBool, operBoolNames), pMergeBoltCyllBlock4);
 
-    return pMergeBoltCyllBlock4;
+    return pMergeBoltCyllBlock2;
 }
