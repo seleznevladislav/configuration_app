@@ -10,9 +10,9 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     const int LENGTH = params.LENGTH;
     const int length1 = params.length1;
 
-    const int assortmentInnerTubes = 25;
-    const int thicknessInnerTubes = 3;
-    const int diametr = 80;
+    const int assortmentInnerTubes = 25.0;
+    const int thicknessInnerTubes = 3.0;
+    const int diametr = 80.0;
 
     MbPlacement3D lcs;
 
@@ -24,6 +24,9 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     SPtr<MbSolid> supportSolid(create_support_003());
     SPtr<MbSolid> curvedPipeSolid(create_curved_pipe_007(assortmentInnerTubes, thicknessInnerTubes, diametr));
     SPtr<MbSolid> pipeHolderShort(create_pipe_holder_010(20, assortmentInnerTubes));
+
+    // GOSTS
+    SPtr<MbSolid> flanec26E(Flanec26E());
 
 
     // Крышки
@@ -58,6 +61,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     SPtr<MbInstance> pipeHolderShortItem3(new MbInstance(*pipeHolderShort, lcs));
     SPtr<MbInstance> pipeHolderShortItem4(new MbInstance(*pipeHolderShort, lcs));
 
+    // Госты
+    SPtr<MbInstance> flanec26EItem(new MbInstance(*flanec26E, lcs));
+
+
     std::vector<SPtr<MbItem>> pair;
     //Переменные для подсборки
     pair.push_back(capItem);
@@ -87,6 +94,9 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     pair.push_back(pipeHolderShortItem2);
     pair.push_back(pipeHolderShortItem3);
     pair.push_back(pipeHolderShortItem4);
+
+    // Госты
+    pair.push_back(flanec26EItem);
 
 
     pair.push_back(supportItem);
@@ -335,10 +345,71 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
 
         assm->AddConstraint(GCM_COINCIDENT, GeometryArgPipeHolderCoinc7, GeometryArgPipeHolderCoinc8);
         assm->AddConstraint(GCM_CONCENTRIC, GeometryArgPipeHolderConc7, GeometryArgPipeHolderConc8);
+
+        // ГОСТЫ
+        //MtGeomArgument GeometryArgFlanecEConc(flanec26E->GetFace(2), flanec26EItem);
+       
+        //MtGeomArgument GeometryArgFlanecECoinc(flanecE->GetFace(1), flanecEItem);
+        //MtGeomArgument GeometryArgFlanecEConc2(headExhangerGridSolid->GetFace(23), headExhangerGridItem);
+        //MtGeomArgument GeometryArgFlanecECoinc2(headExhangerGridSolid->GetFace(31), headExhangerGridItem);*/
+
+       /* assm->AddConstraint(GCM_COINCIDENT, GeometryArgFlanecEConc, GeometryArgFlanecEConc2);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgFlanecECoinc, GeometryArgFlanecECoinc2);*/
     }
 
     assm->EvaluateConstraints();
+
+    string casingPipeName = "Casing pipe";
+    string headExchangePipeName = "Heat exchange pipe";
+    string distributionChamberName = "Heat exhanger chamber";
+    string rotatableChamberName = "Casing chamber";
+    string supportName = "Support";
+    string capName = "Cap";
+    string roundPipeName = "Rounded pipe";
+
+    MbProductInfo casingPipeInfo(false, casingPipeName, casingPipeName, casingPipeName);
+    MbProductInfo headExchangePipeInfo(false, headExchangePipeName, headExchangePipeName, headExchangePipeName);
+    MbProductInfo distributionChamberInfo(false, headExchangePipeName, headExchangePipeName, headExchangePipeName);
+    MbProductInfo rotatableChamberInfo(false, rotatableChamberName, rotatableChamberName, rotatableChamberName);
+    MbProductInfo supportInfo(false, supportName, supportName, supportName);
+    MbProductInfo capInfo(false, capName, capName, capName);
+    MbProductInfo roundedPipeInfo(false, roundPipeName, roundPipeName, roundPipeName);
+
+    MbProductInfo TTRMInfo(false, "TTRM", "TTRM", "TTRM");
+
+    innerPipeItem->AddAttribute(casingPipeInfo);
+    innerPipeItem2->AddAttribute(casingPipeInfo);
+    innerPipeItem3->AddAttribute(casingPipeInfo);
+    innerPipeItem4->AddAttribute(casingPipeInfo);
+    innerPipeSolid->AddAttribute(casingPipeInfo);
+
+    outerPipeItem->AddAttribute(headExchangePipeInfo);
+    outerPipeItem2->AddAttribute(headExchangePipeInfo);
+    outerPipeItem3->AddAttribute(headExchangePipeInfo);
+    outerPipeItem4->AddAttribute(headExchangePipeInfo);
+    outerPipeSolid->AddAttribute(casingPipeInfo);
+
+    headExhangerGridItem->AddAttribute(distributionChamberInfo);
+    headExhangerGridSolid->AddAttribute(distributionChamberInfo);
+
+    headExhangerGridSecondItem->AddAttribute(rotatableChamberInfo);
+    headExhangerGridSecondSolid->AddAttribute(rotatableChamberInfo);
+
+    supportItem->AddAttribute(supportInfo);
+    supportItem2->AddAttribute(supportInfo);
+    supportSolid->AddAttribute(supportInfo);
+
+    capItem->AddAttribute(capInfo);
+    capItem2->AddAttribute(capInfo);
+    capSolid->AddAttribute(capInfo);
+
+    curvedPipeItem->AddAttribute(roundedPipeInfo);
+    curvedPipeItem2->AddAttribute(roundedPipeInfo);
+    curvedPipeItem3->AddAttribute(roundedPipeInfo);
+    curvedPipeSolid->AddAttribute(roundedPipeInfo);
     
+    assm->AddAttribute(TTRMInfo);
+
     return assm;
 }
 

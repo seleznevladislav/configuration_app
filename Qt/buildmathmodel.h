@@ -167,6 +167,9 @@
 #include "gcm_manager.h"
 #include "gcm_types.h"
 
+// Attributes 
+#include <attr_product.h>
+
 using namespace c3d;
 using namespace std;
 
@@ -193,6 +196,9 @@ namespace BuildMathModel {
 		static SPtr<MbSolid> ParametricModelCreator::create_007_FlanecKozhux();
 		static SPtr<MbSolid> ParametricModelCreator::create_008_FlanecSpecial();
 		static SPtr<MbSolid> ParametricModelCreator::create_pipe_holder_010(double holderLength, double assortmentInnerTubes);
+
+		// TTRM GOST
+		//static SPtr<MbSolid> ParametricModelCreator::Flanec26E();
 
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_001_tubeTeploobmen(double Lk, double ttDiam, double ttThickness);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_002_tubeKozhux(double lK, double ktDiam, double ktThickness);
