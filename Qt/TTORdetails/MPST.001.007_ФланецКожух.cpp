@@ -96,14 +96,13 @@ void CreateSketcherFlanecKozhuhdif(RPArray<MbContour>& _arrContours, double ktDi
 
     int index = 0;
 
-    // до размера d3
-    if (ktDiam <= 146) { //ktDiam = 133
+    if (ktDiam <= 145) { //ktDiam = 133
         index = 0;
     }
-    else if (ktDiam <= 171) { //ktDiam = 159
+    else if (ktDiam <= 170) { //ktDiam = 159
         index = 1;
     }
-    else if (ktDiam <= 229) { //ktDiam = 219
+    else if (ktDiam <= 228) { //ktDiam = 219
         index = 2;
     }
 
@@ -130,10 +129,10 @@ void CreateSketcherFlanecKozhuhdif(RPArray<MbContour>& _arrContours, double ktDi
     arrPnts.Add(MbCartPoint((D2 + 2) / 2, h2));
     arrPnts.Add(MbCartPoint(D / 2, h2));
     arrPnts.Add(MbCartPoint(D / 2, 14));//
-    arrPnts.Add(MbCartPoint((dTruba + ktThickness * 2 + 16) / 2, 14));//10
-    arrPnts.Add(MbCartPoint((dTruba + ktThickness * 2 + 16) / 2, 18));//центр
-    arrPnts.Add(MbCartPoint((dTruba + ktThickness * 2 + 16) / 2 + RADIUSB * cos(ANG1), 18 + RADIUSB * sin(ANG1)));
-    arrPnts.Add(MbCartPoint(dTruba / 2 + ktThickness, 40));
+    arrPnts.Add(MbCartPoint((dTruba + (ktThickness - 2) * 2 + 16) / 2, 14));//10
+    arrPnts.Add(MbCartPoint((dTruba + (ktThickness - 2) * 2 + 16) / 2, 18));//центр
+    arrPnts.Add(MbCartPoint((dTruba + (ktThickness - 2) * 2 + 16) / 2 + RADIUSB * cos(ANG1), 18 + RADIUSB * sin(ANG1)));
+    arrPnts.Add(MbCartPoint(dTruba / 2 + (ktThickness - 2), 40));
 
     MbLineSegment* pLine0 = new MbLineSegment(arrPnts[0], arrPnts[1]);
     MbLineSegment* pLine1 = new MbLineSegment(arrPnts[1], arrPnts[2]);
@@ -175,14 +174,14 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_007_FlanecKozhux(double ktDi
 {
     int index = 0;
 
-    //// до размера d3
-    if (ktDiam <= 146) { //ktDiam = 133
+    // до размера d3
+    if (ktDiam <= 145) { //ktDiam = 133
         index = 0;
     }
-    else if (ktDiam <= 171) { //ktDiam = 159
+    else if (ktDiam <= 170) { //ktDiam = 159
         index = 1;
     }
-    else if (ktDiam <= 146) { //ktDiam = 219
+    else if (ktDiam <= 228) { //ktDiam = 219
         index = 2;
     }
 
