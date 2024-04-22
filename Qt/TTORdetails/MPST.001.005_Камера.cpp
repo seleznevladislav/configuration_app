@@ -177,7 +177,7 @@ void CreateSketcher2dif(RPArray<MbContour>& _arrContours)
     _arrContours.push_back(pContour);
 }
 
-SPtr<MbSolid> ParametricModelCreator::Zarubincreate_005_kamera()
+SPtr<MbSolid> ParametricModelCreator::Zarubincreate_005_kamera(double ktDiam, double ktThickness)
 {
     MbPlacement3D pl;
 

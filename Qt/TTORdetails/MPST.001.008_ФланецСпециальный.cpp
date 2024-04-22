@@ -15,7 +15,7 @@ struct GOST_12815_80
     double D2;    // 4   
     double D3;    // 5   
     double D4;    // 6   
-    double D5;    // 7   
+    double D5;    // 7  основной 
     double D6;    // 8   
     double d;     // 9  
     double n;     // 10  
@@ -98,13 +98,13 @@ void CreateSketcherFlanecTrubadif(RPArray<MbContour>& _arrContours, double ttDia
     int index = 0;
 
     // до размера d3
-     if (ttDiam <= 101) { //ttDiam = 89
+     if (ttDiam <= 100) { //ttDiam = 89
         index = 0;
-    }else if (ttDiam <= 117) { //ttDiam = 108
+    }else if (ttDiam <= 116) { //ttDiam = 108
         index = 1;
-    }else if (ttDiam <= 146) { //ttDiam = 133
+    }else if (ttDiam <= 145) { //ttDiam = 133
         index = 2;
-    }else if (ttDiam <= 171) { //ttDiam = 159
+    }else if (ttDiam <= 170) { //ttDiam = 159
         index = 3;
     }
 
@@ -184,19 +184,18 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_008_FlanecSpecial(double ttD
     int index = 0;
 
     // до размера d3
-    if (ttDiam <= 101) { //ttDiam = 89
+    if (ttDiam <= 100) { //ttDiam = 89
         index = 0;
     }
-    else if (ttDiam <= 117) { //ttDiam = 108
+    else if (ttDiam <= 116) { //ttDiam = 108
         index = 1;
     }
-    else if (ttDiam <= 146) { //ttDiam = 133
+    else if (ttDiam <= 145) { //ttDiam = 133
         index = 2;
     }
-    else if (ttDiam <= 171) { //ttDiam = 159
+    else if (ttDiam <= 170) { //ttDiam = 159
         index = 3;
     }
-
 
     //const double n = configurationZarubin[index].n; // TOZO: Изменять номера грани в зависимости от кол-во отверстий
     const double n = 4;
