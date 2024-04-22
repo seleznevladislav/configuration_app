@@ -6,6 +6,21 @@ using namespace BuildMathModel;
 // TOZO: Не учавствует в расчета диаметр камеры (radiusMal потом включить)
 const double DEG_TO_RAD = M_PI / 180.0;
 
+struct mpst001004
+{
+    double Db;    // 1   
+    double Dm;    // 2
+    double Hb;    // 3
+    double Hm;    // 4
+};
+
+// 307 - тк на камере 301 проклада на 6 мм
+std::vector<mpst001004> parametersFor004 = {
+    //1     2    3    4 
+    {400,  307, 90, 80},
+    {510,  417, 130, 110},
+};
+
 SolidSPtr HolyHole(SolidSPtr* previus, int holes, double DiametrCircle, double radius) {
 
     // Именователь граней для построения тела с помощью булевой операции 
@@ -47,7 +62,7 @@ SolidSPtr HolyHole(SolidSPtr* previus, int holes, double DiametrCircle, double r
         SpacePointsVector boltCylPnts;
 
         boltCylPnts.push_back(MbCartPoint3D(DiametrCircle / 2 * cos(ANG1), DiametrCircle / 2 * sin(ANG1), 0));
-        boltCylPnts.push_back(MbCartPoint3D(DiametrCircle / 2 * cos(ANG1), DiametrCircle / 2 * sin(ANG1), 100));
+        boltCylPnts.push_back(MbCartPoint3D(DiametrCircle / 2 * cos(ANG1), DiametrCircle / 2 * sin(ANG1), 200));
         boltCylPnts.push_back(MbCartPoint3D(DiametrCircle / 2 * cos(ANG1) + radius, DiametrCircle / 2 * sin(ANG1), 0));
 
         SolidSPtr buffer;
@@ -66,18 +81,34 @@ SolidSPtr HolyHole(SolidSPtr* previus, int holes, double DiametrCircle, double r
     return news;
 }
 
-void CreateSketcherResetka(RPArray<MbContour>& _arrContours)
+void CreateSketcherResetka(RPArray<MbContour>& _arrContours, double ktDiam)
 {
 
-    double ANG1 = 90 * DEG_TO_RAD;
+    int index = 0;
+
+    if (ktDiam < 219) { //ktDiam = 133
+        index = 0;
+    }
+    else if (ktDiam >= 219) { //ktDiam = 219
+        index = 1;
+    }
+
+    double ANG1 = 180 * DEG_TO_RAD;
+
+    const double dTruba = ktDiam;
+
+    const double Db = parametersFor004[index].Db;
+    const double Dm = parametersFor004[index].Dm;
+    const double Hb = parametersFor004[index].Hb;
+    const double Hm = parametersFor004[index].Hm;
 
     SArray<MbCartPoint> arrPnts(6);
     arrPnts.Add(MbCartPoint(0, 0));
-    arrPnts.Add(MbCartPoint(400, 0));
-    arrPnts.Add(MbCartPoint(400, 80));
-    arrPnts.Add(MbCartPoint(307, 80));
-    arrPnts.Add(MbCartPoint(307, 90));
-    arrPnts.Add(MbCartPoint(0, 90));
+    arrPnts.Add(MbCartPoint(Db, 0));
+    arrPnts.Add(MbCartPoint(Db, Hm));
+    arrPnts.Add(MbCartPoint(Dm, Hm));
+    arrPnts.Add(MbCartPoint(Dm, Hb));
+    arrPnts.Add(MbCartPoint(0, Hb));
 
 
     MbLineSegment* pLine0 = new MbLineSegment(arrPnts[0], arrPnts[1]);
@@ -99,9 +130,28 @@ void CreateSketcherResetka(RPArray<MbContour>& _arrContours)
 
 SPtr<MbSolid> ParametricModelCreator::Zarubincreate_004_reshetkaKozhux(double ktDiam, double ktThickness, double t)
 {
-    const double depth = 90;
-    //const double radiusMal = (ktDiam + 2 * ktThickness) / 2;
-    const double radiusMal = 143 / 2;
+
+    int index = 0;
+
+    if (ktDiam < 219) { //ktDiam = 133
+        index = 0;
+    }
+    else if (ktDiam >= 219) { //ktDiam = 219
+        index = 1;
+    }
+
+    double ANG1 = 180 * DEG_TO_RAD;
+
+    const double dTruba = ktDiam;
+
+    const double Db = parametersFor004[index].Db;
+    const double Dm = parametersFor004[index].Dm;
+    const double Hb = parametersFor004[index].Hb;
+    const double Hm = parametersFor004[index].Hm;
+
+    const double depth = Hb;
+    const double radiusMal = (ktDiam + 2 * ktThickness) / 2;
+    // const double radiusMal = 143 / 2;
 
     MbSNameMaker blockNames(1, MbSNameMaker::i_SideNone, 0);
     MbSNameMaker operBoolNames(ct_BooleanSolid, MbSNameMaker::i_SideNone);
@@ -114,7 +164,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_004_reshetkaKozhux(double kt
     MbPlacement3D pl;
 
     RPArray<MbContour> arrContours;
-    CreateSketcherResetka(arrContours);
+    CreateSketcherResetka(arrContours, ktDiam);
 
     //Плоскость
     MbPlane* pPlaneXY = new MbPlane(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, 1, 0), MbCartPoint3D(0, 0, 1));
@@ -136,7 +186,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_004_reshetkaKozhux(double kt
 
     SolidSPtr Solid(pSolid);
 
-    SolidSPtr result = HolyHole(&Solid, 32, 370 * 2, 24 / 2);
+    SolidSPtr result = HolyHole(&Solid, 32, (Db-30) * 2, 24 / 2);
 
     SolidSPtr pSmallCyl, pSmallCyl2, pSmallCyl3, pSmallCyl4, pMergeSmallCyllBlock, pMergeSmallCyllBlock2, pMergeSmallCyllBlock3, pMergeSmallCyllBlock4;
 
