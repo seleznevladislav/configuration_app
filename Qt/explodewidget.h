@@ -116,8 +116,8 @@ public:
         NoneOfOne,
         TTOR,
         TTRM,
-        TRKL,
-        TRKM,
+        IU,
+        IP,
     };
 public:
     QColor highlightColor() const;

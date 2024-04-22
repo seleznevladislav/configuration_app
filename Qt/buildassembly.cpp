@@ -291,8 +291,9 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
     SPtr<MbSolid> Detail_005(Zarubincreate_005_kamera());
     Detail_005->SetColor(101, 150, 94);
     SPtr<MbSolid> Detail_006(Zarubincreate_006_RezhetkaTeplTube());
+    Detail_006->SetColor(218, 145, 85);
     SPtr<MbSolid> Detail_007(Zarubincreate_007_FlanecKozhux(ktDiam, ktThickness));
-    Detail_007->SetColor(130, 130, 130);
+    Detail_007->SetColor(47, 218, 56);
 
     SPtr<MbSolid> Detail_008(Zarubincreate_008_FlanecSpecial(ttDiam, ttThickness));
     SPtr<MbSolid> Detail_009(Zarubincreate_009_curevedTube(ttDiam, ttThickness, t));

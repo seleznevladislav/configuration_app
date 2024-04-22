@@ -50,6 +50,18 @@ static void createCommandActions(QWidget* pOpenScene, QToolBar* commandBar, QWid
     parent->addAction(TTRMAction);
     commandBar->addAction(TTRMAction);
     QObject::connect(TTRMAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommandsHeats()));
+    
+    QAction* IPAction = new QAction(QIcon(":/res/iconsForHeat Exchangers/IP.png"), QStringLiteral("ИП"), parent);
+    IPAction->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::IP));
+    parent->addAction(IPAction);
+    commandBar->addAction(IPAction);
+    QObject::connect(IPAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommandsHeats()));
+
+    QAction* IUAction = new QAction(QIcon(":/res/iconsForHeat Exchangers/IU.png"), QStringLiteral("ИУ"), parent);
+    IUAction->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::IU));
+    parent->addAction(IUAction);
+    commandBar->addAction(IUAction);
+    QObject::connect(IUAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommandsHeats()));
 
     commandBar->addSeparator();
 

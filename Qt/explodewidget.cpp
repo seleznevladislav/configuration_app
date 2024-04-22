@@ -109,9 +109,9 @@ void ExplodeWidget::initializeGL()
 
     GlobalFlags::SetFaceCulling(CullFaces::Back);
     viewport()->GetCamera()->SetViewOrientation(Orientation::IsoXYZ);
-    viewport()->SetGradientBackgroundColour(QtVision::topColor, QtVision::bottomColor);
+    // viewport()->SetGradientBackgroundColour(QtVision::topColor, QtVision::bottomColor);
     // Для Рисунков
-    //viewport()->SetGradientBackgroundColour(Color(255, 255, 255), Color(255, 255, 255));
+    viewport()->SetGradientBackgroundColour(Color(255, 255, 255), Color(255, 255, 255));
     //viewport()->SetGradientBackgroundColour(Color(0, 255, 0), Color(0, 255, 0));
     viewport()->SetPixelCullingSize(35);
     mainLight()->SetDoubleSided(false);
