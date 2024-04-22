@@ -15,8 +15,6 @@
         <file>res/filteredge24x24.png</file>
         <file>res/filterface24x24.png</file>
         <file>res/filtervertex24x24.png</file>
-        <file>res/iconsForHeat Exchangers/TRKL.png</file>
-        <file>res/iconsForHeat Exchangers/TRKM.png</file>
         <file>res/iconsForHeat Exchangers/TTOR.png</file>
         <file>res/iconsForHeat Exchangers/TTRM.png</file>
         <file>res/constraints/open_fromfile_32.png</file>
@@ -35,5 +33,7 @@
         <file>res/constraints/rotate.png</file>
         <file>res/constraints/save_file32.png</file>
         <file>res/constraints/select_32.png</file>
+        <file>res/iconsForHeat Exchangers/IP.png</file>
+        <file>res/iconsForHeat Exchangers/IU.png</file>
     </qresource>
 </RCC>
