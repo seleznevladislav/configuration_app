@@ -4,7 +4,7 @@ using namespace BuildMathModel;
 
 const double DEG_TO_RAD = M_PI / 180.0;
 
-SPtr<MbSolid> ParametricModelCreator::create_inner_pipe_001(double ttDiam, double ttThickness, double length)
+SPtr<MbSolid> ParametricModelCreator::createInnerPipe_001(double ttDiam, double ttThickness, double length)
 {
     MbSNameMaker blockNames(1, MbSNameMaker::i_SideNone, 0);
 

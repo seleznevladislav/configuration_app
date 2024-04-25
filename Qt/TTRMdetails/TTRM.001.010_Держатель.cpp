@@ -72,7 +72,7 @@ void createPolygonSketch(RPArray<MbContour>& _arrContours, int assortmentInnerTu
     _arrContours.push_back(pContour);
 }
 
-SPtr<MbSolid> ParametricModelCreator::create_pipe_holder_010(double holderLength, double assortmentInnerTubes)
+SPtr<MbSolid> ParametricModelCreator::createPipeHolder_010(double holderLength, double assortmentInnerTubes)
 {
     // Локальная СК (по умолчанию совпадает с мировой СК)
     MbPlacement3D pl;

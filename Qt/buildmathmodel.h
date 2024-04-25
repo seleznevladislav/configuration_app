@@ -170,6 +170,10 @@
 // Attributes 
 #include <attr_product.h>
 
+// Base
+#include <iostream>
+#include <unordered_map>
+
 using namespace c3d;
 using namespace std;
 
@@ -186,19 +190,21 @@ namespace BuildMathModel {
 		static  SPtr<MbAssembly> CreateTTOR(BuildParamsZarubin params);
 	private:
 		// details
-		static SPtr<MbSolid> ParametricModelCreator::create_inner_pipe_001(double ttDiam, double ttThickness, double length);
-        static SPtr<MbSolid> ParametricModelCreator::create_outer_pipe_002(int lenghtK);
-        static SPtr<MbSolid> ParametricModelCreator::create_support_003();
-        static SPtr<MbSolid> ParametricModelCreator::create_outer_pipes_grid_004();
-        static SPtr<MbSolid> ParametricModelCreator::create_cup_005();
-		static SPtr<MbSolid> ParametricModelCreator::create_inner_pipes_grid_006();
-		static SPtr<MbSolid> ParametricModelCreator::create_curved_pipe_007(double ttDiam, double ttThickness, double t);
-		static SPtr<MbSolid> ParametricModelCreator::create_007_FlanecKozhux();
-		static SPtr<MbSolid> ParametricModelCreator::create_008_FlanecSpecial();
-		static SPtr<MbSolid> ParametricModelCreator::create_pipe_holder_010(double holderLength, double assortmentInnerTubes);
+		static SPtr<MbSolid> ParametricModelCreator::createInnerPipe_001(double ttDiam, double ttThickness, double length);
+        static SPtr<MbSolid> ParametricModelCreator::createOuterPipe_002(int lengthK, double assortmentOuterTubes, double thicknessOuterTubes);
+        static SPtr<MbSolid> ParametricModelCreator::createSupport_003(double assortmentCamera, double assortmentOuterTubes, double t);
+        static SPtr<MbSolid> ParametricModelCreator::createOuterPipesGrid_004(double length2, double diametrY, double thickness, double t, double assortmentInnerTubes, double assortmentCamera, double thicknessCamera);
+        static SPtr<MbSolid> ParametricModelCreator::createCup_005(double t, double assortmentOuterTubes, double assortmentCamera);
+		static SPtr<MbSolid> ParametricModelCreator::createInnerPipesGrid_006(double length3, double assortmentCamera, double thicknessCamera);
+		static SPtr<MbSolid> ParametricModelCreator::createCurvedPipe_007(double ttDiam, double ttThickness, double t);
+		static SPtr<MbSolid> ParametricModelCreator::createPipeHolder_010(double holderLength, double assortmentInnerTubes);
 
 		// TTRM GOST
-		//static SPtr<MbSolid> ParametricModelCreator::Flanec26E();
+		static SPtr<MbSolid> ParametricModelCreator::buildFlangeE(double diametrY);
+		static SPtr<MbSolid> ParametricModelCreator::buildFlangeF(double diametrY);
+		static SPtr<MbSolid> ParametricModelCreator::buildFlangeScrew35();
+		static SPtr<MbSolid> ParametricModelCreator::buildWasher10();
+		static SPtr<MbSolid> ParametricModelCreator::buildScrew55();
 
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_001_tubeTeploobmen(double Lk, double ttDiam, double ttThickness);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_002_tubeKozhux(double lK, double ktDiam, double ktThickness);

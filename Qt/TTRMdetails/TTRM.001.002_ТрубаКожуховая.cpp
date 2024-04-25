@@ -4,7 +4,7 @@ using namespace BuildMathModel;
 
 const double DEG_TO_RAD = M_PI / 180.0;
 
-SPtr<MbSolid> ParametricModelCreator::create_outer_pipe_002(int lengthK)
+SPtr<MbSolid> ParametricModelCreator::createOuterPipe_002(int lengthK, double assortmentOuterTubes, double thicknessOuterTubes)
 {
     MbSNameMaker blockNames(1, MbSNameMaker::i_SideNone, 0);
 
@@ -14,7 +14,7 @@ SPtr<MbSolid> ParametricModelCreator::create_outer_pipe_002(int lengthK)
 
     bigRadiusCylPnts.push_back(MbCartPoint3D(0, 0, 0));
     bigRadiusCylPnts.push_back(MbCartPoint3D(0, 0, lengthK));
-    bigRadiusCylPnts.push_back(MbCartPoint3D(57 / 2, 0, 0));
+    bigRadiusCylPnts.push_back(MbCartPoint3D(assortmentOuterTubes / 2, 0, 0));
 
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, bigRadiusCylPnts, blockNames), bigRadiusCyl);
 
@@ -22,7 +22,7 @@ SPtr<MbSolid> ParametricModelCreator::create_outer_pipe_002(int lengthK)
 
     smallRadiusCylPnts.push_back(MbCartPoint3D(0, 0, 0));
     smallRadiusCylPnts.push_back(MbCartPoint3D(0, 0, lengthK));
-    smallRadiusCylPnts.push_back(MbCartPoint3D(48 / 2, 0, 0));
+    smallRadiusCylPnts.push_back(MbCartPoint3D((assortmentOuterTubes - thicknessOuterTubes * 2) / 2, 0, 0));
 
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, smallRadiusCylPnts, blockNames), smallRadiusCyl);
 

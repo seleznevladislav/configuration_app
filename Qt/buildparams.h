@@ -34,11 +34,26 @@ namespace BuildMathModel {
 	struct ConfigParams
 	{
 		std::string name;
-		int lengthK;
-		int length0;
-		int LENGTH;
-		int length1;
+
+		double assortmentInnerTubes;    // 1 - Диаметр теплообменной трубы
+		double thicknessInnerTubes;     // 2 - Толщина теплообменной трубы
+		double assortmentOuterTubes;    // 3 - Диаметр кожуховой трубы
+		double thicknessOuterTubes;     // 4 - Толщина кожуховой трубы
+		double assortmentCamera;        // 5 - Диаметр камер  
+		double thicknessCamera;         // 6 - Толщина стенок камер
+		
+		double lengthK;                 // 7 - Длина кожуховой трубы
+		double length0;                 // 8 - Расстояние между опорами
+		double LENGTH;                  // 9 - Общая длина аппарата
+
+		double diametrY;                // 10 - Диаметр входной/выходной трубы
+		double t;                       // 11 - Расстояние между трубами
+
+		double length1;                 // 12 - Расстояние между камерой распределительной и опорой
+		double length2;                 // 13 - Длинна распределительной камеры
+		double length3;                 // 14 - Длинна поворотной камеры
 	};
+
 	// TODO: 1) Прописываем здесь свою структуру данных 
 	//struct testConfigParams
 	//{

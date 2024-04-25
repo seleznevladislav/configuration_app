@@ -18,7 +18,7 @@ void CreateSketchCurvedPipe(RPArray<MbContour>& _arrContours, double ttDiam, dou
     _arrContours.push_back(new MbContour(*pCircleInt, true));
 }
 
-SPtr<MbSolid> ParametricModelCreator::create_curved_pipe_007(double ttDiam, double ttThickness, double t)
+SPtr<MbSolid> ParametricModelCreator::createCurvedPipe_007(double ttDiam, double ttThickness, double t)
 {
 
     MbPlacement3D* plLine = new MbPlacement3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, 0, 1), MbCartPoint3D(0, 1, 0));
