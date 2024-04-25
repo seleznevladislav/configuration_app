@@ -174,8 +174,5 @@ SPtr<MbSolid> ParametricModelCreator::create_008_FlanecSpecial()
 
     SolidSPtr result = HolyHole4(&Solid, 4, 150, 9);
 
-    // TestVariables::viewManager->AddObject(TestVariables::SURFACECURVE_Style, arrContours[0]);
-    // TestVariables::viewManager->AddObject(TestVariables::SURFACECURVE_Style, pSolid);
-    // TestVariables::viewManager->AddObject(TestVariables::SURFACECURVE_Style, result);
     return result;
 }

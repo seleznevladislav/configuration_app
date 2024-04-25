@@ -335,8 +335,8 @@ QComboBox* ExplodeManager::createCombobox(QVBoxLayout* vLayout)
     QComboBox* combo = new QComboBox(m_pWidget);
 
     QStringList values;
-    // TODO: Здесь загоняются ваши элементы (варианты конфигураций) в комбобокс
-    // Здесь добавлять ничего не нужно.
+    // Здесь загоняются ваши элементы (варианты конфигураций) в комбобокс
+
     for (const auto& config : configuration) {
         values.append(QString::fromStdString(config.name));
     }
@@ -449,7 +449,7 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
     QTabWidget* tabWidget = new QTabWidget();
 
     tabWidget->addTab(new QWidget(), m_mainTabName.c_str());
-    tabWidget->addTab(new QWidget(), u8"Test");
+    tabWidget->addTab(new QWidget(), u8"Параметризация");
 
     m_vLayoutTab = new QVBoxLayout();
     m_vLayoutTab->setSpacing(2);

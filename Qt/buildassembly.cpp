@@ -6,27 +6,70 @@ using namespace BuildMathModel;
 SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigParams params)
 {
     // Набор параметров для параметризации
-    const int lengthK = params.lengthK;
+    /*const int lengthK = params.lengthK;
     const int length0 = params.length0;
     const int LENGTH = params.LENGTH;
     const int length1 = params.length1;
+    const double length2 = 250.0;
+    const double length3 = 230.0;
+
+    const double assortmentInnerTubes = 25.0;
+    const double assortmentOuterTubes = 57.0;
+    const double assortmentCamera = 219.0;
+    const double thicknessInnerTubes = 3.0;
+    const double thicknessOuterTubes = 4.0;
+    const double thicknessCamera = 8.0;
+    const double diametrY = 32.0;
+    const double t = 80.0;
+
+    const double curvedLength = 72.5;*/
+
+    // Набор параметров для параметризации
+    const int LENGTH = params.LENGTH;
+    const int lengthK = params.lengthK;
+    const double length0 = params.length0;
+    const double length1 = params.length1;
+    const double length2 = params.length2;
+    const double length3 = params.length3;
+
+    const double assortmentInnerTubes = params.assortmentInnerTubes;
+    const double thicknessInnerTubes = params.thicknessInnerTubes;
+
+    const double assortmentOuterTubes = params.assortmentOuterTubes;
+    const double thicknessOuterTubes = params.thicknessOuterTubes;
+
+    const double assortmentCamera = params.assortmentCamera;
+    const double thicknessCamera = params.thicknessCamera;
     
+    const double diametrY = params.diametrY;
+    const double t = params.t;
+
+    const double curvedLength = 72.5;
+
     MbPlacement3D lcs;
 
-    SPtr<MbSolid> capSolid(create_cup_005());
-    SPtr<MbSolid> headExhangerGridSolid(create_outer_pipes_grid_004());
-    SPtr<MbSolid> headExhangerGridSecondSolid(create_inner_pipes_grid_006());
-    SPtr<MbSolid> outerPipeSolid(create_outer_pipe_002(lengthK));
-    SPtr<MbSolid> innerPipeSolid(create_inner_pipe_001());
-    SPtr<MbSolid> supportSolid(create_support_003());
-    SPtr<MbSolid> curvedPipeSolid(create_curved_pipe_007());
-    //capSolid->SetSimpleAttribute(MbAttribute)
+    SPtr<MbSolid> capSolid(createCup_005(t, assortmentOuterTubes, assortmentCamera));
+    SPtr<MbSolid> headExhangerGridSolid(createOuterPipesGrid_004(length2, diametrY, thicknessInnerTubes, t, assortmentInnerTubes, assortmentCamera, thicknessCamera));
+    SPtr<MbSolid> headExhangerGridSecondSolid(createInnerPipesGrid_006(length3, assortmentCamera, thicknessCamera));
+    SPtr<MbSolid> outerPipeSolid(createOuterPipe_002(lengthK, assortmentOuterTubes, thicknessOuterTubes));
+    SPtr<MbSolid> innerPipeSolid(createInnerPipe_001(assortmentInnerTubes, thicknessInnerTubes, LENGTH - curvedLength - 60 - 55));
+    SPtr<MbSolid> supportSolid(createSupport_003(assortmentCamera, assortmentOuterTubes, t));
+    SPtr<MbSolid> curvedPipeSolid(createCurvedPipe_007(assortmentInnerTubes, thicknessInnerTubes, t));
+    SPtr<MbSolid> pipeHolderShort(createPipeHolder_010(20, assortmentInnerTubes));
+
+    // GOST
+    SPtr<MbSolid> flangeE(buildFlangeE(diametrY));
+    SPtr<MbSolid> flangeF(buildFlangeF(diametrY));
+    SPtr<MbSolid> screw35(buildFlangeScrew35());
+    SPtr<MbSolid> pipeScrewWasher(buildWasher10());
+    SPtr<MbSolid> screw55(buildScrew55());
+
 
     // Крышки
     SPtr<MbInstance> capItem(new MbInstance(*capSolid, lcs));
     SPtr<MbInstance> capItem2(new MbInstance(*capSolid, lcs));
     capItem->SetItemName(123);
- 
+
     // Решетки
     SPtr<MbInstance> headExhangerGridItem(new MbInstance(*headExhangerGridSolid, lcs));
     SPtr<MbInstance> headExhangerGridSecondItem(new MbInstance(*headExhangerGridSecondSolid, lcs));
@@ -46,6 +89,77 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     SPtr<MbInstance> innerPipeItem4(new MbInstance(*innerPipeSolid, lcs));
     // Соединительная труба
     SPtr<MbInstance> curvedPipeItem(new MbInstance(*curvedPipeSolid, lcs));
+    SPtr<MbInstance> curvedPipeItem2(new MbInstance(*curvedPipeSolid, lcs));
+    SPtr<MbInstance> curvedPipeItem3(new MbInstance(*curvedPipeSolid, lcs));
+    // Держатель
+    SPtr<MbInstance> pipeHolderShortItem(new MbInstance(*pipeHolderShort, lcs));
+    SPtr<MbInstance> pipeHolderShortItem2(new MbInstance(*pipeHolderShort, lcs));
+    SPtr<MbInstance> pipeHolderShortItem3(new MbInstance(*pipeHolderShort, lcs));
+    SPtr<MbInstance> pipeHolderShortItem4(new MbInstance(*pipeHolderShort, lcs));
+
+    //GOST
+    SPtr<MbInstance> flangeEItem(new MbInstance(*flangeE, lcs));
+    SPtr<MbInstance> flangeEItem2(new MbInstance(*flangeE, lcs));
+    SPtr<MbInstance> flangeFItem(new MbInstance(*flangeF, lcs));
+    SPtr<MbInstance> flangeFItem2(new MbInstance(*flangeF, lcs));
+
+    SPtr<MbInstance> screw35Item(new MbInstance(*screw35, lcs));
+    SPtr<MbInstance> screw35Item2(new MbInstance(*screw35, lcs));
+    SPtr<MbInstance> screw35Item3(new MbInstance(*screw35, lcs));
+    SPtr<MbInstance> screw35Item4(new MbInstance(*screw35, lcs));
+
+    SPtr<MbInstance> screw35Item5(new MbInstance(*screw35, lcs));
+    SPtr<MbInstance> screw35Item6(new MbInstance(*screw35, lcs));
+    SPtr<MbInstance> screw35Item7(new MbInstance(*screw35, lcs));
+    SPtr<MbInstance> screw35Item8(new MbInstance(*screw35, lcs));
+
+    SPtr<MbInstance> pipeScrewWasherItem(new MbInstance(*pipeScrewWasher, lcs));
+    SPtr<MbInstance> pipeScrewWasherItem2(new MbInstance(*pipeScrewWasher, lcs));
+    SPtr<MbInstance> pipeScrewWasherItem3(new MbInstance(*pipeScrewWasher, lcs));
+    SPtr<MbInstance> pipeScrewWasherItem4(new MbInstance(*pipeScrewWasher, lcs));
+
+    SPtr<MbInstance> pipeScrewWasherItem5(new MbInstance(*pipeScrewWasher, lcs));
+    SPtr<MbInstance> pipeScrewWasherItem6(new MbInstance(*pipeScrewWasher, lcs));
+    SPtr<MbInstance> pipeScrewWasherItem7(new MbInstance(*pipeScrewWasher, lcs));
+    SPtr<MbInstance> pipeScrewWasherItem8(new MbInstance(*pipeScrewWasher, lcs));
+
+    // Washer
+    SPtr<MbInstance> pipeScrewWasherItem9(new MbInstance(*pipeScrewWasher, lcs));
+    SPtr<MbInstance> pipeScrewWasherItem10(new MbInstance(*pipeScrewWasher, lcs));
+    SPtr<MbInstance> pipeScrewWasherItem11(new MbInstance(*pipeScrewWasher, lcs));
+    SPtr<MbInstance> pipeScrewWasherItem12(new MbInstance(*pipeScrewWasher, lcs));
+    SPtr<MbInstance> pipeScrewWasherItem13(new MbInstance(*pipeScrewWasher, lcs));
+    SPtr<MbInstance> pipeScrewWasherItem14(new MbInstance(*pipeScrewWasher, lcs));
+    SPtr<MbInstance> pipeScrewWasherItem15(new MbInstance(*pipeScrewWasher, lcs));
+    SPtr<MbInstance> pipeScrewWasherItem16(new MbInstance(*pipeScrewWasher, lcs));
+
+    SPtr<MbInstance> pipeScrewWasherItem17(new MbInstance(*pipeScrewWasher, lcs));
+    SPtr<MbInstance> pipeScrewWasherItem18(new MbInstance(*pipeScrewWasher, lcs));
+    SPtr<MbInstance> pipeScrewWasherItem19(new MbInstance(*pipeScrewWasher, lcs));
+    SPtr<MbInstance> pipeScrewWasherItem20(new MbInstance(*pipeScrewWasher, lcs));
+    SPtr<MbInstance> pipeScrewWasherItem21(new MbInstance(*pipeScrewWasher, lcs));
+    SPtr<MbInstance> pipeScrewWasherItem22(new MbInstance(*pipeScrewWasher, lcs));
+    SPtr<MbInstance> pipeScrewWasherItem23(new MbInstance(*pipeScrewWasher, lcs));
+    SPtr<MbInstance> pipeScrewWasherItem24(new MbInstance(*pipeScrewWasher, lcs));
+
+    SPtr<MbInstance> screw55Item(new MbInstance(*screw55, lcs));
+    SPtr<MbInstance> screw55Item2(new MbInstance(*screw55, lcs));
+    SPtr<MbInstance> screw55Item3(new MbInstance(*screw55, lcs));
+    SPtr<MbInstance> screw55Item4(new MbInstance(*screw55, lcs));
+    SPtr<MbInstance> screw55Item5(new MbInstance(*screw55, lcs));
+    SPtr<MbInstance> screw55Item6(new MbInstance(*screw55, lcs));
+    SPtr<MbInstance> screw55Item7(new MbInstance(*screw55, lcs));
+    SPtr<MbInstance> screw55Item8(new MbInstance(*screw55, lcs));
+
+    SPtr<MbInstance> screw55Item9(new MbInstance(*screw55, lcs));
+    SPtr<MbInstance> screw55Item10(new MbInstance(*screw55, lcs));
+    SPtr<MbInstance> screw55Item11(new MbInstance(*screw55, lcs));
+    SPtr<MbInstance> screw55Item12(new MbInstance(*screw55, lcs));
+    SPtr<MbInstance> screw55Item13(new MbInstance(*screw55, lcs));
+    SPtr<MbInstance> screw55Item14(new MbInstance(*screw55, lcs));
+    SPtr<MbInstance> screw55Item15(new MbInstance(*screw55, lcs));
+    SPtr<MbInstance> screw55Item16(new MbInstance(*screw55, lcs));
+
 
     std::vector<SPtr<MbItem>> pair;
     //Переменные для подсборки
@@ -67,25 +181,114 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     pair.push_back(innerPipeItem4);
 
     // curved pipes
-    //pair.push_back(curvedPipeItem);
-    //curvedPipeItem->Move(MbVector3D(100, 100, 1850));
+    pair.push_back(curvedPipeItem);
+    pair.push_back(curvedPipeItem2);
+    pair.push_back(curvedPipeItem3);
+
+    // holders
+    pair.push_back(pipeHolderShortItem);
+    pair.push_back(pipeHolderShortItem2);
+    pair.push_back(pipeHolderShortItem3);
+    pair.push_back(pipeHolderShortItem4);
 
     pair.push_back(supportItem);
     supportItem->SetColor(0, 0, 200);
     pair.push_back(supportItem2);
     supportItem2->SetColor(0, 0, 200);
 
-    MbAxis3D axxVert(MbVector3D(0, 1, 0));
+    // GOST
+    pair.push_back(flangeEItem);
+    pair.push_back(flangeEItem2);
+    pair.push_back(flangeFItem);
+    pair.push_back(flangeFItem2);
 
+
+    pair.push_back(screw35Item);
+    pair.push_back(screw35Item2);
+    pair.push_back(screw35Item3);
+    pair.push_back(screw35Item4);
+
+    pair.push_back(screw35Item5);
+    pair.push_back(screw35Item6);
+    pair.push_back(screw35Item7);
+    pair.push_back(screw35Item8);
+
+    pair.push_back(pipeScrewWasherItem);
+    pair.push_back(pipeScrewWasherItem2);
+    pair.push_back(pipeScrewWasherItem3);
+    pair.push_back(pipeScrewWasherItem4);
+
+    pair.push_back(pipeScrewWasherItem5);
+    pair.push_back(pipeScrewWasherItem6);
+    pair.push_back(pipeScrewWasherItem7);
+    pair.push_back(pipeScrewWasherItem8);
+
+    pair.push_back(pipeScrewWasherItem9);
+    pair.push_back(pipeScrewWasherItem10);
+    pair.push_back(pipeScrewWasherItem11);
+    pair.push_back(pipeScrewWasherItem12);
+    pair.push_back(pipeScrewWasherItem13);
+    pair.push_back(pipeScrewWasherItem14);
+    pair.push_back(pipeScrewWasherItem15);
+    pair.push_back(pipeScrewWasherItem16);
+
+    pair.push_back(pipeScrewWasherItem17);
+    pair.push_back(pipeScrewWasherItem18);
+    pair.push_back(pipeScrewWasherItem19);
+    pair.push_back(pipeScrewWasherItem20);
+    pair.push_back(pipeScrewWasherItem21);
+    pair.push_back(pipeScrewWasherItem22);
+    pair.push_back(pipeScrewWasherItem23);
+    pair.push_back(pipeScrewWasherItem24);
+
+    pair.push_back(screw55Item);
+    pair.push_back(screw55Item2);
+    pair.push_back(screw55Item3);
+    pair.push_back(screw55Item4);
+    pair.push_back(screw55Item5);
+    pair.push_back(screw55Item6);
+    pair.push_back(screw55Item7);
+    pair.push_back(screw55Item8);
+
+    pair.push_back(screw55Item9);
+    pair.push_back(screw55Item10);
+    pair.push_back(screw55Item11);
+    pair.push_back(screw55Item12);
+    pair.push_back(screw55Item13);
+    pair.push_back(screw55Item14);
+    pair.push_back(screw55Item15);
+    pair.push_back(screw55Item16);
+
+    MbAxis3D axxVert(MbVector3D(0, 1, 0));
+    MbAxis3D ayyVert(MbVector3D(1, 0, 0));
+
+    /* screw55Item->Move(MbVector3D(200, 200, 0));*/
+
+    curvedPipeItem2->Rotate(axxVert, M_PI);
+    curvedPipeItem3->Rotate(axxVert, M_PI);
     supportItem2->Rotate(axxVert, M_PI);
+
+    flangeEItem->Rotate(ayyVert, -M_PI / 2);
+    flangeFItem->Rotate(ayyVert, M_PI / 2);
+    flangeEItem2->Rotate(ayyVert, M_PI / 2);
+    flangeFItem2->Rotate(ayyVert, -M_PI / 2);
+
+    screw35Item->Rotate(ayyVert, -M_PI / 2);
+    screw35Item2->Rotate(ayyVert, -M_PI / 2);
+    screw35Item3->Rotate(ayyVert, -M_PI / 2);
+    screw35Item4->Rotate(ayyVert, -M_PI / 2);
+
+    screw35Item5->Rotate(ayyVert, M_PI / 2);
+    screw35Item6->Rotate(ayyVert, M_PI / 2);
+    screw35Item7->Rotate(ayyVert, M_PI / 2);
+    screw35Item8->Rotate(ayyVert, M_PI / 2);
+
     headExhangerGridSecondItem->Rotate(axxVert, M_PI);
 
     SPtr<MbAssembly> assm(new MbAssembly(pair));
     {
         // Constractions
-
-        double lengthP0 = -745;
-        MtParVariant ArgLengthP0(lengthP0);
+        MtParVariant ArgLengthP0(-length0);
 
         MtGeomArgument GeomArgSupport11(supportSolid->GetFace(37), supportItem2);
         MtGeomArgument GeomArgSupport12(supportSolid->GetFace(33), supportItem);
@@ -124,8 +327,9 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
         assm->AddConstraint(GCM_CONCENTRIC, GeomArgPipe8Conc, GeomArgSupport8Conc);
 
         // Head Exhanger Grid 
-        double distanse_length1 = -(length1 + (10 / 2));
-        MtParVariant ArgLength1(distanse_length1);
+        const int supportWallThickness = 10;
+        double length1Dist = -(length1 - diametrY / 2 + supportWallThickness / 2);
+        MtParVariant ArgLength1(length1Dist);
 
         MtGeomArgument Plane1(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
         MtGeomArgument Plane2(supportSolid->GetFace(33), supportItem);
@@ -164,7 +368,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
         assm->AddConstraint(GCM_COINCIDENT, GeomArgPipe4Coinc, GeomArgGrid4Coinc, MtParVariant(GCM_OPPOSITE));
 
         // Outer Pipe Distanse
-        double lengthBetweenInnerPipesAndGrid = 2150 - 230 - lengthK - 250 - 50;
+        double lengthBetweenInnerPipesAndGrid = LENGTH - length3 - lengthK - length2 - curvedLength;
         MtParVariant ArgLengthBetweenPipesAndGrid(lengthBetweenInnerPipesAndGrid);
 
         MtGeomArgument PlaneGrid(headExhangerGridSolid->GetFace(38), headExhangerGridItem);
@@ -232,18 +436,584 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
         assm->AddConstraint(GCM_CONCENTRIC, GeometryArgGrid2AndCap2Conc2, GeometryArgGrid2AndCap2Conc4);
 
         // Curved Pipe
-       /* MtGeomArgument GeometryArgCurvedPipeCoinc(curvedPipeSolid->GetFace(0), curvedPipeItem);
-        MtGeomArgument GeometryArgCurvedPipeCoinc2(innerPipeSolid->GetFace(0), innerPipeItem);*/
+        MtGeomArgument GeometryArgCurvedPipeCoinc(curvedPipeSolid->GetFace(0), curvedPipeItem);
+        MtGeomArgument GeometryArgCurvedPipeCoinc2(innerPipeSolid->GetFace(0), innerPipeItem);
+        MtGeomArgument GeometryArgCurvedPipeConc(curvedPipeSolid->GetFace(3), curvedPipeItem);
+        MtGeomArgument GeometryArgCurvedPipeConc2(innerPipeSolid->GetFace(2), innerPipeItem);
 
-        /*MtGeomArgument GeometryArgCurvedPipeConc(curvedPipeSolid->GetFace(2), curvedPipeItem);
-        MtGeomArgument GeometryArgCurvedPipeConc2(innerPipeSolid->GetFace(2), innerPipeItem);*/
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgCurvedPipeCoinc, GeometryArgCurvedPipeCoinc2);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgCurvedPipeConc, GeometryArgCurvedPipeConc2);
 
-        //assm->AddConstraint(GCM_COINCIDENT, GeometryArgCurvedPipeCoinc, GeometryArgCurvedPipeCoinc2);
-        //assm->AddConstraint(GCM_CONCENTRIC, GeometryArgCurvedPipeConc, GeometryArgCurvedPipeConc2);
+        MtGeomArgument GeometryArgCurvedPipeCoinc3(curvedPipeSolid->GetFace(1), curvedPipeItem);
+        MtGeomArgument GeometryArgCurvedPipeCoinc4(innerPipeSolid->GetFace(0), innerPipeItem3);
+        MtGeomArgument GeometryArgCurvedPipeConc3(curvedPipeSolid->GetFace(2), curvedPipeItem);
+        MtGeomArgument GeometryArgCurvedPipeConc4(innerPipeSolid->GetFace(2), innerPipeItem3);
+
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgCurvedPipeCoinc3, GeometryArgCurvedPipeCoinc4);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgCurvedPipeConc3, GeometryArgCurvedPipeConc4);
+
+        // Curved Pipe grid
+        MtGeomArgument GeometryArgCurvedPipeCoinc5(curvedPipeSolid->GetFace(0), curvedPipeItem2);
+        MtGeomArgument GeometryArgCurvedPipeCoinc6(innerPipeSolid->GetFace(1), innerPipeItem);
+        MtGeomArgument GeometryArgCurvedPipeConc5(curvedPipeSolid->GetFace(3), curvedPipeItem2);
+        MtGeomArgument GeometryArgCurvedPipeConc6(innerPipeSolid->GetFace(2), innerPipeItem);
+
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgCurvedPipeCoinc5, GeometryArgCurvedPipeCoinc6);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgCurvedPipeConc5, GeometryArgCurvedPipeConc6);
+
+        MtGeomArgument GeometryArgCurvedPipeCoinc7(curvedPipeSolid->GetFace(1), curvedPipeItem2);
+        MtGeomArgument GeometryArgCurvedPipeCoinc8(innerPipeSolid->GetFace(1), innerPipeItem2);
+        MtGeomArgument GeometryArgCurvedPipeConc7(curvedPipeSolid->GetFace(2), curvedPipeItem2);
+        MtGeomArgument GeometryArgCurvedPipeConc8(innerPipeSolid->GetFace(2), innerPipeItem2);
+
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgCurvedPipeCoinc7, GeometryArgCurvedPipeCoinc8);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgCurvedPipeConc7, GeometryArgCurvedPipeConc8);
+
+        // Second Curved Pipe grid
+        MtGeomArgument GeometryArgCurvedPipeCoinc9(curvedPipeSolid->GetFace(0), curvedPipeItem3);
+        MtGeomArgument GeometryArgCurvedPipeCoinc10(innerPipeSolid->GetFace(1), innerPipeItem3);
+        MtGeomArgument GeometryArgCurvedPipeConc9(curvedPipeSolid->GetFace(3), curvedPipeItem3);
+        MtGeomArgument GeometryArgCurvedPipeConc10(innerPipeSolid->GetFace(2), innerPipeItem3);
+
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgCurvedPipeCoinc9, GeometryArgCurvedPipeCoinc10);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgCurvedPipeConc9, GeometryArgCurvedPipeConc10);
+
+        MtGeomArgument GeometryArgCurvedPipeCoinc11(curvedPipeSolid->GetFace(1), curvedPipeItem3);
+        MtGeomArgument GeometryArgCurvedPipeCoinc12(innerPipeSolid->GetFace(1), innerPipeItem4);
+        MtGeomArgument GeometryArgCurvedPipeConc11(curvedPipeSolid->GetFace(2), curvedPipeItem3);
+        MtGeomArgument GeometryArgCurvedPipeConc12(innerPipeSolid->GetFace(2), innerPipeItem4);
+
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgCurvedPipeCoinc11, GeometryArgCurvedPipeCoinc12);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgCurvedPipeConc11, GeometryArgCurvedPipeConc12);
+
+        // Pipe holders
+        MtGeomArgument GeometryArgPipeHolderCoinc(headExhangerGridSolid->GetFace(38), headExhangerGridItem);
+        MtGeomArgument GeometryArgPipeHolderCoinc2(pipeHolderShort->GetFace(0), pipeHolderShortItem);
+        MtGeomArgument GeometryArgPipeHolderConc(innerPipeSolid->GetFace(3), innerPipeItem);
+        MtGeomArgument GeometryArgPipeHolderConc2(pipeHolderShort->GetFace(10), pipeHolderShortItem);
+
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgPipeHolderCoinc, GeometryArgPipeHolderCoinc2);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgPipeHolderConc, GeometryArgPipeHolderConc2);
+
+        MtGeomArgument GeometryArgPipeHolderCoinc3(headExhangerGridSolid->GetFace(38), headExhangerGridItem);
+        MtGeomArgument GeometryArgPipeHolderCoinc4(pipeHolderShort->GetFace(0), pipeHolderShortItem2);
+        MtGeomArgument GeometryArgPipeHolderConc3(innerPipeSolid->GetFace(3), innerPipeItem2);
+        MtGeomArgument GeometryArgPipeHolderConc4(pipeHolderShort->GetFace(10), pipeHolderShortItem2);
+
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgPipeHolderCoinc3, GeometryArgPipeHolderCoinc4);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgPipeHolderConc3, GeometryArgPipeHolderConc4);
+
+        MtGeomArgument GeometryArgPipeHolderCoinc5(headExhangerGridSolid->GetFace(38), headExhangerGridItem);
+        MtGeomArgument GeometryArgPipeHolderCoinc6(pipeHolderShort->GetFace(0), pipeHolderShortItem3);
+        MtGeomArgument GeometryArgPipeHolderConc5(innerPipeSolid->GetFace(3), innerPipeItem3);
+        MtGeomArgument GeometryArgPipeHolderConc6(pipeHolderShort->GetFace(10), pipeHolderShortItem3);
+
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgPipeHolderCoinc5, GeometryArgPipeHolderCoinc6);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgPipeHolderConc5, GeometryArgPipeHolderConc6);
+
+        MtGeomArgument GeometryArgPipeHolderCoinc7(headExhangerGridSolid->GetFace(38), headExhangerGridItem);
+        MtGeomArgument GeometryArgPipeHolderCoinc8(pipeHolderShort->GetFace(0), pipeHolderShortItem4);
+        MtGeomArgument GeometryArgPipeHolderConc7(innerPipeSolid->GetFace(3), innerPipeItem4);
+        MtGeomArgument GeometryArgPipeHolderConc8(pipeHolderShort->GetFace(10), pipeHolderShortItem4);
+
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgPipeHolderCoinc7, GeometryArgPipeHolderCoinc8);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgPipeHolderConc7, GeometryArgPipeHolderConc8);
+
+        // GOST
+        // Flange E
+        MtGeomArgument GeometryArgFlanecEConc(flangeE->GetFace(10), flangeEItem);
+        MtGeomArgument GeometryArgFlanecECoinc(flangeE->GetFace(9), flangeEItem);
+        MtGeomArgument GeometryArgFlanecEConc2(headExhangerGridSolid->GetFace(23), headExhangerGridItem);
+        MtGeomArgument GeometryArgFlanecECoinc2(headExhangerGridSolid->GetFace(31), headExhangerGridItem);
+
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgFlanecECoinc, GeometryArgFlanecECoinc2);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgFlanecEConc, GeometryArgFlanecEConc2);
+
+        MtGeomArgument GeometryArgFlanecEConc3(flangeE->GetFace(10), flangeEItem2);
+        MtGeomArgument GeometryArgFlanecECoinc3(flangeE->GetFace(9), flangeEItem2);
+        MtGeomArgument GeometryArgFlanecEConc4(headExhangerGridSolid->GetFace(26), headExhangerGridItem);
+        MtGeomArgument GeometryArgFlanecECoinc4(headExhangerGridSolid->GetFace(33), headExhangerGridItem);
+
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgFlanecECoinc3, GeometryArgFlanecECoinc4);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgFlanecEConc3, GeometryArgFlanecEConc4);
+
+        // Flange F
+        MtGeomArgument GeometryArgFlanecFConc(flangeF->GetFace(10), flangeFItem);
+        MtGeomArgument GeometryArgFlanecFDist(flangeF->GetFace(9), flangeFItem);
+        MtGeomArgument GeometryArgFlanecFConc2(headExhangerGridSolid->GetFace(26), headExhangerGridItem);
+        MtGeomArgument GeometryArgFlanecFDist2(flangeE->GetFace(0), flangeEItem);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgFlanecFConc, GeometryArgFlanecFConc2);
+
+        double lengthBetweenFlanges = 1;
+        MtParVariant ArgLengthBetweenFlanges(lengthBetweenFlanges);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgFlanecFDist, GeometryArgFlanecFDist2, MtParVariant(ArgLengthBetweenFlanges));
+
+        MtGeomArgument GeometryArgFlangesConc(flangeE->GetFace(7), flangeEItem);
+        MtGeomArgument GeometryArgFlangesConc2(flangeF->GetFace(2), flangeFItem);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgFlangesConc, GeometryArgFlangesConc2);
+
+        MtGeomArgument GeometryArgFlanecFConc3(flangeF->GetFace(10), flangeFItem2);
+        MtGeomArgument GeometryArgFlanecFDist3(flangeF->GetFace(9), flangeFItem2);
+        MtGeomArgument GeometryArgFlanecFConc4(headExhangerGridSolid->GetFace(23), headExhangerGridItem);
+        MtGeomArgument GeometryArgFlanecFDist4(flangeE->GetFace(0), flangeEItem2);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgFlanecFConc3, GeometryArgFlanecFConc4);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgFlanecFDist3, GeometryArgFlanecFDist4, MtParVariant(ArgLengthBetweenFlanges));
+
+        MtGeomArgument GeometryArgFlangesConc3(flangeE->GetFace(7), flangeEItem2);
+        MtGeomArgument GeometryArgFlangesConc4(flangeF->GetFace(2), flangeFItem2);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgFlangesConc3, GeometryArgFlangesConc4);
+
+        // Screw 35
+        double lengthForScrew = 2;
+        MtParVariant ArgLengthScrew(lengthForScrew);
+
+        MtGeomArgument GeometryArgScrew35Conc(screw35->GetFace(4), screw35Item);
+        MtGeomArgument GeometryArgScrew35Dist(flangeF->GetFace(1), flangeFItem);
+        MtGeomArgument GeometryArgScrew35Conc2(flangeF->GetFace(2), flangeFItem);
+        MtGeomArgument GeometryArgScrew35Dist2(screw35->GetFace(9), screw35Item);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgScrew35Conc, GeometryArgScrew35Conc2);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgScrew35Dist, GeometryArgScrew35Dist2, MtParVariant(ArgLengthScrew));
+
+        MtGeomArgument GeometryArgScrew35Conc3(screw35->GetFace(4), screw35Item2);
+        MtGeomArgument GeometryArgScrew35Dist3(flangeF->GetFace(1), flangeFItem);
+        MtGeomArgument GeometryArgScrew35Conc4(flangeF->GetFace(5), flangeFItem);
+        MtGeomArgument GeometryArgScrew35Dist4(screw35->GetFace(9), screw35Item2);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgScrew35Conc3, GeometryArgScrew35Conc4);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgScrew35Dist3, GeometryArgScrew35Dist4, MtParVariant(ArgLengthScrew));
+
+        MtGeomArgument GeometryArgScrew35Conc5(screw35->GetFace(4), screw35Item3);
+        MtGeomArgument GeometryArgScrew35Dist5(flangeF->GetFace(1), flangeFItem);
+        MtGeomArgument GeometryArgScrew35Conc6(flangeF->GetFace(6), flangeFItem);
+        MtGeomArgument GeometryArgScrew35Dist6(screw35->GetFace(9), screw35Item3);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgScrew35Conc5, GeometryArgScrew35Conc6);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgScrew35Dist5, GeometryArgScrew35Dist6, MtParVariant(ArgLengthScrew));
+
+        MtGeomArgument GeometryArgScrew35Conc7(screw35->GetFace(4), screw35Item4);
+        MtGeomArgument GeometryArgScrew35Dist7(flangeF->GetFace(1), flangeFItem);
+        MtGeomArgument GeometryArgScrew35Conc8(flangeF->GetFace(7), flangeFItem);
+        MtGeomArgument GeometryArgScrew35Dist8(screw35->GetFace(9), screw35Item4);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgScrew35Conc7, GeometryArgScrew35Conc8);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgScrew35Dist7, GeometryArgScrew35Dist8, MtParVariant(ArgLengthScrew));
+
+        MtGeomArgument GeometryArgScrew35Conc9(screw35->GetFace(4), screw35Item5);
+        MtGeomArgument GeometryArgScrew35Dist9(flangeF->GetFace(1), flangeFItem2);
+        MtGeomArgument GeometryArgScrew35Conc10(flangeF->GetFace(2), flangeFItem2);
+        MtGeomArgument GeometryArgScrew35Dist10(screw35->GetFace(9), screw35Item5);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgScrew35Conc9, GeometryArgScrew35Conc10);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgScrew35Dist9, GeometryArgScrew35Dist10, MtParVariant(ArgLengthScrew));
+
+        MtGeomArgument GeometryArgScrew35Conc11(screw35->GetFace(4), screw35Item6);
+        MtGeomArgument GeometryArgScrew35Dist11(flangeF->GetFace(1), flangeFItem2);
+        MtGeomArgument GeometryArgScrew35Conc12(flangeF->GetFace(5), flangeFItem2);
+        MtGeomArgument GeometryArgScrew35Dist12(screw35->GetFace(9), screw35Item6);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgScrew35Conc11, GeometryArgScrew35Conc12);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgScrew35Dist11, GeometryArgScrew35Dist12, MtParVariant(ArgLengthScrew));
+
+        MtGeomArgument GeometryArgScrew35Conc13(screw35->GetFace(4), screw35Item7);
+        MtGeomArgument GeometryArgScrew35Dist13(flangeF->GetFace(1), flangeFItem2);
+        MtGeomArgument GeometryArgScrew35Conc14(flangeF->GetFace(6), flangeFItem2);
+        MtGeomArgument GeometryArgScrew35Dist14(screw35->GetFace(9), screw35Item7);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgScrew35Conc13, GeometryArgScrew35Conc14);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgScrew35Dist13, GeometryArgScrew35Dist14, MtParVariant(ArgLengthScrew));
+
+        MtGeomArgument GeometryArgScrew35Conc15(screw35->GetFace(4), screw35Item8);
+        MtGeomArgument GeometryArgScrew35Dist15(flangeF->GetFace(1), flangeFItem2);
+        MtGeomArgument GeometryArgScrew35Conc16(flangeF->GetFace(7), flangeFItem2);
+        MtGeomArgument GeometryArgScrew35Dist16(screw35->GetFace(9), screw35Item8);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgScrew35Conc15, GeometryArgScrew35Conc16);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgScrew35Dist15, GeometryArgScrew35Dist16, MtParVariant(ArgLengthScrew));
+
+        // Washer 10
+        MtGeomArgument GeometryArgWasher10Conc(pipeScrewWasher->GetFace(12), pipeScrewWasherItem);
+        MtGeomArgument GeometryArgWasger10Coinc(pipeScrewWasher->GetFace(0), pipeScrewWasherItem);
+        MtGeomArgument GeometryArgWasher10Conc2(screw35->GetFace(4), screw35Item);
+        MtGeomArgument GeometryArgWasher10Coinc2(flangeE->GetFace(1), flangeEItem);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgWasher10Conc, GeometryArgWasher10Conc2);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgWasger10Coinc, GeometryArgWasher10Coinc2);
+
+        MtGeomArgument GeometryArgWasher10Conc3(pipeScrewWasher->GetFace(12), pipeScrewWasherItem2);
+        MtGeomArgument GeometryArgWasger10Coinc3(pipeScrewWasher->GetFace(0), pipeScrewWasherItem2);
+        MtGeomArgument GeometryArgWasher10Conc4(screw35->GetFace(4), screw35Item2);
+        MtGeomArgument GeometryArgWasher10Coinc4(flangeE->GetFace(1), flangeEItem);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgWasher10Conc3, GeometryArgWasher10Conc4);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgWasger10Coinc3, GeometryArgWasher10Coinc4);
+
+        MtGeomArgument GeometryArgWasher10Conc5(pipeScrewWasher->GetFace(12), pipeScrewWasherItem3);
+        MtGeomArgument GeometryArgWasger10Coinc5(pipeScrewWasher->GetFace(0), pipeScrewWasherItem3);
+        MtGeomArgument GeometryArgWasher10Conc6(screw35->GetFace(4), screw35Item3);
+        MtGeomArgument GeometryArgWasher10Coinc6(flangeE->GetFace(1), flangeEItem);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgWasher10Conc5, GeometryArgWasher10Conc6);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgWasger10Coinc5, GeometryArgWasher10Coinc6);
+
+        MtGeomArgument GeometryArgWasher10Conc7(pipeScrewWasher->GetFace(12), pipeScrewWasherItem4);
+        MtGeomArgument GeometryArgWasger10Coinc7(pipeScrewWasher->GetFace(0), pipeScrewWasherItem4);
+        MtGeomArgument GeometryArgWasher10Conc8(screw35->GetFace(4), screw35Item4);
+        MtGeomArgument GeometryArgWasher10Coinc8(flangeE->GetFace(1), flangeEItem);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgWasher10Conc7, GeometryArgWasher10Conc8);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgWasger10Coinc7, GeometryArgWasher10Coinc8);
+
+        MtGeomArgument GeometryArgWasher10Conc9(pipeScrewWasher->GetFace(12), pipeScrewWasherItem5);
+        MtGeomArgument GeometryArgWasger10Coinc9(pipeScrewWasher->GetFace(0), pipeScrewWasherItem5);
+        MtGeomArgument GeometryArgWasher10Conc10(screw35->GetFace(4), screw35Item5);
+        MtGeomArgument GeometryArgWasher10Coinc10(flangeE->GetFace(1), flangeEItem2);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgWasher10Conc9, GeometryArgWasher10Conc10);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgWasger10Coinc9, GeometryArgWasher10Coinc10);
+
+        MtGeomArgument GeometryArgWasher10Conc11(pipeScrewWasher->GetFace(12), pipeScrewWasherItem6);
+        MtGeomArgument GeometryArgWasger10Coinc11(pipeScrewWasher->GetFace(0), pipeScrewWasherItem6);
+        MtGeomArgument GeometryArgWasher10Conc12(screw35->GetFace(4), screw35Item6);
+        MtGeomArgument GeometryArgWasher10Coinc12(flangeE->GetFace(1), flangeEItem2);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgWasher10Conc11, GeometryArgWasher10Conc12);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgWasger10Coinc11, GeometryArgWasher10Coinc12);
+
+        MtGeomArgument GeometryArgWasher10Conc13(pipeScrewWasher->GetFace(12), pipeScrewWasherItem7);
+        MtGeomArgument GeometryArgWasger10Coinc13(pipeScrewWasher->GetFace(0), pipeScrewWasherItem7);
+        MtGeomArgument GeometryArgWasher10Conc14(screw35->GetFace(4), screw35Item7);
+        MtGeomArgument GeometryArgWasher10Coinc14(flangeE->GetFace(1), flangeEItem2);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgWasher10Conc13, GeometryArgWasher10Conc14);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgWasger10Coinc13, GeometryArgWasher10Coinc14);
+
+        MtGeomArgument GeometryArgWasher10Conc15(pipeScrewWasher->GetFace(12), pipeScrewWasherItem8);
+        MtGeomArgument GeometryArgWasger10Coinc15(pipeScrewWasher->GetFace(0), pipeScrewWasherItem8);
+        MtGeomArgument GeometryArgWasher10Conc16(screw35->GetFace(4), screw35Item8);
+        MtGeomArgument GeometryArgWasher10Coinc16(flangeE->GetFace(1), flangeEItem2);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgWasher10Conc15, GeometryArgWasher10Conc16);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgWasger10Coinc15, GeometryArgWasher10Coinc16);
+
+        // Screw 55
+        MtGeomArgument GeometryArgsScrew55Conc(screw55->GetFace(18), screw55Item);
+        MtGeomArgument GeometryArgsScrew55Coinc(screw55->GetFace(19), screw55Item);
+        MtGeomArgument GeometryArgsScrew55Conc2(headExhangerGridSolid->GetFace(6), headExhangerGridItem);
+        MtGeomArgument GeometryArgsScrew55Coinc2(headExhangerGridSolid->GetFace(1), headExhangerGridItem);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsScrew55Conc, GeometryArgsScrew55Conc2);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgsScrew55Coinc, GeometryArgsScrew55Coinc2);
+
+        MtGeomArgument GeometryArgsScrew55Conc3(screw55->GetFace(18), screw55Item2);
+        MtGeomArgument GeometryArgsScrew55Coinc3(screw55->GetFace(19), screw55Item2);
+        MtGeomArgument GeometryArgsScrew55Conc4(headExhangerGridSolid->GetFace(15), headExhangerGridItem);
+        MtGeomArgument GeometryArgsScrew55Coinc4(headExhangerGridSolid->GetFace(1), headExhangerGridItem);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsScrew55Conc3, GeometryArgsScrew55Conc4);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgsScrew55Coinc3, GeometryArgsScrew55Coinc4);
+
+        MtGeomArgument GeometryArgsScrew55Conc5(screw55->GetFace(18), screw55Item3);
+        MtGeomArgument GeometryArgsScrew55Coinc5(screw55->GetFace(19), screw55Item3);
+        MtGeomArgument GeometryArgsScrew55Conc6(headExhangerGridSolid->GetFace(2), headExhangerGridItem);
+        MtGeomArgument GeometryArgsScrew55Coinc6(headExhangerGridSolid->GetFace(1), headExhangerGridItem);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsScrew55Conc5, GeometryArgsScrew55Conc6);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgsScrew55Coinc5, GeometryArgsScrew55Coinc6);
+
+        MtGeomArgument GeometryArgsScrew55Conc7(screw55->GetFace(18), screw55Item4);
+        MtGeomArgument GeometryArgsScrew55Coinc7(screw55->GetFace(19), screw55Item4);
+        MtGeomArgument GeometryArgsScrew55Conc8(headExhangerGridSolid->GetFace(18), headExhangerGridItem);
+        MtGeomArgument GeometryArgsScrew55Coinc8(headExhangerGridSolid->GetFace(1), headExhangerGridItem);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsScrew55Conc7, GeometryArgsScrew55Conc8);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgsScrew55Coinc7, GeometryArgsScrew55Coinc8);
+
+        MtGeomArgument GeometryArgsScrew55Conc9(screw55->GetFace(18), screw55Item5);
+        MtGeomArgument GeometryArgsScrew55Coinc9(screw55->GetFace(19), screw55Item5);
+        MtGeomArgument GeometryArgsScrew55Conc10(headExhangerGridSolid->GetFace(4), headExhangerGridItem);
+        MtGeomArgument GeometryArgsScrew55Coinc10(headExhangerGridSolid->GetFace(1), headExhangerGridItem);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsScrew55Conc9, GeometryArgsScrew55Conc10);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgsScrew55Coinc9, GeometryArgsScrew55Coinc10);
+
+        MtGeomArgument GeometryArgsScrew55Conc11(screw55->GetFace(18), screw55Item6);
+        MtGeomArgument GeometryArgsScrew55Coinc11(screw55->GetFace(19), screw55Item6);
+        MtGeomArgument GeometryArgsScrew55Conc12(headExhangerGridSolid->GetFace(17), headExhangerGridItem);
+        MtGeomArgument GeometryArgsScrew55Coinc12(headExhangerGridSolid->GetFace(1), headExhangerGridItem);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsScrew55Conc11, GeometryArgsScrew55Conc12);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgsScrew55Coinc11, GeometryArgsScrew55Coinc12);
+
+        MtGeomArgument GeometryArgsScrew55Conc13(screw55->GetFace(18), screw55Item7);
+        MtGeomArgument GeometryArgsScrew55Coinc13(screw55->GetFace(19), screw55Item7);
+        MtGeomArgument GeometryArgsScrew55Conc14(headExhangerGridSolid->GetFace(5), headExhangerGridItem);
+        MtGeomArgument GeometryArgsScrew55Coinc14(headExhangerGridSolid->GetFace(1), headExhangerGridItem);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsScrew55Conc13, GeometryArgsScrew55Conc14);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgsScrew55Coinc13, GeometryArgsScrew55Coinc14);
+
+        MtGeomArgument GeometryArgsScrew55Conc15(screw55->GetFace(18), screw55Item8);
+        MtGeomArgument GeometryArgsScrew55Coinc15(screw55->GetFace(19), screw55Item8);
+        MtGeomArgument GeometryArgsScrew55Conc16(headExhangerGridSolid->GetFace(16), headExhangerGridItem);
+        MtGeomArgument GeometryArgsScrew55Coinc16(headExhangerGridSolid->GetFace(1), headExhangerGridItem);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsScrew55Conc15, GeometryArgsScrew55Conc16);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgsScrew55Coinc15, GeometryArgsScrew55Coinc16);
+
+        MtGeomArgument GeometryArgsScrew55Conc17(screw55->GetFace(18), screw55Item9);
+        MtGeomArgument GeometryArgsScrew55Coinc17(screw55->GetFace(19), screw55Item9);
+        MtGeomArgument GeometryArgsScrew55Conc18(headExhangerGridSecondSolid->GetFace(12), headExhangerGridSecondItem);
+        MtGeomArgument GeometryArgsScrew55Coinc18(headExhangerGridSecondSolid->GetFace(1), headExhangerGridSecondItem);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsScrew55Conc17, GeometryArgsScrew55Conc18, GCM_OPPOSITE);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgsScrew55Coinc17, GeometryArgsScrew55Coinc18, GCM_OPPOSITE);
+
+        MtGeomArgument GeometryArgsScrew55Conc19(screw55->GetFace(18), screw55Item10);
+        MtGeomArgument GeometryArgsScrew55Coinc19(screw55->GetFace(19), screw55Item10);
+        MtGeomArgument GeometryArgsScrew55Conc20(headExhangerGridSecondSolid->GetFace(5), headExhangerGridSecondItem);
+        MtGeomArgument GeometryArgsScrew55Coinc20(headExhangerGridSecondSolid->GetFace(1), headExhangerGridSecondItem);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsScrew55Conc19, GeometryArgsScrew55Conc20, GCM_OPPOSITE);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgsScrew55Coinc19, GeometryArgsScrew55Coinc20, GCM_OPPOSITE);
+
+        MtGeomArgument GeometryArgsScrew55Conc21(screw55->GetFace(18), screw55Item11);
+        MtGeomArgument GeometryArgsScrew55Coinc21(screw55->GetFace(19), screw55Item11);
+        MtGeomArgument GeometryArgsScrew55Conc22(headExhangerGridSecondSolid->GetFace(13), headExhangerGridSecondItem);
+        MtGeomArgument GeometryArgsScrew55Coinc22(headExhangerGridSecondSolid->GetFace(1), headExhangerGridSecondItem);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsScrew55Conc21, GeometryArgsScrew55Conc22, GCM_OPPOSITE);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgsScrew55Coinc21, GeometryArgsScrew55Coinc22, GCM_OPPOSITE);
+
+        MtGeomArgument GeometryArgsScrew55Conc23(screw55->GetFace(18), screw55Item12);
+        MtGeomArgument GeometryArgsScrew55Coinc23(screw55->GetFace(19), screw55Item12);
+        MtGeomArgument GeometryArgsScrew55Conc24(headExhangerGridSecondSolid->GetFace(4), headExhangerGridSecondItem);
+        MtGeomArgument GeometryArgsScrew55Coinc24(headExhangerGridSecondSolid->GetFace(1), headExhangerGridSecondItem);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsScrew55Conc23, GeometryArgsScrew55Conc24, GCM_OPPOSITE);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgsScrew55Coinc23, GeometryArgsScrew55Coinc24, GCM_OPPOSITE);
+
+        MtGeomArgument GeometryArgsScrew55Conc25(screw55->GetFace(18), screw55Item13);
+        MtGeomArgument GeometryArgsScrew55Coinc25(screw55->GetFace(19), screw55Item13);
+        MtGeomArgument GeometryArgsScrew55Conc26(headExhangerGridSecondSolid->GetFace(14), headExhangerGridSecondItem);
+        MtGeomArgument GeometryArgsScrew55Coinc26(headExhangerGridSecondSolid->GetFace(1), headExhangerGridSecondItem);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsScrew55Conc25, GeometryArgsScrew55Conc26, GCM_OPPOSITE);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgsScrew55Coinc25, GeometryArgsScrew55Coinc26, GCM_OPPOSITE);
+
+        MtGeomArgument GeometryArgsScrew55Conc27(screw55->GetFace(18), screw55Item14);
+        MtGeomArgument GeometryArgsScrew55Coinc27(screw55->GetFace(19), screw55Item14);
+        MtGeomArgument GeometryArgsScrew55Conc28(headExhangerGridSecondSolid->GetFace(2), headExhangerGridSecondItem);
+        MtGeomArgument GeometryArgsScrew55Coinc28(headExhangerGridSecondSolid->GetFace(1), headExhangerGridSecondItem);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsScrew55Conc27, GeometryArgsScrew55Conc28, GCM_OPPOSITE);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgsScrew55Coinc27, GeometryArgsScrew55Coinc28, GCM_OPPOSITE);
+
+        MtGeomArgument GeometryArgsScrew55Conc29(screw55->GetFace(18), screw55Item15);
+        MtGeomArgument GeometryArgsScrew55Coinc29(screw55->GetFace(19), screw55Item15);
+        MtGeomArgument GeometryArgsScrew55Conc30(headExhangerGridSecondSolid->GetFace(11), headExhangerGridSecondItem);
+        MtGeomArgument GeometryArgsScrew55Coinc30(headExhangerGridSecondSolid->GetFace(1), headExhangerGridSecondItem);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsScrew55Conc29, GeometryArgsScrew55Conc30, GCM_OPPOSITE);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgsScrew55Coinc29, GeometryArgsScrew55Coinc30, GCM_OPPOSITE);
+
+        MtGeomArgument GeometryArgsScrew55Conc31(screw55->GetFace(18), screw55Item16);
+        MtGeomArgument GeometryArgsScrew55Coinc31(screw55->GetFace(19), screw55Item16);
+        MtGeomArgument GeometryArgsScrew55Conc32(headExhangerGridSecondSolid->GetFace(6), headExhangerGridSecondItem);
+        MtGeomArgument GeometryArgsScrew55Coinc32(headExhangerGridSecondSolid->GetFace(1), headExhangerGridSecondItem);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsScrew55Conc31, GeometryArgsScrew55Conc32, GCM_OPPOSITE);
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgsScrew55Coinc31, GeometryArgsScrew55Coinc32, GCM_OPPOSITE);
+
+        double lengthForWasher = 3.0;
+        MtParVariant ArgLengthWasher(lengthForWasher);
+
+        MtGeomArgument GeometryArgsWasherConc(pipeScrewWasher->GetFace(12), pipeScrewWasherItem9);
+        MtGeomArgument GeometryArgsWasherDist(pipeScrewWasher->GetFace(0), pipeScrewWasherItem9);
+        MtGeomArgument GeometryArgsWasherConc2(screw55->GetFace(18), screw55Item9);
+        MtGeomArgument GeometryArgsWasherDist2(screw55->GetFace(0), screw55Item9);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsWasherConc, GeometryArgsWasherConc2);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgsWasherDist, GeometryArgsWasherDist2, MtParVariant(ArgLengthWasher));
+
+        MtGeomArgument GeometryArgsWasherConc3(pipeScrewWasher->GetFace(12), pipeScrewWasherItem10);
+        MtGeomArgument GeometryArgsWasherDist3(pipeScrewWasher->GetFace(0), pipeScrewWasherItem10);
+        MtGeomArgument GeometryArgsWasherConc4(screw55->GetFace(18), screw55Item10);
+        MtGeomArgument GeometryArgsWasherDist4(screw55->GetFace(0), screw55Item10);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsWasherConc3, GeometryArgsWasherConc4);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgsWasherDist3, GeometryArgsWasherDist4, MtParVariant(ArgLengthWasher));
+
+        MtGeomArgument GeometryArgsWasherConc5(pipeScrewWasher->GetFace(12), pipeScrewWasherItem11);
+        MtGeomArgument GeometryArgsWasherDist5(pipeScrewWasher->GetFace(0), pipeScrewWasherItem11);
+        MtGeomArgument GeometryArgsWasherConc6(screw55->GetFace(18), screw55Item11);
+        MtGeomArgument GeometryArgsWasherDist6(screw55->GetFace(0), screw55Item11);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsWasherConc5, GeometryArgsWasherConc6);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgsWasherDist5, GeometryArgsWasherDist6, MtParVariant(ArgLengthWasher));
+
+        MtGeomArgument GeometryArgsWasherConc7(pipeScrewWasher->GetFace(12), pipeScrewWasherItem12);
+        MtGeomArgument GeometryArgsWasherDist7(pipeScrewWasher->GetFace(0), pipeScrewWasherItem12);
+        MtGeomArgument GeometryArgsWasherConc8(screw55->GetFace(18), screw55Item12);
+        MtGeomArgument GeometryArgsWasherDist8(screw55->GetFace(0), screw55Item12);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsWasherConc7, GeometryArgsWasherConc8);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgsWasherDist7, GeometryArgsWasherDist8, MtParVariant(ArgLengthWasher));
+
+        MtGeomArgument GeometryArgsWasherConc9(pipeScrewWasher->GetFace(12), pipeScrewWasherItem13);
+        MtGeomArgument GeometryArgsWasherDist9(pipeScrewWasher->GetFace(0), pipeScrewWasherItem13);
+        MtGeomArgument GeometryArgsWasherConc10(screw55->GetFace(18), screw55Item13);
+        MtGeomArgument GeometryArgsWasherDist10(screw55->GetFace(0), screw55Item13);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsWasherConc9, GeometryArgsWasherConc10);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgsWasherDist9, GeometryArgsWasherDist10, MtParVariant(ArgLengthWasher));
+
+        MtGeomArgument GeometryArgsWasherConc11(pipeScrewWasher->GetFace(12), pipeScrewWasherItem14);
+        MtGeomArgument GeometryArgsWasherDist11(pipeScrewWasher->GetFace(0), pipeScrewWasherItem14);
+        MtGeomArgument GeometryArgsWasherConc12(screw55->GetFace(18), screw55Item14);
+        MtGeomArgument GeometryArgsWasherDist12(screw55->GetFace(0), screw55Item14);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsWasherConc11, GeometryArgsWasherConc12);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgsWasherDist11, GeometryArgsWasherDist12, MtParVariant(ArgLengthWasher));
+
+        MtGeomArgument GeometryArgsWasherConc13(pipeScrewWasher->GetFace(12), pipeScrewWasherItem15);
+        MtGeomArgument GeometryArgsWasherDist13(pipeScrewWasher->GetFace(0), pipeScrewWasherItem15);
+        MtGeomArgument GeometryArgsWasherConc14(screw55->GetFace(18), screw55Item15);
+        MtGeomArgument GeometryArgsWasherDist14(screw55->GetFace(0), screw55Item15);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsWasherConc13, GeometryArgsWasherConc14);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgsWasherDist13, GeometryArgsWasherDist14, MtParVariant(ArgLengthWasher));
+
+        MtGeomArgument GeometryArgsWasherConc15(pipeScrewWasher->GetFace(12), pipeScrewWasherItem16);
+        MtGeomArgument GeometryArgsWasherDist15(pipeScrewWasher->GetFace(0), pipeScrewWasherItem16);
+        MtGeomArgument GeometryArgsWasherConc16(screw55->GetFace(18), screw55Item16);
+        MtGeomArgument GeometryArgsWasherDist16(screw55->GetFace(0), screw55Item16);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsWasherConc15, GeometryArgsWasherConc16);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgsWasherDist15, GeometryArgsWasherDist16, MtParVariant(ArgLengthWasher));
+
+        MtGeomArgument GeometryArgsWasherConc17(pipeScrewWasher->GetFace(12), pipeScrewWasherItem17);
+        MtGeomArgument GeometryArgsWasherDist17(pipeScrewWasher->GetFace(0), pipeScrewWasherItem17);
+        MtGeomArgument GeometryArgsWasherConc18(screw55->GetFace(18), screw55Item);
+        MtGeomArgument GeometryArgsWasherDist18(screw55->GetFace(0), screw55Item);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsWasherConc17, GeometryArgsWasherConc18);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgsWasherDist17, GeometryArgsWasherDist18, MtParVariant(ArgLengthWasher));
+
+        MtGeomArgument GeometryArgsWasherConc19(pipeScrewWasher->GetFace(12), pipeScrewWasherItem18);
+        MtGeomArgument GeometryArgsWasherDist19(pipeScrewWasher->GetFace(0), pipeScrewWasherItem18);
+        MtGeomArgument GeometryArgsWasherConc20(screw55->GetFace(18), screw55Item2);
+        MtGeomArgument GeometryArgsWasherDist20(screw55->GetFace(0), screw55Item2);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsWasherConc19, GeometryArgsWasherConc20);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgsWasherDist19, GeometryArgsWasherDist20, MtParVariant(ArgLengthWasher));
+
+        MtGeomArgument GeometryArgsWasherConc21(pipeScrewWasher->GetFace(12), pipeScrewWasherItem19);
+        MtGeomArgument GeometryArgsWasherDist21(pipeScrewWasher->GetFace(0), pipeScrewWasherItem19);
+        MtGeomArgument GeometryArgsWasherConc22(screw55->GetFace(18), screw55Item3);
+        MtGeomArgument GeometryArgsWasherDist22(screw55->GetFace(0), screw55Item3);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsWasherConc21, GeometryArgsWasherConc22);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgsWasherDist21, GeometryArgsWasherDist22, MtParVariant(ArgLengthWasher));
+
+        MtGeomArgument GeometryArgsWasherConc23(pipeScrewWasher->GetFace(12), pipeScrewWasherItem20);
+        MtGeomArgument GeometryArgsWasherDist23(pipeScrewWasher->GetFace(0), pipeScrewWasherItem20);
+        MtGeomArgument GeometryArgsWasherConc24(screw55->GetFace(18), screw55Item4);
+        MtGeomArgument GeometryArgsWasherDist24(screw55->GetFace(0), screw55Item4);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsWasherConc23, GeometryArgsWasherConc24);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgsWasherDist23, GeometryArgsWasherDist24, MtParVariant(ArgLengthWasher));
+
+        MtGeomArgument GeometryArgsWasherConc25(pipeScrewWasher->GetFace(12), pipeScrewWasherItem21);
+        MtGeomArgument GeometryArgsWasherDist25(pipeScrewWasher->GetFace(0), pipeScrewWasherItem21);
+        MtGeomArgument GeometryArgsWasherConc26(screw55->GetFace(18), screw55Item5);
+        MtGeomArgument GeometryArgsWasherDist26(screw55->GetFace(0), screw55Item5);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsWasherConc25, GeometryArgsWasherConc26);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgsWasherDist25, GeometryArgsWasherDist26, MtParVariant(ArgLengthWasher));
+
+        MtGeomArgument GeometryArgsWasherConc27(pipeScrewWasher->GetFace(12), pipeScrewWasherItem22);
+        MtGeomArgument GeometryArgsWasherDist27(pipeScrewWasher->GetFace(0), pipeScrewWasherItem22);
+        MtGeomArgument GeometryArgsWasherConc28(screw55->GetFace(18), screw55Item6);
+        MtGeomArgument GeometryArgsWasherDist28(screw55->GetFace(0), screw55Item6);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsWasherConc27, GeometryArgsWasherConc28);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgsWasherDist27, GeometryArgsWasherDist28, MtParVariant(ArgLengthWasher));
+
+        MtGeomArgument GeometryArgsWasherConc29(pipeScrewWasher->GetFace(12), pipeScrewWasherItem23);
+        MtGeomArgument GeometryArgsWasherDist29(pipeScrewWasher->GetFace(0), pipeScrewWasherItem23);
+        MtGeomArgument GeometryArgsWasherConc30(screw55->GetFace(18), screw55Item7);
+        MtGeomArgument GeometryArgsWasherDist30(screw55->GetFace(0), screw55Item7);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsWasherConc29, GeometryArgsWasherConc30);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgsWasherDist29, GeometryArgsWasherDist30, MtParVariant(ArgLengthWasher));
+
+        MtGeomArgument GeometryArgsWasherConc31(pipeScrewWasher->GetFace(12), pipeScrewWasherItem24);
+        MtGeomArgument GeometryArgsWasherDist31(pipeScrewWasher->GetFace(0), pipeScrewWasherItem24);
+        MtGeomArgument GeometryArgsWasherConc32(screw55->GetFace(18), screw55Item8);
+        MtGeomArgument GeometryArgsWasherDist32(screw55->GetFace(0), screw55Item8);
+
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsWasherConc31, GeometryArgsWasherConc32);
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgsWasherDist31, GeometryArgsWasherDist32, MtParVariant(ArgLengthWasher));
     }
 
     assm->EvaluateConstraints();
+
+    string casingPipeName = "Casing pipe";
+    string headExchangePipeName = "Heat exchange pipe";
+    string distributionChamberName = "Heat exhanger chamber";
+    string rotatableChamberName = "Casing chamber";
+    string supportName = "Support";
+    string capName = "Cap";
+    string roundPipeName = "Rounded pipe";
+
+    MbProductInfo casingPipeInfo(false, casingPipeName, casingPipeName, casingPipeName);
+    MbProductInfo headExchangePipeInfo(false, headExchangePipeName, headExchangePipeName, headExchangePipeName);
+    MbProductInfo distributionChamberInfo(false, headExchangePipeName, headExchangePipeName, headExchangePipeName);
+    MbProductInfo rotatableChamberInfo(false, rotatableChamberName, rotatableChamberName, rotatableChamberName);
+    MbProductInfo supportInfo(false, supportName, supportName, supportName);
+    MbProductInfo capInfo(false, capName, capName, capName);
+    MbProductInfo roundedPipeInfo(false, roundPipeName, roundPipeName, roundPipeName);
+
+    MbProductInfo TTRMInfo(false, "TTRM", "TTRM", "TTRM");
+
+    innerPipeItem->AddAttribute(casingPipeInfo);
+    innerPipeItem2->AddAttribute(casingPipeInfo);
+    innerPipeItem3->AddAttribute(casingPipeInfo);
+    innerPipeItem4->AddAttribute(casingPipeInfo);
+    innerPipeSolid->AddAttribute(casingPipeInfo);
+
+    outerPipeItem->AddAttribute(headExchangePipeInfo);
+    outerPipeItem2->AddAttribute(headExchangePipeInfo);
+    outerPipeItem3->AddAttribute(headExchangePipeInfo);
+    outerPipeItem4->AddAttribute(headExchangePipeInfo);
+    outerPipeSolid->AddAttribute(casingPipeInfo);
+
+    headExhangerGridItem->AddAttribute(distributionChamberInfo);
+    headExhangerGridSolid->AddAttribute(distributionChamberInfo);
+
+    headExhangerGridSecondItem->AddAttribute(rotatableChamberInfo);
+    headExhangerGridSecondSolid->AddAttribute(rotatableChamberInfo);
+
+    supportItem->AddAttribute(supportInfo);
+    supportItem2->AddAttribute(supportInfo);
+    supportSolid->AddAttribute(supportInfo);
+
+    capItem->AddAttribute(capInfo);
+    capItem2->AddAttribute(capInfo);
+    capSolid->AddAttribute(capInfo);
+
+    curvedPipeItem->AddAttribute(roundedPipeInfo);
+    curvedPipeItem2->AddAttribute(roundedPipeInfo);
+    curvedPipeItem3->AddAttribute(roundedPipeInfo);
+    curvedPipeSolid->AddAttribute(roundedPipeInfo);
     
+    assm->AddAttribute(TTRMInfo);
+
     return assm;
 }
 

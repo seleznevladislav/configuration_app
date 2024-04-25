@@ -5,7 +5,7 @@ using namespace BuildMathModel;
 
 const double DEG_TO_RAD = M_PI / 180.0;
 
-void createMainSolidSketch(RPArray<MbContour>& _arrContours)
+void createMainSolidSketch(RPArray<MbContour>& _arrContours, double length2, double assortmentCamera)
 {
     SArray<MbCartPoint> arrPnts(7);
 
@@ -41,7 +41,7 @@ void createMainSolidSketch(RPArray<MbContour>& _arrContours)
     _arrContours.push_back(pContour);
 }
 
-void createYZWall(RPArray<MbContour>& _arrContours)
+void createYZWall(RPArray<MbContour>& _arrContours, double length2, double assortmentCamera, double thicknessCamera)
 {
     SArray<MbCartPoint> wallPnts(6);
 
@@ -72,7 +72,7 @@ void createYZWall(RPArray<MbContour>& _arrContours)
     _arrContours.push_back(pContour);
 }
 
-void createXZWall(RPArray<MbContour>& _arrContours)
+void createXZWall(RPArray<MbContour>& _arrContours, double length2, double assortmentCamera, double thicknessCamera)
 {
     SArray<MbCartPoint> wallPnts(6);
 
@@ -99,33 +99,33 @@ void createXZWall(RPArray<MbContour>& _arrContours)
     _arrContours.push_back(pContour);
 }
 
-SPtr<MbSolid> ParametricModelCreator::create_outer_pipes_grid_004()
+SPtr<MbSolid> ParametricModelCreator::createOuterPipesGrid_004(double length2, double diametrY, double thickness, double t, double assortmentInnerTubes, double assortmentCamera, double thicknessCamera)
 {
     const double DEG_TO_RAD = M_PI / 180.0;
 
-    // ��������� �� (�� ��������� ��������� � ������� ��)
+    // Локальная СК (по умолчанию совпадает с мировой СК)
     MbPlacement3D pl;
 
-    // �������� ���������� ��� ���� ������������
+    // Создание образующей для тела выдавливания
     RPArray<MbContour> arrMainContours;
-    createMainSolidSketch(arrMainContours);
+    createMainSolidSketch(arrMainContours, length2, assortmentCamera);
 
-    //���������
+    //Плоскость
     MbPlane* pPlaneYZ = new MbPlane(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, 1, 0), MbCartPoint3D(0, 0, 1));
 
     MbSweptData sweptData(*pPlaneYZ, arrMainContours);
 
-    //���� ��������
+    //Угол Вращения
     RevolutionValues revParms(360 * DEG_TO_RAD, 0, 0);
 
-    // ����������� ��� �������� ���������� ���� �������� � ��� �������� ����������
+    // Именователи для операции построения тела вращения и для контуров образующей
     MbSNameMaker operNames(1, MbSNameMaker::i_SideNone, 0);
     PArray<MbSNameMaker> cNames(0, 1, false);
 
-    // ��� �������� ��� ���������� ����:
+    // Ось вращения для построения тела:
     MbAxis3D axis(pl.GetAxisZ());
 
-    // ����� �������-������� ��� ���������� �������� ���� ��������
+    // Вызов функции-утилиты для построения твердого тела вращения
     MbSolid* pSolid;
 
     ::RevolutionSolid(sweptData, axis, revParms, operNames, cNames, pSolid);
@@ -136,9 +136,9 @@ SPtr<MbSolid> ParametricModelCreator::create_outer_pipes_grid_004()
 
     cylPnts.push_back(MbCartPoint3D(-50, -183, 127));
     cylPnts.push_back(MbCartPoint3D(-50, 183, 127));
-    cylPnts.push_back(MbCartPoint3D(-50, -183, 145));
+    cylPnts.push_back(MbCartPoint3D(-50, -183, 127 + diametrY / 2));
 
-    // ���������� �����
+    // Построение трубы
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, cylPnts, namesElSolid), pCylSolid);
 
     MbSNameMaker operBoolNames(ct_BooleanSolid, MbSNameMaker::i_SideNone);
@@ -150,13 +150,13 @@ SPtr<MbSolid> ParametricModelCreator::create_outer_pipes_grid_004()
 
     SolidSPtr pMergeSolid, pMainSolid(pSolid);
 
-    // ������ �����������
+    // Первое объеденение
     ::BooleanResult(pMainSolid, cm_Copy, pCylSolid, cm_Copy,
         MbBooleanOperationParams(bo_Union, flagsBool, operBoolNames), pMergeSolid);
 
-    ////������������
+    ////ВЫДАВЛИВАНИЕ
     RPArray<MbContour> arrContours1;
-    createYZWall(arrContours1);
+    createYZWall(arrContours1, length2, assortmentCamera, thicknessCamera);
 
     MbSweptData sweptDataInnerCyl(*pPlaneYZ, arrContours1);
 
@@ -173,18 +173,18 @@ SPtr<MbSolid> ParametricModelCreator::create_outer_pipes_grid_004()
 
     SolidSPtr pInnerSolid(pInner), pDifferentSolid;
 
-    // ������ ���������
+    // Первое вырезание
     ::BooleanResult(pMergeSolid, cm_Copy, pInnerSolid, cm_Copy, MbBooleanOperationParams(bo_Difference, false, operBoolNames), pDifferentSolid);
 
-    // ������� ������ YZ
+    // Главная стенка YZ
     ::ExtrusionSolid(sweptDataInnerCyl, dirX, NULL, NULL, false, ExtrusionValues(0, 10), operNames, cNames, pWallYZ);
 
     MbPlane* pPlaneXZ = new MbPlane(MbCartPoint3D(0, 0, 0), MbCartPoint3D(1, 0, 0), MbCartPoint3D(0, 0, 1));
     RPArray<MbContour> arrContours2;
-    createXZWall(arrContours2);
+    createXZWall(arrContours2, length2, assortmentCamera, thicknessCamera);
     MbSweptData sweptDataSmallWall(*pPlaneXZ, arrContours2);
 
-    // ������� ������ XZ
+    // Главная стенка XZ
     ::ExtrusionSolid(sweptDataSmallWall, dirY, NULL, NULL, false, ExtrusionValues(0, 10), operNames, cNames, pWallXZ);
 
     SolidSPtr SolidWallYZ(pWallYZ), SolidWallXZ(pWallXZ), mergeSolid = nullptr, mergeSolidWithWalls = nullptr;
@@ -197,23 +197,26 @@ SPtr<MbSolid> ParametricModelCreator::create_outer_pipes_grid_004()
     SolidSPtr pCylSmallTube1Solid, pCylSmallTube2Solid, pCylSmallTube3Solid, pCylSmallTube4Solid;
     SpacePointsVector smallCyl1Pnts, smallCyl2Pnts, smallCyl3Pnts, smallCyl4Pnts;
 
-    smallCyl1Pnts.push_back(MbCartPoint3D(40, 40, 244));
-    smallCyl1Pnts.push_back(MbCartPoint3D(40, 40, 250));
-    smallCyl1Pnts.push_back(MbCartPoint3D(40, 52.5, 244));
+    const double halfOfT = t / 2;
+    const double radiusOfInnerTube = assortmentInnerTubes / 2;
 
-    smallCyl2Pnts.push_back(MbCartPoint3D(-40, 40, 244));
-    smallCyl2Pnts.push_back(MbCartPoint3D(-40, 40, 250));
-    smallCyl2Pnts.push_back(MbCartPoint3D(-40, 52.5, 244));
+    smallCyl1Pnts.push_back(MbCartPoint3D(halfOfT, halfOfT, length2 - 22));
+    smallCyl1Pnts.push_back(MbCartPoint3D(halfOfT, halfOfT, length2));
+    smallCyl1Pnts.push_back(MbCartPoint3D(halfOfT, halfOfT + radiusOfInnerTube, length2 - 22));
 
-    smallCyl3Pnts.push_back(MbCartPoint3D(40, -40, 244));
-    smallCyl3Pnts.push_back(MbCartPoint3D(40, -40, 250));
-    smallCyl3Pnts.push_back(MbCartPoint3D(40, -52.5, 244));
+    smallCyl2Pnts.push_back(MbCartPoint3D(-halfOfT, halfOfT, length2 - 22));
+    smallCyl2Pnts.push_back(MbCartPoint3D(-halfOfT, halfOfT, length2));
+    smallCyl2Pnts.push_back(MbCartPoint3D(-halfOfT, halfOfT + radiusOfInnerTube, length2 - 22));
 
-    smallCyl4Pnts.push_back(MbCartPoint3D(-40, -40, 244));
-    smallCyl4Pnts.push_back(MbCartPoint3D(-40, -40, 250));
-    smallCyl4Pnts.push_back(MbCartPoint3D(-40, -52.5, 244));
+    smallCyl3Pnts.push_back(MbCartPoint3D(halfOfT, -halfOfT, length2 - 22));
+    smallCyl3Pnts.push_back(MbCartPoint3D(halfOfT, -halfOfT, length2));
+    smallCyl3Pnts.push_back(MbCartPoint3D(halfOfT, -(halfOfT + radiusOfInnerTube), length2 - 22));
 
-    // ���������� �����
+    smallCyl4Pnts.push_back(MbCartPoint3D(-halfOfT, -halfOfT, length2 - 22));
+    smallCyl4Pnts.push_back(MbCartPoint3D(-halfOfT, -halfOfT, length2));
+    smallCyl4Pnts.push_back(MbCartPoint3D(-halfOfT, -(halfOfT + radiusOfInnerTube), length2 - 22));
+
+    // Построение трубы
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, smallCyl1Pnts, namesElSolid), pCylSmallTube1Solid);
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, smallCyl2Pnts, namesElSolid), pCylSmallTube2Solid);
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, smallCyl3Pnts, namesElSolid), pCylSmallTube3Solid);
@@ -234,13 +237,13 @@ SPtr<MbSolid> ParametricModelCreator::create_outer_pipes_grid_004()
 
     extractCylPnts.push_back(MbCartPoint3D(-50, 50, 127));
     extractCylPnts.push_back(MbCartPoint3D(-50, 183, 127));
-    extractCylPnts.push_back(MbCartPoint3D(-50, 50, 141));
+    extractCylPnts.push_back(MbCartPoint3D(-50, 50, 127 + (diametrY / 2 - thickness)));
 
     extractCylPnts2.push_back(MbCartPoint3D(-50, -50, 127));
     extractCylPnts2.push_back(MbCartPoint3D(-50, -183, 127));
-    extractCylPnts2.push_back(MbCartPoint3D(-50, -50, 141));
+    extractCylPnts2.push_back(MbCartPoint3D(-50, -50, 127 + (diametrY / 2 - thickness)));
 
-    // ���������� �����
+    // Построение трубы
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, extractCylPnts, namesElSolid), extractHole);
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, extractCylPnts2, namesElSolid), extractHole2);
 
@@ -253,76 +256,76 @@ SPtr<MbSolid> ParametricModelCreator::create_outer_pipes_grid_004()
 
     const int angle = 22.5;
 
-	double boltAngle = angle * DEG_TO_RAD;
-	double boltAngle2 = (angle + 45 * 1) * DEG_TO_RAD;
-	double boltAngle3 = (angle + 45 * 2) * DEG_TO_RAD;
-	double boltAngle4 = (angle + 45 * 3) * DEG_TO_RAD;
-	double boltAngle5 = (angle + 45 * 4) * DEG_TO_RAD;
-	double boltAngle6 = (angle + 45 * 5) * DEG_TO_RAD;
-	double boltAngle7 = (angle + 45 * 6) * DEG_TO_RAD;
-	double boltAngle8 = (angle + 45 * 7) * DEG_TO_RAD;
+    double boltAngle = angle * DEG_TO_RAD;
+    double boltAngle2 = (angle + 45 * 1) * DEG_TO_RAD;
+    double boltAngle3 = (angle + 45 * 2) * DEG_TO_RAD;
+    double boltAngle4 = (angle + 45 * 3) * DEG_TO_RAD;
+    double boltAngle5 = (angle + 45 * 4) * DEG_TO_RAD;
+    double boltAngle6 = (angle + 45 * 5) * DEG_TO_RAD;
+    double boltAngle7 = (angle + 45 * 6) * DEG_TO_RAD;
+    double boltAngle8 = (angle + 45 * 7) * DEG_TO_RAD;
 
     SpacePointsVector boltCylPnts;
 
-    boltCylPnts.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle), 280 / 2 * sin(boltAngle), 0));
-    boltCylPnts.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle), 280 / 2 * sin(boltAngle), 25));
-    boltCylPnts.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle) + 5, 280 / 2 * sin(boltAngle), 0));
+    boltCylPnts.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle), (assortmentCamera / 2 + 30.5) * sin(boltAngle), 0));
+    boltCylPnts.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle), (assortmentCamera / 2 + 30.5) * sin(boltAngle), 22.5));
+    boltCylPnts.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle) + 5, (assortmentCamera / 2 + 30.5) * sin(boltAngle), 0));
 
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, boltCylPnts, operNames), boltCyl);
 
     SpacePointsVector boltCylPnts2;
 
-    boltCylPnts2.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle2), 280 / 2 * sin(boltAngle2), 0));
-    boltCylPnts2.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle2), 280 / 2 * sin(boltAngle2), 25));
-    boltCylPnts2.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle2) + 5, 280 / 2 * sin(boltAngle2), 0));
+    boltCylPnts2.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle2), (assortmentCamera / 2 + 30.5) * sin(boltAngle2), 0));
+    boltCylPnts2.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle2), (assortmentCamera / 2 + 30.5) * sin(boltAngle2), 22.5));
+    boltCylPnts2.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle2) + 5, (assortmentCamera / 2 + 30.5) * sin(boltAngle2), 0));
 
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, boltCylPnts2, operNames), boltCyl2);
 
     SpacePointsVector boltCylPnts3;
 
-    boltCylPnts3.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle3), 280 / 2 * sin(boltAngle3), 0));
-    boltCylPnts3.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle3), 280 / 2 * sin(boltAngle3), 25));
-    boltCylPnts3.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle3) + 5, 280 / 2 * sin(boltAngle3), 0));
+    boltCylPnts3.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle3), (assortmentCamera / 2 + 30.5) * sin(boltAngle3), 0));
+    boltCylPnts3.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle3), (assortmentCamera / 2 + 30.5) * sin(boltAngle3), 22.5));
+    boltCylPnts3.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle3) + 5, (assortmentCamera / 2 + 30.5) * sin(boltAngle3), 0));
 
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, boltCylPnts3, operNames), boltCyl3);
 
     SpacePointsVector boltCylPnts4;
 
-    boltCylPnts4.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle4), 280 / 2 * sin(boltAngle4), 0));
-    boltCylPnts4.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle4), 280 / 2 * sin(boltAngle4), 25));
-    boltCylPnts4.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle4) + 5, 280 / 2 * sin(boltAngle4), 0));
+    boltCylPnts4.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle4), (assortmentCamera / 2 + 30.5) * sin(boltAngle4), 0));
+    boltCylPnts4.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle4), (assortmentCamera / 2 + 30.5) * sin(boltAngle4), 22.5));
+    boltCylPnts4.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle4) + 5, (assortmentCamera / 2 + 30.5) * sin(boltAngle4), 0));
 
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, boltCylPnts4, operNames), boltCyl4);
 
     SpacePointsVector boltCylPnts5;
 
-    boltCylPnts5.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle5), 280 / 2 * sin(boltAngle5), 0));
-    boltCylPnts5.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle5), 280 / 2 * sin(boltAngle5), 25));
-    boltCylPnts5.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle5) + 5, 280 / 2 * sin(boltAngle5), 0));
+    boltCylPnts5.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle5), (assortmentCamera / 2 + 30.5) * sin(boltAngle5), 0));
+    boltCylPnts5.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle5), (assortmentCamera / 2 + 30.5) * sin(boltAngle5), 22.5));
+    boltCylPnts5.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle5) + 5, (assortmentCamera / 2 + 30.5) * sin(boltAngle5), 0));
 
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, boltCylPnts5, operNames), boltCyl5);
 
     SpacePointsVector boltCylPnts6;
 
-    boltCylPnts6.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle6), 280 / 2 * sin(boltAngle6), 0));
-    boltCylPnts6.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle6), 280 / 2 * sin(boltAngle6), 25));
-    boltCylPnts6.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle6) + 5, 280 / 2 * sin(boltAngle6), 0));
+    boltCylPnts6.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle6), (assortmentCamera / 2 + 30.5) * sin(boltAngle6), 0));
+    boltCylPnts6.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle6), (assortmentCamera / 2 + 30.5) * sin(boltAngle6), 22.5));
+    boltCylPnts6.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle6) + 5, (assortmentCamera / 2 + 30.5) * sin(boltAngle6), 0));
 
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, boltCylPnts6, operNames), boltCyl6);
 
     SpacePointsVector boltCylPnts7;
 
-    boltCylPnts7.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle7), 280 / 2 * sin(boltAngle7), 0));
-    boltCylPnts7.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle7), 280 / 2 * sin(boltAngle7), 25));
-    boltCylPnts7.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle7) + 5, 280 / 2 * sin(boltAngle7), 0));
+    boltCylPnts7.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle7), (assortmentCamera / 2 + 30.5) * sin(boltAngle7), 0));
+    boltCylPnts7.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle7), (assortmentCamera / 2 + 30.5) * sin(boltAngle7), 22.5));
+    boltCylPnts7.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle7) + 5, (assortmentCamera / 2 + 30.5) * sin(boltAngle7), 0));
 
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, boltCylPnts7, operNames), boltCyl7);
 
     SpacePointsVector boltCylPnts8;
 
-    boltCylPnts8.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle8), 280 / 2 * sin(boltAngle8), 0));
-    boltCylPnts8.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle8), 280 / 2 * sin(boltAngle8), 25));
-    boltCylPnts8.push_back(MbCartPoint3D(280 / 2 * cos(boltAngle8) + 5, 280 / 2 * sin(boltAngle8), 0));
+    boltCylPnts8.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle8), (assortmentCamera / 2 + 30.5) * sin(boltAngle8), 0));
+    boltCylPnts8.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle8), (assortmentCamera / 2 + 30.5) * sin(boltAngle8), 22.5));
+    boltCylPnts8.push_back(MbCartPoint3D((assortmentCamera / 2 + 30.5) * cos(boltAngle8) + 5, (assortmentCamera / 2 + 30.5) * sin(boltAngle8), 0));
 
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, boltCylPnts8, operNames), boltCyl8);
 
