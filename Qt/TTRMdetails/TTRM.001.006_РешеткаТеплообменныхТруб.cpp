@@ -6,56 +6,51 @@ const double DEG_TO_RAD = M_PI / 180.0;
 
 void createSketchSecond(RPArray<MbContour>& _arrContours, double length3, double assortmentCamera, double thicknessCamera)
 {
-    SArray<MbCartPoint> arrPnts(100);
+    std::unordered_map<int, std::vector<double>> valuesDictionary;
+    // 3 x // 3 y // Hh // Rb // 
+    std::vector<double> array219 = { 84.35, 27.52, 55, 200, 70.910221, 87.86, 20.33, 192, 200, 30.589779, 38.589779 };
+    std::vector<double> array273 = { 105.18, 31.37, 68, 256.428867, 88.062638, 108.57, 24.12, 248.428867, 256.428867, 40.437362, 48.437362 };
+    std::vector<double> array325 = { 138.15, 50.25, 81, 255, 117.404054, 142.63, 43.62, 247, 255, 37.095946, 45.095946 };
 
-    arrPnts.Add(MbCartPoint(0, 239)); //0
-    arrPnts.Add(MbCartPoint(0, 233)); //1
+    valuesDictionary[219] = array219;
+    valuesDictionary[273] = array273;
+    valuesDictionary[325] = array325;
 
-    arrPnts.Add(MbCartPoint(0, 39)); //центр дуги большой 0
+    const std::vector<double> currentValues = valuesDictionary[assortmentCamera];
 
-    arrPnts.Add(MbCartPoint(85.23, 213.28)); //3
+    SArray<MbCartPoint> arrPnts(12);
 
-    arrPnts.Add(MbCartPoint(54.75, 184));//центр дуги маленькой 0
+    arrPnts.Add(MbCartPoint(0, length3)); //0
+    arrPnts.Add(MbCartPoint(0, length3 - thicknessCamera)); //1
+    arrPnts.Add(MbCartPoint(0, length3 - currentValues[3])); //центр дуги большой 0
+    arrPnts.Add(MbCartPoint(currentValues[0], length3 - currentValues[1])); //3
+    arrPnts.Add(MbCartPoint(assortmentCamera / 2 - thicknessCamera, length3 - currentValues[2])); //4
+    arrPnts.Add(MbCartPoint(assortmentCamera / 2 - thicknessCamera, 0)); //5
+    arrPnts.Add(MbCartPoint(assortmentCamera / 2 + 48, 0)); //6
+    arrPnts.Add(MbCartPoint(assortmentCamera / 2 + 48, 22)); //7
+    arrPnts.Add(MbCartPoint(assortmentCamera / 2, 22)); //8
+    arrPnts.Add(MbCartPoint(assortmentCamera / 2, length3 - currentValues[2]));//9
+    arrPnts.Add(MbCartPoint(currentValues[4], length3 - currentValues[2]));//центр дуги маленькой 10
+    arrPnts.Add(MbCartPoint(currentValues[5], length3 - currentValues[6])); //11
 
-    arrPnts.Add(MbCartPoint(103.5, 184)); //5
+    const double RADIUSB1 = currentValues[7];
+    const double RADIUSB2 = currentValues[8];
 
-    arrPnts.Add(MbCartPoint(103.5, 0)); //6
-    arrPnts.Add(MbCartPoint(157.5, 0)); //7
-    arrPnts.Add(MbCartPoint(157.5, 22)); //8
-    arrPnts.Add(MbCartPoint(109.5, 22)); //9
-    arrPnts.Add(MbCartPoint(109.5, 184));//10
-
-    arrPnts.Add(MbCartPoint(70.910221, 184));//центр дуги маленькой 11
-
-    arrPnts.Add(MbCartPoint(87.86, 218.67)); //12
-
-    arrPnts.Add(MbCartPoint(0, 39)); //центр дуги большой 13
-
-    arrPnts.Add(MbCartPoint(0, 239)); //14
-
-    arrPnts.Add(MbCartPoint(70.910221, 184)); // центр  15
-
-
-    const double RADIUSB1 = 194;
-    const double RADIUSB2 = 200;
-
-    const double RADIUSM1 = 32.589779;
-    const double RADIUSM2 = 38.589779;
+    const double RADIUSM1 = currentValues[9];
+    const double RADIUSM2 = currentValues[10];
 
     MbLineSegment* pLine1 = new MbLineSegment(arrPnts[1], arrPnts[0]);
-    MbArc* pArc1 = new MbArc(arrPnts[2], RADIUSB2, arrPnts[0], arrPnts[12], -1);
-    MbArc* pArc2 = new MbArc(arrPnts[15], RADIUSM2, arrPnts[12], arrPnts[10], -1);
+    MbArc* pArc1 = new MbArc(arrPnts[2], RADIUSB2, arrPnts[0], arrPnts[11], -1);
+    MbArc* pArc2 = new MbArc(arrPnts[10], RADIUSM2, arrPnts[11], arrPnts[10], -1);
 
-    MbLineSegment* pLine2 = new MbLineSegment(arrPnts[10], arrPnts[9]);
-    MbLineSegment* pLine3 = new MbLineSegment(arrPnts[9], arrPnts[8]);
-    MbLineSegment* pLine4 = new MbLineSegment(arrPnts[8], arrPnts[7]);
-    MbLineSegment* pLine5 = new MbLineSegment(arrPnts[7], arrPnts[6]);
-    MbLineSegment* pLine6 = new MbLineSegment(arrPnts[6], arrPnts[5]);
+    MbLineSegment* pLine2 = new MbLineSegment(arrPnts[9], arrPnts[8]);
+    MbLineSegment* pLine3 = new MbLineSegment(arrPnts[8], arrPnts[7]);
+    MbLineSegment* pLine4 = new MbLineSegment(arrPnts[7], arrPnts[6]);
+    MbLineSegment* pLine5 = new MbLineSegment(arrPnts[6], arrPnts[5]);
+    MbLineSegment* pLine6 = new MbLineSegment(arrPnts[5], arrPnts[4]);
 
-
-    MbArc* pArc3 = new MbArc(arrPnts[11], RADIUSM1, arrPnts[5], arrPnts[3], 1);
+    MbArc* pArc3 = new MbArc(arrPnts[10], RADIUSM1, arrPnts[4], arrPnts[3], 1);
     MbArc* pArc4 = new MbArc(arrPnts[2], RADIUSB1, arrPnts[3], arrPnts[1], 1);
-
 
     MbContour* pContour = new MbContour();
 
@@ -75,34 +70,57 @@ void createSketchSecond(RPArray<MbContour>& _arrContours, double length3, double
 
 void createWallXZSecond(RPArray<MbContour>& _arrContours, double length3, double assortmentCamera, double thicknessCamera)
 {
-    SArray<MbCartPoint> wallPnts(7);
+    std::unordered_map<int, std::vector<double>> valuesDictionary;
+    // 3 x // 3 y // Hh // Rb // 
+    std::vector<double> array219 = { 84.35, 27.52, 55, 70.910221, 30.589779, 200, 192 };
+    std::vector<double> array273 = { 105.18, 31.37, 68, 88.062638, 40.437362, 256.428867, 248.428867 };
+    std::vector<double> array325 = { 138.15, 50.25, 81, 117.404054, 37.095946, 255, 247 };
 
-    wallPnts.Add(MbCartPoint(0, 233));
-    wallPnts.Add(MbCartPoint(-85.23, 213.28));
-    wallPnts.Add(MbCartPoint(-103.5, 184));
-    wallPnts.Add(MbCartPoint(-103.5, 0));
-    wallPnts.Add(MbCartPoint(103.5, 0));
-    wallPnts.Add(MbCartPoint(103.5, 184));
-    wallPnts.Add(MbCartPoint(85.23, 213.28));
+    valuesDictionary[219] = array219;
+    valuesDictionary[273] = array273;
+    valuesDictionary[325] = array325;
+
+    const std::vector<double> currentValues = valuesDictionary[assortmentCamera];
+
+    SArray<MbCartPoint> arrPnts(12);
+
+    arrPnts.Add(MbCartPoint(0, length3 - thicknessCamera)); // 0
+    arrPnts.Add(MbCartPoint(currentValues[0], length3 - currentValues[1])); // 1
+    arrPnts.Add(MbCartPoint(assortmentCamera / 2 - thicknessCamera, length3 - currentValues[2])); // 2
+    arrPnts.Add(MbCartPoint(assortmentCamera / 2 - thicknessCamera, 0)); // 3
+    arrPnts.Add(MbCartPoint(-(assortmentCamera / 2 - thicknessCamera), 0)); // 4
+    arrPnts.Add(MbCartPoint(-(assortmentCamera / 2 - thicknessCamera), length3 - currentValues[2])); // 5
+    arrPnts.Add(MbCartPoint(-currentValues[0], length3 - currentValues[1])); // 6
+    arrPnts.Add(MbCartPoint(currentValues[3], length3 - currentValues[2]));//центр дуги маленькой Справа 7
+    arrPnts.Add(MbCartPoint(-currentValues[3], length3 - currentValues[2]));//центр дуги маленькой Слева 8
+    arrPnts.Add(MbCartPoint(0, length3 - currentValues[5]));//центр дуги Большой 9
+
+    const double RADIUSM = currentValues[4];
+
+    const double RADIUSB = currentValues[6];
 
 
-    MbLineSegment* pLine = new MbLineSegment(wallPnts[0], wallPnts[1]);
-    MbLineSegment* pLine2 = new MbLineSegment(wallPnts[1], wallPnts[2]);
-    MbLineSegment* pLine3 = new MbLineSegment(wallPnts[2], wallPnts[3]);
-    MbLineSegment* pLine4 = new MbLineSegment(wallPnts[3], wallPnts[4]);
-    MbLineSegment* pLine5 = new MbLineSegment(wallPnts[4], wallPnts[5]);
-    MbLineSegment* pLine6 = new MbLineSegment(wallPnts[5], wallPnts[6]);
-    MbLineSegment* pLine7 = new MbLineSegment(wallPnts[6], wallPnts[0]);
+    MbArc* pArc1 = new MbArc(arrPnts[9], RADIUSB, arrPnts[0], arrPnts[1], -1);
+    MbArc* pArc2 = new MbArc(arrPnts[7], RADIUSM, arrPnts[1], arrPnts[2], -1);
+
+    MbLineSegment* pLine1 = new MbLineSegment(arrPnts[2], arrPnts[3]);
+    MbLineSegment* pLine2 = new MbLineSegment(arrPnts[3], arrPnts[4]);
+    MbLineSegment* pLine3 = new MbLineSegment(arrPnts[4], arrPnts[5]);
+
+    MbArc* pArc3 = new MbArc(arrPnts[8], RADIUSM, arrPnts[5], arrPnts[6], -1);
+    MbArc* pArc4 = new MbArc(arrPnts[9], RADIUSB, arrPnts[6], arrPnts[0], -1);
 
     MbContour* pContour = new MbContour();
 
-    pContour->AddSegment(pLine);
+    pContour->AddSegment(pArc1);
+    pContour->AddSegment(pArc2);
+
+    pContour->AddSegment(pLine1);
     pContour->AddSegment(pLine2);
     pContour->AddSegment(pLine3);
-    pContour->AddSegment(pLine4);
-    pContour->AddSegment(pLine5);
-    pContour->AddSegment(pLine6);
-    pContour->AddSegment(pLine7);
+
+    pContour->AddSegment(pArc3);
+    pContour->AddSegment(pArc4);
 
     _arrContours.push_back(pContour);
 }

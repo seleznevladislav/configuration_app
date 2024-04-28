@@ -2,21 +2,20 @@
 
 using namespace BuildMathModel;
 
-
 const double DEG_TO_RAD = M_PI / 180.0;
 
 void createMainSolidSketch(RPArray<MbContour>& _arrContours, double length2, double assortmentCamera)
 {
     SArray<MbCartPoint> arrPnts(7);
 
-    arrPnts.Add(MbCartPoint(0, 250));
+    arrPnts.Add(MbCartPoint(0, length2));
     arrPnts.Add(MbCartPoint(0, 0));
-    arrPnts.Add(MbCartPoint(315 / 2, 0));
-    arrPnts.Add(MbCartPoint(315 / 2, 22));
-    arrPnts.Add(MbCartPoint(315 / 2 - 40, 22));
-    arrPnts.Add(MbCartPoint(109.5, 60));
-    arrPnts.Add(MbCartPoint(109.5, 225));
-    arrPnts.Add(MbCartPoint(80, 250));
+    arrPnts.Add(MbCartPoint((assortmentCamera + 96) / 2, 0));
+    arrPnts.Add(MbCartPoint((assortmentCamera + 96) / 2, 22));
+    arrPnts.Add(MbCartPoint((assortmentCamera + 96) / 2 - 40, 22));
+    arrPnts.Add(MbCartPoint(assortmentCamera / 2, 60));
+    arrPnts.Add(MbCartPoint(assortmentCamera / 2, length2 - 22));
+    arrPnts.Add(MbCartPoint(assortmentCamera / 2 - 23.5, length2));
 
     MbLineSegment* pLine1 = new MbLineSegment(arrPnts[0], arrPnts[1]);
     MbLineSegment* pLine2 = new MbLineSegment(arrPnts[1], arrPnts[2]);
@@ -45,12 +44,12 @@ void createYZWall(RPArray<MbContour>& _arrContours, double length2, double assor
 {
     SArray<MbCartPoint> wallPnts(6);
 
-    wallPnts.Add(MbCartPoint(103.5, 0));
-    wallPnts.Add(MbCartPoint(103.5, 221));
-    wallPnts.Add(MbCartPoint(76.4, 246));
-    wallPnts.Add(MbCartPoint(-76.4, 246));
-    wallPnts.Add(MbCartPoint(-103.5, 221));
-    wallPnts.Add(MbCartPoint(-103.5, 0));
+    wallPnts.Add(MbCartPoint(assortmentCamera / 2 - thicknessCamera, 0));
+    wallPnts.Add(MbCartPoint(assortmentCamera / 2 - thicknessCamera, length2 - 22 * 2));
+    wallPnts.Add(MbCartPoint(assortmentCamera / 2 - thicknessCamera - 23, length2 - 22));
+    wallPnts.Add(MbCartPoint(-(assortmentCamera / 2 - thicknessCamera - 23), length2 - 22));
+    wallPnts.Add(MbCartPoint(-(assortmentCamera / 2 - thicknessCamera), length2 - 22 * 2));
+    wallPnts.Add(MbCartPoint(-(assortmentCamera / 2 - thicknessCamera), 0));
 
 
     MbLineSegment* pLine = new MbLineSegment(wallPnts[0], wallPnts[1]);
@@ -76,10 +75,10 @@ void createXZWall(RPArray<MbContour>& _arrContours, double length2, double assor
 {
     SArray<MbCartPoint> wallPnts(6);
 
-    wallPnts.Add(MbCartPoint(0, 246));
-    wallPnts.Add(MbCartPoint(-76.4, 246));
-    wallPnts.Add(MbCartPoint(-103.5, 221));
-    wallPnts.Add(MbCartPoint(-103.5, 0));
+    wallPnts.Add(MbCartPoint(0, length2 - 22));
+    wallPnts.Add(MbCartPoint(-(assortmentCamera / 2 - thicknessCamera - 27), length2 - 22));
+    wallPnts.Add(MbCartPoint(-(assortmentCamera / 2 - thicknessCamera), length2 - 22 * 2));
+    wallPnts.Add(MbCartPoint(-(assortmentCamera / 2 - thicknessCamera), 0));
     wallPnts.Add(MbCartPoint(0, 0));
 
     MbLineSegment* pLine = new MbLineSegment(wallPnts[0], wallPnts[1]);

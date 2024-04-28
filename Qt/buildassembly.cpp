@@ -6,25 +6,6 @@ using namespace BuildMathModel;
 SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigParams params)
 {
     // Набор параметров для параметризации
-    /*const int lengthK = params.lengthK;
-    const int length0 = params.length0;
-    const int LENGTH = params.LENGTH;
-    const int length1 = params.length1;
-    const double length2 = 250.0;
-    const double length3 = 230.0;
-
-    const double assortmentInnerTubes = 25.0;
-    const double assortmentOuterTubes = 57.0;
-    const double assortmentCamera = 219.0;
-    const double thicknessInnerTubes = 3.0;
-    const double thicknessOuterTubes = 4.0;
-    const double thicknessCamera = 8.0;
-    const double diametrY = 32.0;
-    const double t = 80.0;
-
-    const double curvedLength = 72.5;*/
-
-    // Набор параметров для параметризации
     const int LENGTH = params.LENGTH;
     const int lengthK = params.lengthK;
     const double length0 = params.length0;
@@ -46,23 +27,38 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
 
     const double curvedLength = 72.5;
 
+    double lengthBetweenInnerPipesAndGrid = LENGTH - length3 - lengthK - length2 - curvedLength;
+
     MbPlacement3D lcs;
 
     SPtr<MbSolid> capSolid(createCup_005(t, assortmentOuterTubes, assortmentCamera));
+    capSolid->SetColor(132, 169, 140);
     SPtr<MbSolid> headExhangerGridSolid(createOuterPipesGrid_004(length2, diametrY, thicknessInnerTubes, t, assortmentInnerTubes, assortmentCamera, thicknessCamera));
+    headExhangerGridSolid->SetColor(202, 210, 197);
     SPtr<MbSolid> headExhangerGridSecondSolid(createInnerPipesGrid_006(length3, assortmentCamera, thicknessCamera));
+    headExhangerGridSecondSolid->SetColor(202, 210, 197);
     SPtr<MbSolid> outerPipeSolid(createOuterPipe_002(lengthK, assortmentOuterTubes, thicknessOuterTubes));
-    SPtr<MbSolid> innerPipeSolid(createInnerPipe_001(assortmentInnerTubes, thicknessInnerTubes, LENGTH - curvedLength - 60 - 55));
+    outerPipeSolid->SetColor(202, 210, 197);
+    SPtr<MbSolid> innerPipeSolid(createInnerPipe_001(assortmentInnerTubes, thicknessInnerTubes, lengthBetweenInnerPipesAndGrid + length2 + lengthK + 88 - curvedLength / 2));
+    innerPipeSolid->SetColor(132, 169, 140);
     SPtr<MbSolid> supportSolid(createSupport_003(assortmentCamera, assortmentOuterTubes, t));
+    supportSolid->SetColor(82, 121, 111);
     SPtr<MbSolid> curvedPipeSolid(createCurvedPipe_007(assortmentInnerTubes, thicknessInnerTubes, t));
+    curvedPipeSolid->SetColor(132, 169, 140);
     SPtr<MbSolid> pipeHolderShort(createPipeHolder_010(20, assortmentInnerTubes));
+    pipeHolderShort->SetColor(53, 79, 82);
 
     // GOST
     SPtr<MbSolid> flangeE(buildFlangeE(diametrY));
+    flangeE->SetColor(202, 210, 197);
     SPtr<MbSolid> flangeF(buildFlangeF(diametrY));
+    flangeF->SetColor(202, 210, 197);
     SPtr<MbSolid> screw35(buildFlangeScrew35());
+    screw35->SetColor(53, 79, 82);
     SPtr<MbSolid> pipeScrewWasher(buildWasher10());
+    pipeScrewWasher->SetColor(53, 79, 82);
     SPtr<MbSolid> screw55(buildScrew55());
+    pipeScrewWasher->SetColor(53, 79, 82);
 
 
     // Крышки
@@ -202,7 +198,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     pair.push_back(flangeFItem);
     pair.push_back(flangeFItem2);
 
-
     pair.push_back(screw35Item);
     pair.push_back(screw35Item2);
     pair.push_back(screw35Item3);
@@ -261,8 +256,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
 
     MbAxis3D axxVert(MbVector3D(0, 1, 0));
     MbAxis3D ayyVert(MbVector3D(1, 0, 0));
-
-    /* screw55Item->Move(MbVector3D(200, 200, 0));*/
 
     curvedPipeItem2->Rotate(axxVert, M_PI);
     curvedPipeItem3->Rotate(axxVert, M_PI);
@@ -331,13 +324,13 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
         double length1Dist = -(length1 - diametrY / 2 + supportWallThickness / 2);
         MtParVariant ArgLength1(length1Dist);
 
-        MtGeomArgument Plane1(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
+        MtGeomArgument Plane1(headExhangerGridSolid->GetFace(36), headExhangerGridItem);
         MtGeomArgument Plane2(supportSolid->GetFace(33), supportItem);
         assm->AddConstraint(GCM_DISTANCE, Plane1, Plane2, MtParVariant(ArgLength1));
 
         // Grid concentric
-        MtGeomArgument GeomArgGridConc(headExhangerGridSolid->GetFace(34), headExhangerGridItem);
-        MtGeomArgument GeomArgGrid2Conc(headExhangerGridSolid->GetFace(29), headExhangerGridItem);
+        MtGeomArgument GeomArgGridConc(headExhangerGridSolid->GetFace(31), headExhangerGridItem);
+        MtGeomArgument GeomArgGrid2Conc(headExhangerGridSolid->GetFace(28), headExhangerGridItem);
         MtGeomArgument GeomArgGrid3Conc(supportSolid->GetFace(38), supportItem);
         MtGeomArgument GeomArgGrid4Conc(supportSolid->GetFace(40), supportItem);
 
@@ -368,13 +361,12 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
         assm->AddConstraint(GCM_COINCIDENT, GeomArgPipe4Coinc, GeomArgGrid4Coinc, MtParVariant(GCM_OPPOSITE));
 
         // Outer Pipe Distanse
-        double lengthBetweenInnerPipesAndGrid = LENGTH - length3 - lengthK - length2 - curvedLength;
         MtParVariant ArgLengthBetweenPipesAndGrid(lengthBetweenInnerPipesAndGrid);
 
-        MtGeomArgument PlaneGrid(headExhangerGridSolid->GetFace(38), headExhangerGridItem);
-        MtGeomArgument PlaneGrid2(headExhangerGridSolid->GetFace(38), headExhangerGridItem);
-        MtGeomArgument PlaneGrid3(headExhangerGridSolid->GetFace(38), headExhangerGridItem);
-        MtGeomArgument PlaneGrid4(headExhangerGridSolid->GetFace(38), headExhangerGridItem);
+        MtGeomArgument PlaneGrid(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
+        MtGeomArgument PlaneGrid2(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
+        MtGeomArgument PlaneGrid3(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
+        MtGeomArgument PlaneGrid4(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
 
         MtGeomArgument PlaneInnerPipe(innerPipeSolid->GetFace(0), innerPipeItem);
         MtGeomArgument PlaneInnerPipe2(innerPipeSolid->GetFace(0), innerPipeItem2);
@@ -403,12 +395,12 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
 
         MtGeomArgument GeomArgRoundGridAndCapConc(headExhangerGridSolid->GetFace(2), headExhangerGridItem);
         MtGeomArgument GeomArgRoundGridAndCapConc2(headExhangerGridSolid->GetFace(18), headExhangerGridItem);
-        MtGeomArgument GeomArgRoundGridAndCapConc3(headExhangerGridSolid->GetFace(38), headExhangerGridItem);
+        MtGeomArgument GeomArgRoundGridAndCapConc3(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
 
         assm->AddConstraint(GCM_CONCENTRIC, GeomArgRoundGridConc, GeomArgRoundGridAndCapConc);
         assm->AddConstraint(GCM_CONCENTRIC, GeomArgRoundGridConc2, GeomArgRoundGridAndCapConc2);
 
-        double lengthBetweenGrids = -(lengthK + 250);
+        double lengthBetweenGrids = -(lengthK + length2);
         MtParVariant ArgLengthBetweenGrids(lengthBetweenGrids);
         assm->AddConstraint(GCM_DISTANCE, GeomArgRoundGridAndCapConc3, GeomArgRoundGridConc3, MtParVariant(ArgLengthBetweenGrids));
 
@@ -487,7 +479,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
         assm->AddConstraint(GCM_CONCENTRIC, GeometryArgCurvedPipeConc11, GeometryArgCurvedPipeConc12);
 
         // Pipe holders
-        MtGeomArgument GeometryArgPipeHolderCoinc(headExhangerGridSolid->GetFace(38), headExhangerGridItem);
+        MtGeomArgument GeometryArgPipeHolderCoinc(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
         MtGeomArgument GeometryArgPipeHolderCoinc2(pipeHolderShort->GetFace(0), pipeHolderShortItem);
         MtGeomArgument GeometryArgPipeHolderConc(innerPipeSolid->GetFace(3), innerPipeItem);
         MtGeomArgument GeometryArgPipeHolderConc2(pipeHolderShort->GetFace(10), pipeHolderShortItem);
@@ -495,7 +487,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
         assm->AddConstraint(GCM_COINCIDENT, GeometryArgPipeHolderCoinc, GeometryArgPipeHolderCoinc2);
         assm->AddConstraint(GCM_CONCENTRIC, GeometryArgPipeHolderConc, GeometryArgPipeHolderConc2);
 
-        MtGeomArgument GeometryArgPipeHolderCoinc3(headExhangerGridSolid->GetFace(38), headExhangerGridItem);
+        MtGeomArgument GeometryArgPipeHolderCoinc3(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
         MtGeomArgument GeometryArgPipeHolderCoinc4(pipeHolderShort->GetFace(0), pipeHolderShortItem2);
         MtGeomArgument GeometryArgPipeHolderConc3(innerPipeSolid->GetFace(3), innerPipeItem2);
         MtGeomArgument GeometryArgPipeHolderConc4(pipeHolderShort->GetFace(10), pipeHolderShortItem2);
@@ -503,7 +495,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
         assm->AddConstraint(GCM_COINCIDENT, GeometryArgPipeHolderCoinc3, GeometryArgPipeHolderCoinc4);
         assm->AddConstraint(GCM_CONCENTRIC, GeometryArgPipeHolderConc3, GeometryArgPipeHolderConc4);
 
-        MtGeomArgument GeometryArgPipeHolderCoinc5(headExhangerGridSolid->GetFace(38), headExhangerGridItem);
+        MtGeomArgument GeometryArgPipeHolderCoinc5(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
         MtGeomArgument GeometryArgPipeHolderCoinc6(pipeHolderShort->GetFace(0), pipeHolderShortItem3);
         MtGeomArgument GeometryArgPipeHolderConc5(innerPipeSolid->GetFace(3), innerPipeItem3);
         MtGeomArgument GeometryArgPipeHolderConc6(pipeHolderShort->GetFace(10), pipeHolderShortItem3);
@@ -511,7 +503,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
         assm->AddConstraint(GCM_COINCIDENT, GeometryArgPipeHolderCoinc5, GeometryArgPipeHolderCoinc6);
         assm->AddConstraint(GCM_CONCENTRIC, GeometryArgPipeHolderConc5, GeometryArgPipeHolderConc6);
 
-        MtGeomArgument GeometryArgPipeHolderCoinc7(headExhangerGridSolid->GetFace(38), headExhangerGridItem);
+        MtGeomArgument GeometryArgPipeHolderCoinc7(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
         MtGeomArgument GeometryArgPipeHolderCoinc8(pipeHolderShort->GetFace(0), pipeHolderShortItem4);
         MtGeomArgument GeometryArgPipeHolderConc7(innerPipeSolid->GetFace(3), innerPipeItem4);
         MtGeomArgument GeometryArgPipeHolderConc8(pipeHolderShort->GetFace(10), pipeHolderShortItem4);
@@ -524,7 +516,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
         MtGeomArgument GeometryArgFlanecEConc(flangeE->GetFace(10), flangeEItem);
         MtGeomArgument GeometryArgFlanecECoinc(flangeE->GetFace(9), flangeEItem);
         MtGeomArgument GeometryArgFlanecEConc2(headExhangerGridSolid->GetFace(23), headExhangerGridItem);
-        MtGeomArgument GeometryArgFlanecECoinc2(headExhangerGridSolid->GetFace(31), headExhangerGridItem);
+        MtGeomArgument GeometryArgFlanecECoinc2(headExhangerGridSolid->GetFace(30), headExhangerGridItem);
 
         assm->AddConstraint(GCM_COINCIDENT, GeometryArgFlanecECoinc, GeometryArgFlanecECoinc2);
         assm->AddConstraint(GCM_CONCENTRIC, GeometryArgFlanecEConc, GeometryArgFlanecEConc2);
