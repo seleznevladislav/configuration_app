@@ -139,8 +139,8 @@ int main(int argc, char** argv)
 
     Application vapp;
     QApplication app(argc, argv);
-    app.setApplicationName("Group Geometry");
-    app.setOrganizationName("C3DLabs");
+    app.setApplicationName("Exchangers parametrization");
+    app.setOrganizationName("Moscow Polytechnic University");
 
     if (!QtVision::activateLicense())
         return 0;
