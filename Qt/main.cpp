@@ -150,7 +150,9 @@ int main(int argc, char** argv)
     mainWindow.setWindowTitle(QStringLiteral("Электронная модель теплообменника"));
 
     ExplodeWidget* pOpenScene = new ExplodeWidget();
-    pOpenScene->createHeadToolbar();
+
+    QtVision::QtAutoHideWindow* pAutoHideWindow = pOpenScene->createHeadToolbar();
+    pAutoHideWindow->toolBar()->setAllowedAreas(Qt::RightToolBarArea);
 
     QDockWidget* pDockGeometryList = new QDockWidget(QStringLiteral("Дерево компонентов"));
     pDockGeometryList->setFeatures(QDockWidget::NoDockWidgetFeatures);

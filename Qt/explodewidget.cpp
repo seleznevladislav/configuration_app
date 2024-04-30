@@ -128,6 +128,10 @@ void ExplodeWidget::initializeGL()
     Object::Connect(m_ptrSelectManager.get(), &SelectionManager::signalCurrentItemsModified, this, &ExplodeWidget::slotCurrentItemsModified);
     Object::Connect(m_ptrSelectManager.get(), &SelectionManager::signalItemSelectModified, this, &ExplodeWidget::slotItemSelectModified);
     Object::Connect(m_ptrSelectManager.get(), &SelectionManager::signalStateModified, this, &QtOpenGLWidget::updateWidget);
+
+    OrientationMarker* pMarker = graphicsView()->GetOrientationMarker();
+    if (pMarker) pMarker->SetStyle(OrientationMarker::Style::BoxMarker);
+    if (pMarker) pMarker->SetEnabled(true);
 }
 
 // TODO: неиспользуемая функция
