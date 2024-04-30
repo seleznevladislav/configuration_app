@@ -202,7 +202,7 @@ int main(int argc, char** argv)
     QFontMetrics fm(pOpenScene->font());
     QRect rcFont = fm.boundingRect('X');
     int heightButton = (rcFont.height() + rcFont.width()) + 4;
-    QGroupBox* groupExpl = pOpenScene->createGroupExplode(widget, heightButton, "View");
+    QGroupBox* groupExpl = pOpenScene->createGroupExplode(widget, heightButton, u8"Сцена");
 
     // Actions on select
     QGroupBox* groupFilter = new QGroupBox();

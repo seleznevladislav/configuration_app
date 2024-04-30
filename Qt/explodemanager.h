@@ -116,13 +116,7 @@ private:
     void buttonsPressed();
     void buttonZoomToFit();
     void slidersExplodeValueChanged(const int value);
-    void sliderSelectAssemblyValueChanged(const int val);
-    void slidersFilterValueChanged(const int val);
-    void radiosTrajectryTypeToggled(bool checked);
     void radiosExplodeFromToggled(bool checked);
-    void checkboxAutoRebuildToggled(bool checked);
-    void checkboxRefineAxisSymmetryToggled(bool checked);
-    void checkboxesToggled(bool checked);
     ExplodeDispatcher::ControlParameterType GetParameterType(const QObject* widg) const;
 private:
     QGroupBox* createGroupBox(const char* title, const bool flat, const bool checkable, const bool checked);
@@ -146,7 +140,6 @@ private:
     QVBoxLayout* m_vLayoutTab            = nullptr;
     QVBoxLayout* m_vLayoutConfigureTab   = nullptr;
     QGroupBox* m_groupExpl               = nullptr;
-    QGroupBox* m_groupAdditionalOptions  = nullptr;
     QLabel* m_labelLevel                 = nullptr;
     QLabel* m_labelSelectAssembly        = nullptr;
     std::string m_mainTabName            = "";
