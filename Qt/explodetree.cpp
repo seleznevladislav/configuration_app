@@ -2,6 +2,10 @@
 #include <qevent.h>
 #include "explodewidget.h"
 #include <last.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <regex>
 
 //-----------------------------------------------------------------------------
 //
@@ -10,9 +14,28 @@ TreeObjectItem::TreeObjectItem(SceneSegment* pObject)
     : m_pObject(pObject)
 {
     QString strName(pObject->GetObjectName().c_str());
-//    strName += " ID -";
-//    strName += QString::number(pObject->GetUniqueKey().GetKey());
-    setText(0, strName);
+
+    int nameIndex = -1;
+
+    string findName = strName.toStdString();
+
+    // Поиск числа в строке
+    regex regex("\\d+");
+    smatch match;
+    if (regex_search(findName, match, regex)) {
+        // Извлечение найденного числа
+        string numberStr = match.str();
+        // Преобразование строки с числом в целое число
+        nameIndex = stoi(numberStr);
+    }
+
+    vector<QString> detailNames = { u8"Теплообменная труба", u8"Труба кожуховая", u8"Камера распределительная", u8"Камера поворотная", u8"Опора", u8"Решетка кожуховых труб", u8"Фланец Тип E ГОСТ 33259-2015 Исполнение 1", u8"Фланец Тип F ГОСТ 33259-2015 Исполнение 1" };
+
+    stringstream(pObject->GetObjectName().c_str()) >> nameIndex;
+    
+    QString detailName = detailNames.at(nameIndex);
+
+    setText(0, match.empty() ?  strName : detailName);
     setCheckState(0, Qt::Checked);
 }
 
@@ -24,8 +47,7 @@ TreeObjectItem::TreeObjectItem(SceneSegment* pObject, QTreeWidgetItem* parent)
     , m_pObject(pObject)
 {
     QString strName(pObject->GetObjectName().c_str());
-//    strName += " ID -";
-//    strName += QString::number(pObject->GetUniqueKey().GetKey());
+
     setText(0, strName);
     setCheckState(0, Qt::Checked);
 }

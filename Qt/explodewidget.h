@@ -38,6 +38,7 @@ class AssemblySolver;
 
 using AssemblySolverPtr = std::shared_ptr<AssemblySolver>;
 using AssemblySolverConstPtr = std::shared_ptr<const AssemblySolver>;
+using namespace std;
 
 /* ListGroupGeometryItem */
 class ListGroupGeometryItem : public QListWidgetItem

@@ -955,21 +955,25 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
 
     assm->EvaluateConstraints();
 
-    string casingPipeName = "Casing pipe";
-    string headExchangePipeName = "Heat exchange pipe";
-    string distributionChamberName = "Heat exhanger chamber";
-    string rotatableChamberName = "Casing chamber";
-    string supportName = "Support";
-    string capName = "Cap";
-    string roundPipeName = "Rounded pipe";
+    string casingPipeName = "1";
+    string headExchangePipeId = "0";
+    string distributionChamberName = "2";
+    string rotatableChamberName = "3";
+    string supportName = "4";
+    string capName = "5";
+    string roundPipeName = "1";
+    string flangeEName = "6";
+    string flangeFName = "7";
 
     MbProductInfo casingPipeInfo(false, casingPipeName, casingPipeName, casingPipeName);
-    MbProductInfo headExchangePipeInfo(false, headExchangePipeName, headExchangePipeName, headExchangePipeName);
-    MbProductInfo distributionChamberInfo(false, headExchangePipeName, headExchangePipeName, headExchangePipeName);
+    MbProductInfo headExchangePipeInfo(false, headExchangePipeId, headExchangePipeId, headExchangePipeId);
+    MbProductInfo distributionChamberInfo(false, distributionChamberName, distributionChamberName, distributionChamberName);
     MbProductInfo rotatableChamberInfo(false, rotatableChamberName, rotatableChamberName, rotatableChamberName);
     MbProductInfo supportInfo(false, supportName, supportName, supportName);
     MbProductInfo capInfo(false, capName, capName, capName);
     MbProductInfo roundedPipeInfo(false, roundPipeName, roundPipeName, roundPipeName);
+    MbProductInfo flangeEInfo(false, flangeEName, flangeEName, flangeEName);
+    MbProductInfo flangeFInfo(false, flangeFName, flangeFName, flangeFName);
 
     MbProductInfo TTRMInfo(false, "TTRM", "TTRM", "TTRM");
 
@@ -1003,7 +1007,15 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     curvedPipeItem2->AddAttribute(roundedPipeInfo);
     curvedPipeItem3->AddAttribute(roundedPipeInfo);
     curvedPipeSolid->AddAttribute(roundedPipeInfo);
-    
+
+    flangeE->AddAttribute(flangeEInfo);
+    flangeEItem->AddAttribute(flangeEInfo);
+    flangeEItem->AddAttribute(flangeEInfo);
+   
+    flangeF->AddAttribute(flangeFInfo);
+    flangeFItem->AddAttribute(flangeFInfo);
+    flangeFItem->AddAttribute(flangeFInfo);
+
     assm->AddAttribute(TTRMInfo);
 
     return assm;
