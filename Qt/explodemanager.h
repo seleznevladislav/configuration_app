@@ -42,7 +42,6 @@ public:
     bool isCreateGroupGeometry() const;
     bool onSelectItem(const SceneSegment* pSegm);
     QComboBox* m_comboConfigure = nullptr;
-    QComboBox* m_comboConfigureZarubin = nullptr;
 
     // TODO: 2) Прописываем здесь через такой же тип переменную, в которую прописываем значения.
     // Важно! чтобы количество переменных в элементе совпадало количеством описанных переменных в структуре struct 
@@ -123,7 +122,6 @@ private:
     QVBoxLayout* createVBoxLayout(QGroupBox* group);
     QPushButton* createButton(const ExplodeDispatcher::ControlParameterType param, QHBoxLayout* hLayout, const char* text, const char* tip);
     QComboBox* ExplodeManager::createCombobox(QVBoxLayout* vLayout);
-    QComboBox* ExplodeManager::createComboboxZarubin(QVBoxLayout* vLayout);
     std::pair<QSlider*, QLabel*> createSliderWithLabel(const ExplodeDispatcher::ControlParameterType param, const char* labelName, QVBoxLayout* vLayout, const char* tip);
     QCheckBox* createCheckBox(const ExplodeDispatcher::ControlParameterType param, QHBoxLayout* hLayout, const char* text, const bool checked, const char* tip);
     QRadioButton* createRadioButton(const ExplodeDispatcher::ControlParameterType param, QHBoxLayout* hLayout, const char* text, const bool checked);

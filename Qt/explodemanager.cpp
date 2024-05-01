@@ -285,33 +285,8 @@ QComboBox* ExplodeManager::createCombobox(QVBoxLayout* vLayout)
 {   
     QComboBox* combo = new QComboBox(m_pWidget);
 
-    QStringList values;
-    // Здесь загоняются ваши элементы (варианты конфигураций) в комбобокс
-
-    for (const auto& config : configuration) {
-        values.append(QString::fromStdString(config.name));
-    }
-
-    combo->addItems(values);
-
     vLayout->addWidget(combo);
     return combo;
-}
-
-QComboBox* ExplodeManager::createComboboxZarubin(QVBoxLayout* vLayout)
-{   
-    QComboBox* comboZarubinParams = new QComboBox(m_pWidget);
-    QStringList valuesZarubinParams;
-    // TODO: Здесь загоняются ваши элементы (варианты конфигураций) в комбобокс
-    // Здесь добавлять ничего не нужно.
-    for (const auto& param : configurationZarubin) {
-        valuesZarubinParams.append(QString::fromStdString(param.name));
-    }
-
-    comboZarubinParams->addItems(valuesZarubinParams);
-    vLayout->addWidget(comboZarubinParams);
-
-    return comboZarubinParams;
 }
 
 QPushButton* ExplodeManager::createButton(const ExplodeDispatcher::ControlParameterType param, QHBoxLayout* hLayout, const char* text, const char* tip)
@@ -400,7 +375,6 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
     QObject::connect(tabWidget, &QTabWidget::tabCloseRequested, this, &ExplodeManager::tabWidgetCloseRequested);
 
     m_comboConfigure = createCombobox(m_vLayoutConfigureTab);
-    m_comboConfigureZarubin = createComboboxZarubin(m_vLayoutConfigureTab);
     //QObject::connect(configureCombobox, SIGNAL(activated()), this, SLOT(configureModel(int)));
     //QObject::connect(configureCombobox, SIGNAL(), SLOT(configureModel(int)));
     /*QObject::connect(configureCombobox, QOverload<int>::of(&QComboBox::activated), widget, &ExplodeWidget::configureModel);*/

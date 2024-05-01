@@ -327,19 +327,26 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
     m_pTreeWidget->clear();
     sceneContent()->Clear();
     Exhanchares value = NoneOfOne;
+    m_pExplodeManager->m_comboConfigure->clear();
     if (cmd == NoneOfOne)
     {
         QObject* action = sender();
         value = static_cast<Exhanchares>(action->property("CommandsHeatExhanger").toInt());
     }
 
+    QStringList values;
+
     switch (value)
     {
     case ExplodeWidget::TTOR:
     {
-        int index = m_pExplodeManager->m_comboConfigureZarubin->currentIndex();
+        int index = m_pExplodeManager->m_comboConfigure->currentIndex();
 
-        BuildParamsZarubin config = m_pExplodeManager->configurationZarubin[index];
+        for (const auto& config : m_pExplodeManager->configurationZarubin) {
+            values.append(QString::fromStdString(config.name));
+        }
+
+        BuildParamsZarubin config = m_pExplodeManager->configurationZarubin[index > 0 ? index : 0];
     
         m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(config);
         openModel();
@@ -348,7 +355,11 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
     {
         int index = m_pExplodeManager->m_comboConfigure->currentIndex();
 
-        ConfigParams config = m_pExplodeManager->configuration[index];
+        for (const auto& config : m_pExplodeManager->configuration) {
+            values.append(QString::fromStdString(config.name));
+        }
+
+        ConfigParams config = m_pExplodeManager->configuration[index > 0 ? index : 0];
         m_pModel = ParametricModelCreator::CreatePneymocylinderModel(config);
         openModel();
         break;
@@ -356,6 +367,9 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
     default:
         break;
     };
+
+    m_pExplodeManager->m_comboConfigure->addItems(values);
+
     update();
 }
 
