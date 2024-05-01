@@ -6,7 +6,7 @@ const int startX = 75;
 const int startY = 30;
 const double DEG_TO_RAD = M_PI / 180.0;
 
-SolidSPtr HolyHole112(SolidSPtr* previus, int holes, double DiametrCircle, double radius) {
+SolidSPtr HolyHole112(SolidSPtr* previus, int holes, double DiametrCircle, double radius, double depth) {
     // Именователь граней для построения тела с помощью булевой операции 
     MbSNameMaker operBoolNames(ct_BooleanSolid, MbSNameMaker::i_SideNone);
     MbBooleanOperationParams parameters(bo_Union, true, operBoolNames);
@@ -24,7 +24,7 @@ SolidSPtr HolyHole112(SolidSPtr* previus, int holes, double DiametrCircle, doubl
     SpacePointsVector boltCylPnts;
 
     boltCylPnts.push_back(MbCartPoint3D(DiametrCircle / 2 * cos(ANG1), DiametrCircle / 2 * sin(ANG1), 0));
-    boltCylPnts.push_back(MbCartPoint3D(DiametrCircle / 2 * cos(ANG1), DiametrCircle / 2 * sin(ANG1), 100));
+    boltCylPnts.push_back(MbCartPoint3D(DiametrCircle / 2 * cos(ANG1), DiametrCircle / 2 * sin(ANG1), depth));
     boltCylPnts.push_back(MbCartPoint3D(DiametrCircle / 2 * cos(ANG1) + radius, DiametrCircle / 2 * sin(ANG1), 0));
 
 
@@ -46,7 +46,7 @@ SolidSPtr HolyHole112(SolidSPtr* previus, int holes, double DiametrCircle, doubl
         SpacePointsVector boltCylPnts;
 
         boltCylPnts.push_back(MbCartPoint3D(DiametrCircle / 2 * cos(ANG1), DiametrCircle / 2 * sin(ANG1), 0));
-        boltCylPnts.push_back(MbCartPoint3D(DiametrCircle / 2 * cos(ANG1), DiametrCircle / 2 * sin(ANG1), 100));
+        boltCylPnts.push_back(MbCartPoint3D(DiametrCircle / 2 * cos(ANG1), DiametrCircle / 2 * sin(ANG1), depth));
         boltCylPnts.push_back(MbCartPoint3D(DiametrCircle / 2 * cos(ANG1) + radius, DiametrCircle / 2 * sin(ANG1), 0));
 
         SolidSPtr buffer;
@@ -67,31 +67,28 @@ SolidSPtr HolyHole112(SolidSPtr* previus, int holes, double DiametrCircle, doubl
 
 void CreateSketchForCapPart(RPArray<MbContour>& _arrContours, double l3, double Db, double Dm, double Dpaz, double Hb, double Hm, double Hpaz, double Thickness)
 {
-    // Длина = l3
-
     // расчет длины камеры l3 - длина 
-
-    const double Rasstoyanie = l3 - 157; // 218мм значение для увеличения длины камеры
+    const double Rasstoyanie = l3 - 157; // 243 мм значение для увеличения длины камеры
 
     SArray<MbCartPoint> arrPnts(20);
-    arrPnts.Add(MbCartPoint(0, 400));
-    arrPnts.Add(MbCartPoint(0, 386));
-    arrPnts.Add(MbCartPoint(0, -80)); //центр дуги большой 0
-    arrPnts.Add(MbCartPoint(-273.123119, 297.570870));
-    arrPnts.Add(MbCartPoint(-233.648485, 243));//центр дуги маленькой 0
-    arrPnts.Add(MbCartPoint(-301, 243));
-    arrPnts.Add(MbCartPoint(-301, 10));
-    arrPnts.Add(MbCartPoint(-321, 10));
-    arrPnts.Add(MbCartPoint(-321, 0));
-    arrPnts.Add(MbCartPoint(-400, 0));
-    arrPnts.Add(MbCartPoint(-400, 40));
-    arrPnts.Add(MbCartPoint(-340, 40)); // 25мм это фаска
-    arrPnts.Add(MbCartPoint(-315, 65)); // 12
-    arrPnts.Add(MbCartPoint(-315, 243));// 13
-    arrPnts.Add(MbCartPoint(-233.648485, 243));//центр дуги маленькой 114
-    arrPnts.Add(MbCartPoint(-281.328534, 308.914201));
-    arrPnts.Add(MbCartPoint(0, -80)); // Центр дуги большой 16
-    arrPnts.Add(MbCartPoint(0, 400)); // 17
+    arrPnts.Add(MbCartPoint(0, 157)); // 0
+    arrPnts.Add(MbCartPoint(0, 157 - 14));
+    arrPnts.Add(MbCartPoint(0, -(80 + 243))); //центр дуги большой 0
+    arrPnts.Add(MbCartPoint(-273.123119, 54.570870)); // 3
+    arrPnts.Add(MbCartPoint(-233.648485, 0));//центр дуги маленькой 0
+    arrPnts.Add(MbCartPoint(-301, 0));
+    arrPnts.Add(MbCartPoint(-301, -Rasstoyanie + 10));
+    arrPnts.Add(MbCartPoint(-321, -Rasstoyanie + 10));
+    arrPnts.Add(MbCartPoint(-321, -Rasstoyanie));
+    arrPnts.Add(MbCartPoint(-400, -Rasstoyanie));
+    arrPnts.Add(MbCartPoint(-400, -Rasstoyanie + 40));
+    arrPnts.Add(MbCartPoint(-340, -Rasstoyanie + 40)); // 25мм это фаска
+    arrPnts.Add(MbCartPoint(-315, -Rasstoyanie + 65)); // 12
+    arrPnts.Add(MbCartPoint(-315, 0));// 13
+    arrPnts.Add(MbCartPoint(-233.648485, 0));//центр дуги маленькой 14
+    arrPnts.Add(MbCartPoint(-281.328534, 65.914201));
+    arrPnts.Add(MbCartPoint(0, -(80 + 243))); // Центр дуги большой 16
+    arrPnts.Add(MbCartPoint(0, 157)); // 17
 
 
     const double RADIUSB1 = 466;
@@ -138,20 +135,22 @@ void CreateSketchForCapPart(RPArray<MbContour>& _arrContours, double l3, double 
     _arrContours.push_back(pContour);
 }
 
-void CreateSketchForWall(RPArray<MbContour>& _arrContours)
+void CreateSketchForWall(RPArray<MbContour>& _arrContours, double l3)
 {
+    const double Rasstoyanie = l3 - 157; // 243 мм значение для увеличения длины камеры
+
     SArray<MbCartPoint> arrPnts(12);
-    arrPnts.Add(MbCartPoint(0, 386));
-    arrPnts.Add(MbCartPoint(0, -80)); //центр дуги большой 0
-    arrPnts.Add(MbCartPoint(-273.123119, 297.570870));
-    arrPnts.Add(MbCartPoint(-233.648485, 243));//центр дуги маленькой 0
-    arrPnts.Add(MbCartPoint(-301, 243));
-    arrPnts.Add(MbCartPoint(-301, 10));
-    arrPnts.Add(MbCartPoint(301, 10));
-    arrPnts.Add(MbCartPoint(301, 243));//7
-    arrPnts.Add(MbCartPoint(233.648485, 243));//центр дуги маленькой 0
-    arrPnts.Add(MbCartPoint(273.123119, 297.570870));
-    arrPnts.Add(MbCartPoint(0, -80)); //центр дуги большой 0
+    arrPnts.Add(MbCartPoint(0, 157 - 14));
+    arrPnts.Add(MbCartPoint(0, -(80 + 243))); //центр дуги большой 0
+    arrPnts.Add(MbCartPoint(-273.123119, 54.570870)); // 3
+    arrPnts.Add(MbCartPoint(-233.648485, 0));//центр дуги маленькой 0
+    arrPnts.Add(MbCartPoint(-301, 0));
+    arrPnts.Add(MbCartPoint(-301, -Rasstoyanie + 10));
+    arrPnts.Add(MbCartPoint(301, -Rasstoyanie + 10));
+    arrPnts.Add(MbCartPoint(301, 0));//7
+    arrPnts.Add(MbCartPoint(233.648485, 0));//центр дуги маленькой 0
+    arrPnts.Add(MbCartPoint(273.123119, 54.570870));
+    arrPnts.Add(MbCartPoint(0, -(80 + 243))); //центр дуги большой 0
 
 
     const double RADIUSB1 = 466;
@@ -209,6 +208,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_005_kamera(double ktDiam, do
     }
     else if (l3 > 400) {
         index = 1;
+        l3 = 1000;
     }
 
     double ANG1 = 180 * DEG_TO_RAD;
@@ -249,7 +249,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_005_kamera(double ktDiam, do
 
     //ВЫДАВЛИВАНИЕ
     RPArray<MbContour> arrContours1;
-    CreateSketchForWall(arrContours1);
+    CreateSketchForWall(arrContours1, l3);
 
     MbSweptData sweptData1(*pPlaneXY, arrContours1);
 
@@ -282,8 +282,10 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_005_kamera(double ktDiam, do
     const double Dcircle = 370.0 * 2;
     const int holes = 32;
 
+    const double depth = -l3;
 
-    SolidSPtr result = HolyHole112(&Solid2, holes, Dcircle, radius);
+
+    SolidSPtr result = HolyHole112(&Solid2, holes, Dcircle, radius, depth);
 
     return result;
 }
