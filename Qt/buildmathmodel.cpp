@@ -20,7 +20,7 @@ MbModel* ParametricModelCreator::CreatePneymocylinderModel(ConfigParams params)
 	return model;
 }
 
-MbModel* ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsZarubin params)
+MbModel* ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsForHeatExchangerTTOR params)
 {
 	//ParametricModelCreator::colorScheme = params.colorScheme;
 	//ParametricModelCreator::variantsConf = params.variantsConf;

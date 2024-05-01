@@ -184,10 +184,10 @@ namespace BuildMathModel {
 		static int variantsConfB;
 	public:
 		static MbModel* CreatePneymocylinderModel(ConfigParams params);
-		static MbModel* CreatePneymocylinderModelZarubin(BuildParamsZarubin params);
+		static MbModel* CreatePneymocylinderModelZarubin(BuildParamsForHeatExchangerTTOR params);
 	private:
 		static  SPtr<MbAssembly> CreatePneumocylinderAssembly(ConfigParams params);
-		static  SPtr<MbAssembly> CreateTTOR(BuildParamsZarubin params);
+		static  SPtr<MbAssembly> CreateTTOR(BuildParamsForHeatExchangerTTOR params);
 	private:
 		// details
 		static SPtr<MbSolid> ParametricModelCreator::createInnerPipe_001(double ttDiam, double ttThickness, double length);
@@ -210,7 +210,7 @@ namespace BuildMathModel {
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_002_tubeKozhux(double lK, double ktDiam, double ktThickness);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora(double dV, double ktDiam, double ktThickness, double t, double visotaOpori, double shirinaOpori);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_004_reshetkaKozhux(double ktDiam, double ktThickness, double t);
-		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_005_kamera(double ktDiam, double ktThickness);
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_005_kamera(double ktDiam, double ktThickness, double l3);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_006_RezhetkaTeplTube();
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_007_FlanecKozhux(double ktDiam, double ktThickness);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_008_FlanecSpecial(double ttDiam, double ttThickness);
