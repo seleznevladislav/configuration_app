@@ -190,6 +190,7 @@ private:
     QCursor m_curFace;
     QCursor m_curVertex;
     QCursor m_curPoint;
+    int m_pCurrentExchandger;
 private:
     Q_DISABLE_COPY(ExplodeWidget)
 };

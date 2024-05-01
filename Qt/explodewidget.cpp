@@ -327,13 +327,22 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
     m_pTreeWidget->clear();
     sceneContent()->Clear();
     Exhanchares value = NoneOfOne;
-    m_pExplodeManager->m_comboConfigure->clear();
-    if (cmd == NoneOfOne)
-    {
-        QObject* action = sender();
-        value = static_cast<Exhanchares>(action->property("CommandsHeatExhanger").toInt());
+
+    QObject* action = sender();
+    int currentIndexofExchanger = action->property("CommandsHeatExhanger").toInt();
+
+    if (m_pCurrentExchandger != currentIndexofExchanger) {
+        m_pExplodeManager->m_comboConfigure->clear();
     }
 
+    if (cmd == NoneOfOne) 
+    {
+        m_pCurrentExchandger = currentIndexofExchanger;
+        value = static_cast<Exhanchares>(currentIndexofExchanger);
+    }
+
+
+   
     QStringList values;
 
     switch (value)
