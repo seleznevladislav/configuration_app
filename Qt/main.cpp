@@ -139,8 +139,8 @@ int main(int argc, char** argv)
 
     Application vapp;
     QApplication app(argc, argv);
-    app.setApplicationName("Group Geometry");
-    app.setOrganizationName("C3DLabs");
+    app.setApplicationName("Exchangers parametrization");
+    app.setOrganizationName("Moscow Polytechnic University");
 
     if (!QtVision::activateLicense())
         return 0;
@@ -150,7 +150,9 @@ int main(int argc, char** argv)
     mainWindow.setWindowTitle(QStringLiteral("Электронная модель теплообменника"));
 
     ExplodeWidget* pOpenScene = new ExplodeWidget();
-    pOpenScene->createHeadToolbar();
+
+    QtVision::QtAutoHideWindow* pAutoHideWindow = pOpenScene->createHeadToolbar();
+    pAutoHideWindow->toolBar()->setAllowedAreas(Qt::RightToolBarArea);
 
     QDockWidget* pDockGeometryList = new QDockWidget(QStringLiteral("Дерево компонентов"));
     pDockGeometryList->setFeatures(QDockWidget::NoDockWidgetFeatures);
@@ -202,7 +204,7 @@ int main(int argc, char** argv)
     QFontMetrics fm(pOpenScene->font());
     QRect rcFont = fm.boundingRect('X');
     int heightButton = (rcFont.height() + rcFont.width()) + 4;
-    QGroupBox* groupExpl = pOpenScene->createGroupExplode(widget, heightButton, "View");
+    QGroupBox* groupExpl = pOpenScene->createGroupExplode(widget, heightButton, u8"Сцена");
 
     // Actions on select
     QGroupBox* groupFilter = new QGroupBox();

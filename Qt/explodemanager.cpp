@@ -69,7 +69,6 @@ void ExplodeManager::initWidgets()
 {
     m_isSelectionDisabled = false;
     m_groupExpl->setEnabled(true);
-    m_groupAdditionalOptions->setEnabled(true);
     m_tabWidget->setTabsClosable(false);
 
     /*for (int idx = m_tabWidget->count() - 1; idx > 0; --idx)
@@ -104,8 +103,6 @@ void ExplodeManager::update(const bool doUpdateWidgets, const bool doUpdateTree,
             if (m_explodeDispatcher.GetParameterValues(param, paramValues) == ExplodeDispatcher::rs_Success)
                 updateWidgetValues(widget, paramValues);
         }
-        updateLabelText(m_labelLevel, ED::cpt_TreeLevel);
-        updateLabelText(m_labelSelectAssembly, ED::cpt_SelectAssembly);
     }
     if (doUpdateTree)
     {
@@ -251,37 +248,6 @@ void ExplodeManager::slidersExplodeValueChanged(const int value)
     applyParameter(GetParameterType(sender()), value, { true, false, true });
 }
 
-//-----------------------------------------------------------------------------
-// 
-// ---
-void ExplodeManager::sliderSelectAssemblyValueChanged(const int value)
-{
-    m_isSelectionDisabled = true;
-    applyParameter(GetParameterType(sender()), value, { true, true, false });
-    m_isSelectionDisabled = false;
-}
-
-//-----------------------------------------------------------------------------
-// 
-// ---
-void ExplodeManager::slidersFilterValueChanged(const int val)
-{
-    const auto paramType = GetParameterType(sender());
-    applyParameter(paramType, val, { false, false, true });
-    ExplodeParameterValues paramValues;
-    if (m_explodeDispatcher.GetParameterValues(paramType, paramValues))
-        QToolTip::showText(QCursor::pos(), QString("%1").arg(paramValues.GetFinalValue()), nullptr);
-}
-
-//-----------------------------------------------------------------------------
-// 
-// ---
-void ExplodeManager::radiosTrajectryTypeToggled(bool checked)
-{
-    if (checked)
-        applyParameter(GetParameterType(sender()), true, { false, false, true });
-}
-
 void ExplodeManager::radiosExplodeFromToggled(bool checked)
 {
     if (checked)
@@ -290,21 +256,6 @@ void ExplodeManager::radiosExplodeFromToggled(bool checked)
         const bool doUpdateTree = (paramType == ED::cpt_ExplodeFromCenter);
         applyParameter(paramType, true, { true, doUpdateTree, true });
     }
-}
-
-void ExplodeManager::checkboxAutoRebuildToggled(bool checked)
-{
-    applyParameter(ED::cpt_AutoRebuild, checked, { true, false, true });
-}
-
-void ExplodeManager::checkboxRefineAxisSymmetryToggled(bool checked)
-{
-    applyParameter(ED::cpt_RefineAxisSymmetry, checked, { false, false, true });
-}
-
-void ExplodeManager::checkboxesToggled(bool checked)
-{
-    applyParameter(GetParameterType(sender()), checked, { });
 }
 
 ExplodeDispatcher::ControlParameterType ExplodeManager::GetParameterType(const QObject* widg) const
@@ -334,33 +285,8 @@ QComboBox* ExplodeManager::createCombobox(QVBoxLayout* vLayout)
 {   
     QComboBox* combo = new QComboBox(m_pWidget);
 
-    QStringList values;
-    // Здесь загоняются ваши элементы (варианты конфигураций) в комбобокс
-
-    for (const auto& config : configuration) {
-        values.append(QString::fromStdString(config.name));
-    }
-
-    combo->addItems(values);
-
     vLayout->addWidget(combo);
     return combo;
-}
-
-QComboBox* ExplodeManager::createComboboxZarubin(QVBoxLayout* vLayout)
-{   
-    QComboBox* comboZarubinParams = new QComboBox(m_pWidget);
-    QStringList valuesZarubinParams;
-    // TODO: Здесь загоняются ваши элементы (варианты конфигураций) в комбобокс
-    // Здесь добавлять ничего не нужно.
-    for (const auto& param : dataTTOR) {
-        valuesZarubinParams.append(QString::fromStdString(param.name));
-    }
-
-    comboZarubinParams->addItems(valuesZarubinParams);
-    vLayout->addWidget(comboZarubinParams);
-
-    return comboZarubinParams;
 }
 
 QPushButton* ExplodeManager::createButton(const ExplodeDispatcher::ControlParameterType param, QHBoxLayout* hLayout, const char* text, const char* tip)
@@ -413,7 +339,7 @@ QGroupBox* ExplodeManager::createGroupExplode(QWidget& widget, const int heightB
 {
     m_mainTabName = mainTabName;
 
-    m_groupExpl = createGroupBox("Explode views", false, true, true);
+    m_groupExpl = createGroupBox("", false, false, true);
     m_groupExpl->setEnabled(false);
     QObject::connect(m_groupExpl, &QGroupBox::toggled, this, &ExplodeManager::groupExplodeToggled);
     QVBoxLayout* vLayoutGroupExpl = createVBoxLayout(m_groupExpl);
@@ -421,24 +347,6 @@ QGroupBox* ExplodeManager::createGroupExplode(QWidget& widget, const int heightB
     m_tabWidget = createTabWidget(widget, heightButton, mainTabName);
     vLayoutGroupExpl->addWidget(m_tabWidget);
 
-    // Group with synchronization options
-    QGroupBox* groupSynchronization = createGroupBox("Synchronization options", true, true, true);
-    QVBoxLayout* vLayoutSynchronizeModes = createVBoxLayout(groupSynchronization);
-    QHBoxLayout* hLayoutSynchronize = new QHBoxLayout();
-    vLayoutSynchronizeModes->addLayout(hLayoutSynchronize);
-
-    QCheckBox* checkboxSynchronizeExplode = createCheckBox(ED::cpt_SynchronizeExplode, hLayoutSynchronize, "Explode", false, "");
-    QObject::connect(checkboxSynchronizeExplode, &QRadioButton::toggled, this, &ExplodeManager::checkboxesToggled);
-
-    QCheckBox* checkboxSynchronizeCamera = createCheckBox(ED::cpt_SynchronizeCamera, hLayoutSynchronize, "Camera", false, "");
-    QObject::connect(checkboxSynchronizeCamera, &QRadioButton::toggled, this, &ExplodeManager::checkboxesToggled);
-    hLayoutSynchronize->addWidget(checkboxSynchronizeCamera);
-
-    QCheckBox* checkboxSynchronizeSelection = createCheckBox(ED::cpt_SynchronizeSelection, hLayoutSynchronize, "Selection", true, "");
-    QObject::connect(checkboxSynchronizeSelection, &QRadioButton::toggled, this, &ExplodeManager::checkboxesToggled);
-    hLayoutSynchronize->addWidget(new QLabel(""));
-
-    vLayoutGroupExpl->addWidget(groupSynchronization);
     return m_groupExpl;
 }
 
@@ -467,7 +375,6 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
     QObject::connect(tabWidget, &QTabWidget::tabCloseRequested, this, &ExplodeManager::tabWidgetCloseRequested);
 
     m_comboConfigure = createCombobox(m_vLayoutConfigureTab);
-    m_comboConfigureZarubin = createComboboxZarubin(m_vLayoutConfigureTab);
     //QObject::connect(configureCombobox, SIGNAL(activated()), this, SLOT(configureModel(int)));
     //QObject::connect(configureCombobox, SIGNAL(), SLOT(configureModel(int)));
     /*QObject::connect(configureCombobox, QOverload<int>::of(&QComboBox::activated), widget, &ExplodeWidget::configureModel);*/
@@ -481,116 +388,36 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
     QHBoxLayout* hLayoutButtonsCreate = new QHBoxLayout();
     vLayoutExplode->addLayout(hLayoutButtonsCreate);
 
-    QPushButton* buttonCreate = createButton(ED::cpt_CreateNewExplodeView, hLayoutButtonsCreate, "Create", "Open selected assembly in new mode");
+    QPushButton* buttonCreate = createButton(ED::cpt_CreateNewExplodeView, hLayoutButtonsCreate, u8"Открыть", u8"Oткрыть выделенное в новом окне");
     QObject::connect(buttonCreate, &QPushButton::pressed, this, &ExplodeManager::buttonCreatePressed);
 
-    QPushButton* buttonStartReview = createButton(ED::cpt_StartReviewMode, hLayoutButtonsCreate, "Start review", "Open selected assembly in review mode");
-    QObject::connect(buttonStartReview, &QPushButton::pressed, this, &ExplodeManager::buttonsPressed);
-
-    QPushButton* buttonStopReview = createButton(ED::cpt_StopReviewMode, hLayoutButtonsCreate, "Stop review", "Close review mode and back to initial mode");
-    QObject::connect(buttonStopReview, &QPushButton::pressed, this, &ExplodeManager::buttonsPressed);
-
-    QHBoxLayout* hLayoutButtonsRebuild = new QHBoxLayout();
-    vLayoutExplode->addLayout(hLayoutButtonsRebuild);
-
-    QPushButton* buttonRebuild = createButton(ED::cpt_RebuildExplodeView, hLayoutButtonsRebuild, "Rebuild", "Rebuild explode model to set new center");
-    QObject::connect(buttonRebuild, &QPushButton::pressed, this, &ExplodeManager::buttonsPressed);
-
-    QPushButton* buttonZoomToFit = createButton(ED::cpt_Undefined, hLayoutButtonsRebuild, "Zoom to fit", "Zoom the object to fit the view screen");
+    QPushButton* buttonZoomToFit = createButton(ED::cpt_Undefined, hLayoutButtonsCreate, u8"Центрировать сборку", u8"Центрировать объект по размерам экрана");
     QObject::connect(buttonZoomToFit, &QPushButton::pressed, this, &ExplodeManager::buttonZoomToFit);
 
-    QPushButton* buttonReset = createButton(ED::cpt_ResetExplodeView, hLayoutButtonsRebuild, "Reset", "Restore initial explode options for current mode");
+    QPushButton* buttonReset = createButton(ED::cpt_ResetExplodeView, hLayoutButtonsCreate, u8"Сбросить", u8"Сбросить настройки сцены");
     QObject::connect(buttonReset, &QPushButton::pressed, this, &ExplodeManager::buttonsPressed);
 
-    QHBoxLayout* hLayoutCheckboxesRebuild = new QHBoxLayout();
-    vLayoutExplode->addLayout(hLayoutCheckboxesRebuild);
+    QGroupBox* groupExplodeButtonGroup = createGroupBox(u8"Разлёт сборки", true, false, true);
+    m_vLayoutTab->addWidget(groupExplodeButtonGroup);
 
-    QCheckBox* checkboxAutoRebuild = createCheckBox(ED::cpt_AutoRebuild, hLayoutCheckboxesRebuild, "Auto rebuild", true,
-        "Auto rebuild on selection to set new explosion center");
-    QObject::connect(checkboxAutoRebuild, &QCheckBox::toggled, this, &ExplodeManager::checkboxAutoRebuildToggled);
-
-    QCheckBox* checkboxCollapse = createCheckBox(ED::cpt_CollapsOnRebuild, hLayoutCheckboxesRebuild, "Collapse on rebuild", false, "Collapse model on Rebuild");
-    QObject::connect(checkboxCollapse, &QCheckBox::toggled, this, &ExplodeManager::checkboxesToggled);
+    QVBoxLayout* vLayoutExplodeButtons = createVBoxLayout(groupExplodeButtonGroup);
 
     QHBoxLayout* hLayoutRadiosExplodeFrom = new QHBoxLayout();
-    vLayoutExplode->addLayout(hLayoutRadiosExplodeFrom);
+    vLayoutExplodeButtons->addLayout(hLayoutRadiosExplodeFrom);
 
-    QRadioButton* radioExplodeFromItem = createRadioButton(ED::cpt_ExplodeFromItem, hLayoutRadiosExplodeFrom, "From selected item", false);
+    QRadioButton* radioExplodeFromItem = createRadioButton(ED::cpt_ExplodeFromItem, hLayoutRadiosExplodeFrom, u8"От выбранной детали", false);
     QObject::connect(radioExplodeFromItem, &QRadioButton::toggled, this, &ExplodeManager::radiosExplodeFromToggled);
     
-    QRadioButton* radioExplodeFromCenter = createRadioButton(ED::cpt_ExplodeFromCenter, hLayoutRadiosExplodeFrom, "From model center", true);
+    QRadioButton* radioExplodeFromCenter = createRadioButton(ED::cpt_ExplodeFromCenter, hLayoutRadiosExplodeFrom, u8"От центра сборки", true);
     QObject::connect(radioExplodeFromCenter, &QRadioButton::toggled, this, &ExplodeManager::radiosExplodeFromToggled);
 
-    auto pairSliderLabelExplode = createSliderWithLabel(ED::cpt_Explode, "Explode:", vLayoutExplode, "");
+    auto pairSliderLabelExplode = createSliderWithLabel(ED::cpt_Explode, "", vLayoutExplodeButtons, "");
     int labelExplodeWidth = pairSliderLabelExplode.second->sizeHint().width();
     QObject::connect(pairSliderLabelExplode.first, &QSlider::valueChanged, this, &ExplodeManager::slidersExplodeValueChanged);
 
-    auto pairSliderLabelSpeed = createSliderWithLabel(ED::cpt_Speed, "Sensitivity:", vLayoutExplode, "");
+    auto pairSliderLabelSpeed = createSliderWithLabel(ED::cpt_Speed, u8"Чувствительность:", vLayoutExplodeButtons, "");
     pairSliderLabelSpeed.second->setMinimumWidth(labelExplodeWidth);
     QObject::connect(pairSliderLabelSpeed.first, &QSlider::valueChanged, this, &ExplodeManager::slidersExplodeValueChanged);
 
-    auto pairSliderLabelLevel = createSliderWithLabel(ED::cpt_TreeLevel, "Level (0-0): 0", vLayoutExplode, "");
-    m_labelLevel = pairSliderLabelLevel.second;
-    QObject::connect(pairSliderLabelLevel.first, &QSlider::valueChanged, this, &ExplodeManager::slidersExplodeValueChanged);
-
-    // Group for Selection options
-    QGroupBox* groupSelection = createGroupBox("Selection", true, false, true);
-    m_vLayoutTab->addWidget(groupSelection);
-    QVBoxLayout* vLayoutSelection = createVBoxLayout(groupSelection);
-    QHBoxLayout* hLayoutButtonsSelect = new QHBoxLayout();
-    QPushButton* buttonSelectAll = createButton(ED::cpt_SelectAll, hLayoutButtonsSelect, "Select all", "Selection all the  of model or assembly");
-    QObject::connect(buttonSelectAll, &QPushButton::pressed, this, &ExplodeManager::buttonsPressed);
-    vLayoutSelection->addLayout(hLayoutButtonsSelect);
-
-    QPushButton* buttonSelectRootItem = createButton(ED::cpt_SelectRootItem, hLayoutButtonsSelect, "Select root item", "Root assembly selection of the selected object");
-    QObject::connect(buttonSelectRootItem, &QPushButton::pressed, this, &ExplodeManager::buttonsPressed);
-
-    auto pairSliderLabelSelectAssembly = createSliderWithLabel(ED::cpt_SelectAssembly, "Level (0-0): 0", vLayoutSelection,
-        "Slider for scene graph's assembly selection that contained current assembly");
-    m_labelSelectAssembly = pairSliderLabelSelectAssembly.second;
-    m_labelSelectAssembly->setToolTip(QString("The level of selected assembly in the scene graph"));
-    QObject::connect(pairSliderLabelSelectAssembly.first, &QSlider::valueChanged, this, &ExplodeManager::sliderSelectAssemblyValueChanged);
-
-    // Group "Objects trajectory type"
-    QGroupBox* groupTrajectory = createGroupBox("Objects trajectory type", true, false, true);
-    m_vLayoutTab->addWidget(groupTrajectory);
-    QVBoxLayout* vLayoutTrajectory = createVBoxLayout(groupTrajectory);
-    QHBoxLayout* hLayoutTrajectoryType = new QHBoxLayout();
-    vLayoutTrajectory->addLayout(hLayoutTrajectoryType);
-    QRadioButton* radioRadial = createRadioButton(ED::cpt_RadialTrajectory, hLayoutTrajectoryType, "Radial", true);
-    QObject::connect(radioRadial, &QRadioButton::toggled, this, &ExplodeManager::radiosTrajectryTypeToggled);
-
-    QRadioButton* radioAxial = createRadioButton(ED::cpt_AxialTrajectory, hLayoutTrajectoryType,  "Axial", false);
-    QObject::connect(radioAxial, &QRadioButton::toggled, this, &ExplodeManager::radiosTrajectryTypeToggled);
-
-    QRadioButton* radioOrth = createRadioButton(ED::cpt_OrthToAxialTrajectory, hLayoutTrajectoryType, "Orth. to axial", false);
-    QObject::connect(radioOrth, &QRadioButton::toggled, this, &ExplodeManager::radiosTrajectryTypeToggled);
-
-    // Group "Trajectory quality improvement"
-    QGroupBox* groupTestOptions = createGroupBox("Trajectory quality improvement", true, false, true);
-    m_vLayoutTab->addWidget(groupTestOptions);
-    QVBoxLayout* vLayoutTestOptions = createVBoxLayout(groupTestOptions);
-    QHBoxLayout* hLayoutTestOptions = new QHBoxLayout();
-    vLayoutTestOptions->addLayout(hLayoutTestOptions);
-
-    QCheckBox* checkboxRefineAxisSymmetry = createCheckBox(ED::cpt_RefineAxisSymmetry, hLayoutTestOptions,
-        "Refine assembly axis (demo option)", true, "");
-    QObject::connect(checkboxRefineAxisSymmetry, &QRadioButton::toggled, this, &ExplodeManager::checkboxRefineAxisSymmetryToggled);
-
-    // Group for Additional Options
-    m_groupAdditionalOptions = createGroupBox("Hide small, big items, hide items by distance to center", true, true, true);
-    m_groupAdditionalOptions->setDisabled(true);
-    QVBoxLayout* vLayoutAdditionalOptions = createVBoxLayout(m_groupAdditionalOptions);
-    
-    auto pairSliderLabelHideSmallItems = createSliderWithLabel(ED::cpt_FilterHideSmallItems, "Min size:", vLayoutAdditionalOptions, "");
-    QObject::connect(pairSliderLabelHideSmallItems.first, &QSlider::valueChanged, this, &ExplodeManager::slidersFilterValueChanged);
-    
-    auto pairSliderLabelHideBigItems = createSliderWithLabel(ED::cpt_FilterHideBigItems, "Max size:", vLayoutAdditionalOptions, "");
-    QObject::connect(pairSliderLabelHideBigItems.first, &QSlider::valueChanged, this, &ExplodeManager::slidersFilterValueChanged);
-    
-    auto pairSliderLabelHideByDistance = createSliderWithLabel(ED::cpt_FilterHideByDistance, "Distance:", vLayoutAdditionalOptions, "");
-    QObject::connect(pairSliderLabelHideByDistance.first, &QSlider::valueChanged, this, &ExplodeManager::slidersFilterValueChanged);
-
-    m_vLayoutTab->addWidget(m_groupAdditionalOptions);
     return tabWidget;
 }

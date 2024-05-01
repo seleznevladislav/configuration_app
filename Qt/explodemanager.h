@@ -42,7 +42,6 @@ public:
     bool isCreateGroupGeometry() const;
     bool onSelectItem(const SceneSegment* pSegm);
     QComboBox* m_comboConfigure = nullptr;
-    QComboBox* m_comboConfigureZarubin = nullptr;
 
     // TODO: 2) Прописываем здесь через такой же тип переменную, в которую прописываем значения.
     // Важно! чтобы количество переменных в элементе совпадало количеством описанных переменных в структуре struct 
@@ -116,20 +115,13 @@ private:
     void buttonsPressed();
     void buttonZoomToFit();
     void slidersExplodeValueChanged(const int value);
-    void sliderSelectAssemblyValueChanged(const int val);
-    void slidersFilterValueChanged(const int val);
-    void radiosTrajectryTypeToggled(bool checked);
     void radiosExplodeFromToggled(bool checked);
-    void checkboxAutoRebuildToggled(bool checked);
-    void checkboxRefineAxisSymmetryToggled(bool checked);
-    void checkboxesToggled(bool checked);
     ExplodeDispatcher::ControlParameterType GetParameterType(const QObject* widg) const;
 private:
     QGroupBox* createGroupBox(const char* title, const bool flat, const bool checkable, const bool checked);
     QVBoxLayout* createVBoxLayout(QGroupBox* group);
     QPushButton* createButton(const ExplodeDispatcher::ControlParameterType param, QHBoxLayout* hLayout, const char* text, const char* tip);
     QComboBox* ExplodeManager::createCombobox(QVBoxLayout* vLayout);
-    QComboBox* ExplodeManager::createComboboxZarubin(QVBoxLayout* vLayout);
     std::pair<QSlider*, QLabel*> createSliderWithLabel(const ExplodeDispatcher::ControlParameterType param, const char* labelName, QVBoxLayout* vLayout, const char* tip);
     QCheckBox* createCheckBox(const ExplodeDispatcher::ControlParameterType param, QHBoxLayout* hLayout, const char* text, const bool checked, const char* tip);
     QRadioButton* createRadioButton(const ExplodeDispatcher::ControlParameterType param, QHBoxLayout* hLayout, const char* text, const bool checked);
@@ -146,7 +138,6 @@ private:
     QVBoxLayout* m_vLayoutTab            = nullptr;
     QVBoxLayout* m_vLayoutConfigureTab   = nullptr;
     QGroupBox* m_groupExpl               = nullptr;
-    QGroupBox* m_groupAdditionalOptions  = nullptr;
     QLabel* m_labelLevel                 = nullptr;
     QLabel* m_labelSelectAssembly        = nullptr;
     std::string m_mainTabName            = "";
