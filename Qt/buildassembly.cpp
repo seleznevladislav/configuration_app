@@ -1009,7 +1009,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     return assm;
 }
 
-SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
+SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerTTOR params)
 {
 #pragma region PARAMS
     double ttDiam = params.ttDiam;
@@ -1050,7 +1050,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
     Detail_003->SetColor(80, 84, 84);
     SPtr<MbSolid> Detail_004(Zarubincreate_004_reshetkaKozhux(ktDiam, ktThickness, t));
     Detail_004->SetColor(147, 218, 136);
-    SPtr<MbSolid> Detail_005(Zarubincreate_005_kamera(ktDiam, ktThickness));
+    SPtr<MbSolid> Detail_005(Zarubincreate_005_kamera(ktDiam, ktThickness, l3));
     Detail_005->SetColor(101, 150, 94);
     SPtr<MbSolid> Detail_006(Zarubincreate_006_RezhetkaTeplTube());
     Detail_006->SetColor(218, 145, 85);
@@ -1151,7 +1151,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
 
     pair.push_back(Item_004_001);
 
-    //pair.push_back(Item_005_001);
+    pair.push_back(Item_005_001);
 
     pair.push_back(Item_006_001);
     pair.push_back(Item_006_002);
@@ -1676,6 +1676,9 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsZarubin params)
 
     assm->Rotate(axVert, M_PI/2);
     assm->Rotate(ayVert, M_PI);
+
+    MbProductInfo TTRMInfo(false, "TTOR", "TTOR", "TTOR");
+
 
     return assm;
 }

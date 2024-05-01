@@ -11,25 +11,25 @@ namespace BuildMathModel {
 		int variantsConfB = 1;
 	};
 
-	struct BuildParamsZarubin
+	struct BuildParamsForHeatExchangerTTOR
 	{
 		std::string name;
 
-		double ttDiam;         // 2  - Диаметр Теплообменные трубы
-		double ttThickness;    // 3  - Толщина Теплообменные трубы
-		double ktDiam;         // 4  - Диаметр Кожуховые трубы
-		double ktThickness;    // 5  - Толщина Кожуховые трубы
-		double lK;             // 6  - Длина Калжуховые трубы
-		double L;              // 7  - Диаметр Аппарата примерно
+		double ttDiam;         // 2  - Диаметр теплообменных труб
+		double ttThickness;    // 3  - Толщина теплообменных труб
+		double ktDiam;         // 4  - Диаметр кожуховых труб
+		double ktThickness;    // 5  - Толщина кожуховых труб
+		double lK;             // 6  - Длина кожуховых труб
+		double L;              // 7  - Общая длина аппарата примерно * (Значение не используется в рассчетах)
 		double dV;             // 8  - Диаметр камеры
-		double dU;             // 9  - 
-		double H;              // 10 - 
-		double H1;             // 11 - 
-		double l0;             // 12 - 
-		double l1;             // 13 - 
-		double l2;             // 14 - 
-		double l3;             // 15 - 
-		double t;              // 16 - 
+		double dU;             // 9  - Диаметр фланца соединительного
+		double H;              // 10 - Высота фланца соединительного
+		double H1;             // 11 - Высота опоры от центра (H1 * 2 = целая высота)
+		double l0;             // 12 - Расстояние между опорами
+		double l1;             // 13 - Расстояние между фланцем боковым и фланцем соединительным
+		double l2;             // 14 - Расстояние между фланцем соединительным и опорой
+		double l3;             // 15 - Длина камеры
+		double t;              // 16 - Расстояние между трубами
 	};
 	struct ConfigParams
 	{
