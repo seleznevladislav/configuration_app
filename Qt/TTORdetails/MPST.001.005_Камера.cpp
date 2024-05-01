@@ -135,7 +135,7 @@ void CreateSketchForCapPart(RPArray<MbContour>& _arrContours, double l3, double 
     _arrContours.push_back(pContour);
 }
 
-void CreateSketchForWall(RPArray<MbContour>& _arrContours, double l3)
+void CreateSketchForWall(RPArray<MbContour>& _arrContours, double l3, double Db, double Dm, double Dpaz, double Hb, double Hm, double Hpaz, double Thickness)
 {
     const double Rasstoyanie = l3 - 157; // 243 мм значение для увеличения длины камеры
 
@@ -208,7 +208,6 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_005_kamera(double ktDiam, do
     }
     else if (l3 > 400) {
         index = 1;
-        l3 = 1000;
     }
 
     double ANG1 = 180 * DEG_TO_RAD;
@@ -249,7 +248,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_005_kamera(double ktDiam, do
 
     //ВЫДАВЛИВАНИЕ
     RPArray<MbContour> arrContours1;
-    CreateSketchForWall(arrContours1, l3);
+    CreateSketchForWall(arrContours1, l3, Db, Dm, Dpaz, Hb, Hm, Hpaz, Thickness);
 
     MbSweptData sweptData1(*pPlaneXY, arrContours1);
 
