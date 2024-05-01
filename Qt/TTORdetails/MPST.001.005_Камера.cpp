@@ -70,32 +70,52 @@ void CreateSketchForCapPart(RPArray<MbContour>& _arrContours, double l3, double 
     // расчет длины камеры l3 - длина 
     const double Rasstoyanie = l3 - 157; // 243 мм значение для увеличения длины камеры
 
+    double param1 = 157;
+    double RADIUSB2 = 480;
+
+    double RADIUSM1 = 67.351515;
+    double RADIUSM2 = 81.351515;
+    double hardcodePont1 = 54.570870;
+    double hardcodePont2 = 65.914201;
+    double hardcodePont3x = 273.123119;
+    double hardcodePont4x = 281.328534;
+    double hardcodePont5center = 233.648485;
+
+    if (l3 > 400) {
+        param1 = 257;
+        RADIUSB2 = 580;
+
+        RADIUSM1 = 172.834320;
+        RADIUSM2 = 186.834320;
+
+        hardcodePont1 = 141.989720;
+        hardcodePont2 = 153.491233;
+        hardcodePont3x = 322.708166;
+        hardcodePont4x = 330.690346;
+        hardcodePont5center = 224.16568;
+    }
+
     SArray<MbCartPoint> arrPnts(20);
-    arrPnts.Add(MbCartPoint(0, 157)); // 0
-    arrPnts.Add(MbCartPoint(0, 157 - 14));
-    arrPnts.Add(MbCartPoint(0, -(80 + 243))); //центр дуги большой 0
-    arrPnts.Add(MbCartPoint(-273.123119, 54.570870)); // 3
-    arrPnts.Add(MbCartPoint(-233.648485, 0));//центр дуги маленькой 0
-    arrPnts.Add(MbCartPoint(-301, 0));
-    arrPnts.Add(MbCartPoint(-301, -Rasstoyanie + 10));
-    arrPnts.Add(MbCartPoint(-321, -Rasstoyanie + 10));
-    arrPnts.Add(MbCartPoint(-321, -Rasstoyanie));
-    arrPnts.Add(MbCartPoint(-400, -Rasstoyanie));
-    arrPnts.Add(MbCartPoint(-400, -Rasstoyanie + 40));
-    arrPnts.Add(MbCartPoint(-340, -Rasstoyanie + 40)); // 25мм это фаска
-    arrPnts.Add(MbCartPoint(-315, -Rasstoyanie + 65)); // 12
-    arrPnts.Add(MbCartPoint(-315, 0));// 13
-    arrPnts.Add(MbCartPoint(-233.648485, 0));//центр дуги маленькой 14
-    arrPnts.Add(MbCartPoint(-281.328534, 65.914201));
-    arrPnts.Add(MbCartPoint(0, -(80 + 243))); // Центр дуги большой 16
-    arrPnts.Add(MbCartPoint(0, 157)); // 17
+    arrPnts.Add(MbCartPoint(0, param1)); // 0
+    arrPnts.Add(MbCartPoint(0, param1 - Thickness));
+    arrPnts.Add(MbCartPoint(0, -(RADIUSB2 - param1))); //центр дуги большой 0
+    arrPnts.Add(MbCartPoint(-hardcodePont3x, hardcodePont1)); // 3
+    arrPnts.Add(MbCartPoint(-hardcodePont5center, 0));//центр дуги маленькой 0
+    arrPnts.Add(MbCartPoint(-Dm, 0));
+    arrPnts.Add(MbCartPoint(-Dm, -Rasstoyanie + Hm));
+    arrPnts.Add(MbCartPoint(-Dpaz, -Rasstoyanie + Hm));
+    arrPnts.Add(MbCartPoint(-Dpaz, -Rasstoyanie));
+    arrPnts.Add(MbCartPoint(-Db, -Rasstoyanie));
+    arrPnts.Add(MbCartPoint(-Db, -Rasstoyanie + Hb));
+    arrPnts.Add(MbCartPoint(-(Dm + Hpaz + Thickness), -Rasstoyanie + Hb)); // 25мм это фаска
+    arrPnts.Add(MbCartPoint(-(Dm + Thickness), -Rasstoyanie + Hb + Hpaz)); // 12
+    arrPnts.Add(MbCartPoint(-(Dm + Thickness), 0));// 13
+    arrPnts.Add(MbCartPoint(-hardcodePont5center, 0));//центр дуги маленькой 14
+    arrPnts.Add(MbCartPoint(-hardcodePont4x, hardcodePont2));
+    arrPnts.Add(MbCartPoint(0, -(RADIUSB2 - param1))); // Центр дуги большой 16
+    arrPnts.Add(MbCartPoint(0, param1)); // 17
 
-
-    const double RADIUSB1 = 466;
-    const double RADIUSB2 = 480;
-
-    const double RADIUSM1 = 67.351515;
-    const double RADIUSM2 = 81.351515;
+    const double RADIUSB1 = RADIUSB2 - Thickness;
 
     MbLineSegment* pLine1 = new MbLineSegment(arrPnts[0], arrPnts[1]);
 
@@ -133,29 +153,56 @@ void CreateSketchForCapPart(RPArray<MbContour>& _arrContours, double l3, double 
     pContour->AddSegment(pArc4);
 
     _arrContours.push_back(pContour);
+
+
+    //viewManager->AddObject(Style(1, LIGHTRED), pContour);
 }
+
 
 void CreateSketchForWall(RPArray<MbContour>& _arrContours, double l3, double Db, double Dm, double Dpaz, double Hb, double Hm, double Hpaz, double Thickness)
 {
+    // расчет длины камеры l3 - длина 
     const double Rasstoyanie = l3 - 157; // 243 мм значение для увеличения длины камеры
 
+    double param1 = 157;
+    double RADIUSB2 = 480;
+
+    double RADIUSM1 = 67.351515;
+    double RADIUSM2 = 81.351515;
+    double hardcodePont1 = 54.570870;
+    double hardcodePont2 = 65.914201;
+    double hardcodePont3x = 273.123119;
+    double hardcodePont4x = 281.328534;
+    double hardcodePont5center = 233.648485;
+
+    if (l3 > 400) {
+        param1 = 257;
+        RADIUSB2 = 580;
+
+        RADIUSM1 = 172.834320;
+        RADIUSM2 = 186.834320;
+
+        hardcodePont1 = 141.989720;
+        hardcodePont2 = 153.491233;
+        hardcodePont3x = 322.708166;
+        hardcodePont4x = 330.690346;
+        hardcodePont5center = 224.16568;
+    }
+
     SArray<MbCartPoint> arrPnts(12);
-    arrPnts.Add(MbCartPoint(0, 157 - 14));
-    arrPnts.Add(MbCartPoint(0, -(80 + 243))); //центр дуги большой 0
-    arrPnts.Add(MbCartPoint(-273.123119, 54.570870)); // 3
-    arrPnts.Add(MbCartPoint(-233.648485, 0));//центр дуги маленькой 0
-    arrPnts.Add(MbCartPoint(-301, 0));
-    arrPnts.Add(MbCartPoint(-301, -Rasstoyanie + 10));
-    arrPnts.Add(MbCartPoint(301, -Rasstoyanie + 10));
-    arrPnts.Add(MbCartPoint(301, 0));//7
-    arrPnts.Add(MbCartPoint(233.648485, 0));//центр дуги маленькой 0
-    arrPnts.Add(MbCartPoint(273.123119, 54.570870));
-    arrPnts.Add(MbCartPoint(0, -(80 + 243))); //центр дуги большой 0
+    arrPnts.Add(MbCartPoint(0, param1 - Thickness));
+    arrPnts.Add(MbCartPoint(0, -(RADIUSB2 - param1))); //центр дуги большой 0
+    arrPnts.Add(MbCartPoint(-hardcodePont3x, hardcodePont1)); // 3
+    arrPnts.Add(MbCartPoint(-hardcodePont5center, 0));//центр дуги маленькой 0
+    arrPnts.Add(MbCartPoint(-Dm, 0));
+    arrPnts.Add(MbCartPoint(-Dm, -Rasstoyanie + Hm));
+    arrPnts.Add(MbCartPoint(Dm, -Rasstoyanie + Hm));
+    arrPnts.Add(MbCartPoint(Dm, 0));//7
+    arrPnts.Add(MbCartPoint(hardcodePont5center, 0));//центр дуги маленькой 0
+    arrPnts.Add(MbCartPoint(hardcodePont3x, hardcodePont1));
+    arrPnts.Add(MbCartPoint(0, -(RADIUSB2 - param1))); //центр дуги большой 0
 
-
-    const double RADIUSB1 = 466;
-    const double RADIUSM1 = 67.351515;
-
+    const double RADIUSB1 = RADIUSB2 - Thickness;
 
     MbArc* pArc1 = new MbArc(arrPnts[1], RADIUSB1, arrPnts[0], arrPnts[2], 1);
     MbArc* pArc2 = new MbArc(arrPnts[3], RADIUSM1, arrPnts[2], arrPnts[4], 1);
@@ -180,6 +227,7 @@ void CreateSketchForWall(RPArray<MbContour>& _arrContours, double l3, double Db,
     pContour->AddSegment(pArc4);
 
     _arrContours.push_back(pContour);
+    //viewManager->AddObject(Style(1, BLACK), pContour);
 }
 
 struct mpst001005
@@ -196,18 +244,20 @@ struct mpst001005
 std::vector<mpst001005> parametersFor005 = {
     //1     2    3   4   5   6   7 
     {400,  301, 321, 40, 10, 25, 14},
-    {510,  411, 421, 60, 14, 30, 20},
+    {510,  397, 421, 60, 14, 25, 14},
 };
 
 SPtr<MbSolid> ParametricModelCreator::Zarubincreate_005_kamera(double ktDiam, double ktThickness, double l3)
 {
     int index = 0;
+    double Dcircle = 370.0 * 2;
 
     if (l3 == 400) { 
         index = 0;
     }
     else if (l3 > 400) {
         index = 1;
+        Dcircle = 470.0 * 2;
     }
 
     double ANG1 = 180 * DEG_TO_RAD;
@@ -278,7 +328,6 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_005_kamera(double ktDiam, do
     MbSNameMaker blockNames(1, MbSNameMaker::i_SideNone, 0);
 
     const double radius = 24.0 / 2;
-    const double Dcircle = 370.0 * 2;
     const int holes = 32;
 
     const double depth = -l3;
