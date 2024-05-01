@@ -8,10 +8,10 @@ const double DEG_TO_RAD = M_PI / 180.0;
 
 struct mpst001004
 {
-    double Db;    // 1   
-    double Dm;    // 2
-    double Hb;    // 3
-    double Hm;    // 4
+    double Db;    // 1 - Диаметр внешний
+    double Dm;    // 2 - Диаметр внутренний
+    double Hb;    // 3 - Высота внешнего диаметра
+    double Hm;    // 4 - Высота внутреннего диаметра
 };
 
 // 307 - тк на камере 301 проклада на 6 мм

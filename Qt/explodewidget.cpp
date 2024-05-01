@@ -339,7 +339,7 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
     {
         int index = m_pExplodeManager->m_comboConfigureZarubin->currentIndex();
 
-        BuildParamsZarubin config = m_pExplodeManager->configurationZarubin[index];
+        BuildParamsForHeatExchangerTTOR config = m_pExplodeManager->dataTTOR[index];
     
         m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(config);
         openModel();
@@ -567,7 +567,7 @@ void ExplodeWidget::createSceneZarubin()
 
     // TOZO: Завести переменную для определения сборки и добавить кнопки в main toolbar left srea
     // TOZO: Не работает дерево, хз почему
-    m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsZarubin());
+    m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsForHeatExchangerTTOR());
 
     SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
     Q_ASSERT(pTopSegment != nullptr);

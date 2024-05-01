@@ -304,7 +304,7 @@ QComboBox* ExplodeManager::createComboboxZarubin(QVBoxLayout* vLayout)
     QStringList valuesZarubinParams;
     // TODO: Здесь загоняются ваши элементы (варианты конфигураций) в комбобокс
     // Здесь добавлять ничего не нужно.
-    for (const auto& param : configurationZarubin) {
+    for (const auto& param : dataTTOR) {
         valuesZarubinParams.append(QString::fromStdString(param.name));
     }
 
