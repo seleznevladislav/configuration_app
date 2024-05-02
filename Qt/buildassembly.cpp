@@ -1064,7 +1064,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     Detail_004->SetColor(147, 218, 136);
     SPtr<MbSolid> Detail_005(Zarubincreate_005_kamera(ktDiam, ktThickness, l3));
     Detail_005->SetColor(101, 150, 94);
-    SPtr<MbSolid> Detail_006(Zarubincreate_006_RezhetkaTeplTube());
+    SPtr<MbSolid> Detail_006(Zarubincreate_006_RezhetkaTeplTube(ttDiam, ttThickness));
     Detail_006->SetColor(218, 145, 85);
     SPtr<MbSolid> Detail_007(Zarubincreate_007_FlanecKozhux(ktDiam, ktThickness));
     Detail_007->SetColor(47, 218, 56);

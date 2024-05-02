@@ -31,13 +31,13 @@ static QSize sizeIcons = QSize(32, 32);
 
 static void createCommandActions(QWidget* pOpenScene, QToolBar* commandBar, QWidget* parent)
 {
-    QAction* pOpenAction = new QAction(QIcon(":/res/save_file32.png"), QStringLiteral("Открыть"), parent);
+    /*QAction* pOpenAction = new QAction(QIcon(":/res/save_file32.png"), QStringLiteral("Открыть"), parent);
     pOpenAction->setProperty("Commands", QVariant((int)ExplodeWidget::Open));
     parent->addAction(pOpenAction);
     commandBar->addAction(pOpenAction);
     QObject::connect(pOpenAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommands()));
 
-    commandBar->addSeparator();
+    commandBar->addSeparator();*/
 
     QAction* TTORAction = new QAction(QIcon(":/res/iconsForHeat Exchangers/TTOR.png"), QStringLiteral("ТТОР"), parent);
     TTORAction->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::TTOR));

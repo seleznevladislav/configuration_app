@@ -12,13 +12,11 @@
 #include <action_shell.h>
 #include <action_sheet.h>
 #include <action_solid.h>
-
 #include <templ_s_array.h>
 #include <templ_rp_array.h>
 #include <templ_array2.h>
 #include <templ_sptr.h>
 #include <templ_dptr.h>
-
 #include <mb_cart_point.h>
 #include <mb_cart_point3d.h>
 #include <mb_matrix.h>
@@ -29,10 +27,8 @@
 #include <mb_axis3d.h>
 #include <mb_thread.h>
 #include <mb_nurbs_function.h>
-
 #include <function.h>
 #include <function_factory.h>
-
 #include <curve.h>
 #include <cur_line_segment.h>
 #include <cur_arc.h>
@@ -44,10 +40,8 @@
 #include <cur_polyline.h>
 #include <cur_projection_curve.h>
 #include <cur_contour.h>
-
 #include <region.h>
 #include <contour_graph.h>
-
 #include <curve3d.h>
 #include <cur_line_segment3d.h>
 #include <cur_arc3d.h>
@@ -63,7 +57,6 @@
 #include <cur_silhouette_curve.h>
 #include <cur_surface_intersection.h>
 #include <cur_spiral.h>
-
 #include <surface.h>
 #include <surf_plane.h>
 #include <surf_cylinder_surface.h>
@@ -78,7 +71,6 @@
 #include <surf_spline_surface.h>
 #include <surf_offset_surface.h>
 #include <surf_curve_bounded_surface.h>
-
 #include <attribute_item.h>
 #include <attr_color.h>
 #include <attr_common_attribute.h>
@@ -87,14 +79,11 @@
 #include <attr_selected.h>
 #include <attr_user_attribute.h>
 #include <attribute_container.h>
-
 #include <name_item.h>
 #include <name_check.h>
-
 #include <topology.h>
 #include <topology_faceset.h>
 #include <check_geometry.h>
-
 #include <point3d.h>
 #include <point_frame.h>
 #include <wire_frame.h>
@@ -105,21 +94,17 @@
 #include <plane_instance.h>
 #include <space_instance.h>
 #include <assembly.h>
-
 #include <mesh.h>
 #include <mesh_grid.h>
 #include <mesh_primitive.h>
 #include <mesh_polygon.h>
-
 #include <map_create.h>
 #include <map_lump.h>
 #include <map_section.h>
 #include <map_section_complex.h>
 #include <map_vestige.h>
 #include <map_thread.h>
-
 #include <tri_face.h>
-
 #include <mip_curve_properties.h>
 #include <mip_solid_area_volume.h>
 #include <mip_solid_mass_inertia.h>
@@ -131,7 +116,6 @@
 #include <cdet_data.h>
 #include <cdet_utility.h>
 #include <part_solid.h>
-//äëÿ ñáîðêè
 #include <mb_class_traits.h>
 #include <tool_time_test.h>
 #include <constraint.h>
@@ -148,8 +132,6 @@
 
 #include <math_namespace.h>
 #include <last.h>
-
-
 
 #include <vector>
 #include "alg_curve_fillet.h"
@@ -206,12 +188,13 @@ namespace BuildMathModel {
 		static SPtr<MbSolid> ParametricModelCreator::buildWasher10();
 		static SPtr<MbSolid> ParametricModelCreator::buildScrew55();
 
+		// TTOR edtails
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_001_tubeTeploobmen(double Lk, double ttDiam, double ttThickness);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_002_tubeKozhux(double lK, double ktDiam, double ktThickness);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora(double dV, double ktDiam, double ktThickness, double t, double visotaOpori, double shirinaOpori);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_004_reshetkaKozhux(double ktDiam, double ktThickness, double t);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_005_kamera(double ktDiam, double ktThickness, double l3);
-		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_006_RezhetkaTeplTube();
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_006_RezhetkaTeplTube(double ttDiam, double ttThickness);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_007_FlanecKozhux(double ktDiam, double ktThickness);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_008_FlanecSpecial(double ttDiam, double ttThickness);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_009_curevedTube(double ttDiam, double ttThickness, double t);

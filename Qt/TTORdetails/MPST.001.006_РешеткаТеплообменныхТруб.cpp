@@ -4,6 +4,21 @@ using namespace BuildMathModel;
 
 const double DEG_TO_RAD = M_PI / 180.0;
 
+struct palmParams
+{
+    double rOut;    // 1
+    double PIn;     // 2  
+    double POut;    // 3
+    double D1;
+};
+
+std::vector<palmParams> palmConfiguration = {
+    //1     2    3 
+    {235, 145, 167, 200},
+    {260, 170, 192, 225},
+    {315, 228, 250, 280},
+};
+
 SolidSPtr HolyHole2(SolidSPtr* previus, int holes, double DiametrCircle, double radius) {
 
     // Именователь граней для построения тела с помощью булевой операции 
@@ -64,18 +79,22 @@ SolidSPtr HolyHole2(SolidSPtr* previus, int holes, double DiametrCircle, double 
     return news;
 }
 
-void CreateSketcherResetkaTruba(RPArray<MbContour>& _arrContours)
+void CreateSketcherResetkaTruba(RPArray<MbContour>& _arrContours, int index, double ttDiam, double ttThickness)
 {
 
+    const double firstParam =  palmConfiguration[index].rOut;
+    const double secondParam = palmConfiguration[index].PIn;
+    const double thirdParam = palmConfiguration[index].POut;
+
     double ANG1 = 90 * DEG_TO_RAD;
-    const double rIn = 99 / 2;
-    const double rOut = 235 / 2;
+    const double rIn = (ttDiam + ttThickness * 2) / 2;
+    const double rOut = firstParam / 2;
 
-    const double PIn = 145 / 2;
-    const double POut = 167 / 2;
+    const double PIn = secondParam / 2;
+    const double POut = thirdParam / 2;
 
 
-    SArray<MbCartPoint> arrPnts(100);
+    SArray<MbCartPoint> arrPnts(10);
     arrPnts.Add(MbCartPoint(rIn, 0));
     arrPnts.Add(MbCartPoint(rOut, 0));
     arrPnts.Add(MbCartPoint(rOut, 14));
@@ -95,9 +114,6 @@ void CreateSketcherResetkaTruba(RPArray<MbContour>& _arrContours)
     MbLineSegment* pLine6 = new MbLineSegment(arrPnts[6], arrPnts[7]);
     MbLineSegment* pLine7 = new MbLineSegment(arrPnts[7], arrPnts[0]);
 
-
-
-
     MbContour* pContour = new MbContour();
 
     pContour->AddSegment(pLine0);
@@ -109,18 +125,32 @@ void CreateSketcherResetkaTruba(RPArray<MbContour>& _arrContours)
     pContour->AddSegment(pLine6);
     pContour->AddSegment(pLine7);
 
-
     _arrContours.push_back(pContour);
 }
 
-SPtr<MbSolid> ParametricModelCreator::Zarubincreate_006_RezhetkaTeplTube()
+SPtr<MbSolid> ParametricModelCreator::Zarubincreate_006_RezhetkaTeplTube(double ttDiam, double ttThickness)
 {
+
+    int index = 0;
+
+    if (ttDiam <= 89) { //ttDiam = 89
+        index = 0;
+    }
+    else if (ttDiam <= 108) { //ttDiam = 108
+        index = 1;
+    }
+    else if (ttDiam <= 159) { //ttDiam = 159
+        index = 2;
+    }
+
+    const double firstParam = palmConfiguration[index].D1;
+
     // Локальная СК (по умолчанию совпадает с мировой СК)
     MbPlacement3D pl;
 
     // Создание образующей для тела выдавливания
     RPArray<MbContour> arrContours;
-    CreateSketcherResetkaTruba(arrContours);
+    CreateSketcherResetkaTruba(arrContours, index, ttDiam, ttThickness);
 
     //Плоскость
     MbPlane* pPlaneXY = new MbPlane(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, 1, 0), MbCartPoint3D(0, 0, 1));
@@ -140,9 +170,12 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_006_RezhetkaTeplTube()
     MbSolid* pSolid = nullptr;
     MbResultType res = ::RevolutionSolid(sweptData, axis, revParms, operNames, cNames, pSolid);
 
+    // Создание умного указателя на твердоге тело
     SolidSPtr Solid(pSolid);
 
-    SolidSPtr result = HolyHole2(&Solid, 4, 200, 9);
+    const double rastchet = (ttDiam + ttThickness * 2) / 2;
+    // Создание отверстий
+    SolidSPtr result = HolyHole2(&Solid, 4, firstParam, 9);
 
     return result;
 }
