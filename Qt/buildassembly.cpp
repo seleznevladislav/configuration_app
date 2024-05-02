@@ -1064,7 +1064,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     Detail_004->SetColor(147, 218, 136);
     SPtr<MbSolid> Detail_005(Zarubincreate_005_kamera(ktDiam, ktThickness, l3));
     Detail_005->SetColor(101, 150, 94);
-    SPtr<MbSolid> Detail_006(Zarubincreate_006_RezhetkaTeplTube());
+    SPtr<MbSolid> Detail_006(Zarubincreate_006_RezhetkaTeplTube(ttDiam, ttThickness));
     Detail_006->SetColor(218, 145, 85);
     SPtr<MbSolid> Detail_007(Zarubincreate_007_FlanecKozhux(ktDiam, ktThickness));
     Detail_007->SetColor(47, 218, 56);
@@ -1685,12 +1685,79 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
     assm->EvaluateConstraints();
 
-
     assm->Rotate(axVert, M_PI/2);
     assm->Rotate(ayVert, M_PI);
 
-    MbProductInfo TTRMInfo(false, "TTOR", "TTOR", "TTOR");
+    string zero    = "0";
+    string first   = "1";
+    string second  = "2";
+    string third   = "3";
+    string forth   = "4";
+    string fifth   = "5";
+    string six     = "6";
+    string seven   = "7";
+    string eight   = "8";
+    string nine    = "9";
+    string ten     = "10";
 
+    MbProductInfo zeroProductInfo    (false, zero, zero, zero);
+    MbProductInfo firstProductInfo   (false, first, first, first);
+    MbProductInfo secondProductInfo  (false, second, second, second);
+    MbProductInfo thirdProductInfo   (false, third, third, third);
+    MbProductInfo forthProductInfo   (false, forth, forth, forth);
+    MbProductInfo fifthProductInfo   (false, fifth, fifth, fifth);
+    MbProductInfo sixProductInfo     (false, six, six, six);
+    MbProductInfo sevenProductInfo   (false, seven, seven, seven);
+    MbProductInfo eightProductInfo   (false, eight, eight, eight);
+    MbProductInfo nineProductInfo    (false, nine, nine, nine);
+    MbProductInfo tenProductInfo     (false, ten, ten, ten);
+
+    MbProductInfo AssemblyInfo(false, "TTOR", "TTOR", "TTOR");
+
+    Item_001_002->AddAttribute(zeroProductInfo);
+    Item_001_003->AddAttribute(zeroProductInfo);
+    Item_001_004->AddAttribute(zeroProductInfo);
+    Item_002_001->AddAttribute(firstProductInfo);
+    Item_002_002->AddAttribute(firstProductInfo);
+    Item_002_003->AddAttribute(firstProductInfo);
+    Item_002_004->AddAttribute(firstProductInfo);
+    Item_003_001->AddAttribute(secondProductInfo);
+    Item_003_002->AddAttribute(secondProductInfo);
+    Item_004_001->AddAttribute(thirdProductInfo);
+    Item_005_001->AddAttribute(forthProductInfo);
+    Item_006_001->AddAttribute(fifthProductInfo);
+    Item_006_002->AddAttribute(fifthProductInfo);
+    Item_006_003->AddAttribute(fifthProductInfo);
+    Item_006_004->AddAttribute(fifthProductInfo);
+    Item_007_001->AddAttribute(sixProductInfo);
+    Item_007_002->AddAttribute(sixProductInfo);
+    Item_007_003->AddAttribute(sixProductInfo);
+    Item_007_004->AddAttribute(sixProductInfo);
+    Item_007_005->AddAttribute(sixProductInfo);
+    Item_007_006->AddAttribute(sixProductInfo);
+    Item_008_001->AddAttribute(sevenProductInfo);
+    Item_008_002->AddAttribute(sevenProductInfo);
+    Item_008_003->AddAttribute(sevenProductInfo);
+    Item_008_004->AddAttribute(sevenProductInfo);
+    Item_008_005->AddAttribute(sevenProductInfo);
+    Item_008_006->AddAttribute(sevenProductInfo);
+    Item_008_007->AddAttribute(sevenProductInfo);
+    Item_008_008->AddAttribute(sevenProductInfo);
+    Item_008_009->AddAttribute(sevenProductInfo);
+    Item_008_010->AddAttribute(sevenProductInfo);
+    Item_008_011->AddAttribute(sevenProductInfo);
+    Item_008_012->AddAttribute(sevenProductInfo);
+    Item_008_013->AddAttribute(sevenProductInfo);
+    Item_008_014->AddAttribute(sevenProductInfo);
+    Item_008_015->AddAttribute(sevenProductInfo);
+    Item_008_016->AddAttribute(sevenProductInfo);
+    Item_009_001->AddAttribute(eightProductInfo);
+    Item_009_002->AddAttribute(eightProductInfo);
+    Item_009_003->AddAttribute(eightProductInfo);
+    Item_010_001->AddAttribute(nineProductInfo);
+    Item_011_001->AddAttribute(tenProductInfo);
+
+    assm->AddAttribute(AssemblyInfo);
 
     return assm;
 }
