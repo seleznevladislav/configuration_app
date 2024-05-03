@@ -1632,7 +1632,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
             MtGeomArgument Face1312(Detail_003->GetFace(3), Item_003_001);
             MtGeomArgument Face2321(Detail_011->GetFace(2), Item_011_001);
 
-            assm->AddConstraint(GCM_DISTANCE, Face1312, Face2321, MtParVariant(l2 - shirinaOpori));
+            assm->AddConstraint(GCM_DISTANCE, Face1312, Face2321, MtParVariant(l2 - shirinaOpori - 40));
 
             MtGeomArgument ConnectorsPlane1(Detail_002->GetFace(3), Item_002_001);
             MtGeomArgument ConnectorsPlane2(Detail_002->GetFace(3), Item_002_002);
@@ -1650,7 +1650,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
             MtGeomArgument Face1312(Detail_003->GetFace(3), Item_003_001);
             MtGeomArgument Face2321(Detail_010->GetFace(2), Item_010_001);
 
-            assm->AddConstraint(GCM_DISTANCE, Face1312, Face2321, MtParVariant(l2 - shirinaOpori));
+            assm->AddConstraint(GCM_DISTANCE, Face1312, Face2321, MtParVariant(l2 - shirinaOpori - 40));
 
             MtGeomArgument ConnectorsPlane1(Detail_002->GetFace(3), Item_002_003);
             MtGeomArgument ConnectorsPlane2(Detail_002->GetFace(3), Item_002_004);
@@ -1714,6 +1714,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
     MbProductInfo AssemblyInfo(false, "TTOR", "TTOR", "TTOR");
 
+    Item_001_001->AddAttribute(zeroProductInfo);
     Item_001_002->AddAttribute(zeroProductInfo);
     Item_001_003->AddAttribute(zeroProductInfo);
     Item_001_004->AddAttribute(zeroProductInfo);

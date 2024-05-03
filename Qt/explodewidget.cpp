@@ -838,7 +838,103 @@ void ExplodeWidget::mouseMoveEvent(QMouseEvent* event)
     }
     setCursor(curCursor);
 }
+//---------------------------------------------------------------------------------------
+//
+// ---
+QString ExplodeWidget::openSelectModel()
+{
+    SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
+    Q_ASSERT(pTopSegment != nullptr);
 
+    const QString lastUserPath;
+    QStringList filters;
+    filters.append("Files *.c3d");
+    filters.append("File C3D (*.c3d)");
+    QString oneLineFilters = filters.join("\n");
+#ifdef Q_OS_WIN
+    const QString file = QFileDialog::getOpenFileName(this, tr("Select Models"), lastUserPath, oneLineFilters);
+#else 
+    const QString file = QFileDialog::getOpenFileName(this, tr("Select Models"), lastUserPath, oneLineFilters, nullptr, QFileDialog::DontUseNativeDialog);
+#endif 
+    return file;
+}
+
+//---------------------------------------------------------------------------------------
+//
+// ---
+void ExplodeWidget::loadModel()
+{
+    SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
+    Q_ASSERT(pTopSegment != nullptr);
+
+    const QString lastUserPath;
+    QStringList filters = QtVision::openSaveFilters();
+    QString oneLineFilters = filters.join("\n");
+
+    const QStringList files = m_modelPath.empty()
+        ? QFileDialog::getOpenFileNames(this, tr("Select Models"), lastUserPath, oneLineFilters)
+        : QStringList(m_modelPath.c_str());
+
+    if (files.count() > 0)
+    {
+        if (files.count() > 1)
+            emit setVisibleProgress(true);
+        if (m_pSegmModel != nullptr)
+        {
+            pTopSegment->RemoveSegment(m_pSegmModel);
+            VSN_DELETE_AND_NULL(m_pSegmModel);
+            m_pTreeWidget->clear();
+        }
+
+        if (m_pModel != nullptr)
+            m_pModel.reset();
+    }
+    else
+        return;
+
+    if (m_pModel != nullptr)
+        Q_ASSERT(false);
+
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    loadFiles(files);
+    if (m_pModel->ItemsCount() == 0)
+    {
+        m_pModel.reset();
+        exit(1);
+    }
+    createScene();
+    fillGeometryList();
+}
+
+
+//---------------------------------------------------------------------------------------
+//
+// ---
+void ExplodeWidget::saveModel()
+{
+    const QString lastUserPath;
+    QStringList filters;
+    filters.append("Files *.c3d");
+    QString oneLineFilters = filters.join("\n");
+#ifdef Q_OS_WIN
+    const QString fileName = QFileDialog::getSaveFileName(this, tr("Save Model"), lastUserPath, oneLineFilters);
+#else 
+    const QString fileName = QFileDialog::getSaveFileName(this, tr("Save Model"), lastUserPath, oneLineFilters, nullptr, QFileDialog::DontUseNativeDialog);
+#endif 
+
+    if (!fileName.isEmpty())
+    {
+        auto test = c3d::WToPathstring(fileName.toStdWString());
+        QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+        MbeConvResType readRes = cnv_Success;
+        MbAssembly& solvedAssembly = solver()->SolverAssembly();
+        SaveConstraintSystem(*solver(), solver()->SolverAssembly());
+        readRes = c3d::ExportIntoFile(*m_pModel, test);
+        if (readRes != cnv_Success)
+            vsnWarning("Model write error");
+        QApplication::restoreOverrideCursor();
+    }
+}
 
 /*ColorButton*/
 ColorButton::ColorButton(QWidget* parent)
