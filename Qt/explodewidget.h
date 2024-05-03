@@ -146,6 +146,9 @@ public Q_SLOTS:
     void slotHighlightColor(const QColor& clr);
     void slotSelectionColor(const QColor& clr);
     void slotDynamicHighlighting(int state);
+    QString openSelectModel();
+    void saveModel();
+    void loadModel();
 public:
     VSN_SLOT(Public, slotUpdateCommands, void slotUpdateCommands());
 protected:
@@ -192,6 +195,8 @@ private:
     QCursor m_curVertex;
     QCursor m_curPoint;
     int m_pCurrentExchandger;
+
+    QString m_fileName;
 private:
     Q_DISABLE_COPY(ExplodeWidget)
 };

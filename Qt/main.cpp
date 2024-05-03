@@ -183,7 +183,6 @@ int main(int argc, char** argv)
     ///////////////////////////////////////////////////////////////////////////
     // Create control widgets
     ///////////////////////////////////////////////////////////////////////////
-    // File 
     /*QGroupBox* groupFile = new QGroupBox(&widget);
     groupFile->setTitle(QObject::tr("File"));
     QFormLayout* fileLayout = new QFormLayout(groupFile);
@@ -192,11 +191,11 @@ int main(int argc, char** argv)
     QHBoxLayout* rowLayoutFile = new QHBoxLayout();
     fileLayout->addRow(rowLayoutFile);
     QCommandLinkButton* openFullScene = new QCommandLinkButton();
-    openFullScene->setText(QObject::tr(u8"Отобразить модель"));
-    openFullScene->setIcon(QIcon(":/res/proc_ok_32.png"));
+    openFullScene->setText(QObject::tr("Open Scene"));
+    openFullScene->setIcon(QIcon(":/res/add_fromfile_32.png"));
     openFullScene->setIconSize(QSize(32, 32));
     rowLayoutFile->addWidget(openFullScene);
-    QObject::connect(openFullScene, SIGNAL(released()), pOpenScene, SLOT(openModel()));
+    QObject::connect(openFullScene, SIGNAL(released()), pOpenScene, SLOT(loadModel()));
     fileLayout->addRow(rowLayoutFile);*/
 
     ///////////////////////////////////////////////////////////////////////////
@@ -265,25 +264,41 @@ int main(int argc, char** argv)
     QMenu* viewMenu = menuBar->addMenu(QStringLiteral("Вид"));
     QMenu* optionsMenu = menuBar->addMenu(QStringLiteral("Опции"));
 
-    // Add actions in menus
+    // Add actions in menu file
+    QAction* open3dFile = new QAction(QStringLiteral("Открыть файл"), fileMenu);
+    fileMenu->addAction(open3dFile);
+
+    QObject::connect(open3dFile, &QAction::triggered, pOpenScene, [=]() {
+        pOpenScene->loadModel();
+        });
+
+    QAction* save3dFile = new QAction(QStringLiteral("Сохранить файл"), fileMenu);
+    fileMenu->addAction(save3dFile);
+
+    QObject::connect(save3dFile, &QAction::triggered, pOpenScene, [=]() {
+        pOpenScene->saveModel();
+        });
+
+    // Add actions in menu view
+    
+    // Add actions in menu options
     QAction* showUnshowColors = new QAction(QStringLiteral("Скрыть/показать цвета"), optionsMenu);
     showUnshowColors->setCheckable(true);
     showUnshowColors->setChecked(true);
     optionsMenu->addAction(showUnshowColors);
+
+    QObject::connect(showUnshowColors, &QAction::triggered, pOpenScene, [=]() {
+        pOpenScene->slotToggleVisibility(showUnshowColors->isChecked(), colorsGroupBox);
+        });
 
     QAction* showUnshowSelectors = new QAction(QStringLiteral("Скрыть/показать выделение"), optionsMenu);
     showUnshowSelectors->setCheckable(true);
     showUnshowSelectors->setChecked(true);
     optionsMenu->addAction(showUnshowSelectors);
 
-    // Connect the Qslots with previous actions
-    QObject::connect(showUnshowColors, &QAction::triggered, pOpenScene, [=]() {
-        pOpenScene->slotToggleVisibility(showUnshowColors->isChecked(), colorsGroupBox);
-    });
     QObject::connect(showUnshowSelectors, &QAction::triggered, pOpenScene, [=]() {
         pOpenScene->slotToggleVisibility(showUnshowSelectors->isChecked(), groupFilter);
-    });
-
+        });
 
     // Show window
     QtVision::setWindowPosition(mainWindow);
