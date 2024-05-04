@@ -129,7 +129,7 @@
 #include <map>
 #include <vector>
 #include <utility>
-
+#include <cur_cone_spiral.h>
 #include <math_namespace.h>
 #include <last.h>
 
@@ -155,6 +155,7 @@
 // Base
 #include <iostream>
 #include <unordered_map>
+
 
 using namespace c3d;
 using namespace std;
@@ -188,7 +189,7 @@ namespace BuildMathModel {
 		static SPtr<MbSolid> ParametricModelCreator::buildWasher10();
 		static SPtr<MbSolid> ParametricModelCreator::buildScrew55();
 
-		// TTOR edtails
+		// TTOR details
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_001_tubeTeploobmen(double Lk, double ttDiam, double ttThickness);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_002_tubeKozhux(double lK, double ktDiam, double ktThickness);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora(double dV, double ktDiam, double ktThickness, double t, double visotaOpori, double shirinaOpori);
@@ -200,5 +201,10 @@ namespace BuildMathModel {
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_009_curevedTube(double ttDiam, double ttThickness, double t);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_010_Connector(double ktDiam, double ktThickness, double t);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_011_ConnectorWithFlanec(double ktDiam, double ktThickness, double t, double visotaOpori);
+
+		// GHOSTS TTOR
+		static SPtr<MbSolid> ParametricModelCreator::BoltGostTTOR(double diam);
+		static SPtr<MbSolid> ParametricModelCreator::NutBoltGostTTOR(double diam);
+		static SPtr<MbSolid> ParametricModelCreator::WasherGostTTOR(double diam);
 	};
 }

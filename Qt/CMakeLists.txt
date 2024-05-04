@@ -34,6 +34,9 @@ IF(C3DVision_GUI_QT5_EXAMPLES)
 	# Add all TTOR details source files
     file(GLOB SRC_detailsZarubin_cpp CONFIGURE_DEPENDS "./TTORdetails/*.cpp")
     SOURCE_GROUP(Sources FILES ${SRC_detailsZarubin_cpp})
+	# Add all TTOR GHOSTS
+	file(GLOB SRC_detailsTTORGHOST_cpp CONFIGURE_DEPENDS "./TTORdetails/TTOR_GHOST/*.cpp")
+    SOURCE_GROUP(Sources FILES ${SRC_detailsTTORGHOST_cpp})
 	    
 	# Add all details source files
     file(GLOB SRC_Details_cpp CONFIGURE_DEPENDS "./TTRMdetails/*.cpp")
@@ -46,6 +49,7 @@ IF(C3DVision_GUI_QT5_EXAMPLES)
 	${SRC_Configurator_h} ${SRC_Configurator_cpp} 
 	${SRC_Details_cpp} ${SRC_Shared} 
 	${SRC_detailsZarubin_cpp}
+	${SRC_detailsTTORGHOST_cpp}
 	${SRC_TTRMdetails_cpp}
 	${SRC_Solver_h} ${SRC_Solver_cpp}
 	)
