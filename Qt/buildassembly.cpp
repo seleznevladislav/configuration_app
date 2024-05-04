@@ -1074,6 +1074,15 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     Detail_009->SetColor(71, 91, 71);
     SPtr<MbSolid> Detail_010(Zarubincreate_010_Connector(ktDiam, ktThickness, t));
     SPtr<MbSolid> Detail_011(Zarubincreate_011_ConnectorWithFlanec(ktDiam, ktThickness, t, visotaOpori));
+
+    SPtr<MbSolid> GhostBoltTTOR(BoltGostTTOR(42));
+    GhostBoltTTOR->SetColor(151, 148, 139);
+    
+    SPtr<MbSolid> GhostWasherTTOR(WasherGostTTOR(42));
+    GhostWasherTTOR->SetColor(151, 148, 139);
+    
+    SPtr<MbSolid> GhostNutBoltGostTTOR(NutBoltGostTTOR(42));
+    GhostNutBoltGostTTOR->SetColor(151, 148, 139);
     
     std::vector<SPtr<MbItem>> pair;
 
@@ -1147,6 +1156,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     SPtr<MbInstance> Item_010_001(new MbInstance(*Detail_010, lcs));
     SPtr<MbInstance> Item_011_001(new MbInstance(*Detail_011, lcs));
 
+    SPtr<MbInstance> GhostBoltTTOR_001(new MbInstance(*GhostBoltTTOR, lcs));
+    SPtr<MbInstance> GhostWasherTTOR_001(new MbInstance(*GhostWasherTTOR, lcs));
+    SPtr<MbInstance> GhostNutBoltGostTTOR_001(new MbInstance(*GhostNutBoltGostTTOR, lcs));
+
     //Переменные для подсборки
     pair.push_back(Item_001_001);
     pair.push_back(Item_001_002);
@@ -1202,6 +1215,11 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
     pair.push_back(Item_010_001);
     pair.push_back(Item_011_001);
+
+    // Ghosts
+    pair.push_back(GhostBoltTTOR_001);
+    pair.push_back(GhostWasherTTOR_001);
+    pair.push_back(GhostNutBoltGostTTOR_001);
 
     SPtr<MbAssembly> assm(new MbAssembly(pair));
     {
