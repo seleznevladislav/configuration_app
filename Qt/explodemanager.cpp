@@ -258,6 +258,18 @@ void ExplodeManager::radiosExplodeFromToggled(bool checked)
     }
 }
 
+void ExplodeManager::radiosTypeFromToggled(bool checked, int type)
+{
+    if (checked)
+    {
+        bool isCheckedManualType = type == 2;
+        
+        m_comboConfigure->setDisabled(isCheckedManualType);
+        m_warmParams->setDisabled(!isCheckedManualType);
+        m_reconfigureButton->setDisabled(isCheckedManualType);
+    }
+}
+
 ExplodeDispatcher::ControlParameterType ExplodeManager::GetParameterType(const QObject* widg) const
 {
     return static_cast<ExplodeDispatcher::ControlParameterType>(widg->property("ControlParameterType").toInt());
@@ -281,6 +293,86 @@ QVBoxLayout* ExplodeManager::createVBoxLayout(QGroupBox* group)
     return vLayout;
 }
 
+void ExplodeManager::calculateThickness(QLineEdit* innerTubesLineEdit, QLineEdit* outerTubesLineEdit, QLineEdit* gridsLineEdit, QDoubleSpinBox* lengthSpinBox) {
+    // Здесь выполняется ваш расчет
+    // Например, предположим, что вы вычислили значения толщины
+    double thicknessInnerTubes = 5.0;
+    double thicknessOuterTubes = 6.0;
+    double thicknessGrids = 7.0;
+
+    // Устанавливаем вычисленные значения в соответствующие QLineEdit
+    innerTubesLineEdit->setText(QString::number(thicknessInnerTubes));
+    outerTubesLineEdit->setText(QString::number(thicknessOuterTubes));
+    gridsLineEdit->setText(QString::number(thicknessGrids));
+
+    lengthSpinBox->setDisabled(false);
+    m_reconfigureButton->setDisabled(false);
+}
+
+QFormLayout* ExplodeManager::createWarmForm(QVBoxLayout* layout)
+{
+    QFormLayout* formLayout = new QFormLayout;
+
+    QLabel* coolantLabel = new QLabel(u8"Теплоноситель:");
+    QLabel* pressureLabel = new QLabel(u8"Рабочие давление:");
+    
+    QComboBox* coolantComboBox = new QComboBox;
+    coolantComboBox->addItem(u8"Вода");
+    QComboBox* pressureComboBox = new QComboBox;
+    pressureComboBox->addItem("6");
+
+    formLayout->addRow(coolantLabel, coolantComboBox);
+    formLayout->addRow(pressureLabel, pressureComboBox);
+
+    QPushButton* calculateThicknessButton = new QPushButton;
+    calculateThicknessButton->setText(u8"Посчитать толщину стенок");
+    calculateThicknessButton->setIcon(QIcon(":/res/calculate.png"));
+    calculateThicknessButton->setContentsMargins(0, 5, 0, 5);
+
+    formLayout->addRow(calculateThicknessButton);
+
+    QLineEdit* thicknessInnerTubesLineEdit = new QLineEdit;
+    thicknessInnerTubesLineEdit->setReadOnly(true);
+    QLabel* thicknessInnerTubesLineEditLabel = new QLabel(u8"Толщина теплообменных труб, мм:");
+
+    QLineEdit* thicknessOuterTubesLineEdit = new QLineEdit;
+    thicknessOuterTubesLineEdit->setReadOnly(true);
+    QLabel* thicknessOuterTubesLineEditLabel = new QLabel(u8"Толщина кожуховых труб, мм:");
+
+    QLineEdit* thicknessGridsLineEdit = new QLineEdit;
+    thicknessGridsLineEdit->setReadOnly(true);
+    QLabel* thicknessGridsLineEditLabel = new QLabel(u8"Толщина днища у камер, мм:");
+
+    formLayout->addRow(thicknessInnerTubesLineEditLabel, thicknessInnerTubesLineEdit);
+    formLayout->addRow(thicknessOuterTubesLineEditLabel, thicknessOuterTubesLineEdit);
+    formLayout->addRow(thicknessGridsLineEditLabel, thicknessGridsLineEdit);
+
+    QFrame* line = new QFrame;
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+    line->setContentsMargins(0, 10, 0, 10);
+    formLayout->addRow(line);
+
+    QDoubleSpinBox* lengthSpinBox = new QDoubleSpinBox;
+    lengthSpinBox->setDisabled(true);
+    lengthSpinBox->setRange(2050, 7040);
+    lengthSpinBox->setSingleStep(50);
+    lengthSpinBox->setValue(2050);
+
+    QLabel* lengthSpinBoxLabel = new QLabel(u8"Длина L, мм:");
+
+    formLayout->addRow(lengthSpinBoxLabel, lengthSpinBox);
+    
+
+    layout->addLayout(formLayout);
+
+    connect(calculateThicknessButton, &QPushButton::clicked, [=]() {
+        calculateThickness(thicknessInnerTubesLineEdit, thicknessOuterTubesLineEdit, thicknessGridsLineEdit, lengthSpinBox);
+        });
+
+    return formLayout;
+}
+
 QComboBox* ExplodeManager::createCombobox(QVBoxLayout* vLayout)
 {   
     QComboBox* combo = new QComboBox(m_pWidget);
@@ -299,6 +391,21 @@ QPushButton* ExplodeManager::createButton(const ExplodeDispatcher::ControlParame
     button->setToolTip(QString(tip));
     hLayout->addWidget(button);
     return button;
+}
+
+QRadioButton* ExplodeManager::createTypeRadioButton(QHBoxLayout* hLayout, const char* text, const bool checked, int type)
+{
+    QRadioButton* radiobutton = new QRadioButton(m_pWidget);
+
+    radiobutton->setText(QString(text));
+    radiobutton->setChecked(checked);
+    hLayout->addWidget(radiobutton);
+
+    QObject::connect(radiobutton, &QRadioButton::toggled, this, [this, type](bool checked) {
+        radiosTypeFromToggled(checked, type);
+        });
+
+    return radiobutton;
 }
 
 std::pair<QSlider*, QLabel*> ExplodeManager::createSliderWithLabel(const ExplodeDispatcher::ControlParameterType param, const char* labelName, QVBoxLayout* vLayout, const char* tip)
@@ -350,6 +457,15 @@ QGroupBox* ExplodeManager::createGroupExplode(QWidget& widget, const int heightB
     return m_groupExpl;
 }
 
+void ExplodeManager::onReconfigureButtonClicked() {
+    if (m_pExplodeWidget) {
+        QVariant propertyValue = m_reconfigureButton->property("CommandsHeatExhanger");
+        ExplodeWidget::Exhanchares cmd = static_cast<ExplodeWidget::Exhanchares>(propertyValue.toInt());
+
+        m_pExplodeWidget->viewCommandsHeats(cmd);
+    }
+}
+
 QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightButton, const std::string& mainTabName)
 {
     m_pWidget = &widget;
@@ -375,9 +491,55 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
     QObject::connect(tabWidget, &QTabWidget::tabCloseRequested, this, &ExplodeManager::tabWidgetCloseRequested);
 
     m_comboConfigure = createCombobox(m_vLayoutConfigureTab);
-    //QObject::connect(configureCombobox, SIGNAL(activated()), this, SLOT(configureModel(int)));
-    //QObject::connect(configureCombobox, SIGNAL(), SLOT(configureModel(int)));
-    /*QObject::connect(configureCombobox, QOverload<int>::of(&QComboBox::activated), widget, &ExplodeWidget::configureModel);*/
+
+    QHBoxLayout* hLayoutTypeRadioBox = new QHBoxLayout();
+    hLayoutTypeRadioBox->setContentsMargins(0, 10, 0, 10);
+    m_vLayoutConfigureTab->addLayout(hLayoutTypeRadioBox);
+
+    QRadioButton* techicalSizesRadioItem = createTypeRadioButton(hLayoutTypeRadioBox, u8"Построение по размерам ТУ", true, 1);
+    QRadioButton* manualSizesRadioItem = createTypeRadioButton(hLayoutTypeRadioBox, u8"Построение вручную", false, 2);
+
+    // Группа параметров для расчёта толщины стенок.
+    m_warmParams = createGroupBox(u8"Параметры", false, false, true);
+    m_warmParams->setDisabled(true);
+    m_vLayoutConfigureTab->addWidget(m_warmParams);
+
+    QVBoxLayout* vLayoutWarmParams = createVBoxLayout(m_warmParams);
+    QFormLayout* warmForm = createWarmForm(vLayoutWarmParams);
+
+    QToolButton* sizeInfoButton = new QToolButton();
+    sizeInfoButton->setIcon(QIcon(":/res/dimensions.png"));
+    sizeInfoButton->setToolTip(u8"Посмотреть размеры");
+    m_vLayoutConfigureTab->addWidget(sizeInfoButton);
+
+    QDialog* modalDialog = new QDialog();
+
+    connect(sizeInfoButton, &QToolButton::clicked, [modalDialog]() {
+        modalDialog->setWindowTitle(u8"Размеры теплообменника ТТРМ");
+        modalDialog->setWindowIcon(QIcon(":/res/dimensions.png"));
+
+        QLabel* imageLabel = new QLabel;
+        QPixmap image(":/res/draws/ttrm.png");
+        imageLabel->setPixmap(image);
+        imageLabel->setScaledContents(true); // Масштабировать изображение по размеру QLabel
+
+        QRect screenGeometry = modalDialog->geometry();
+        int screenWidth = screenGeometry.width();
+        int screenHeight = screenGeometry.height();
+
+        imageLabel->setMaximumSize(screenWidth, screenHeight);
+
+        QVBoxLayout* modalLayout = new QVBoxLayout(modalDialog);
+        modalLayout->addWidget(imageLabel);
+
+        modalDialog->exec();
+    });
+
+    m_reconfigureButton = new QPushButton;
+    m_reconfigureButton->setText(u8"Перестроить теплообменник");
+    connect(m_reconfigureButton, &QPushButton::clicked, this, &ExplodeManager::onReconfigureButtonClicked);
+
+    m_vLayoutConfigureTab->addWidget(m_reconfigureButton);
 
     // Group for Explode options
     QGroupBox* groupExpl = createGroupBox("", true, false, true);

@@ -329,7 +329,7 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
     Exhanchares value = NoneOfOne;
 
     QObject* action = sender();
-    int currentIndexofExchanger = action->property("CommandsHeatExhanger").toInt();
+    int currentIndexofExchanger = action ? action->property("CommandsHeatExhanger").toInt() : static_cast<int>(cmd);
 
     if (m_pCurrentExchandger != currentIndexofExchanger) {
         m_pExplodeManager->m_comboConfigure->clear();
@@ -339,6 +339,8 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
     {
         m_pCurrentExchandger = currentIndexofExchanger;
         value = static_cast<Exhanchares>(currentIndexofExchanger);
+    } else {
+        value = cmd;
     }
 
     QStringList values;
@@ -348,6 +350,7 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
     case ExplodeWidget::TTOR:
     {
         int index = m_pExplodeManager->m_comboConfigure->currentIndex();
+        m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::TTOR));
 
 
         for (const auto& config : m_pExplodeManager->dataTTOR) {
@@ -363,6 +366,7 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
     }case ExplodeWidget::TTRM:
     {
         int index = m_pExplodeManager->m_comboConfigure->currentIndex();
+        m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::TTRM));
 
         for (const auto& config : m_pExplodeManager->configuration) {
             values.append(QString::fromStdString(config.name));

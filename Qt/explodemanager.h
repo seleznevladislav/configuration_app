@@ -8,6 +8,11 @@
 #include <QGroupBox>
 #include "BuildParams.h"
 #include "QComboBox"
+#include "QFormLayout"
+#include <QLineEdit>
+#include <QDoubleSpinBox>
+#include "qtoolbutton.h"
+#include "QWidget"
 
 using namespace BuildMathModel;
 
@@ -42,6 +47,7 @@ public:
     bool isCreateGroupGeometry() const;
     bool onSelectItem(const SceneSegment* pSegm);
     QComboBox* m_comboConfigure = nullptr;
+    QPushButton* m_reconfigureButton = nullptr;
 
     // TODO: 2) Прописываем здесь через такой же тип переменную, в которую прописываем значения.
     // Важно! чтобы количество переменных в элементе совпадало количеством описанных переменных в структуре struct 
@@ -116,16 +122,21 @@ private:
     void buttonZoomToFit();
     void slidersExplodeValueChanged(const int value);
     void radiosExplodeFromToggled(bool checked);
+    void radiosTypeFromToggled(bool checked, int type);
     ExplodeDispatcher::ControlParameterType GetParameterType(const QObject* widg) const;
 private:
     QGroupBox* createGroupBox(const char* title, const bool flat, const bool checkable, const bool checked);
     QVBoxLayout* createVBoxLayout(QGroupBox* group);
     QPushButton* createButton(const ExplodeDispatcher::ControlParameterType param, QHBoxLayout* hLayout, const char* text, const char* tip);
-    QComboBox* ExplodeManager::createCombobox(QVBoxLayout* vLayout);
+    QComboBox* createCombobox(QVBoxLayout* vLayout);
     std::pair<QSlider*, QLabel*> createSliderWithLabel(const ExplodeDispatcher::ControlParameterType param, const char* labelName, QVBoxLayout* vLayout, const char* tip);
     QCheckBox* createCheckBox(const ExplodeDispatcher::ControlParameterType param, QHBoxLayout* hLayout, const char* text, const bool checked, const char* tip);
     QRadioButton* createRadioButton(const ExplodeDispatcher::ControlParameterType param, QHBoxLayout* hLayout, const char* text, const bool checked);
+    QRadioButton* createTypeRadioButton(QHBoxLayout* hLayout, const char* text, const bool checked, int type);
     QTabWidget* createTabWidget(QWidget& widget, const int heightButton, const std::string& mainTabName);
+    QFormLayout* createWarmForm(QVBoxLayout* layout);
+    void calculateThickness(QLineEdit* innerTubesLineEdit, QLineEdit* outerTubesLineEdit, QLineEdit* gridsLineEdit, QDoubleSpinBox* lengthSpinBox);
+    void onReconfigureButtonClicked();
 private:
     ExplodeDispatcher m_explodeDispatcher;
     std::map<ExplodeDispatcher::ControlParameterType, QWidget*> m_widgetsMap;
@@ -138,6 +149,7 @@ private:
     QVBoxLayout* m_vLayoutTab            = nullptr;
     QVBoxLayout* m_vLayoutConfigureTab   = nullptr;
     QGroupBox* m_groupExpl               = nullptr;
+    QGroupBox* m_warmParams              = nullptr;
     QLabel* m_labelLevel                 = nullptr;
     QLabel* m_labelSelectAssembly        = nullptr;
     std::string m_mainTabName            = "";

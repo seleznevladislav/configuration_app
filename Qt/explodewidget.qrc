@@ -35,5 +35,8 @@
         <file>res/constraints/select_32.png</file>
         <file>res/iconsForHeat Exchangers/IP.png</file>
         <file>res/iconsForHeat Exchangers/IU.png</file>
+        <file>res/draws/ttrm.png</file>
+        <file>res/calculate.png</file>
+        <file>res/dimensions.png</file>
     </qresource>
 </RCC>
