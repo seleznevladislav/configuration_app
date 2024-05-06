@@ -10,7 +10,7 @@ VSN_USE_NAMESPACE
 class TreeObjectItem : public QTreeWidgetItem
 {
 public:
-    TreeObjectItem(SceneSegment* object);
+    TreeObjectItem(SceneSegment* object, int currentType);
     TreeObjectItem(SceneSegment* object, QTreeWidgetItem* parent);
     TreeObjectItem(const TreeObjectItem& other);
     virtual ~TreeObjectItem();
