@@ -330,18 +330,14 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
 
     QObject* action = sender();
     int currentIndexofExchanger = action ? action->property("CommandsHeatExhanger").toInt() : static_cast<int>(cmd);
+    const bool hasChangeType = m_pCurrentExchandger != currentIndexofExchanger;
 
-    if (m_pCurrentExchandger != currentIndexofExchanger) {
+    if (hasChangeType) {
         m_pExplodeManager->m_comboConfigure->clear();
     }
-
-    if (cmd == NoneOfOne) 
-    {
-        m_pCurrentExchandger = currentIndexofExchanger;
-        value = static_cast<Exhanchares>(currentIndexofExchanger);
-    } else {
-        value = cmd;
-    }
+    
+    m_pCurrentExchandger = currentIndexofExchanger;
+    value = static_cast<Exhanchares>(currentIndexofExchanger);
 
     QStringList values;
 
@@ -381,7 +377,10 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
         break;
     };
 
-    m_pExplodeManager->m_comboConfigure->addItems(values);
+    if (hasChangeType)
+    {
+        m_pExplodeManager->m_comboConfigure->addItems(values);
+    }
 
     update();
 }
