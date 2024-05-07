@@ -46,6 +46,7 @@ public:
     bool isSelectionEnabled() const;
     bool isCreateGroupGeometry() const;
     bool onSelectItem(const SceneSegment* pSegm);
+    QComboBox* m_quantityCombobox = nullptr;
     QComboBox* m_comboConfigure = nullptr;
     QPushButton* m_reconfigureButton = nullptr;
 

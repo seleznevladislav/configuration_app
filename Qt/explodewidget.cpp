@@ -337,6 +337,8 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
         m_pExplodeManager->m_comboConfigure->clear();
     }
 
+    m_pExplodeManager->m_quantityCombobox->setHidden(!(currentIndexofExchanger == 1 || currentIndexofExchanger == 2));
+    
     m_pCurrentExchandger = currentIndexofExchanger;
     value = static_cast<Exhanchares>(currentIndexofExchanger);
 
@@ -371,7 +373,9 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
             }
 
             ConfigParams config = m_pExplodeManager->dataTTRM[index > 0 ? index : 0];
-            m_pModel = ParametricModelCreator::CreatePneymocylinderModelTTRM(config);
+            int configurationQuantity = m_pExplodeManager->m_quantityCombobox->currentIndex();
+
+            m_pModel = ParametricModelCreator::CreatePneymocylinderModelTTRM(config, configurationQuantity);
             openModel();
             break;
         }

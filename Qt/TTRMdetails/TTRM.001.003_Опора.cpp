@@ -19,6 +19,8 @@ SPtr<MbSolid> ParametricModelCreator::createSupport_003(double assortmentCamera,
 
     const std::vector<int> currentValues = valuesDictionary[assortmentCamera];
 
+    assemblyHeight = currentValues[0]; // Задаётся высота теплообменика, для дальнейшей организации элемента сборки в блок
+
     MbSNameMaker blockNames(1, MbSNameMaker::i_SideNone, 0);
 
     SolidSPtr pBlock, innerLeftBlock, innerCenterBlock, innerRightBlock;

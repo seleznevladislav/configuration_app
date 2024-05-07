@@ -3,7 +3,7 @@
 
 using namespace BuildMathModel;
 
-SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigParams params)
+SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigParams params, int configurationQuantity)
 {
     // Набор параметров для параметризации
     const int LENGTH = params.LENGTH;
@@ -1017,6 +1017,27 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     flangeFItem->AddAttribute(flangeFInfo);
 
     assm->AddAttribute(TTRMInfo);
+
+    if (configurationQuantity > 0)
+    {
+        std::vector<SPtr<MbItem>> assmPairs;
+
+        for (int i = 0; i < configurationQuantity + 1; ++i)
+        {
+            SPtr<MbInstance> assmInstance(new MbInstance(*assm, lcs));
+
+            assmPairs.push_back(assmInstance);
+
+            if (i >= 1)
+            {
+                assmInstance->Move(MbVector3D(0, assemblyHeight * i, 0));
+            }
+        }
+
+        SPtr<MbAssembly> assmBlock(new MbAssembly(assmPairs));
+
+        return assmBlock;
+    }
 
     return assm;
 }

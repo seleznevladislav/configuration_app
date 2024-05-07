@@ -8,11 +8,12 @@ using namespace BuildMathModel;
 int ParametricModelCreator::colorScheme = 0;
 int ParametricModelCreator::variantsConf = 0;
 int ParametricModelCreator::variantsConfB = 0;
+int ParametricModelCreator::assemblyHeight = 0;
 
-MbModel* ParametricModelCreator::CreatePneymocylinderModelTTRM(ConfigParams params)
+MbModel* ParametricModelCreator::CreatePneymocylinderModelTTRM(ConfigParams params, int configurationQuantity)
 {
 	MbModel* model = new MbModel();
-	auto pneumocylinderAssembly = CreatePneumocylinderAssembly(params);
+	auto pneumocylinderAssembly = CreatePneumocylinderAssembly(params, configurationQuantity);
 	model->AddItem(*pneumocylinderAssembly);
 	return model;
 }

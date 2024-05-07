@@ -490,6 +490,12 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
     QObject::connect(tabWidget, &QTabWidget::currentChanged, this, &ExplodeManager::tabWidgetCurrentChanged);
     QObject::connect(tabWidget, &QTabWidget::tabCloseRequested, this, &ExplodeManager::tabWidgetCloseRequested);
 
+    m_quantityCombobox = createCombobox(m_vLayoutConfigureTab);
+    m_quantityCombobox->addItem(u8"Одиночный", 0);
+    m_quantityCombobox->addItem(u8"Блок. Два элемента", 1);
+    m_quantityCombobox->addItem(u8"Блок. Три элемента", 2);
+    m_quantityCombobox->addItem(u8"Блок. Четыре элемента", 3);
+
     m_comboConfigure = createCombobox(m_vLayoutConfigureTab);
 
     QHBoxLayout* hLayoutTypeRadioBox = new QHBoxLayout();

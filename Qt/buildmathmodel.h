@@ -165,8 +165,10 @@ namespace BuildMathModel {
 		static int colorScheme;
 		static int variantsConf;
 		static int variantsConfB;
+
+		static int assemblyHeight;
 	public:
-		static MbModel* CreatePneymocylinderModelTTRM(ConfigParams params);
+		static MbModel* CreatePneymocylinderModelTTRM(ConfigParams params, int configurationQuantity);
 		static MbModel* CreatePneymocylinderModelZarubin(BuildParamsForHeatExchangerTTOR params);
 
 		static MbModel* CreatePneymocylinderModelFukina(ConfigParams_IP params);
@@ -176,7 +178,7 @@ namespace BuildMathModel {
 			double d, double D1, double Y, int num, MbAxis3D axis, double grad, double X);
 
 	private:
-		static  SPtr<MbAssembly> CreatePneumocylinderAssembly(ConfigParams params);
+		static  SPtr<MbAssembly> CreatePneumocylinderAssembly(ConfigParams params, int configurationQuantity);
 		static  SPtr<MbAssembly> CreateTTOR(BuildParamsForHeatExchangerTTOR params);
 
 		static  SPtr<MbAssembly> CreateIP(ConfigParams_IP params);
