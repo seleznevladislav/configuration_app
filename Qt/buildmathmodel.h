@@ -166,7 +166,7 @@ namespace BuildMathModel {
 		static int variantsConf;
 		static int variantsConfB;
 	public:
-		static MbModel* CreatePneymocylinderModel(ConfigParams params);
+		static MbModel* CreatePneymocylinderModelTTRM(ConfigParams params);
 		static MbModel* CreatePneymocylinderModelZarubin(BuildParamsForHeatExchangerTTOR params);
 
 		static MbModel* CreatePneymocylinderModelFukina(ConfigParams_IP params);

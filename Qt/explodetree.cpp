@@ -10,7 +10,7 @@
 //-----------------------------------------------------------------------------
 //
 // ---
-TreeObjectItem::TreeObjectItem(SceneSegment* pObject)
+TreeObjectItem::TreeObjectItem(SceneSegment* pObject, int currentExhangerType)
     : m_pObject(pObject)
 {
     QString strName(pObject->GetObjectName().c_str());
@@ -30,17 +30,37 @@ TreeObjectItem::TreeObjectItem(SceneSegment* pObject)
     }
 
     vector<QString> detailNames;
-    const int currentAssembly = 1;
 
-    if (currentAssembly == 0) {
-        detailNames = { u8"Теплообменная труба", u8"Труба кожуховая", u8"Камера распределительная", u8"Камера поворотная", u8"Опора", u8"Решетка кожуховых труб", u8"Фланец Тип E ГОСТ 33259-2015 Исполнение 1", u8"Фланец Тип F ГОСТ 33259-2015 Исполнение 1" };
-    }
-    if (currentAssembly == 1) {
-        // По четыре на строку
-        detailNames = {
-        u8"Труба теплообменная", u8"Труба кожуховая", u8"Опора", u8"Решетка кожуховых труб",
-        u8"Камера", u8"Решетка теплообменных труб", u8"Фланец кожуховый", u8"Фланец специальный",
-        u8"Труба изогнутая", u8"Соединение", u8"Соединение с выходом" };
+    switch (currentExhangerType)
+    {
+        case 1:
+        {
+            detailNames = {
+                u8"Труба теплообменная", u8"Труба кожуховая", u8"Опора", u8"Решетка кожуховых труб",
+                u8"Камера", u8"Решетка теплообменных труб", u8"Фланец кожуховый", u8"Фланец специальный",
+                u8"Труба изогнутая", u8"Соединение", u8"Соединение с выходом"
+            };
+
+            break;
+        }
+        case 2:
+        {
+            detailNames = { u8"Теплообменная труба", u8"Труба кожуховая", u8"Камера распределительная", u8"Камера поворотная", u8"Опора", u8"Решетка кожуховых труб", u8"Фланец Тип E ГОСТ 33259-2015 Исполнение 1", u8"Фланец Тип F ГОСТ 33259-2015 Исполнение 1" };
+
+            break;
+        }
+        case 3:
+        {
+            detailNames = { "ИУ" };
+
+            break;
+        }
+        case 4:
+        {
+            detailNames = { "ИП" };
+
+            break;
+        }
     }
 
     stringstream(pObject->GetObjectName().c_str()) >> nameIndex;
@@ -155,14 +175,13 @@ void ExplodeTreeView::slotTreeSelectionChanged()
 void ExplodeTreeView::slotAppendItem(SceneSegment* pObject, SceneSegment* pParent)
 {
     static bool bHasFirst = false;
+    const int currentExhangerType = m_pExplodeWidget->m_pCurrentExchandger;
 
     QString strName(pObject->GetObjectName().c_str());
-//    if (strName == "Instance" /* || strName == "Assembly"*/)
-//        return;
 
     if (pParent == NULL)
     {
-        TreeObjectItem* pItem = new TreeObjectItem(pObject);
+        TreeObjectItem* pItem = new TreeObjectItem(pObject, currentExhangerType);
         pItem->setIcon(0, QIcon(":res/filterseg24x24.png"));
         m_hashItems.insert(pObject, pItem);
         addTopLevelItem(pItem);
@@ -170,7 +189,7 @@ void ExplodeTreeView::slotAppendItem(SceneSegment* pObject, SceneSegment* pParen
     }
     else if (TreeObjectItem* pFindParent = findItemByObject(pParent))
     {
-        TreeObjectItem* pItem = new TreeObjectItem(pObject);
+        TreeObjectItem* pItem = new TreeObjectItem(pObject, currentExhangerType);
         pItem->setIcon(0, QIcon(":res/filterbody24x24.png"));
 
         m_hashItems.insert(pObject, pItem);

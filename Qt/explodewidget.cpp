@@ -330,82 +330,87 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
 
     QObject* action = sender();
     int currentIndexofExchanger = action ? action->property("CommandsHeatExhanger").toInt() : static_cast<int>(cmd);
+    const bool hasChangeType = m_pCurrentExchandger != currentIndexofExchanger;
 
-    if (m_pCurrentExchandger != currentIndexofExchanger) {
+    if (hasChangeType) 
+    {
         m_pExplodeManager->m_comboConfigure->clear();
     }
 
-    if (cmd == NoneOfOne) 
-    {
-        m_pCurrentExchandger = currentIndexofExchanger;
-        value = static_cast<Exhanchares>(currentIndexofExchanger);
-    } else {
-        value = cmd;
-    }
+    m_pCurrentExchandger = currentIndexofExchanger;
+    value = static_cast<Exhanchares>(currentIndexofExchanger);
 
     QStringList values;
 
     switch (value)
     {
-    case ExplodeWidget::TTOR:
-    {
-        int index = m_pExplodeManager->m_comboConfigure->currentIndex();
-        m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::TTOR));
+        case ExplodeWidget::TTOR:
+        {
+            int index = m_pExplodeManager->m_comboConfigure->currentIndex();
+            m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::TTOR));
 
 
-        for (const auto& config : m_pExplodeManager->dataTTOR) {
-            values.append(QString::fromStdString(config.name));
-        }
+            for (const auto& config : m_pExplodeManager->dataTTOR) {
+                values.append(QString::fromStdString(config.name));
+            }
 
-        BuildParamsForHeatExchangerTTOR config = m_pExplodeManager->dataTTOR[index > 0 ? index : 0];
+            BuildParamsForHeatExchangerTTOR config = m_pExplodeManager->dataTTOR[index > 0 ? index : 0];
 
     
-        m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(config);
-        openModel();
-        break;
-    }case ExplodeWidget::TTRM:
-    {
-        int index = m_pExplodeManager->m_comboConfigure->currentIndex();
-        m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::TTRM));
-
-        for (const auto& config : m_pExplodeManager->configuration) {
-            values.append(QString::fromStdString(config.name));
+            m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(config);
+            openModel();
+            break;
         }
+        case ExplodeWidget::TTRM:
+        {
+            int index = m_pExplodeManager->m_comboConfigure->currentIndex();
+            m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::TTRM));
 
-        ConfigParams config = m_pExplodeManager->configuration[index > 0 ? index : 0];
-        m_pModel = ParametricModelCreator::CreatePneymocylinderModel(config);
-        openModel();
-        break;
-    }case ExplodeWidget::IP: {
-        int index = m_pExplodeManager->m_comboConfigure->currentIndex();
-        m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::IP));
+            for (const auto& config : m_pExplodeManager->dataTTRM) {
+                values.append(QString::fromStdString(config.name));
+            }
 
-        for (const auto& config : m_pExplodeManager->dataIP) {
-            values.append(QString::fromStdString(config.name));
+            ConfigParams config = m_pExplodeManager->dataTTRM[index > 0 ? index : 0];
+            m_pModel = ParametricModelCreator::CreatePneymocylinderModelTTRM(config);
+            openModel();
+            break;
         }
+        case ExplodeWidget::IP: 
+        {
+            int index = m_pExplodeManager->m_comboConfigure->currentIndex();
+            m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::IP));
 
-        ConfigParams_IP config = m_pExplodeManager->dataIP[index > 0 ? index : 0];
-        m_pModel = ParametricModelCreator::CreatePneymocylinderModelFukina(config);
-        openModel();
-        break;
-    }case ExplodeWidget::IU: {
-        int index = m_pExplodeManager->m_comboConfigure->currentIndex();
-        m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::IU));
+            for (const auto& config : m_pExplodeManager->dataIP) {
+                values.append(QString::fromStdString(config.name));
+            }
 
-        for (const auto& config : m_pExplodeManager->dataIU) {
-            values.append(QString::fromStdString(config.name));
+            ConfigParams_IP config = m_pExplodeManager->dataIP[index > 0 ? index : 0];
+            m_pModel = ParametricModelCreator::CreatePneymocylinderModelFukina(config);
+            openModel();
+            break;
         }
+        case ExplodeWidget::IU: 
+        {
+            int index = m_pExplodeManager->m_comboConfigure->currentIndex();
+            m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::IU));
 
-        ConfigParams_IU config = m_pExplodeManager->dataIU[index > 0 ? index : 0];
-        m_pModel = ParametricModelCreator::CreatePneymocylinderModelVasinkina(config);
-        openModel();
-        break;
-    }
-    default:
-        break;
+            for (const auto& config : m_pExplodeManager->dataIU) {
+                values.append(QString::fromStdString(config.name));
+            }
+
+            ConfigParams_IU config = m_pExplodeManager->dataIU[index > 0 ? index : 0];
+            m_pModel = ParametricModelCreator::CreatePneymocylinderModelVasinkina(config);
+            openModel();
+            break;
+        }
+        default:
+            break;
     };
 
-    m_pExplodeManager->m_comboConfigure->addItems(values);
+    if (hasChangeType)
+    {
+        m_pExplodeManager->m_comboConfigure->addItems(values);
+    }
 
     update();
 }
