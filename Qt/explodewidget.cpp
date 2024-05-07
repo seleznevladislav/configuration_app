@@ -330,14 +330,18 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
 
     QObject* action = sender();
     int currentIndexofExchanger = action ? action->property("CommandsHeatExhanger").toInt() : static_cast<int>(cmd);
-    const bool hasChangeType = m_pCurrentExchandger != currentIndexofExchanger;
 
-    if (hasChangeType) {
+    if (m_pCurrentExchandger != currentIndexofExchanger) {
         m_pExplodeManager->m_comboConfigure->clear();
     }
-    
-    m_pCurrentExchandger = currentIndexofExchanger;
-    value = static_cast<Exhanchares>(currentIndexofExchanger);
+
+    if (cmd == NoneOfOne) 
+    {
+        m_pCurrentExchandger = currentIndexofExchanger;
+        value = static_cast<Exhanchares>(currentIndexofExchanger);
+    } else {
+        value = cmd;
+    }
 
     QStringList values;
 
@@ -372,15 +376,36 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
         m_pModel = ParametricModelCreator::CreatePneymocylinderModel(config);
         openModel();
         break;
+    }case ExplodeWidget::IP: {
+        int index = m_pExplodeManager->m_comboConfigure->currentIndex();
+        m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::IP));
+
+        for (const auto& config : m_pExplodeManager->dataIP) {
+            values.append(QString::fromStdString(config.name));
+        }
+
+        ConfigParams_IP config = m_pExplodeManager->dataIP[index > 0 ? index : 0];
+        m_pModel = ParametricModelCreator::CreatePneymocylinderModelFukina(config);
+        openModel();
+        break;
+    }case ExplodeWidget::IU: {
+        int index = m_pExplodeManager->m_comboConfigure->currentIndex();
+        m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::IU));
+
+        for (const auto& config : m_pExplodeManager->dataIU) {
+            values.append(QString::fromStdString(config.name));
+        }
+
+        ConfigParams_IU config = m_pExplodeManager->dataIU[index > 0 ? index : 0];
+        m_pModel = ParametricModelCreator::CreatePneymocylinderModelVasinkina(config);
+        openModel();
+        break;
     }
     default:
         break;
     };
 
-    if (hasChangeType)
-    {
-        m_pExplodeManager->m_comboConfigure->addItems(values);
-    }
+    m_pExplodeManager->m_comboConfigure->addItems(values);
 
     update();
 }
@@ -594,6 +619,42 @@ void ExplodeWidget::createSceneZarubin()
     // TOZO: Завести переменную для определения сборки и добавить кнопки в main toolbar left srea
     // TOZO: Не работает дерево, хз почему
     m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsForHeatExchangerTTOR());
+
+    SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
+    Q_ASSERT(pTopSegment != nullptr);
+    ProgressBuild* pProgressBuild = m_pSceneGenerator->CreateProgressBuild();
+    Object::Connect(pProgressBuild, &ProgressBuild::BuildAllCompleted, this, &ExplodeWidget::slotFinishBuildRep);
+    m_pSegmModel = m_pSceneGenerator->CreateSceneSegment(m_pModel, pTopSegment, false);
+    m_pSceneGenerator->StartBuildGeometry();
+}
+
+void ExplodeWidget::createSceneIP()
+{
+    m_pModel.reset();
+    m_pTreeWidget->clear();
+    sceneContent()->Clear();
+
+    // TOZO: Завести переменную для определения сборки и добавить кнопки в main toolbar left srea
+    // TOZO: Не работает дерево, хз почему
+    m_pModel = ParametricModelCreator::CreatePneymocylinderModelFukina(ConfigParams_IP());
+
+    SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
+    Q_ASSERT(pTopSegment != nullptr);
+    ProgressBuild* pProgressBuild = m_pSceneGenerator->CreateProgressBuild();
+    Object::Connect(pProgressBuild, &ProgressBuild::BuildAllCompleted, this, &ExplodeWidget::slotFinishBuildRep);
+    m_pSegmModel = m_pSceneGenerator->CreateSceneSegment(m_pModel, pTopSegment, false);
+    m_pSceneGenerator->StartBuildGeometry();
+}
+
+void ExplodeWidget::createSceneIU()
+{
+    m_pModel.reset();
+    m_pTreeWidget->clear();
+    sceneContent()->Clear();
+
+    // TOZO: Завести переменную для определения сборки и добавить кнопки в main toolbar left srea
+    // TOZO: Не работает дерево, хз почему
+    m_pModel = ParametricModelCreator::CreatePneymocylinderModelVasinkina(ConfigParams_IU());
 
     SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
     Q_ASSERT(pTopSegment != nullptr);

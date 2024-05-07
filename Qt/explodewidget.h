@@ -135,7 +135,6 @@ public:
     void showContextMenu(const QPoint& pos);
     ExplodeTreeView* createGeometryList(QWidget* parent);
     inline void setGroupFilter(QActionGroup* groupFilter);
-    int m_pCurrentExchandger;
 public Q_SLOTS:
     void viewCommands(Commands cmd = None);
     void viewCommandsHeats(Exhanchares cmd = NoneOfOne);
@@ -161,6 +160,8 @@ private:
     void loadFiles(const QStringList& files);
     void createScene();
     void createSceneZarubin();
+    void createSceneIP();
+    void createSceneIU();
     void fillGeometryList();
     void hideSelectedObjects();
     void showAllObjects();
@@ -195,6 +196,7 @@ private:
     QCursor m_curFace;
     QCursor m_curVertex;
     QCursor m_curPoint;
+    int m_pCurrentExchandger;
 
     QString m_fileName;
 private:

@@ -30,3 +30,25 @@ MbModel* ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsFor
 	model->AddItem(*pneumocylinderAssembly);
 	return model;
 }
+
+MbModel* ParametricModelCreator::CreatePneymocylinderModelFukina(ConfigParams_IP params)
+{
+	/*ParametricModelCreator::colorScheme = params.colorScheme;
+	ParametricModelCreator::variantsConf = params.variantsConf;
+	ParametricModelCreator::variantsConfB = params.variantsConfB;*/
+	MbModel* model = new MbModel();
+	auto pneumocylinderAssembly = CreateIP(params);
+	model->AddItem(*pneumocylinderAssembly);
+	return model;
+}
+
+MbModel* ParametricModelCreator::CreatePneymocylinderModelVasinkina(ConfigParams_IU params)
+{
+	/*ParametricModelCreator::colorScheme = params.colorScheme;
+	ParametricModelCreator::variantsConf = params.variantsConf;
+	ParametricModelCreator::variantsConfB = params.variantsConfB;*/
+	MbModel* model = new MbModel();
+	auto pneumocylinderAssembly = CreateIU(params);
+	model->AddItem(*pneumocylinderAssembly);
+	return model;
+}
