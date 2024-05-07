@@ -54,6 +54,59 @@ namespace BuildMathModel {
 		double length3;                 // 14 - ƒлинна поворотной камеры
 	};
 
+
+	struct ConfigParams_IP
+	{
+		std::string name;
+		int Dvne; //внешний диаметр кожуха
+		double L_Base;//длина кожуха
+		double s;//толщина стенки
+		double p;//давление
+		int DKr;//внутренний диаметр камеры
+
+		//рассто€ни€ дл€ фланцев внизу кожух:
+		/*int l0 = 460;
+		int l = 350;
+		int l2 = 1750;
+		int l3 = 6390;*/
+
+
+		//дл€ фланцев
+		double Dn;
+		double Dy;
+
+	};
+
+	struct ConfigParams_IU
+	{
+		std::string name;
+		int diamVne = 840;
+		double Length = 5395.;
+		int S = 20;
+		double pressure = 1.6;
+		int diam = 800;
+
+		int D_KamVne = 540;
+		int D_Kam = 500;
+		int Kam_L = 562;
+
+		double p = 1.6;
+
+
+		//float CylS;
+		//float EllS;
+		//float PerS;
+
+		//float napr;
+		//float C;
+
+		//рассто€ни€ дл€ фланцев внизу кожух:
+		/*int l0 = 460;
+		int l = 350;
+		int l2 = 1750;
+		int l3 = 6390;*/
+	};
+
 	// TODO: 1) ѕрописываем здесь свою структуру данных 
 	//struct testConfigParams
 	//{

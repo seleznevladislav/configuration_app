@@ -41,7 +41,15 @@ IF(C3DVision_GUI_QT5_EXAMPLES)
 	# Add all details source files
     file(GLOB SRC_Details_cpp CONFIGURE_DEPENDS "./TTRMdetails/*.cpp")
     SOURCE_GROUP(Sources FILES ${SRC_TTRMdetails_cpp})
-	
+
+	# Add all details source files
+    file(GLOB SRC_IP_details_cpp CONFIGURE_DEPENDS "./IP_details/*.cpp")
+    SOURCE_GROUP(Sources FILES ${SRC_IP_details_cpp})
+
+	# Add all details source files
+    file(GLOB SRC_IU_details_cpp CONFIGURE_DEPENDS "./IU_details/*.cpp")
+    SOURCE_GROUP(Sources FILES ${SRC_IU_details_cpp})
+
 	
 	ADD_EXECUTABLE(
 	${ConfigureApplication} WIN32 
@@ -52,6 +60,8 @@ IF(C3DVision_GUI_QT5_EXAMPLES)
 	${SRC_detailsTTORGHOST_cpp}
 	${SRC_TTRMdetails_cpp}
 	${SRC_Solver_h} ${SRC_Solver_cpp}
+	${SRC_IP_details_cpp}
+	${SRC_IU_details_cpp}
 	)
 	
     TARGET_LINK_LIBRARIES(${ConfigureApplication} ${C3D_MATH_LIB} ${C3D_VIS_LIB} ${QtVision_OUTPUT} ${OPENGL_LIBRAREIS} ${STDLIB})

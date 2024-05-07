@@ -2235,3 +2235,840 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
     return assm;
 }
+
+SPtr<MbAssembly> ParametricModelCreator::CreateIP(ConfigParams_IP params)
+{
+    // Кожух
+    const double Dvne = params.Dvne;
+    const double L_Base = params.L_Base;
+    const double s = params.s;
+    const double p = params.p;
+    const double Dn = params.Dn;
+    // Камера
+    const double L = 622;
+    const double DKr = params.DKr;
+
+    //Кольцо плавающей головки
+    double D_ring = 396;//внутренный диаметр колца
+    double s1_ring = 40;// толщина фланца
+    double S_ring = 30;//толщина кольца
+
+    SPtr<MbSolid> pKozhuh(CreateUnionKzh_IP(params.Dvne, params.L_Base, params.s, params.p, params.DKr, params.Dn, params.Dy)); //Кожух
+    SPtr<MbSolid> pKamera(CreateUnionKamera_IP(L, params.Dvne, params.p, params.DKr, params.Dn, params.Dy, params.s)); //Камера
+
+    SPtr<MbSolid> pKrKameraEl(CreateKrKameraEll_IP(params));//Крышка на камере эллипс
+    SPtr<MbSolid> pKrKamera(CreateUnionCover_IP(params.Dy, params.p, 6, params.Dvne, params.DKr)); //Крышка на камере снизу
+    SPtr<MbSolid> pKrKamera1(CreateUnionCover_IP(params.Dy, params.p, 7, params.Dvne, params.DKr)); //Крышка на камере вверху
+    SPtr<MbSolid> pKrBig(CreateUnionCover_IP(params.Dy, params.p, 11, params.Dvne, params.DKr)); //Крышка самая большая
+    SPtr<MbSolid> pKrVtorayaSverhu(CreateUnionCover_IP(params.Dy, params.p, 10, params.Dvne, params.DKr)); //Крышка вторая сверху
+    SPtr<MbSolid> pKrTretyaSverhu(CreateUnionCover_IP(params.Dy, params.p, 9, params.Dvne, params.DKr)); //Крышка третья сверху
+    SPtr<MbSolid> pKrFirstNis(CreateUnionCover_IP(params.Dy, params.p, 3, params.Dvne, params.DKr)); //Крышка первая внизу
+    SPtr<MbSolid> pKrsamSmall(CreateUnionCover_IP(params.Dy, params.p, 4, params.Dvne, params.DKr)); //Крышка вторая внизу
+    SPtr<MbSolid> pKrNaSkose(CreateUnionCover_IP(params.Dy, params.p, 5, params.Dvne, params.DKr)); //Крышка третья внизу
+    SPtr<MbSolid> pKrSboku(CreateUnionCover_IP(params.Dy, params.p, 1, params.Dvne, params.DKr)); //Крышка сбоку
+    SPtr<MbSolid> pStoika(CreateStoyka_IP(params.Dvne, params.L_Base)); //Cтойка
+    SPtr<MbSolid> pReshNePod(CreateOsnovaNePodResh_IP(params.Dvne, params.p, params.DKr)); //Неподвижная решетка
+    SPtr<MbSolid> pPeregorodka(CreateOsnovaPeregorodka_IP(params.Dvne, params.p, params.DKr /*S1,D3*/));//Перегородка
+    SPtr<MbSolid> pReshetkaPod(CreateOsnovaReshPod_IP(params.Dvne, params.p, params.DKr /*S,D2,D5*/));//Подвижная решетка
+    SPtr<MbSolid> pRingPL(CreateRingOn_IP(params.Dvne, params.p, params.DKr));//Кольцо плавающей головки
+    SPtr<MbSolid> pKrPlGol(CreateKrPlGol_IP(params));//Крышка плавающей головки
+    SPtr<MbSolid> pPipe1(CreatePipe_IP(params.Dvne, params.p, params.DKr));//Труба
+
+    pKozhuh->SetColor(255, 204, 255);
+    pKamera->SetColor(255, 204, 255);
+    pKrKamera->SetColor(255, 204, 255);
+    pKrKamera1->SetColor(255, 204, 255);
+    pKrBig->SetColor(255, 204, 255);
+    pKrVtorayaSverhu->SetColor(255, 204, 255);
+    pKrTretyaSverhu->SetColor(255, 204, 255);
+    pKrFirstNis->SetColor(255, 204, 255);
+    pKrsamSmall->SetColor(255, 204, 255);
+    pKrNaSkose->SetColor(255, 204, 255);
+    pKrSboku->SetColor(255, 204, 255);
+    pStoika->SetColor(255, 204, 255);
+
+    MbAxis3D axVert(MbVector3D(1, 0, 0));
+    MbAxis3D ayVert(MbVector3D(0, 1, 0));
+    MbAxis3D azVert(MbVector3D(0, 0, 1));
+    pKrKamera1->Rotate(axVert, M_PI);
+    //  pKrKamera1->Rotate(axVert, M_PI);
+    pKrBig->Rotate(axVert, M_PI);
+    pKrVtorayaSverhu->Rotate(axVert, M_PI);
+    pKrTretyaSverhu->Rotate(axVert, M_PI);
+    pKrSboku->Rotate(azVert, -M_PI / 2);
+
+    pReshNePod->Rotate(ayVert, M_PI / 2);
+    pReshNePod->Rotate(azVert, M_PI / 2);
+    pPeregorodka->Rotate(ayVert, M_PI / 2);
+    pPeregorodka->Rotate(azVert, M_PI / 2);
+    pKrPlGol->Rotate(azVert, M_PI);
+    pKrPlGol->Rotate(ayVert, -M_PI);
+    // pPipe1->Rotate(axVert, M_PI );
+   //  pPipe1->Rotate(ayVert, M_PI/2);
+
+    pReshetkaPod->Rotate(ayVert, M_PI / 2);
+    pReshetkaPod->Rotate(azVert, M_PI / 2);
+    /*
+         if (params.Dvne == 840) {
+            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, -(params.Dvne - 366 / 2) - 180, 0)));
+            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(params.L_Base - 6000 - L/2 - 86 - 700 + 500/2, 0, 0)));
+         }
+          else if (params.Dvne == 1040) {
+            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, -(params.Dvne - 470 / 2) - 180, 0)));
+            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(params.L_Base - 6000 - L / 2 - 86 - 700 + 500 / 2, 0, 0)));
+        }
+          else if (params.Dvne == 1240) {
+            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, -(params.Dvne - 568 / 2) - 180, 0)));
+            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(params.L_Base - 6000 - L / 2 - 86 - 700 + 500 / 2, 0, 0)));
+        }
+         else if (params.Dvne == 1440) {
+            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, -(params.Dvne - 660 / 2) - 180, 0)));
+            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(params.L_Base - 6000 - L / 2 - 86 - 700 + 500 / 2, 0, 0)));
+        }
+         else if (params.Dvne == 1640) {
+            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, -(params.Dvne - 760 / 2) - 180, 0)));
+            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(params.L_Base - 6000 - L / 2 - 86 - 700 + 500 / 2, 0, 0)));
+        }
+         else if ((params.Dvne == 1840) && (params.DKr == 1000)) {
+            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, -(params.Dvne - 862 / 2) - 180, 0)));
+            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(params.L_Base - 6000 - L / 2 - 86 - 700 + 500 / 2, 0, 0)));
+        }
+         else  if ((params.Dvne == 1840) && (params.DKr == 1100)) {
+            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, -(params.Dvne - 962 / 2) - 180, 0)));
+            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(params.L_Base - 6000 - L / 2 - 86 - 700 + 500 / 2, 0, 0)));
+        }
+         else  if (params.Dvne == 2040) {
+             pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, -(params.Dvne - 1060 / 2) - 180, 0)));
+             pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(params.L_Base - 6000 - L / 2 - 86 - 700 + 500 / 2, 0, 0)));
+         }*/
+    MbPlacement3D lcs;
+    SPtr<MbInstance> comp1(new MbInstance(*pKozhuh, lcs));
+    SPtr<MbInstance> comp2(new MbInstance(*pKamera, lcs));
+    SPtr<MbInstance> comp3(new MbInstance(*pKrKameraEl, lcs));
+    SPtr<MbInstance> comp4(new MbInstance(*pKrKamera, lcs));
+    SPtr<MbInstance> comp5(new MbInstance(*pKrKamera1, lcs));
+    SPtr<MbInstance> comp6(new MbInstance(*pKrBig, lcs));
+    SPtr<MbInstance> comp7(new MbInstance(*pKrVtorayaSverhu, lcs));
+    SPtr<MbInstance> comp8(new MbInstance(*pKrTretyaSverhu, lcs));
+    SPtr<MbInstance> comp9(new MbInstance(*pKrFirstNis, lcs));
+    SPtr<MbInstance> comp10(new MbInstance(*pKrsamSmall, lcs));
+    SPtr<MbInstance> comp11(new MbInstance(*pKrNaSkose, lcs));
+    SPtr<MbInstance> comp12(new MbInstance(*pKrSboku, lcs));
+    SPtr<MbInstance> comp13(new MbInstance(*pStoika, lcs));
+    SPtr<MbInstance> comp14(new MbInstance(*pStoika, lcs));
+    SPtr<MbInstance> comp15(new MbInstance(*pReshNePod, lcs));
+    SPtr<MbInstance> comp16(new MbInstance(*pPeregorodka, lcs));
+    SPtr<MbInstance> comp17(new MbInstance(*pPeregorodka, lcs));
+    SPtr<MbInstance> comp18(new MbInstance(*pPeregorodka, lcs));
+    SPtr<MbInstance> comp19(new MbInstance(*pPeregorodka, lcs));
+    SPtr<MbInstance> comp20(new MbInstance(*pReshetkaPod, lcs));
+    SPtr<MbInstance> comp21(new MbInstance(*pRingPL, lcs));
+    SPtr<MbInstance> comp22(new MbInstance(*pKrPlGol, lcs));
+
+    // трубы
+    SPtr<MbInstance> comp23(new MbInstance(*pPipe1, lcs));
+
+    std::vector<SPtr<MbInstance>> pair;
+    pair.push_back(comp1);
+    pair.push_back(comp2);
+    pair.push_back(comp3);
+    pair.push_back(comp4);
+    pair.push_back(comp5);
+    pair.push_back(comp6);
+    pair.push_back(comp7);
+    pair.push_back(comp8);
+    pair.push_back(comp9);
+    pair.push_back(comp10);
+    pair.push_back(comp11);
+    pair.push_back(comp12);
+    pair.push_back(comp13);
+    pair.push_back(comp14);
+    pair.push_back(comp15);
+    pair.push_back(comp16);
+    pair.push_back(comp17);
+    pair.push_back(comp18);
+    pair.push_back(comp19);
+    pair.push_back(comp20);
+    pair.push_back(comp21);
+    pair.push_back(comp22);
+    pair.push_back(comp23);
+
+    SPtr<MbAssembly> assm(new MbAssembly(pair));
+
+    {
+
+        //Концентричность кожуха и камеры
+        MtGeomArgument face11(pKozhuh->GetFace(25), comp1);
+        MtGeomArgument face21(pKamera->GetFace(43), comp2);
+        assm->AddConstraint(GCM_CONCENTRIC, face11, face21);
+
+        // Концентричность камеры и эл крышки
+        //face22 - камера
+        MtGeomArgument face33(pKrKameraEl->GetFace(5), comp3);
+        MtGeomArgument face22(pKamera->GetFace(7), comp2);
+        assm->AddConstraint(GCM_CONCENTRIC, face22, face33);
+
+        //Линейный размер между камерой и эл крышкой
+        MtGeomArgument face23(pKamera->GetFace(6), comp2);
+        MtGeomArgument face32(pKrKameraEl->GetFace(0), comp3);
+        assm->AddConstraint(GCM_DISTANCE, face23, face32, 0.0);
+
+
+        // Концентричность камеры и крышки
+        MtGeomArgument face222(pKamera->GetFace(80), comp2);
+        MtGeomArgument face44(pKrKamera->GetFace(1), comp4);
+        assm->AddConstraint(GCM_CONCENTRIC, face222, face44);
+
+        //Линейный размер между камерой и крышкой
+        MtGeomArgument face24(pKamera->GetFace(9), comp2);
+        MtGeomArgument face42(pKrKamera->GetFace(14), comp4);
+        assm->AddConstraint(GCM_DISTANCE, face24, face42, 0.0);
+
+
+        // Концентричность камеры и крышки вверху
+        MtGeomArgument face2222(pKamera->GetFace(69), comp2);
+        MtGeomArgument face55(pKrKamera1->GetFace(1), comp5);
+        assm->AddConstraint(GCM_CONCENTRIC, face2222, face55);
+
+        //Линейный размер между камерой и крышкой вверху
+        MtGeomArgument face25(pKamera->GetFace(12), comp2);
+        MtGeomArgument face52(pKrKamera1->GetFace(14), comp5);
+        assm->AddConstraint(GCM_DISTANCE, face25, face52, 0.0);
+
+
+        // Концентричность кожуха и самой большой крышки
+        MtGeomArgument face111(pKozhuh->GetFace(91), comp1);
+        MtGeomArgument face66(pKrBig->GetFace(1), comp6);
+        assm->AddConstraint(GCM_CONCENTRIC, face111, face66);
+
+        //Линейный размер между кожухом и самой большой крышкой
+        MtGeomArgument face16(pKozhuh->GetFace(57), comp1);
+        MtGeomArgument face61(pKrBig->GetFace(24), comp6);
+        assm->AddConstraint(GCM_DISTANCE, face16, face61, 0.0);
+
+
+        // Концентричность кожуха и второй крышки сверху
+        MtGeomArgument face1111(pKozhuh->GetFace(113), comp1);
+        MtGeomArgument face77(pKrVtorayaSverhu->GetFace(1), comp7);
+        assm->AddConstraint(GCM_CONCENTRIC, face1111, face77);
+
+        //Линейный размер между кожухом и второй крышкой сверху
+        MtGeomArgument face17(pKozhuh->GetFace(58), comp1);
+        MtGeomArgument face71(pKrVtorayaSverhu->GetFace(8), comp7);
+        assm->AddConstraint(GCM_DISTANCE, face17, face71, 0.0);
+
+
+        // Концентричность кожуха и третьей крышки сверху
+        MtGeomArgument face11111(pKozhuh->GetFace(118), comp1);
+        MtGeomArgument face88(pKrTretyaSverhu->GetFace(1), comp8);
+        assm->AddConstraint(GCM_CONCENTRIC, face11111, face88);
+
+        //Линейный размер между кожухом и третьей крышкой сверху
+        MtGeomArgument face18(pKozhuh->GetFace(59), comp1);
+        MtGeomArgument face81(pKrTretyaSverhu->GetFace(14), comp8);
+        assm->AddConstraint(GCM_DISTANCE, face18, face81, 0.0);
+
+
+
+        // Концентричность кожуха и ПЕРВОЙ крышки СНИЗУ
+        MtGeomArgument face100(pKozhuh->GetFace(131), comp1);
+        MtGeomArgument face99(pKrFirstNis->GetFace(1), comp9);
+        assm->AddConstraint(GCM_CONCENTRIC, face100, face99);
+
+        //Линейный размер между кожухом и ПЕРВОЙ крышкой СНИЗУ
+        MtGeomArgument face19(pKozhuh->GetFace(61), comp1);
+        MtGeomArgument face91(pKrFirstNis->GetFace(12), comp9);
+        assm->AddConstraint(GCM_DISTANCE, face19, face91, 0.0);
+
+
+        // Концентричность кожуха и ВТОРОЙ крышки СНИЗУ
+        MtGeomArgument faceKK(pKozhuh->GetFace(140), comp1);
+        MtGeomArgument face10(pKrsamSmall->GetFace(1), comp10);
+        assm->AddConstraint(GCM_CONCENTRIC, faceKK, face10);
+
+        //Линейный размер между кожухом и ВТОРОЙ крышкой СНИЗУ
+        MtGeomArgument face110(pKozhuh->GetFace(62), comp1);
+        MtGeomArgument face101(pKrsamSmall->GetFace(8), comp10);
+        assm->AddConstraint(GCM_DISTANCE, face110, face101, 0.0);
+
+
+        // Концентричность кожуха и ТРЕТЬЕЙ крышки СНИЗУ
+        MtGeomArgument faceK(pKozhuh->GetFace(71), comp1);
+        MtGeomArgument face3kr(pKrNaSkose->GetFace(1), comp11);
+        assm->AddConstraint(GCM_CONCENTRIC, faceK, face3kr);
+
+        //Линейный размер между кожухом и ТРЕТЬЕЙ крышкой СНИЗУ
+        MtGeomArgument faceK11(pKozhuh->GetFace(23), comp1);
+        MtGeomArgument face11K(pKrNaSkose->GetFace(14), comp11);
+        assm->AddConstraint(GCM_DISTANCE, face11K, faceK11, 0.0);
+
+
+        // Концентричность кожуха и крышкей СБОКУ
+        MtGeomArgument faceH(pKozhuh->GetFace(151), comp1);
+        MtGeomArgument faceS(pKrSboku->GetFace(1), comp12);
+        assm->AddConstraint(GCM_CONCENTRIC, faceH, faceS);
+
+        //Линейный размер между кожухом и крышкей СБОКУ
+        MtGeomArgument faceSH(pKozhuh->GetFace(87), comp1);
+        MtGeomArgument faceHS(pKrSboku->GetFace(14), comp12);
+        assm->AddConstraint(GCM_DISTANCE, faceSH, faceHS, 0.0);
+
+
+        // Концентричность кожуха и СТОЙКИ
+        MtGeomArgument facek(pKozhuh->GetFace(4), comp1);//,было 6
+        MtGeomArgument faceSt(pStoika->GetFace(25), comp13);
+        assm->AddConstraint(GCM_CONCENTRIC, facek, faceSt);
+
+        //Линейный размер между кожухом и СТОЙКОЙ
+        MtGeomArgument faceKo(pKozhuh->GetFace(87), comp1);
+        MtGeomArgument faceKoSt(pStoika->GetFace(5), comp13);
+        assm->AddConstraint(GCM_DISTANCE, faceKo, faceKoSt, -(params.L_Base - 300) / 1.23 / 4);
+
+
+        // Концентричность кожуха и СТОЙКИ 1
+        MtGeomArgument faceSt1(pStoika->GetFace(25), comp14);
+        assm->AddConstraint(GCM_CONCENTRIC, facek, faceSt1);
+
+        //Линейный размер между кожухом и СТОЙКОЙ 1
+        MtGeomArgument faceKoSt1(pStoika->GetFace(5), comp14);
+        assm->AddConstraint(GCM_DISTANCE, faceKo, faceKoSt1, -(params.L_Base - 300) / 1.23);
+
+        // Концентричность камеры и Решетки непод
+        MtGeomArgument face233(pReshNePod->GetFace(9), comp15);
+        assm->AddConstraint(GCM_CONCENTRIC, face21, face233);
+
+        //Линейный размер между камерой и неплдвижной решеткой
+        MtGeomArgument face144(pKamera->GetFace(7), comp2);
+        MtGeomArgument face244(pReshNePod->GetFace(4), comp15);
+        assm->AddConstraint(GCM_DISTANCE, face144, face244, 0.0);
+
+        //Линейный размер между кожухом и неподвижной решеткой
+        MtGeomArgument facekNepod(pKozhuh->GetFace(8), comp1);
+        MtGeomArgument facekNe1pod(pReshNePod->GetFace(10), comp15);
+        assm->AddConstraint(GCM_DISTANCE, facekNepod, facekNe1pod, 0.0);
+
+        //Концентричность между неподвижной решеткой и перегородкой
+        MtGeomArgument faceNe2(pReshNePod->GetFace(1), comp15);
+        MtGeomArgument facePer1(pPeregorodka->GetFace(2), comp16);
+        assm->AddConstraint(GCM_CONCENTRIC, faceNe2, facePer1);
+
+        //Линейный размер между Решеткой непод и перегородкой
+        MtGeomArgument faceNe2Per1(pReshNePod->GetFace(0), comp15);
+        MtGeomArgument facePer1Ne2(pPeregorodka->GetFace(0), comp16);
+        assm->AddConstraint(GCM_DISTANCE, faceNe2Per1, facePer1Ne2, 1160.0);
+
+        // Концентричность Решетки непод и перегородкой
+        MtGeomArgument facePer2(pPeregorodka->GetFace(2), comp17);
+        assm->AddConstraint(GCM_CONCENTRIC, faceNe2, facePer2);
+
+        //Линейный размер между Решеткой непод и перегородкой
+        MtGeomArgument facePer2Ne2(pPeregorodka->GetFace(0), comp17);
+        assm->AddConstraint(GCM_DISTANCE, faceNe2Per1, facePer2Ne2, 2350.0);
+
+
+        // Концентричность Решетки непод и перегородкой
+        MtGeomArgument facePer3(pPeregorodka->GetFace(2), comp18);
+        assm->AddConstraint(GCM_CONCENTRIC, faceNe2, facePer3);
+
+        //Линейный размер между Решеткой непод и перегородкой
+        MtGeomArgument facePer3Ne2(pPeregorodka->GetFace(0), comp18);
+        assm->AddConstraint(GCM_DISTANCE, faceNe2Per1, facePer3Ne2, 3550.0);
+
+
+        // Концентричность Решетки непод и перегородкой
+        MtGeomArgument facePer4(pPeregorodka->GetFace(2), comp19);
+        assm->AddConstraint(GCM_CONCENTRIC, faceNe2, facePer4);
+
+        //Линейный размер между Решеткой непод и перегородкой
+        MtGeomArgument facePer4Ne2(pPeregorodka->GetFace(0), comp19);
+        assm->AddConstraint(GCM_DISTANCE, faceNe2Per1, facePer4Ne2, 4750.0);
+
+
+        // Концентричность Решетки непод и перегородкой
+        MtGeomArgument facePRESH(pReshetkaPod->GetFace(5), comp20);
+        MtGeomArgument faceNe1Ne(pReshNePod->GetFace(9), comp15);
+        assm->AddConstraint(GCM_CONCENTRIC, faceNe1Ne, facePRESH);
+
+
+        //Линейный размер между Решеткой непод и Решеткой под
+        MtGeomArgument faceNePo(pReshNePod->GetFace(0), comp15);
+        MtGeomArgument facePoNe(pReshetkaPod->GetFace(1), comp20); //1
+        assm->AddConstraint(GCM_DISTANCE, faceNePo, facePoNe, 5920.0);
+
+        // Концентричность Решетки под и кольца плавающей головки
+        MtGeomArgument facePerRing(pRingPL->GetFace(14), comp21);
+        MtGeomArgument facePo1(pReshetkaPod->GetFace(5), comp20); //5
+        assm->AddConstraint(GCM_CONCENTRIC, facePerRing, facePo1);
+
+        //Линейный размер между кольцом и Решеткой под
+        MtGeomArgument facePerRing555(pRingPL->GetFace(17), comp21);
+        MtGeomArgument facePerKrPl2555(pReshetkaPod->GetFace(4), comp20);
+        assm->AddConstraint(GCM_DISTANCE, facePerRing555, facePerKrPl2555, 0.0);
+
+
+        // Концентричность между крышкой и подвижной решеткой
+        MtGeomArgument facePerKrPl(pKrPlGol->GetFace(5), comp22);
+        assm->AddConstraint(GCM_CONCENTRIC, facePerKrPl, facePo1);
+
+        // Линейниый размер между крышкой и подвижной решеткой 
+        MtGeomArgument facePerKrPl1(pKrPlGol->GetFace(18), comp22);
+        MtGeomArgument facePerKrPl2(pReshetkaPod->GetFace(6), comp20);
+        assm->AddConstraint(GCM_DISTANCE, facePerKrPl1, facePerKrPl2, 0.0);
+
+
+        int face = 0;
+        switch (params.Dvne) {
+        case 800:
+            face = 200;
+            break;
+        case 1000:
+            face = 109;
+            break;
+        case 1200:
+            face = 252;
+            break;
+        case 1400:
+            face = 352;
+            break;
+        case 1600:
+            face = 452;
+            break;
+        case 1800:
+            face = 952;
+            break;
+        case 2000:
+            face = 1052;
+            break;
+        }
+
+        MtGeomArgument facePerTube(pReshetkaPod->GetFace(1), comp20);
+        MtGeomArgument faceTubePer(pPipe1->GetFace(face), comp23);//152
+        assm->AddConstraint(GCM_PARALLEL, facePerTube, faceTubePer, 40);
+
+
+    }
+    assm->EvaluateConstraints();
+
+    return assm;
+}
+
+SPtr<MbAssembly> ParametricModelCreator::CreateIU(ConfigParams_IU params)
+{
+    // TODO: 3) Здесь деструктуризируете ваши переменные и уже вставляете куда вам нужно
+
+
+    SPtr<MbSolid> pKozhuh(CreateUnionKozhuh_IU(params)); //Кожух
+    SPtr<MbSolid> pKamera(CreateKamera(params)); //Камера
+    // SPtr<MbSolid> pKrKameraEl(CreateUnionCover());//Крышка на камере эллипс
+    SPtr<MbSolid> pKrKamera(CreateUnionCover(150, params.p, 6, params.diamVne, params.D_Kam)); //Крышка на камере снизу
+    SPtr<MbSolid> pKrKamera1(CreateUnionCover(150, params.p, 7, params.diamVne, params.D_Kam)); //Крышка на камере вверху
+    SPtr<MbSolid> pKrBig(CreateUnionCover(500, params.p, 11, params.diamVne, params.D_Kam)); //Крышка самая большая
+    SPtr<MbSolid> pKrVtorayaSverhu(CreateUnionCover(80, params.p, 10, params.diamVne, params.D_Kam)); //Крышка вторая сверху
+    SPtr<MbSolid> pKrTretyaSverhu(CreateUnionCover(250, params.p, 9, params.diamVne, params.D_Kam)); //Крышка третья сверху
+    SPtr<MbSolid> pKrFirstNis(CreateUnionCover(100, params.p, 3, params.diamVne, params.D_Kam)); //Крышка первая внизу
+    SPtr<MbSolid> pKrsamSmall(CreateUnionCover(60, params.p, 4, params.diamVne, params.D_Kam)); //Крышка вторая внизу
+    SPtr<MbSolid> pKrNaSkose(CreateUnionCover(200, params.p, 5, params.diamVne, params.D_Kam)); //Крышка третья внизу
+    SPtr<MbSolid> pKrSboku(CreateUnionCover(200, params.p, 1, params.diamVne, params.D_Kam)); //Крышка сбоку
+    SPtr<MbSolid> pStoika(CreateStoyka(params.diamVne, (params.Length - 300) / 1.23)); //Cтойка
+
+    SPtr<MbSolid> pReshetkaNEPod(CreateOsnovaNePodResh(params.diam, params.p, params.D_Kam));
+    //SPtr<MbSolid> pReshetkaPod(CreateOsnovaReshPod(params.diamVne, params.p, params.D_Kam));
+    SPtr<MbSolid> pPeregorodka(CreateOsnovaPeregorodka(params.diam, params.p, params.D_Kam));
+
+    SPtr<MbSolid> pPipe(CreatePipe(25, 20, params.p, params.diamVne, params.D_Kam));
+
+
+
+    pKozhuh->SetColor(135, 206, 250);
+    pKamera->SetColor(135, 206, 250);
+    pKrKamera->SetColor(135, 206, 250);
+    pKrKamera1->SetColor(135, 206, 250);
+    pKrBig->SetColor(135, 206, 250);
+    pKrVtorayaSverhu->SetColor(135, 206, 250);
+    pKrTretyaSverhu->SetColor(135, 206, 250);
+    pKrFirstNis->SetColor(135, 206, 250);
+    pKrsamSmall->SetColor(135, 206, 250);
+    pKrNaSkose->SetColor(135, 206, 250);
+    pKrSboku->SetColor(135, 206, 250);
+    pStoika->SetColor(135, 206, 250);
+
+    pPipe->SetColor(153, 153, 255);
+    //pPeregorodka->SetColor(153, 153, 255);
+
+
+
+
+    MbAxis3D axVert(MbVector3D(1, 0, 0));
+    MbAxis3D ayVert(MbVector3D(0, 1, 0));
+    MbAxis3D azVert(MbVector3D(0, 0, 1));
+    pKrKamera->Rotate(axVert, M_PI);
+    pKrBig->Rotate(axVert, M_PI);
+    pKrVtorayaSverhu->Rotate(axVert, M_PI);
+    pKrTretyaSverhu->Rotate(axVert, M_PI);
+    pKamera->Rotate(ayVert, M_PI);
+    pReshetkaNEPod->Rotate(ayVert, M_PI / 2);
+    pReshetkaNEPod->Rotate(azVert, M_PI / 2);
+    //pReshetkaPod->Rotate(ayVert, M_PI / 2);
+    //pReshetkaPod->Rotate(azVert, M_PI / 2);
+    pPeregorodka->Rotate(ayVert, M_PI / 2);
+    pPeregorodka->Rotate(azVert, M_PI / 2);
+
+
+
+
+    pKrSboku->Rotate(axVert, M_PI);
+    pKrSboku->Rotate(azVert, M_PI / 2);
+
+    //pPipe->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(-700+1200-420/2, -(params.diamVne-372/2)-180, 0)));
+
+
+    double bigD;
+    if (params.p == 1.6) {
+        switch (params.diamVne) {
+        case 840:
+            bigD = 366;
+            break;
+        case 1040:
+            bigD = 462;
+            break;
+        case 1240:
+            bigD = 560;
+            break;
+        case 1440:
+            bigD = 652;
+            break;
+        case 1640:
+            bigD = 755; //752
+            break;
+        case 1840:
+            if (params.D_Kam == 1000) {
+                bigD = 854;
+                break;
+            }
+            if (params.D_Kam == 1100) {
+                bigD = 954;
+                break;
+            }
+        case 2040:
+            bigD = 1052;
+            break;
+        }
+    }
+
+
+    int l5;
+
+    switch (params.D_Kam) {
+    case 500:
+        l5 = 320;
+        break;
+    case 600:
+        l5 = 380;
+        break;
+    case 700:
+        l5 = 440;
+        break;
+    case 800:
+        l5 = 500;
+        break;
+    case 900:
+        l5 = 560;
+        break;
+    case 1000:
+        l5 = 570;
+        break;
+    case 1100:
+        l5 = 600;
+        break;
+    case 1200:
+        l5 = 610;
+        break;
+    }
+
+    double pol_Kam = l5 - params.D_Kam / 4;
+
+    double L_Kzh = params.Length - pol_Kam;
+
+
+    //что если двигать влево, а потом вправо до камеры
+    double b = 40;
+    // pPipe->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(-700 + (params.Length - 300) / 5.23 + (params.Length - 300) / 1.23 + b - 5950.0 - bigD / 2, -(params.diamVne - 372 / 2) - 180, 0)));
+
+
+    MbPlacement3D lcs;
+    SPtr<MbInstance> comp1(new MbInstance(*pKozhuh, lcs));
+    SPtr<MbInstance> comp2(new MbInstance(*pKamera, lcs));
+    //SPtr<MbInstance> comp3(new MbInstance(*pKrKameraEl, lcs));
+    SPtr<MbInstance> comp4(new MbInstance(*pKrKamera, lcs));
+    SPtr<MbInstance> comp5(new MbInstance(*pKrKamera1, lcs));
+    SPtr<MbInstance> comp6(new MbInstance(*pKrBig, lcs));
+    SPtr<MbInstance> comp7(new MbInstance(*pKrVtorayaSverhu, lcs));
+    SPtr<MbInstance> comp8(new MbInstance(*pKrTretyaSverhu, lcs));
+    SPtr<MbInstance> comp9(new MbInstance(*pKrFirstNis, lcs));
+    SPtr<MbInstance> comp10(new MbInstance(*pKrsamSmall, lcs));
+    SPtr<MbInstance> comp11(new MbInstance(*pKrNaSkose, lcs));
+    SPtr<MbInstance> comp12(new MbInstance(*pKrSboku, lcs));
+    SPtr<MbInstance> comp13(new MbInstance(*pStoika, lcs));
+    SPtr<MbInstance> comp14(new MbInstance(*pStoika, lcs));
+    SPtr<MbInstance> comp15(new MbInstance(*pReshetkaNEPod, lcs));
+    SPtr<MbInstance> comp16(new MbInstance(*pPeregorodka, lcs));
+    SPtr<MbInstance> comp17(new MbInstance(*pPeregorodka, lcs));
+    SPtr<MbInstance> comp18(new MbInstance(*pPeregorodka, lcs));
+    SPtr<MbInstance> comp19(new MbInstance(*pPeregorodka, lcs));
+    SPtr<MbInstance> comp20(new MbInstance(*pPeregorodka, lcs));
+    SPtr<MbInstance> comp21(new MbInstance(*pPipe, lcs));
+
+
+
+    std::vector<SPtr<MbInstance>> pair;
+    pair.push_back(comp1);
+    pair.push_back(comp2);
+    // pair.push_back(comp3);
+    pair.push_back(comp4);
+    pair.push_back(comp5);
+    pair.push_back(comp6);
+    pair.push_back(comp7);
+    pair.push_back(comp8);
+    pair.push_back(comp9);
+    pair.push_back(comp10);
+    pair.push_back(comp11);
+    pair.push_back(comp12);
+    pair.push_back(comp13);
+    pair.push_back(comp14);
+    pair.push_back(comp15);
+    pair.push_back(comp16);
+    pair.push_back(comp17);
+    pair.push_back(comp18);
+    pair.push_back(comp19);
+    pair.push_back(comp20);
+    pair.push_back(comp21);
+
+
+    SPtr<MbAssembly> assm(new MbAssembly(pair));
+
+    {
+        //Концентричность кожуха и камеры
+        MtGeomArgument face11(pKozhuh->GetFace(25), comp1);
+        MtGeomArgument face21(pKamera->GetFace(13), comp2);
+        assm->AddConstraint(GCM_CONCENTRIC, face11, face21);
+
+        //убрать эту зависимость
+        //Линейный размер между кожухом и камерой
+        MtGeomArgument face12(pKozhuh->GetFace(8), comp1);//было 36
+        MtGeomArgument face22(pKamera->GetFace(0), comp2);
+        assm->AddConstraint(GCM_DISTANCE, face12, face22, 40.0);
+
+        // Концентричность камеры и крышки
+        MtGeomArgument face222(pKamera->GetFace(53), comp2);
+        MtGeomArgument face44(pKrKamera->GetFace(1), comp4);
+        assm->AddConstraint(GCM_CONCENTRIC, face222, face44);
+
+        //Линейный размер между камерой и крышкой
+        MtGeomArgument face24(pKamera->GetFace(12), comp2);
+        MtGeomArgument face42(pKrKamera->GetFace(10), comp4);
+        assm->AddConstraint(GCM_DISTANCE, face24, face42, 0.0);
+
+
+        // Концентричность камеры и крышки вверху
+        MtGeomArgument face2222(pKamera->GetFace(44), comp2);
+        MtGeomArgument face55(pKrKamera1->GetFace(1), comp5);
+        assm->AddConstraint(GCM_CONCENTRIC, face2222, face55);
+
+        //Линейный размер между камерой и крышкой вверху
+        MtGeomArgument face25(pKamera->GetFace(11), comp2);
+        MtGeomArgument face52(pKrKamera1->GetFace(12), comp5);
+        assm->AddConstraint(GCM_DISTANCE, face25, face52, 0.0);
+
+
+        // Концентричность кожуха и самой большой крышки
+        MtGeomArgument face111(pKozhuh->GetFace(91), comp1);
+        MtGeomArgument face66(pKrBig->GetFace(1), comp6);
+        assm->AddConstraint(GCM_CONCENTRIC, face111, face66);
+
+        //Линейный размер между кожухом и самой большой крышкой
+        MtGeomArgument face16(pKozhuh->GetFace(57), comp1);
+        MtGeomArgument face61(pKrBig->GetFace(24), comp6);
+        assm->AddConstraint(GCM_DISTANCE, face16, face61, 0.0);
+
+
+        // Концентричность кожуха и второй крышки сверху
+        MtGeomArgument face1111(pKozhuh->GetFace(113), comp1);
+        MtGeomArgument face77(pKrVtorayaSverhu->GetFace(1), comp7);
+        assm->AddConstraint(GCM_CONCENTRIC, face1111, face77);
+
+        //Линейный размер между кожухом и второй крышкой сверху
+        MtGeomArgument face17(pKozhuh->GetFace(58), comp1);
+        MtGeomArgument face71(pKrVtorayaSverhu->GetFace(8), comp7);
+        assm->AddConstraint(GCM_DISTANCE, face17, face71, 0.0);
+
+
+        // Концентричность кожуха и третьей крышки сверху
+        MtGeomArgument face11111(pKozhuh->GetFace(118), comp1);
+        MtGeomArgument face88(pKrTretyaSverhu->GetFace(1), comp8);
+        assm->AddConstraint(GCM_CONCENTRIC, face11111, face88);
+
+        //Линейный размер между кожухом и третьей крышкой сверху
+        MtGeomArgument face18(pKozhuh->GetFace(59), comp1);
+        MtGeomArgument face81(pKrTretyaSverhu->GetFace(16), comp8);
+        assm->AddConstraint(GCM_DISTANCE, face18, face81, 0.0);
+
+
+
+        // Концентричность кожуха и ПЕРВОЙ крышки СНИЗУ
+        MtGeomArgument face100(pKozhuh->GetFace(131), comp1);
+        MtGeomArgument face99(pKrFirstNis->GetFace(1), comp9);
+        assm->AddConstraint(GCM_CONCENTRIC, face100, face99);
+
+        //Линейный размер между кожухом и ПЕРВОЙ крышкой СНИЗУ
+        MtGeomArgument face19(pKozhuh->GetFace(61), comp1);
+        MtGeomArgument face91(pKrFirstNis->GetFace(12), comp9);
+        assm->AddConstraint(GCM_DISTANCE, face19, face91, 0.0);
+
+
+        // Концентричность кожуха и ВТОРОЙ крышки СНИЗУ
+        MtGeomArgument faceKK(pKozhuh->GetFace(140), comp1);
+        MtGeomArgument face10(pKrsamSmall->GetFace(1), comp10);
+        assm->AddConstraint(GCM_CONCENTRIC, faceKK, face10);
+
+        //Линейный размер между кожухом и ВТОРОЙ крышкой СНИЗУ
+        MtGeomArgument face110(pKozhuh->GetFace(62), comp1);
+        MtGeomArgument face101(pKrsamSmall->GetFace(8), comp10);
+        assm->AddConstraint(GCM_DISTANCE, face110, face101, 0.0);
+
+
+        // Концентричность кожуха и ТРЕТЬЕЙ крышки СНИЗУ
+        MtGeomArgument faceK(pKozhuh->GetFace(71), comp1);
+        MtGeomArgument face3kr(pKrNaSkose->GetFace(1), comp11);
+        assm->AddConstraint(GCM_CONCENTRIC, faceK, face3kr);
+
+        //Линейный размер между кожухом и ТРЕТЬЕЙ крышкой СНИЗУ
+        MtGeomArgument faceK11(pKozhuh->GetFace(23), comp1);
+        MtGeomArgument face11K(pKrNaSkose->GetFace(12), comp11);
+        assm->AddConstraint(GCM_DISTANCE, face11K, faceK11, 0.0);
+
+
+        // Концентричность кожуха и крышкей СБОКУ
+        MtGeomArgument faceH(pKozhuh->GetFace(151), comp1);
+        MtGeomArgument faceS(pKrSboku->GetFace(1), comp12);
+        assm->AddConstraint(GCM_CONCENTRIC, faceH, faceS);
+
+        //Линейный размер между кожухом и крышкей СБОКУ
+        MtGeomArgument faceSH(pKozhuh->GetFace(87), comp1);
+        MtGeomArgument faceHS(pKrSboku->GetFace(10), comp12);
+        assm->AddConstraint(GCM_DISTANCE, faceSH, faceHS, 0.0);
+
+
+
+        // Концентричность кожуха и СТОЙКИ
+        MtGeomArgument facek(pKozhuh->GetFace(4), comp1);//,было 6
+        MtGeomArgument faceSt(pStoika->GetFace(25), comp13);
+        assm->AddConstraint(GCM_CONCENTRIC, facek, faceSt);
+
+        //Линейный размер между кожухом и СТОЙКОЙ
+        MtGeomArgument faceKo(pKozhuh->GetFace(87), comp1);
+        MtGeomArgument faceKoSt(pStoika->GetFace(5), comp13);
+        assm->AddConstraint(GCM_DISTANCE, faceKo, faceKoSt, -(params.Length - 300) / 1.23 / 4);
+
+
+        // Концентричность кожуха и СТОЙКИ 1
+        MtGeomArgument faceSt1(pStoika->GetFace(25), comp14);
+        assm->AddConstraint(GCM_CONCENTRIC, facek, faceSt1);
+
+        //Линейный размер между кожухом и СТОЙКОЙ 1
+        MtGeomArgument faceKoSt1(pStoika->GetFace(5), comp14);
+        assm->AddConstraint(GCM_DISTANCE, faceKo, faceKoSt1, -(params.Length - 300) / 1.23);
+    }
+
+
+    {
+        // Концентричность камеры и Решетки непод
+        MtGeomArgument facekam(pKamera->GetFace(13), comp2);
+        MtGeomArgument faceNe(pReshetkaNEPod->GetFace(5), comp15);
+        assm->AddConstraint(GCM_CONCENTRIC, facekam, faceNe);
+
+        MtGeomArgument facekamNe(pKamera->GetFace(0), comp2);
+        MtGeomArgument faceNekam(pReshetkaNEPod->GetFace(6), comp15);
+        assm->AddConstraint(GCM_DISTANCE, facekamNe, faceNekam, 0.0);
+
+
+        // Концентричность Решетки непод и перегородкой
+        MtGeomArgument faceNe2(pReshetkaNEPod->GetFace(9), comp15);
+        MtGeomArgument facePer1(pPeregorodka->GetFace(2), comp16);
+        assm->AddConstraint(GCM_CONCENTRIC, faceNe2, facePer1);
+
+        //Линейный размер между Решеткой непод и перегородкой
+        MtGeomArgument faceNe2Per1(pReshetkaNEPod->GetFace(0), comp15);//0
+        MtGeomArgument facePer1Ne2(pPeregorodka->GetFace(1), comp16);
+        assm->AddConstraint(GCM_DISTANCE, faceNe2Per1, facePer1Ne2, 1160.0);
+
+        // Концентричность Решетки непод и перегородкой
+        MtGeomArgument facePer2(pPeregorodka->GetFace(2), comp17);
+        assm->AddConstraint(GCM_CONCENTRIC, faceNe2, facePer2);
+
+        //Линейный размер между Решеткой непод и перегородкой
+        MtGeomArgument facePer2Ne2(pPeregorodka->GetFace(1), comp17);
+        assm->AddConstraint(GCM_DISTANCE, faceNe2Per1, facePer2Ne2, 2350.0);
+
+        // Концентричность Решетки непод и перегородкой
+        MtGeomArgument facePer3(pPeregorodka->GetFace(2), comp18);
+        assm->AddConstraint(GCM_CONCENTRIC, faceNe2, facePer3);
+
+        //Линейный размер между Решеткой непод и перегородкой
+        MtGeomArgument facePer3Ne2(pPeregorodka->GetFace(1), comp18);
+        assm->AddConstraint(GCM_DISTANCE, faceNe2Per1, facePer3Ne2, 3550.0);
+
+        // Концентричность Решетки непод и перегородкой
+        MtGeomArgument facePer4(pPeregorodka->GetFace(2), comp19);
+        assm->AddConstraint(GCM_CONCENTRIC, faceNe2, facePer4);
+
+        //Линейный размер между Решеткой непод и перегородкой
+        MtGeomArgument facePer4Ne2(pPeregorodka->GetFace(1), comp19);
+        assm->AddConstraint(GCM_DISTANCE, faceNe2Per1, facePer4Ne2, 4750.0);
+
+        // Концентричность Решетки непод и перегородкой
+        MtGeomArgument facePer44(pPeregorodka->GetFace(2), comp20);
+        assm->AddConstraint(GCM_CONCENTRIC, faceNe2, facePer44);
+
+        //Линейный размер между Решеткой непод и перегородкой
+        MtGeomArgument facePer44Ne2(pPeregorodka->GetFace(1), comp20);
+        assm->AddConstraint(GCM_DISTANCE, faceNe2Per1, facePer44Ne2, 5950.0);
+
+
+        int face = 0;
+        switch (params.diam) {
+        case 800:
+            face = 152;
+            break;
+        case 1000:
+            face = 152;
+            break;
+        case 1200:
+            face = 252;
+            break;
+        case 1400:
+            face = 352;
+            break;
+        case 1600:
+            face = 452;
+            break;
+        case 1800:
+            face = 952;
+            break;
+        case 2000:
+            face = 1052;
+            break;
+        }
+
+
+        MtGeomArgument facePerTube(pPeregorodka->GetFace(2), comp20);
+        MtGeomArgument faceTubePer(pPipe->GetFace(face), comp21);
+        assm->AddConstraint(GCM_PARALLEL, facePerTube, faceTubePer);
+
+    }
+
+
+
+    assm->EvaluateConstraints();
+
+    return assm;
+}
