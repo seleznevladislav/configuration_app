@@ -466,6 +466,40 @@ void ExplodeManager::onReconfigureButtonClicked() {
     }
 }
 
+QAction* ExplodeManager::createActionButton(const QString& fileName, QGroupBox* groupFilter, QHBoxLayout* fGroupLayout)
+{
+    QToolButton* filterBut = new QToolButton(groupFilter);
+    filterBut->setIconSize(QSize(24, 24));
+    QAction* actFilter = new QAction(QIcon(fileName), "", groupFilter);
+    actFilter->setObjectName(QString("ID_") + fileName);
+    actFilter->setCheckable(true);
+    filterBut->setDefaultAction(actFilter);
+    fGroupLayout->addWidget(filterBut);
+    return actFilter;
+}
+
+QGroupBox* ExplodeManager::OTDELNAYAFUNCTHIYA()
+{
+    // Actions on select
+    QGroupBox* groupFilter = new QGroupBox();
+    groupFilter->setTitle(QStringLiteral("Фильтр"));
+    QHBoxLayout* fGroupLayout = new QHBoxLayout(groupFilter);
+    fGroupLayout->setMargin(0); fGroupLayout->setSpacing(0);
+
+    QActionGroup* actionGroupFilter = new QActionGroup(m_pExplodeWidget);
+    actionGroupFilter->setExclusive(false);
+
+    actionGroupFilter->addAction(createActionButton(":/res/filterbody24x24.png", groupFilter, fGroupLayout))->setToolTip(QStringLiteral("Тело"));
+    actionGroupFilter->addAction(createActionButton(":/res/filterface24x24.png", groupFilter, fGroupLayout))->setToolTip(QStringLiteral("Грань"));
+    actionGroupFilter->addAction(createActionButton(":/res/filteredge24x24.png", groupFilter, fGroupLayout))->setToolTip(QStringLiteral("Ребро"));
+    actionGroupFilter->addAction(createActionButton(":/res/filtervertex24x24.png", groupFilter, fGroupLayout))->setToolTip(QStringLiteral("Точка"));
+
+    m_pExplodeWidget->setGroupFilter(actionGroupFilter);
+    QObject::connect(actionGroupFilter, SIGNAL(triggered(QAction*)), m_pExplodeWidget, SLOT(slotFilterTriggered(QAction*)));
+
+    return groupFilter;
+}
+
 QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightButton, const std::string& mainTabName)
 {
     m_pWidget = &widget;
@@ -586,6 +620,10 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
     auto pairSliderLabelSpeed = createSliderWithLabel(ED::cpt_Speed, u8"Чувствительность:", vLayoutExplodeButtons, "");
     pairSliderLabelSpeed.second->setMinimumWidth(labelExplodeWidth);
     QObject::connect(pairSliderLabelSpeed.first, &QSlider::valueChanged, this, &ExplodeManager::slidersExplodeValueChanged);
+
+    QGroupBox* specialForSashaZarubin = OTDELNAYAFUNCTHIYA();
+    m_vLayoutTab->addWidget(specialForSashaZarubin);
+
 
     return tabWidget;
 }

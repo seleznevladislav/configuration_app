@@ -156,6 +156,8 @@ private:
     QFormLayout* createWarmForm(QVBoxLayout* layout);
     void calculateThickness(QLineEdit* innerTubesLineEdit, QLineEdit* outerTubesLineEdit, QLineEdit* gridsLineEdit, QDoubleSpinBox* lengthSpinBox);
     void onReconfigureButtonClicked();
+    QAction* createActionButton(const QString& fileName, QGroupBox* groupFilter, QHBoxLayout* fGroupLayout);
+    QGroupBox* OTDELNAYAFUNCTHIYA();
 private:
     ExplodeDispatcher m_explodeDispatcher;
     std::map<ExplodeDispatcher::ControlParameterType, QWidget*> m_widgetsMap;

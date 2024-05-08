@@ -205,22 +205,7 @@ int main(int argc, char** argv)
     int heightButton = (rcFont.height() + rcFont.width()) + 4;
     QGroupBox* groupExpl = pOpenScene->createGroupExplode(widget, heightButton, u8"Сцена");
 
-    // Actions on select
-    QGroupBox* groupFilter = new QGroupBox();
-    groupFilter->setTitle(QStringLiteral("Фильтр"));
-    QHBoxLayout* fGroupLayout = new QHBoxLayout(groupFilter);
-    fGroupLayout->setMargin(0); fGroupLayout->setSpacing(0);
-
-    QActionGroup* actionGroupFilter = new QActionGroup(pOpenScene);
-    actionGroupFilter->setExclusive(false);
-
-    actionGroupFilter->addAction(createButton(":/res/filterbody24x24.png", groupFilter, fGroupLayout))->setToolTip(QStringLiteral("Тело"));
-    actionGroupFilter->addAction(createButton(":/res/filterface24x24.png", groupFilter, fGroupLayout))->setToolTip(QStringLiteral("Грань"));
-    actionGroupFilter->addAction(createButton(":/res/filteredge24x24.png", groupFilter, fGroupLayout))->setToolTip(QStringLiteral("Ребро"));
-    actionGroupFilter->addAction(createButton(":/res/filtervertex24x24.png", groupFilter, fGroupLayout))->setToolTip(QStringLiteral("Точка"));
-
-    pOpenScene->setGroupFilter(actionGroupFilter);
-    QObject::connect(actionGroupFilter, SIGNAL(triggered(QAction*)), pOpenScene, SLOT(slotFilterTriggered(QAction*)));
+   
 
 
     ///////////////////////////////////////////////////////////////////////////
@@ -251,7 +236,7 @@ int main(int argc, char** argv)
     // TOZO: кнопка для отображения модели, не нужна, есть уже в толбаре
     // vLayout->addWidget(groupFile, 0, Qt::AlignTop);
     vLayout->addWidget(groupExpl, 0, Qt::AlignTop);
-    vLayout->addWidget(groupFilter, 0, Qt::AlignTop);
+    //vLayout->addWidget(groupFilter, 0, Qt::AlignTop);
     vLayout->addWidget(colorsGroupBox, 0, Qt::AlignTop);
 
     ///////////////////////////////////////////////////////////////////////////
@@ -296,9 +281,9 @@ int main(int argc, char** argv)
     showUnshowSelectors->setChecked(true);
     optionsMenu->addAction(showUnshowSelectors);
 
-    QObject::connect(showUnshowSelectors, &QAction::triggered, pOpenScene, [=]() {
+    /*QObject::connect(showUnshowSelectors, &QAction::triggered, pOpenScene, [=]() {
         pOpenScene->slotToggleVisibility(showUnshowSelectors->isChecked(), groupFilter);
-        });
+        });*/
 
     // Show window
     QtVision::setWindowPosition(mainWindow);
