@@ -2259,41 +2259,28 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
 SPtr<MbAssembly> ParametricModelCreator::CreateIP(ConfigParams_IP params)
 {
-    // Кожух
-    const double Dvne = params.Dvne;
-    const double L_Base = params.L_Base;
-    const double s = params.s;
-    const double p = params.p;
-    const double Dn = params.Dn;
-    // Камера
     const double L = 622;
-    const double DKr = params.DKr;
 
-    //Кольцо плавающей головки
-    double D_ring = 396;//внутренный диаметр колца
-    double s1_ring = 40;// толщина фланца
-    double S_ring = 30;//толщина кольца
-
-    SPtr<MbSolid> pKozhuh(CreateUnionKzh_IP(params.Dvne, params.L_Base, params.s, params.p, params.DKr, params.Dn, params.Dy)); //Кожух
-    SPtr<MbSolid> pKamera(CreateUnionKamera_IP(L, params.Dvne, params.p, params.DKr, params.Dn, params.Dy, params.s)); //Камера
+    SPtr<MbSolid> pKozhuh(CreateUnionKzh_IP(params.Dv_Kzh, params.L_Base, params.s, params.p, params.DKr, params.Dn, params.Dy)); //Кожух
+    SPtr<MbSolid> pKamera(CreateUnionKamera_IP(L, params.Dv_Kzh, params.p, params.DKr, params.Dn, params.Dy, params.s)); //Камера
 
     SPtr<MbSolid> pKrKameraEl(CreateKrKameraEll_IP(params));//Крышка на камере эллипс
-    SPtr<MbSolid> pKrKamera(CreateUnionCover_IP(params.Dy, params.p, 6, params.Dvne, params.DKr)); //Крышка на камере снизу
-    SPtr<MbSolid> pKrKamera1(CreateUnionCover_IP(params.Dy, params.p, 7, params.Dvne, params.DKr)); //Крышка на камере вверху
-    SPtr<MbSolid> pKrBig(CreateUnionCover_IP(params.Dy, params.p, 11, params.Dvne, params.DKr)); //Крышка самая большая
-    SPtr<MbSolid> pKrVtorayaSverhu(CreateUnionCover_IP(params.Dy, params.p, 10, params.Dvne, params.DKr)); //Крышка вторая сверху
-    SPtr<MbSolid> pKrTretyaSverhu(CreateUnionCover_IP(params.Dy, params.p, 9, params.Dvne, params.DKr)); //Крышка третья сверху
-    SPtr<MbSolid> pKrFirstNis(CreateUnionCover_IP(params.Dy, params.p, 3, params.Dvne, params.DKr)); //Крышка первая внизу
-    SPtr<MbSolid> pKrsamSmall(CreateUnionCover_IP(params.Dy, params.p, 4, params.Dvne, params.DKr)); //Крышка вторая внизу
-    SPtr<MbSolid> pKrNaSkose(CreateUnionCover_IP(params.Dy, params.p, 5, params.Dvne, params.DKr)); //Крышка третья внизу
-    SPtr<MbSolid> pKrSboku(CreateUnionCover_IP(params.Dy, params.p, 1, params.Dvne, params.DKr)); //Крышка сбоку
-    SPtr<MbSolid> pStoika(CreateStoyka_IP(params.Dvne, params.L_Base)); //Cтойка
-    SPtr<MbSolid> pReshNePod(CreateOsnovaNePodResh_IP(params.Dvne, params.p, params.DKr)); //Неподвижная решетка
-    SPtr<MbSolid> pPeregorodka(CreateOsnovaPeregorodka_IP(params.Dvne, params.p, params.DKr /*S1,D3*/));//Перегородка
-    SPtr<MbSolid> pReshetkaPod(CreateOsnovaReshPod_IP(params.Dvne, params.p, params.DKr /*S,D2,D5*/));//Подвижная решетка
-    SPtr<MbSolid> pRingPL(CreateRingOn_IP(params.Dvne, params.p, params.DKr));//Кольцо плавающей головки
-    SPtr<MbSolid> pKrPlGol(CreateKrPlGol_IP(params));//Крышка плавающей головки
-    SPtr<MbSolid> pPipe1(CreatePipe_IP(params.Dvne, params.p, params.DKr));//Труба
+    SPtr<MbSolid> pKrKamera(CreateUnionCover_IP(params.Dy, params.p, 6, params.Dv_Kzh, params.DKr)); //Крышка на камере снизу
+    SPtr<MbSolid> pKrKamera1(CreateUnionCover_IP(params.Dy, params.p, 7, params.Dv_Kzh, params.DKr)); //Крышка на камере вверху
+    SPtr<MbSolid> pKrBig(CreateUnionCover_IP(params.Dy, params.p, 11, params.Dv_Kzh, params.DKr)); //Крышка самая большая
+    SPtr<MbSolid> pKrVtorayaSverhu(CreateUnionCover_IP(params.Dy, params.p, 10, params.Dv_Kzh, params.DKr)); //Крышка вторая сверху
+    SPtr<MbSolid> pKrTretyaSverhu(CreateUnionCover_IP(params.Dy, params.p, 9, params.Dv_Kzh, params.DKr)); //Крышка третья сверху
+    SPtr<MbSolid> pKrFirstNis(CreateUnionCover_IP(params.Dy, params.p, 3, params.Dv_Kzh, params.DKr)); //Крышка первая внизу
+    SPtr<MbSolid> pKrsamSmall(CreateUnionCover_IP(params.Dy, params.p, 4, params.Dv_Kzh, params.DKr)); //Крышка вторая внизу
+    SPtr<MbSolid> pKrNaSkose(CreateUnionCover_IP(params.Dy, params.p, 5, params.Dv_Kzh, params.DKr)); //Крышка третья внизу
+    SPtr<MbSolid> pKrSboku(CreateUnionCover_IP(params.Dy, params.p, 1, params.Dv_Kzh, params.DKr)); //Крышка сбоку
+    SPtr<MbSolid> pStoika(CreateStoyka_IP(params.Dv_Kzh, params.L_Base, params.s)); //Cтойка
+    SPtr<MbSolid> pReshNePod(CreateOsnovaNePodResh_IP(params.Dv_Kzh, params.p, params.DKr)); //Неподвижная решетка
+    SPtr<MbSolid> pPeregorodka(CreateOsnovaPeregorodka_IP(params.Dv_Kzh, params.p, params.DKr /*S1,D3*/));//Перегородка
+    SPtr<MbSolid> pReshetkaPod(CreateOsnovaReshPod_IP(params.Dv_Kzh, params.p, params.DKr /*S,D2,D5*/));//Подвижная решетка
+    SPtr<MbSolid> pRingPL(CreateRingOn_IP(params.Dv_Kzh, params.p, params.DKr));//Кольцо плавающей головки
+    SPtr<MbSolid> pKrPlGol(CreateKrPlGol_IP(params.p, params.Dv_Kzh, params.DKr));//Крышка плавающей головки
+    SPtr<MbSolid> pPipe1(CreatePipe_IP(params.Dv_Kzh, params.p, params.DKr));//Труба
 
     pKozhuh->SetColor(255, 204, 255);
     pKamera->SetColor(255, 204, 255);
@@ -2329,39 +2316,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIP(ConfigParams_IP params)
 
     pReshetkaPod->Rotate(ayVert, M_PI / 2);
     pReshetkaPod->Rotate(azVert, M_PI / 2);
-    /*
-         if (params.Dvne == 840) {
-            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, -(params.Dvne - 366 / 2) - 180, 0)));
-            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(params.L_Base - 6000 - L/2 - 86 - 700 + 500/2, 0, 0)));
-         }
-          else if (params.Dvne == 1040) {
-            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, -(params.Dvne - 470 / 2) - 180, 0)));
-            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(params.L_Base - 6000 - L / 2 - 86 - 700 + 500 / 2, 0, 0)));
-        }
-          else if (params.Dvne == 1240) {
-            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, -(params.Dvne - 568 / 2) - 180, 0)));
-            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(params.L_Base - 6000 - L / 2 - 86 - 700 + 500 / 2, 0, 0)));
-        }
-         else if (params.Dvne == 1440) {
-            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, -(params.Dvne - 660 / 2) - 180, 0)));
-            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(params.L_Base - 6000 - L / 2 - 86 - 700 + 500 / 2, 0, 0)));
-        }
-         else if (params.Dvne == 1640) {
-            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, -(params.Dvne - 760 / 2) - 180, 0)));
-            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(params.L_Base - 6000 - L / 2 - 86 - 700 + 500 / 2, 0, 0)));
-        }
-         else if ((params.Dvne == 1840) && (params.DKr == 1000)) {
-            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, -(params.Dvne - 862 / 2) - 180, 0)));
-            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(params.L_Base - 6000 - L / 2 - 86 - 700 + 500 / 2, 0, 0)));
-        }
-         else  if ((params.Dvne == 1840) && (params.DKr == 1100)) {
-            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, -(params.Dvne - 962 / 2) - 180, 0)));
-            pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(params.L_Base - 6000 - L / 2 - 86 - 700 + 500 / 2, 0, 0)));
-        }
-         else  if (params.Dvne == 2040) {
-             pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, -(params.Dvne - 1060 / 2) - 180, 0)));
-             pPipe1->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(params.L_Base - 6000 - L / 2 - 86 - 700 + 500 / 2, 0, 0)));
-         }*/
+
     MbPlacement3D lcs;
     SPtr<MbInstance> comp1(new MbInstance(*pKozhuh, lcs));
     SPtr<MbInstance> comp2(new MbInstance(*pKamera, lcs));
@@ -2638,7 +2593,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIP(ConfigParams_IP params)
 
 
         int face = 0;
-        switch (params.Dvne) {
+        switch (params.Dv_Kzh) {
         case 800:
             face = 200;
             break;
@@ -2668,8 +2623,61 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIP(ConfigParams_IP params)
 
 
     }
+
+
     assm->EvaluateConstraints();
 
+    string CasingName = "0";
+    string KameraName = "1";
+    string CoverEllipticKameraName = "2";
+    string CoverName = "3";
+    string StoikaName = "4";
+    string FixedPipeGrateName = "5";
+    string PeregorodkaName = "6";
+    string MovablePipeGrateName = "7";
+    string RingName = "8";
+    string FloatingHeadCoverName = "9";
+    string PipesName = "10";
+
+    MbProductInfo CasingProductInfo(false, CasingName, CasingName, CasingName);
+    MbProductInfo KameraProductInfo(false, KameraName, KameraName, KameraName);
+    MbProductInfo CoverEllipticKameraProductInfo(false, CoverEllipticKameraName, CoverEllipticKameraName, CoverEllipticKameraName);
+    MbProductInfo CoverProductInfo(false, CoverName, CoverName, CoverName);
+    MbProductInfo StoikaProductInfo(false, StoikaName, StoikaName, StoikaName);
+    MbProductInfo FixedPipeGrateProductInfo(false, FixedPipeGrateName, FixedPipeGrateName, FixedPipeGrateName);
+    MbProductInfo PeregorodkaProductInfo(false, PeregorodkaName, PeregorodkaName, PeregorodkaName);
+    MbProductInfo MovablePipeGrateProductInfo(false, MovablePipeGrateName, MovablePipeGrateName, MovablePipeGrateName);
+    MbProductInfo RingProductInfo(false, RingName, RingName, RingName);
+    MbProductInfo FloatingHeadCoverProductInfo(false, FloatingHeadCoverName, FloatingHeadCoverName, FloatingHeadCoverName);
+    MbProductInfo PipesProductInfo(false, PipesName, PipesName, PipesName);
+
+    MbProductInfo AssemblyInfo(false, "IP", "IP", "IP");
+
+    comp1->AddAttribute(CasingProductInfo);
+    comp2->AddAttribute(KameraProductInfo);
+    comp3->AddAttribute(CoverEllipticKameraProductInfo);
+    comp4->AddAttribute(CoverProductInfo);
+    comp5->AddAttribute(CoverProductInfo);
+    comp6->AddAttribute(CoverProductInfo);
+    comp7->AddAttribute(CoverProductInfo);
+    comp8->AddAttribute(CoverProductInfo);
+    comp9->AddAttribute(CoverProductInfo);
+    comp10->AddAttribute(CoverProductInfo);
+    comp11->AddAttribute(CoverProductInfo);
+    comp12->AddAttribute(CoverProductInfo);
+    comp13->AddAttribute(StoikaProductInfo);
+    comp14->AddAttribute(StoikaProductInfo);
+    comp15->AddAttribute(FixedPipeGrateProductInfo);
+    comp16->AddAttribute(PeregorodkaProductInfo);
+    comp17->AddAttribute(PeregorodkaProductInfo);
+    comp18->AddAttribute(PeregorodkaProductInfo);
+    comp19->AddAttribute(PeregorodkaProductInfo);
+    comp20->AddAttribute(MovablePipeGrateProductInfo);
+    comp21->AddAttribute(RingProductInfo);
+    comp22->AddAttribute(FloatingHeadCoverProductInfo);
+    comp23->AddAttribute(PipesProductInfo);
+
+    assm->AddAttribute(AssemblyInfo);
     return assm;
 }
 
