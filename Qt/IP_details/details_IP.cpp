@@ -200,6 +200,7 @@ static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, int DKr, double s, int Dv
 
     //сбоку на эллиптическом днище
     if (id == 1) {
+        if (p == 1.6) {
             Dy = 200;
             D = 335;
             D2 = 268;
@@ -210,50 +211,104 @@ static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, int DKr, double s, int Dv
             D1 = 295;
             d = 23;
             num = 12;
+        }
+        else if (p == 2.5) {
+            Dy = 200;
+            D = 360;
+            D2 = 278;
+            b = 21;
+            Dm = 245;
+            Dn = 222;
+            H = 180;
+            D1 = 310;
+            d = 27;
+            num = 12;
+        }
     }
 
     //третий снизу
     if (id == 4) {
-        Dy = 50;
-        D = 160;
-        D2 = 102;
-        b = 13;
-        Dm = 76;
-        Dn = 58;
-        H = 110;
-        D1 = 125;
-        d = 18;
-        num = 4;
+        if (p == 1.6) {
+            Dy = 50;
+            D = 160;
+            D2 = 102;
+            b = 13;
+            Dm = 76;
+            Dn = 58;
+            H = 110;
+            D1 = 125;
+            d = 18;
+            num = 4;
+        }
+        else if (p == 2.5) {
+            Dy = 50;
+            D = 160;
+            D2 = 102;
+            b = 17;
+            Dm = 76;
+            Dn = 58;
+            H = 110;
+            D1 = 125;
+            d = 18;
+            num = 4;
+        }
     }
 
     //второй сверху
     if (id == 10) {
-        Dy = 80;
-        D = 185;
-        D2 = 128;
-        b = 17;
-        Dm = 110;
-        Dn = 90;
-        H = 130;
-        D1 = 160;
-        d = 18;
-        num = 4;
+        if (p == 1.6) {
+            Dy = 80;
+            D = 185;
+            D2 = 128;
+            b = 17;
+            Dm = 110;
+            Dn = 90;
+            H = 130;
+            D1 = 160;
+            d = 18;
+            num = 4;
+        }
+        else if (p == 2.5) {
+            Dy = 80;
+            D = 195;
+            D2 = 138;
+            b = 19;
+            Dm = 110;
+            Dn = 90;
+            H = 130;
+            D1 = 160;
+            d = 18;
+            num = 4;
+        }
     }
 
     //первый сверху
     if (id == 11) {
-        Dy = 500;
-        D = 710;
-        D2 = 610;
-        b = 38;
-        Dm = 559;
-        Dn = 535;
-        H = 220;
-        D1 = 650;
-        d = 33;
-        num = 20;
+        if (p == 1.6) {
+            Dy = 500;
+            D = 710;
+            D2 = 610;
+            b = 38;
+            Dm = 559;
+            Dn = 535;
+            H = 220;
+            D1 = 650;
+            d = 33;
+            num = 20;
+        }
+        else if (p == 2.5) {
+            Dy = 500;
+            D = 730;
+            D2 = 615;
+            b = 44;
+            Dm = 570;
+            Dn = 535;
+            H = 220;
+            D1 = 660;
+            d = 40;
+            num = 20;
+        }
     }
-
 
     // на лофте  
     if (id == 5) {
@@ -350,7 +405,7 @@ static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, int DKr, double s, int Dv
                 break;
             }
         }
-        if (p == 2.5) {
+        else if (p == 2.5) {
             switch (Dv_Kzh) {
             case 800:
                 Dy = 200;
@@ -361,7 +416,7 @@ static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, int DKr, double s, int Dv
                 Dn = 222;
                 H = 180;
                 D1 = 310;
-                d = 23;
+                d = 27;
                 num = 12;
                 break;
 
@@ -369,12 +424,12 @@ static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, int DKr, double s, int Dv
                 Dy = 200;
                 D = 360;
                 D2 = 278;
-                b = 21;
+                b = 27;
                 Dm = 245;
                 Dn = 222;
                 H = 180;
                 D1 = 310;
-                d = 23;
+                d = 27;
                 num = 12;
                 break;
 
@@ -382,24 +437,24 @@ static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, int DKr, double s, int Dv
                 Dy = 250;
                 D = 425;
                 D2 = 335;
-                b = 23;
+                b = 29;
                 Dm = 300;
-                Dn = 248;
+                Dn = 278;
                 H = 180;
                 D1 = 370;
-                d = 23;
+                d = 30;
                 num = 12;
                 break;
             case 1400:
                 Dy = 250;
                 D = 425;
                 D2 = 335;
-                b = 23;
+                b = 29;
                 Dm = 300;
-                Dn = 248;
+                Dn = 278;
                 H = 180;
                 D1 = 370;
-                d = 23;
+                d = 30;
                 num = 12;
                 break;
 
@@ -407,12 +462,12 @@ static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, int DKr, double s, int Dv
                 Dy = 250;
                 D = 425;
                 D2 = 335;
-                b = 23;
+                b = 29;
                 Dm = 300;
-                Dn = 248;
+                Dn = 278;
                 H = 180;
                 D1 = 370;
-                d = 23;
+                d = 30;
                 num = 12;
                 break;
 
@@ -420,12 +475,12 @@ static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, int DKr, double s, int Dv
                 Dy = 250;
                 D = 425;
                 D2 = 335;
-                b = 23;
+                b = 29;
                 Dm = 300;
-                Dn = 248;
+                Dn = 278;
                 H = 180;
                 D1 = 370;
-                d = 23;
+                d = 30;
                 num = 12;
                 break;
 
@@ -433,12 +488,12 @@ static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, int DKr, double s, int Dv
                 Dy = 250;
                 D = 425;
                 D2 = 335;
-                b = 23;
+                b = 29;
                 Dm = 300;
-                Dn = 248;
+                Dn = 278;
                 H = 180;
                 D1 = 370;
-                d = 23;
+                d = 30;
                 num = 12;
                 break;
             }
@@ -541,19 +596,18 @@ static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, int DKr, double s, int Dv
                 break;
             }
         }
-
-        if (p == 2.5) {
+        else if (p == 2.5) {
             switch (Dv_Kzh) {
             case 800:
                 Dy = 100;
                 D = 230;
                 D2 = 162;
-                b = 16;
+                b = 21;
                 Dm = 132;
                 Dn = 110;
                 H = 180;
                 D1 = 190;
-                d = 18;
+                d = 23;
                 num = 8;
                 break;
 
@@ -561,12 +615,12 @@ static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, int DKr, double s, int Dv
                 Dy = 100;
                 D = 230;
                 D2 = 162;
-                b = 16;
+                b = 21;
                 Dm = 132;
                 Dn = 110;
                 H = 180;
                 D1 = 190;
-                d = 18;
+                d = 23;
                 num = 8;
                 break;
 
@@ -574,12 +628,12 @@ static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, int DKr, double s, int Dv
                 Dy = 150;
                 D = 300;
                 D2 = 218;
-                b = 18;
+                b = 25;
                 Dm = 186;
                 Dn = 161;
                 H = 180;
                 D1 = 250;
-                d = 22;
+                d = 27;
                 num = 8;
                 break;
 
@@ -587,12 +641,12 @@ static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, int DKr, double s, int Dv
                 Dy = 150;
                 D = 300;
                 D2 = 218;
-                b = 18;
+                b = 25;
                 Dm = 186;
                 Dn = 161;
                 H = 180;
                 D1 = 250;
-                d = 22;
+                d = 27;
                 num = 8;
                 break;
 
@@ -600,12 +654,12 @@ static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, int DKr, double s, int Dv
                 Dy = 150;
                 D = 300;
                 D2 = 218;
-                b = 18;
+                b = 25;
                 Dm = 186;
                 Dn = 161;
                 H = 180;
                 D1 = 250;
-                d = 22;
+                d = 27;
                 num = 8;
                 break;
 
@@ -613,33 +667,35 @@ static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, int DKr, double s, int Dv
                 Dy = 150;
                 D = 300;
                 D2 = 218;
-                b = 18;
+                b = 25;
                 Dm = 186;
                 Dn = 161;
                 H = 180;
                 D1 = 250;
-                d = 22;
+                d = 27;
                 num = 8;
                 break;
 
             case 2000:
                 Dy = 200;
-                D = 335;
-                D2 = 268;
+                D = 360;
+                D2 = 278;
                 b = 21;
-                Dm = 240;
+                Dm = 245;
                 Dn = 222;
-                H = 170;
-                D1 = 295;
-                d = 23;
-                num = 8;
+                H = 180;
+                D1 = 310;
+                d = 27;
+                num = 12;
                 break;
+
             }
         }
     }
 
     //третий сверху
     if (id == 9) {
+        if (p == 1.6) {
             switch (Dv_Kzh) {
             case 800:
                 Dy = 250;
@@ -733,116 +789,105 @@ static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, int DKr, double s, int Dv
                 break;
             }
         }
-
-    //камера
-    if (id == 6) {
-            switch (DKr) {
-            case 500:
-                Dy = 150;
-                D = 280;
-                D2 = 212;
-                b = 19;
-                Dm = 180;
-                Dn = 161;
-                H = 180;
-                D1 = 240;
-                d = 23;
-                num = 8;
-                break;
-
-            case 600:
-                Dy = 200;
-                D = 335;
-                D2 = 268;
-                b = 21;
-                Dm = 240;
-                Dn = 222;
-                H = 170;
-                D1 = 295;
-                d = 23;
-                num = 8;
-                break;
-
-            case 700:
-                Dy = 250;
-                D = 405;
-                D2 = 320;
-                b = 23;
-                Dm = 292;
-                Dn = 278;
-                H = 180;
-                D1 = 355;
-                d = 23;
-                num = 8;
-                break;
-
+        else if (p == 2.5) {
+            switch (Dv_Kzh) {
             case 800:
                 Dy = 250;
-                D = 405;
-                D2 = 320;
-                b = 23;
-                Dm = 292;
+                D = 425;
+                D2 = 335;
+                b = 30;
+                Dm = 300;
                 Dn = 278;
                 H = 180;
-                D1 = 355;
-                d = 23;
-                num = 8;
-                break;
-
-            case 900: 
-                Dy = 300;
-                D = 460;
-                D2 = 378;
-                b = 24;
-                Dm = 346;
-                Dn = 330;
-                H = 200;
-                D1 = 410;
-                d = 27;
-                num = 8;
+                D1 = 370;
+                d = 30;
+                num = 12;
                 break;
 
             case 1000:
-                Dy = 250;
-                D = 405;
-                D2 = 320;
-                b = 23;
-                Dm = 292;
-                Dn = 278;
+                Dy = 300;
+                D = 485;
+                D2 = 390;
+                b = 32;
+                Dm = 352;
+                Dn = 330;
                 H = 180;
-                D1 = 355;
-                d = 23;
-                num = 8;
+                D1 = 430;
+                d = 30;
+                num = 12;
                 break;
 
-            case 1100:
-                Dy = 250;
-                D = 405;
-                D2 = 320;
-                b = 23;
-                Dm = 292;
-                Dn = 278;
-                H = 180;
-                D1 = 355;
-                d = 23;
-                num = 8;
-                break;
             case 1200:
-                Dy = 250;
-                D = 405;
-                D2 = 320;
-                b = 23;
-                Dm = 292;
-                Dn = 278;
+                Dy = 350;
+                D = 550;
+                D2 = 450;
+                b = 36;
+                Dm = 406;
+                Dn = 382;
                 H = 180;
-                D1 = 355;
-                d = 23;
-                num = 8;
+                D1 = 490;
+                d = 33;
+                num = 12;
                 break;
 
+            case 1400:
+                Dy = 400;
+                D = 610;
+                D2 = 505;
+                b = 40;
+                Dm = 464;
+                Dn = 432;
+                H = 220;
+                D1 = 550;
+                d = 33;
+                num = 12;
+                break;
+
+            case 1600:
+                Dy = 400;
+                D = 610;
+                D2 = 505;
+                b = 40;
+                Dm = 464;
+                Dn = 432;
+                H = 220;
+                D1 = 550;
+                d = 33;
+                num = 12;
+                break;
+
+            case 1800:
+                Dy = 400;
+                D = 610;
+                D2 = 505;
+                b = 40;
+                Dm = 464;
+                Dn = 432;
+                H = 220;
+                D1 = 550;
+                d = 30;
+                num = 12;
+                break;
+
+            case 2000:
+                Dy = 400;
+                D = 610;
+                D2 = 505;
+                b = 40;
+                Dm = 464;
+                Dn = 432;
+                H = 220;
+                D1 = 550;
+                d = 33;
+                num = 12;
+                break;
             }
         }
-    if (id == 7) { //камера
+    }
+
+    //камера
+    if ((id == 6) || (id == 7)) {
+        if (p == 1.6) {
             switch (DKr) {
             case 500:
                 Dy = 150;
@@ -934,7 +979,6 @@ static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, int DKr, double s, int Dv
                 d = 23;
                 num = 8;
                 break;
-
             case 1200:
                 Dy = 250;
                 D = 405;
@@ -947,8 +991,117 @@ static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, int DKr, double s, int Dv
                 d = 23;
                 num = 8;
                 break;
+
             }
         }
+        else if (p == 2.5) {
+            switch (DKr) {
+            case 500:
+                Dy = 150;
+                D = 300;
+                D2 = 218;
+                b = 25;
+                Dm = 186;
+                Dn = 161;
+                H = 180;
+                D1 = 250;
+                d = 27;
+                num = 8;
+                break;
+
+            case 600:
+                Dy = 200;
+                D = 360;
+                D2 = 278;
+                b = 27;
+                Dm = 245;
+                Dn = 222;
+                H = 180;
+                D1 = 310;
+                d = 27;
+                num = 12;
+                break;
+
+            case 700:
+                Dy = 250;
+                D = 425;
+                D2 = 335;
+                b = 29;
+                Dm = 300;
+                Dn = 278;
+                H = 180;
+                D1 = 370;
+                d = 30;
+                num = 12;
+                break;
+
+            case 800:
+                Dy = 250;
+                D = 425;
+                D2 = 335;
+                b = 29;
+                Dm = 300;
+                Dn = 278;
+                H = 180;
+                D1 = 370;
+                d = 30;
+                num = 12;
+                break;
+
+            case 900:
+                Dy = 300;
+                D = 485;
+                D2 = 390;
+                b = 32;
+                Dm = 352;
+                Dn = 330;
+                H = 200;
+                D1 = 430;
+                d = 30;
+                num = 8;
+                break;
+
+            case 1000:
+                Dy = 250;
+                D = 425;
+                D2 = 335;
+                b = 29;
+                Dm = 300;
+                Dn = 278;
+                H = 180;
+                D1 = 370;
+                d = 30;
+                num = 12;
+                break;
+
+            case 1100:
+                Dy = 250;
+                D = 425;
+                D2 = 335;
+                b = 29;
+                Dm = 300;
+                Dn = 278;
+                H = 180;
+                D1 = 370;
+                d = 30;
+                num = 12;
+                break;
+            case 1200:
+                Dy = 250;
+                D = 425;
+                D2 = 335;
+                b = 29;
+                Dm = 300;
+                Dn = 278;
+                H = 180;
+                D1 = 370;
+                d = 30;
+                num = 12;
+                break;
+
+            }
+        }
+    }
 
     //фланец на кожухе для соединения с камерой
     if (id == 13) {
@@ -1035,7 +1188,7 @@ static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, int DKr, double s, int Dv
             D = 1355;
             D2 = 1210;
             b = 63;
-            Dm = 944;
+            Dm = 1160;
             Dn = DKrVne;
             H = 86;
             D1 = 1270;
@@ -1748,7 +1901,7 @@ SPtr<MbSolid> ParametricModelCreator::CreateUnionKzh_IP(int Dv_Kzh, double L_Bas
     const double height = 6000; //высота
     double bigD;
 
-    if (p == 1.6) {
+   
         switch (Dv_Kzh) {
         case 800: 
             bigD = 366;
@@ -1778,7 +1931,7 @@ SPtr<MbSolid> ParametricModelCreator::CreateUnionKzh_IP(int Dv_Kzh, double L_Bas
             bigD = 1052;
             break;
         }
-    }
+    
 
     RPArray<MbContour>* ptrContours = new RPArray<MbContour>();
     double x;
@@ -1997,10 +2150,156 @@ SPtr<MbSolid> ParametricModelCreator::CreateUnionKzh_IP(int Dv_Kzh, double L_Bas
              D = 1020;
              d = 40;
              D1 = 950;
-             h = 4;
+             h = 5;
              h1 = 4;
              break;
          }
+     }
+     else if (p == 2.5) {
+         switch (Dy) {
+         case 50:
+             b = 14;
+             d2 = 46;
+             D2 = 102;
+             D = 160;
+             d = 18;
+             D1 = 125;
+             h = 3;
+             h1 = 2;
+             break;
+         case 65:
+             b = 16;
+             d2 = 60;
+             D2 = 122;
+             D = 180;
+             d = 18;
+             D1 = 145;
+             h = 3;
+             h1 = 2;
+             break;
+         case 80:
+             b = 18;
+             d2 = 76;
+             D2 = 138;
+             D = 195;
+             d = 18;
+             D1 = 160;
+             h = 3;
+             h1 = 2;
+             break;
+         case 100:
+             b = 20;
+             d2 = 94;
+             D2 = 162;
+             D = 230;
+             d = 23;
+             D1 = 190;
+             h = 3;
+             h1 = 2;
+             break;
+         case 125:
+             b = 22;
+             d2 = 118;
+             D2 = 188;
+             D = 270;
+             d = 27;
+             D1 = 220;
+             h = 3;
+             h1 = 2;
+             break;
+         case 150:
+             b = 24;
+             d2 = 142;
+             D2 = 218;
+             D = 300;
+             d = 27;
+             D1 = 250;
+             h = 3;
+             h1 = 2;
+             break;
+         case 200:
+             b = 26;
+             d2 = 196;
+             D2 = 278;
+             D = 360;
+             d = 30;
+             D1 = 310;
+             h = 3;
+             h1 = 2;
+             break;
+         case 250:
+             b = 30;
+             d2 = 244;
+             D2 = 335;
+             D = 425;
+             d = 30;
+             D1 = 370;
+             h = 3;
+             h1 = 2;
+             break;
+         case 300:
+             b = 34;
+             d2 = 294;
+             D2 = 390;
+             D = 485;
+             d = 30;
+             D1 = 430;
+             h = 4;
+             h1 = 3;
+             break;
+         case 350:
+             b = 38;
+             d2 = 344;
+             D2 = 450;
+             D = 550;
+             d = 33;
+             D1 = 490;
+             h = 4;
+             h1 = 3;
+             break;
+         case 400:
+             b = 40;
+             d2 = 390;
+             D2 = 505;
+             D = 610;
+             d = 33;
+             D1 = 550;
+             h = 4;
+             h1 = 3;
+             break;
+         case 500:
+             b = 48;
+             d2 = 490;
+             D2 = 615;
+             D = 730;
+             d = 40;
+             D1 = 660;
+             h = 4;
+             h1 = 3;
+             break;
+         case 600:
+             b = 50;
+             d2 = 590;
+             D2 = 720;
+             D = 840;
+             d = 40;
+             D1 = 770;
+             h = 5;
+             h1 = 4;
+             break;
+         case 800:
+             b = 63;
+             d2 = 780;
+             D2 = 930;
+             D = 1075;
+             d = 46;
+             D1 = 990;
+             h = 5;
+             h1 = 4;
+             break;
+         }
+
+
      }
 
 
@@ -2187,7 +2486,7 @@ SPtr<MbSolid> ParametricModelCreator::CreateUnionCover_IP(int Dy, double p, int 
     }
 
     //камера
-    if (id == 6) {
+    if ((id == 6) || (id == 7)) {
         switch (DKr) {
         case 500:
             Dy = 150;
@@ -2222,42 +2521,6 @@ SPtr<MbSolid> ParametricModelCreator::CreateUnionCover_IP(int Dy, double p, int 
 
         }
     }
-    if (id == 7) { //камера
-        switch (DKr) {
-        case 500:
-            Dy = 150;
-            break;
-
-        case 600:
-            Dy = 200;
-            break;
-
-        case 700:
-            Dy = 250;
-            break;
-
-        case 800:
-            Dy = 250;
-            break;
-
-        case 900:
-            Dy = 300;
-            break;
-
-        case 1000:
-            Dy = 250;
-            break;
-
-        case 1100:
-            Dy = 250;
-            break;
-
-        case 1200:
-            Dy = 250;
-            break;
-        }
-    }
-
 
     if (p == 1.6) {
         switch (Dy) {
@@ -2346,9 +2609,97 @@ SPtr<MbSolid> ParametricModelCreator::CreateUnionCover_IP(int Dy, double p, int 
             num = 24;
             break;
         }
-
     }
 
+    else if (p == 2.5) {
+        switch (Dy) {
+        case 50:
+            b = 14;
+            d = 18;
+            D1 = 125;
+            num = 4;
+            break;
+        case 65:
+            b = 16;
+            d = 18;
+            D1 = 145;
+            num = 4;
+            break;
+        case 80:
+            b = 18;
+            d = 18;
+            D1 = 160;
+            num = 4;
+            break;
+        case 100:
+            b = 20;
+            d = 23;
+            D1 = 190;
+            num = 8;
+            break;
+        case 125:
+            b = 22;
+            d = 27;
+            D1 = 220;
+            num = 8;
+            break;
+        case 150:
+            b = 24;
+            d = 27;
+            D1 = 250;
+            num = 8;
+            break;
+        case 200:
+            b = 26;
+            d = 27;
+            D1 = 310;
+            num = 8;
+            break;
+        case 250:
+            b = 30;
+            d = 30;
+            D1 = 370;
+            num = 12;
+            break;
+        case 300:
+            b = 34;
+            d = 30;
+            D1 = 410;
+            num = 12;
+            break;
+        case 350:
+            b = 38;
+            d = 33;
+            D1 = 490;
+            num = 12;
+            break;
+        case 400:
+            b = 40;
+            d = 33;
+            D1 = 550;
+            num = 12;
+            break;
+        case 500:
+            b = 48;
+            d = 40;
+            D1 = 660;
+            num = 20;
+            break;
+        case 600:
+            b = 50;
+            d = 40;
+            D1 = 770;
+            num = 20;
+            break;
+        case 800:
+            b = 63;
+            d = 46;
+            D1 = 990;
+            num = 24;
+            break;
+        }
+
+    }
 
      SolidSPtr KrBase = CreateBaseCover(Dy, p);
      SolidSPtr KrWithOtv = CreateMassivOtv_IP(KrBase, b, d/2, D1, 0., num, axisX, 0, 0);
@@ -2367,6 +2718,63 @@ SPtr<MbSolid> ParametricModelCreator::CreateUnionCover_IP(int Dy, double p, int 
          switch (Dv_Kzh) {
          case 800:
              S = 40;
+             D2 = 396;
+             d = 26;
+             num = 12;
+             break;
+         case 1000:
+             S = 45;
+             D2 = 496;
+             d = 26;
+             num = 12;
+             break;
+         case 1200:
+             S = 55;
+             D2 = 592;
+             d = 26;
+             num = 12;
+             break;
+         case 1400:
+             S = 60;
+             D2 = 690;
+             d = 26;
+             num = 12;
+             break;
+         case 1600:
+             S = 65;
+             D2 = 790;
+             d = 26;
+             num = 12;
+             break;
+         case 1800:
+             if (DKr == 1000) {
+                 S = 70;
+                 D2 = 890;
+                 d = 26;
+                 num = 12;
+                 break;
+             }
+             if (DKr == 1100) {
+                 S = 75;
+                 D2 = 990;
+                 d = 26;
+                 num = 12;
+                 break;
+             }
+         case 2000:
+             S = 75;
+             D2 = 1090;
+             d = 26;
+             num = 12;
+             break;
+
+         }
+     }
+
+     else if (p == 2.5) {
+         switch (Dv_Kzh) {
+         case 800:
+             S = 50;
              D2 = 396;
              d = 26;
              num = 12;
@@ -2594,7 +3002,7 @@ static SPtr<MbSolid> CreateOtvVPeregorodka(SPtr<MbSolid> OsnovaPereg, int Dv_Kzh
     RPArray<MbContour>* ptrContoursR = new RPArray<MbContour>();
 
     double bigD;
-    if (p == 1.6) {
+    
         switch (Dv_Kzh) {
         case 800:
             bigD = 366;
@@ -2624,7 +3032,7 @@ static SPtr<MbSolid> CreateOtvVPeregorodka(SPtr<MbSolid> OsnovaPereg, int Dv_Kzh
             bigD = 1052;
             break;
         }
-    }
+    
 
     double x;
     double y;
@@ -2682,7 +3090,6 @@ static SPtr<MbSolid> CreateOtvVPeregorodka(SPtr<MbSolid> OsnovaPereg, int Dv_Kzh
      int S1;
      int D3;
 
-     if (p == 1.6) {
          switch (Dv_Kzh) {
          case 800:
              S1 = 10;
@@ -2721,7 +3128,8 @@ static SPtr<MbSolid> CreateOtvVPeregorodka(SPtr<MbSolid> OsnovaPereg, int Dv_Kzh
              break;
 
          }
-     }
+     
+     
 
     //// Создание массива точек для контура.
     SArray<MbCartPoint> arrPnts1(4);
@@ -2765,6 +3173,55 @@ SPtr<MbSolid> ParametricModelCreator::CreateOsnovaNePodResh_IP(int Dv_Kzh, doubl
         case 800:
             S = 40;
             D1 = 563;
+            D4 = 496;
+            break;
+        case 1000:
+            S = 45;
+            D1 = 663;
+            D4 = 596;
+            break;
+        case 1200:
+            S = 55;
+            D1 = 773;
+            D4 = 695;
+            break;
+        case 1400:
+            S = 60;
+            D1 = 875;
+            D4 = 795;
+            break;
+        case 1600:
+            S = 65;
+            D1 = 977;
+            D4 = 895;
+            break;
+        case 1800:
+            if (DKr == 1000) {
+                S = 70;
+                D1 = 1078;
+                D4 = 995;
+                break;
+            }
+            if (DKr == 1100) {
+                S = 75;
+                D1 = 1188;
+                D4 = 1095;
+                break;
+            }
+        case 2000:
+            S = 75;
+            D1 = 1266;
+            D4 = 1060;
+            break;
+
+        }
+    }
+
+    else if (p == 2.5) {
+        switch (Dv_Kzh) {
+        case 800:
+            S = 50;
+            D1 = 557;
             D4 = 496;
             break;
         case 1000:
@@ -2903,6 +3360,54 @@ SPtr<MbSolid> ParametricModelCreator::CreateOsnovaReshPod_IP(int Dv_Kzh, double 
         }
     }
 
+    else if (p == 2.5) {
+        switch (Dv_Kzh) {
+        case 800:
+            S = 50;
+            D2 = 396;
+            D5 = 372;
+            break;
+        case 1000:
+            S = 45;
+            D2 = 496;
+            D5 = 470;
+            break;
+        case 1200:
+            S = 55;
+            D2 = 592;
+            D5 = 568;
+            break;
+        case 1400:
+            S = 60;
+            D2 = 690;
+            D5 = 660;
+            break;
+        case 1600:
+            S = 65;
+            D2 = 790;
+            D5 = 760;
+            break;
+        case 1800:
+            if (DKr == 1000) {
+                S = 70;
+                D2 = 890;
+                D5 = 862;
+                break;
+            }
+            if (DKr == 1100) {
+                S = 75;
+                D2 = 990;
+                D5 = 962;
+                break;
+            }
+        case 2000:
+            S = 75;
+            D2 = 1090;
+            D5 = 1060;
+            break;
+
+        }
+    }
     //// Создание массива точек для контура.
     SArray<MbCartPoint> arrPnts(8);
     arrPnts.Add(MbCartPoint(0, 0));
@@ -3295,6 +3800,47 @@ SPtr<MbSolid> ParametricModelCreator::CreateKrPlGol_IP(double p, int Dv_Kzh, int
         case 800:
             D2 = 396;
             S = 40;
+            break;
+        case 1000:
+            D2 = 496;
+            S = 45;
+            break;
+        case 1200:
+            D2 = 592;
+            S = 55;
+            break;
+        case 1400:
+            D2 = 690;
+            S = 60;
+            break;
+        case 1600:
+            D2 = 790;
+            S = 65;
+            break;
+        case 1800:
+            if (DKr == 1000) {
+                D2 = 890;
+                S = 70;
+                break;
+            }
+            if (DKr == 1100) {
+                D2 = 990;
+                S = 75;
+                break;
+            }
+        case 2000:
+            D2 = 1090;
+            S = 75;
+            break;
+
+        }
+    }
+
+    else if (p == 2.5) {
+        switch (Dv_Kzh) {
+        case 800:
+            D2 = 396;
+            S = 50;
             break;
         case 1000:
             D2 = 496;
