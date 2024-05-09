@@ -123,6 +123,9 @@ public:
         {u8"1800У-2,5-2,5-М4/20-6-2-Т", 1840, 7950, 20, 1.6, 1800, 1140, 1100, 562, 1.6},
         {u8"2000У-2,5-2,5-М4/20-6-2-Т", 2040, 8210, 20, 1.6, 2000, 1240, 1200, 562, 1.6},
     };
+public:
+    QGroupBox* getFiltersGroupBox() const { return gr_Wfilters; }
+    QGroupBox* getSelectionsGroupBox() const { return gr_WSelections; }
 private:
     void initWidgets();
     void applyParameter(const ExplodeDispatcher::ControlParameterType paramType, const Variant& data, std::array<bool, 3> params);
@@ -157,7 +160,8 @@ private:
     void calculateThickness(QLineEdit* innerTubesLineEdit, QLineEdit* outerTubesLineEdit, QLineEdit* gridsLineEdit, QDoubleSpinBox* lengthSpinBox);
     void onReconfigureButtonClicked();
     QAction* createActionButton(const QString& fileName, QGroupBox* groupFilter, QHBoxLayout* fGroupLayout);
-    QGroupBox* OTDELNAYAFUNCTHIYA();
+    QGroupBox* createFilterGroupBox();
+    QGroupBox* createSelectionGroupBox();
 private:
     ExplodeDispatcher m_explodeDispatcher;
     std::map<ExplodeDispatcher::ControlParameterType, QWidget*> m_widgetsMap;
@@ -173,6 +177,9 @@ private:
     QGroupBox* m_warmParams              = nullptr;
     QLabel* m_labelLevel                 = nullptr;
     QLabel* m_labelSelectAssembly        = nullptr;
+
+    QGroupBox* gr_Wfilters = nullptr;
+    QGroupBox* gr_WSelections = nullptr;
     std::string m_mainTabName            = "";
     const std::string m_tabNameSeparator = "_";
     bool m_isSelectionDisabled = true;

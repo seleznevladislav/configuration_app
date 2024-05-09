@@ -1,4 +1,5 @@
 ﻿#include "explodewidget.h"
+#include "explodemanager.h"
 
 #include <vsn_application.h>
 #include <QApplication>
@@ -150,7 +151,7 @@ int main(int argc, char** argv)
     mainWindow.setWindowTitle(QStringLiteral("Электронная модель теплообменника"));
 
     ExplodeWidget* pOpenScene = new ExplodeWidget();
-
+    auto explodeManager = pOpenScene->getExplodeManager();
     QtVision::QtAutoHideWindow* pAutoHideWindow = pOpenScene->createHeadToolbar();
     pAutoHideWindow->toolBar()->setAllowedAreas(Qt::RightToolBarArea);
 
@@ -181,63 +182,16 @@ int main(int argc, char** argv)
     mainWindow.addToolBar(Qt::LeftToolBarArea, commandBar);
 
     ///////////////////////////////////////////////////////////////////////////
-    // Create control widgets
-    ///////////////////////////////////////////////////////////////////////////
-    /*QGroupBox* groupFile = new QGroupBox(&widget);
-    groupFile->setTitle(QObject::tr("File"));
-    QFormLayout* fileLayout = new QFormLayout(groupFile);
-    fileLayout->setMargin(2); fileLayout->setSpacing(2);
-
-    QHBoxLayout* rowLayoutFile = new QHBoxLayout();
-    fileLayout->addRow(rowLayoutFile);
-    QCommandLinkButton* openFullScene = new QCommandLinkButton();
-    openFullScene->setText(QObject::tr("Open Scene"));
-    openFullScene->setIcon(QIcon(":/res/add_fromfile_32.png"));
-    openFullScene->setIconSize(QSize(32, 32));
-    rowLayoutFile->addWidget(openFullScene);
-    QObject::connect(openFullScene, SIGNAL(released()), pOpenScene, SLOT(loadModel()));
-    fileLayout->addRow(rowLayoutFile);*/
-
-    ///////////////////////////////////////////////////////////////////////////
     // Explode
     QFontMetrics fm(pOpenScene->font());
     QRect rcFont = fm.boundingRect('X');
     int heightButton = (rcFont.height() + rcFont.width()) + 4;
     QGroupBox* groupExpl = pOpenScene->createGroupExplode(widget, heightButton, u8"Сцена");
-
-   
-
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Colors for selection
-    ///////////////////////////////////////////////////////////////////////////
-    QGroupBox* colorsGroupBox = new QGroupBox();
-    QVBoxLayout* vGroupLayoutColors = new QVBoxLayout(colorsGroupBox);
-    colorsGroupBox->setTitle(QStringLiteral("Опции селектирования"));
-    QCheckBox* highlightBox = new QCheckBox(QStringLiteral("Динамическое выделение"));
-    highlightBox->setChecked(true);
-    QObject::connect(highlightBox, SIGNAL(stateChanged(int)), pOpenScene, SLOT(slotDynamicHighlighting(int)));
-
-    ColorButton* highlightColor = new ColorButton(colorsGroupBox);
-    highlightColor->setText(QStringLiteral("Выделение"));
-    highlightColor->setColor(pOpenScene->highlightColor());
-    QObject::connect(highlightColor, SIGNAL(colorChanged(const QColor&)), pOpenScene, SLOT(slotHighlightColor(const QColor&)));
-    ColorButton* selectionColor = new ColorButton(colorsGroupBox);
-    selectionColor->setText(QStringLiteral("Селектирование"));
-    selectionColor->setColor(pOpenScene->selectionColor());
-    QObject::connect(selectionColor, SIGNAL(colorChanged(const QColor&)), pOpenScene, SLOT(slotSelectionColor(const QColor&)));
-    vGroupLayoutColors->addWidget(highlightBox);
-    vGroupLayoutColors->addWidget(highlightColor);
-    vGroupLayoutColors->addWidget(selectionColor);    
     
     ///////////////////////////////////////////////////////////////////////////
     // Add all containers in right menu
     ///////////////////////////////////////////////////////////////////////////
-    // TOZO: кнопка для отображения модели, не нужна, есть уже в толбаре
-    // vLayout->addWidget(groupFile, 0, Qt::AlignTop);
     vLayout->addWidget(groupExpl, 0, Qt::AlignTop);
-    //vLayout->addWidget(groupFilter, 0, Qt::AlignTop);
-    vLayout->addWidget(colorsGroupBox, 0, Qt::AlignTop);
 
     ///////////////////////////////////////////////////////////////////////////
     // Create menu bar and menus
@@ -263,8 +217,6 @@ int main(int argc, char** argv)
     QObject::connect(save3dFile, &QAction::triggered, pOpenScene, [=]() {
         pOpenScene->saveModel();
         });
-
-    // Add actions in menu view
     
     // Add actions in menu options
     QAction* showUnshowColors = new QAction(QStringLiteral("Скрыть/показать цвета"), optionsMenu);
@@ -273,7 +225,7 @@ int main(int argc, char** argv)
     optionsMenu->addAction(showUnshowColors);
 
     QObject::connect(showUnshowColors, &QAction::triggered, pOpenScene, [=]() {
-        pOpenScene->slotToggleVisibility(showUnshowColors->isChecked(), colorsGroupBox);
+        pOpenScene->slotToggleVisibility(showUnshowColors->isChecked(), explodeManager->getFiltersGroupBox());
         });
 
     QAction* showUnshowSelectors = new QAction(QStringLiteral("Скрыть/показать выделение"), optionsMenu);
@@ -281,9 +233,9 @@ int main(int argc, char** argv)
     showUnshowSelectors->setChecked(true);
     optionsMenu->addAction(showUnshowSelectors);
 
-    /*QObject::connect(showUnshowSelectors, &QAction::triggered, pOpenScene, [=]() {
-        pOpenScene->slotToggleVisibility(showUnshowSelectors->isChecked(), groupFilter);
-        });*/
+    QObject::connect(showUnshowSelectors, &QAction::triggered, pOpenScene, [=]() {
+        pOpenScene->slotToggleVisibility(showUnshowSelectors->isChecked(), explodeManager->getSelectionsGroupBox());
+        });
 
     // Show window
     QtVision::setWindowPosition(mainWindow);

@@ -130,6 +130,7 @@ public:
     SceneSegment* modelSegment() const { return m_pModelSeg; }
     SceneSegment* assemblySegment() const; // Get the main assembly node.
     SelectionManagerPtr selectManager() const { return m_ptrSelectManager; }
+    ExplodeManager* getExplodeManager() const { return m_pExplodeManager; }
 
     QGroupBox* createGroupExplode(QWidget& widget, const int heightButton, const std::string& mainTabName);
     void showContextMenu(const QPoint& pos);
