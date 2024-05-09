@@ -17,6 +17,8 @@
 
 #include <last.h>
 
+static QSize sizeIcons = QSize(32, 32);
+
 /* ExplodeManager */
 ExplodeManager::ExplodeManager(ExplodeWidget* pExplodeWidget)
     : QObject(nullptr)
@@ -511,7 +513,7 @@ QGroupBox* ExplodeManager::createFilterGroupBox()
 {
     gr_Wfilters = createGroupBox(u8"Фильтры", true, false, true);
     QHBoxLayout* fGroupLayout = new QHBoxLayout(gr_Wfilters);
-    fGroupLayout->setMargin(0); fGroupLayout->setSpacing(0);
+    fGroupLayout->setMargin(10); fGroupLayout->setSpacing(0);
 
     QActionGroup* actionGroupFilter = new QActionGroup(m_pExplodeWidget);
     actionGroupFilter->setExclusive(false);
@@ -552,6 +554,31 @@ QGroupBox* ExplodeManager::createSelectionGroupBox()
     vGroupLayoutColors->addWidget(selectionColor);
 
     return gr_WSelections;
+}
+
+QGroupBox* ExplodeManager::createRenderingGroupBox()
+{
+    gr_WRendering = createGroupBox(u8"Режим рендера", true, false, true);
+
+    QHBoxLayout* fGroupLayout = new QHBoxLayout(gr_WRendering);
+    fGroupLayout->setMargin(10); fGroupLayout->setSpacing(0);
+
+    QActionGroup* actionGroupFilter = new QActionGroup(m_pExplodeWidget);
+
+    QAction* bodyFilterButton = createActionButton(":/res/renderMods/dimmedWireframe.png", gr_WRendering, fGroupLayout);
+    bodyFilterButton->setToolTip(QStringLiteral("1"));
+    bodyFilterButton->setChecked(true); // Set checked default true because you can select body from start
+
+    actionGroupFilter->addAction(bodyFilterButton);
+    actionGroupFilter->addAction(createActionButton(":/res/renderMods/shaded.png", gr_WRendering, fGroupLayout))->setToolTip(QStringLiteral("2"));
+    actionGroupFilter->addAction(createActionButton(":/res/renderMods/wirefrm.png", gr_WRendering, fGroupLayout))->setToolTip(QStringLiteral("3"));
+    actionGroupFilter->addAction(createActionButton(":/res/renderMods/hiddenremoved.png", gr_WRendering, fGroupLayout))->setToolTip(QStringLiteral("4"));
+
+    m_pExplodeWidget->setGroupFilter(actionGroupFilter);
+    QObject::connect(actionGroupFilter, SIGNAL(triggered(QAction*)), m_pExplodeWidget, SLOT(slotRenderTriggered(QAction*)));
+
+
+    return gr_WRendering;
 }
 
 QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightButton, const std::string& mainTabName)
@@ -657,6 +684,7 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
     m_vLayoutTab->addWidget(createExplodingGroupBox());
     m_vLayoutTab->addWidget(createFilterGroupBox());
     m_vLayoutTab->addWidget(createSelectionGroupBox());
+    m_vLayoutTab->addWidget(createRenderingGroupBox());
 
     return tabWidget;
 }

@@ -127,6 +127,7 @@ public:
     QGroupBox* getExplodingGroupBox() const { return gr_WExploding; }
     QGroupBox* getFiltersGroupBox() const { return gr_Wfilters; }
     QGroupBox* getSelectionsGroupBox() const { return gr_WSelections; }
+    QGroupBox* getRenderingGroupBox() const { return gr_WRendering; }
 private:
     void initWidgets();
     void applyParameter(const ExplodeDispatcher::ControlParameterType paramType, const Variant& data, std::array<bool, 3> params);
@@ -164,6 +165,7 @@ private:
     QGroupBox* createExplodingGroupBox();
     QGroupBox* createFilterGroupBox();
     QGroupBox* createSelectionGroupBox();
+    QGroupBox* createRenderingGroupBox();
 private:
     ExplodeDispatcher m_explodeDispatcher;
     std::map<ExplodeDispatcher::ControlParameterType, QWidget*> m_widgetsMap;
@@ -185,6 +187,7 @@ private:
     QGroupBox* gr_WExploding = nullptr;
     QGroupBox* gr_Wfilters = nullptr;
     QGroupBox* gr_WSelections = nullptr;
+    QGroupBox* gr_WRendering = nullptr;
     /// <summary>
     /// Vars for create tabs in tab panel
     /// </summary>

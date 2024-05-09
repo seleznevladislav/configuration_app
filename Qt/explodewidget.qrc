@@ -38,5 +38,9 @@
         <file>res/draws/ttrm.png</file>
         <file>res/calculate.png</file>
         <file>res/dimensions.png</file>
+        <file>res/renderMods/dimmedWireframe.png</file>
+        <file>res/renderMods/hiddenremoved.png</file>
+        <file>res/renderMods/shaded.png</file>
+        <file>res/renderMods/wirefrm.png</file>
     </qresource>
 </RCC>

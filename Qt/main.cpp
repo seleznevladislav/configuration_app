@@ -117,19 +117,6 @@ static QWidget* labelEdit(QVBoxLayout* vGroupLayout, const QString& str, bool do
         vGroupLayout->addLayout(hGroupLayout);
     return lineEdit;
 }
-
-QToolButton* createToolButton(const QIcon& icon, QLayout* layout, bool checkable = true, const char* nameProp = nullptr, int value = 0)
-{
-    QToolButton* button = new QToolButton();
-    button->setCheckable(checkable);
-    button->setIconSize(sizeIcons);
-    button->setIcon(icon);
-    if (nameProp)
-        button->setProperty(nameProp, QVariant(value));
-    layout->addWidget(button);
-    return button;
-}
-
 // ---
 int main(int argc, char** argv)
 {
@@ -240,11 +227,18 @@ int main(int argc, char** argv)
         pOpenScene->slotToggleVisibility(showUnshowSelectors->isChecked(), explodeManager->getSelectionsGroupBox());
         });
     
-
+    QAction* showUnshowRenders = new QAction(QStringLiteral("Скрыть/показать рендеринг"), optionsMenu);
+    showUnshowRenders->setCheckable(true);
+    showUnshowRenders->setChecked(true);
+    QObject::connect(showUnshowRenders, &QAction::triggered, pOpenScene, [=]() {
+        pOpenScene->slotToggleVisibility(showUnshowRenders->isChecked(), explodeManager->getRenderingGroupBox());
+        });
+    
 
     optionsMenu->addAction(showUnshowExploding);
     optionsMenu->addAction(showUnshowColors);
     optionsMenu->addAction(showUnshowSelectors);
+    optionsMenu->addAction(showUnshowRenders);
 
     // Show window
     QtVision::setWindowPosition(mainWindow);
