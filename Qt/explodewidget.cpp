@@ -1002,24 +1002,21 @@ void ExplodeWidget::loadModel()
 // ---
 void ExplodeWidget::saveModel()
 {
+    if (m_pModel == nullptr)
+        return;
     const QString lastUserPath;
-    QStringList filters;
-    filters.append("Files *.c3d");
+    QStringList filters = QtVision::openSaveFilters();
     QString oneLineFilters = filters.join("\n");
 #ifdef Q_OS_WIN
     const QString fileName = QFileDialog::getSaveFileName(this, tr("Save Model"), lastUserPath, oneLineFilters);
 #else 
     const QString fileName = QFileDialog::getSaveFileName(this, tr("Save Model"), lastUserPath, oneLineFilters, nullptr, QFileDialog::DontUseNativeDialog);
 #endif 
-
     if (!fileName.isEmpty())
     {
-        auto test = c3d::WToPathstring(fileName.toStdWString());
         QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
         MbeConvResType readRes = cnv_Success;
-        MbAssembly& solvedAssembly = solver()->SolverAssembly();
-        SaveConstraintSystem(*solver(), solver()->SolverAssembly());
-        readRes = c3d::ExportIntoFile(*m_pModel, test);
+        readRes = c3d::ExportIntoFile(*m_pModel, c3d::WToPathstring(fileName.toStdWString()));
         if (readRes != cnv_Success)
             vsnWarning("Model write error");
         QApplication::restoreOverrideCursor();
