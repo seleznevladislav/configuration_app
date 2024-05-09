@@ -124,6 +124,7 @@ public:
         {u8"2000У-2,5-2,5-М4/20-6-2-Т", 2040, 8210, 20, 1.6, 2000, 1240, 1200, 562, 1.6},
     };
 public:
+    QGroupBox* getExplodingGroupBox() const { return gr_WExploding; }
     QGroupBox* getFiltersGroupBox() const { return gr_Wfilters; }
     QGroupBox* getSelectionsGroupBox() const { return gr_WSelections; }
 private:
@@ -160,6 +161,7 @@ private:
     void calculateThickness(QLineEdit* innerTubesLineEdit, QLineEdit* outerTubesLineEdit, QLineEdit* gridsLineEdit, QDoubleSpinBox* lengthSpinBox);
     void onReconfigureButtonClicked();
     QAction* createActionButton(const QString& fileName, QGroupBox* groupFilter, QHBoxLayout* fGroupLayout);
+    QGroupBox* createExplodingGroupBox();
     QGroupBox* createFilterGroupBox();
     QGroupBox* createSelectionGroupBox();
 private:
@@ -177,9 +179,15 @@ private:
     QGroupBox* m_warmParams              = nullptr;
     QLabel* m_labelLevel                 = nullptr;
     QLabel* m_labelSelectAssembly        = nullptr;
-
+    /// <summary>
+    /// GroupBoxes Scene Widget
+    /// </summary>
+    QGroupBox* gr_WExploding = nullptr;
     QGroupBox* gr_Wfilters = nullptr;
     QGroupBox* gr_WSelections = nullptr;
+    /// <summary>
+    /// Vars for create tabs in tab panel
+    /// </summary>
     std::string m_mainTabName            = "";
     const std::string m_tabNameSeparator = "_";
     bool m_isSelectionDisabled = true;

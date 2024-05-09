@@ -219,23 +219,32 @@ int main(int argc, char** argv)
         });
     
     // Add actions in menu options
-    QAction* showUnshowColors = new QAction(QStringLiteral("Скрыть/показать цвета"), optionsMenu);
+    QAction* showUnshowExploding = new QAction(QStringLiteral("Скрыть/показать разлёт"), optionsMenu);
+    showUnshowExploding->setCheckable(true);
+    showUnshowExploding->setChecked(true);
+    QObject::connect(showUnshowExploding, &QAction::triggered, pOpenScene, [=]() {
+        pOpenScene->slotToggleVisibility(showUnshowExploding->isChecked(), explodeManager->getExplodingGroupBox());
+        });
+
+    QAction* showUnshowColors = new QAction(QStringLiteral("Скрыть/показать фильтры"), optionsMenu);
     showUnshowColors->setCheckable(true);
     showUnshowColors->setChecked(true);
-    optionsMenu->addAction(showUnshowColors);
-
     QObject::connect(showUnshowColors, &QAction::triggered, pOpenScene, [=]() {
         pOpenScene->slotToggleVisibility(showUnshowColors->isChecked(), explodeManager->getFiltersGroupBox());
         });
 
-    QAction* showUnshowSelectors = new QAction(QStringLiteral("Скрыть/показать выделение"), optionsMenu);
+    QAction* showUnshowSelectors = new QAction(QStringLiteral("Скрыть/показать селектирование"), optionsMenu);
     showUnshowSelectors->setCheckable(true);
     showUnshowSelectors->setChecked(true);
-    optionsMenu->addAction(showUnshowSelectors);
-
     QObject::connect(showUnshowSelectors, &QAction::triggered, pOpenScene, [=]() {
         pOpenScene->slotToggleVisibility(showUnshowSelectors->isChecked(), explodeManager->getSelectionsGroupBox());
         });
+    
+
+
+    optionsMenu->addAction(showUnshowExploding);
+    optionsMenu->addAction(showUnshowColors);
+    optionsMenu->addAction(showUnshowSelectors);
 
     // Show window
     QtVision::setWindowPosition(mainWindow);
