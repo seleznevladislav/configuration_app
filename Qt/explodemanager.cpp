@@ -81,6 +81,7 @@ void ExplodeManager::initWidgets()
     QTabBar* tabBar = m_tabWidget->tabBar();
     QTabBar::ButtonPosition closeSide = (QTabBar::ButtonPosition)tabBar->style()->styleHint(QStyle::SH_TabBar_CloseButtonPosition, 0/*, this*/);
     tabBar->setTabButton(0, closeSide, 0);
+    tabBar->setTabButton(1, closeSide, 0);
     m_parametersForUpdateGUI = m_explodeDispatcher.GetControlParameters();
 }
 
