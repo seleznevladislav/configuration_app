@@ -144,6 +144,7 @@ public Q_SLOTS:
     void setRenderingMode();
     void configureModel(int index);
     void slotFilterTriggered(QAction*);
+    void slotRenderTriggered(QAction*);
     void slotToggleVisibility(bool checked, QGroupBox* groupBox);
     void slotHighlightColor(const QColor& clr);
     void slotSelectionColor(const QColor& clr);

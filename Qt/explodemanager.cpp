@@ -17,6 +17,8 @@
 
 #include <last.h>
 
+static QSize sizeIcons = QSize(32, 32);
+
 /* ExplodeManager */
 ExplodeManager::ExplodeManager(ExplodeWidget* pExplodeWidget)
     : QObject(nullptr)
@@ -69,10 +71,12 @@ void ExplodeManager::initWidgets()
 {
     m_isSelectionDisabled = false;
     m_groupExpl->setEnabled(true);
-    m_tabWidget->setTabsClosable(false);
+    m_tabWidget->setTabsClosable(true);
 
-    /*for (int idx = m_tabWidget->count() - 1; idx > 0; --idx)
-        tabWidgetCloseRequested(idx);*/
+    const int amountOfMainTabs = 2;
+
+    for (int idx = m_tabWidget->count() - amountOfMainTabs; idx > 0; --idx)
+        tabWidgetCloseRequested(idx);
 
     QTabBar* tabBar = m_tabWidget->tabBar();
     QTabBar::ButtonPosition closeSide = (QTabBar::ButtonPosition)tabBar->style()->styleHint(QStyle::SH_TabBar_CloseButtonPosition, 0/*, this*/);
@@ -478,13 +482,38 @@ QAction* ExplodeManager::createActionButton(const QString& fileName, QGroupBox* 
     return actFilter;
 }
 
+QGroupBox* ExplodeManager::createExplodingGroupBox()
+{
+    gr_WExploding = createGroupBox(u8"Разлёт сборки", true, false, true);
+    m_vLayoutTab->addWidget(gr_WExploding);
+
+    QVBoxLayout* vLayoutExplodeButtons = createVBoxLayout(gr_WExploding);
+
+    QHBoxLayout* hLayoutRadiosExplodeFrom = new QHBoxLayout();
+    vLayoutExplodeButtons->addLayout(hLayoutRadiosExplodeFrom);
+
+    QRadioButton* radioExplodeFromItem = createRadioButton(ED::cpt_ExplodeFromItem, hLayoutRadiosExplodeFrom, u8"От выбранной детали", false);
+    QObject::connect(radioExplodeFromItem, &QRadioButton::toggled, this, &ExplodeManager::radiosExplodeFromToggled);
+
+    QRadioButton* radioExplodeFromCenter = createRadioButton(ED::cpt_ExplodeFromCenter, hLayoutRadiosExplodeFrom, u8"От центра сборки", true);
+    QObject::connect(radioExplodeFromCenter, &QRadioButton::toggled, this, &ExplodeManager::radiosExplodeFromToggled);
+
+    auto pairSliderLabelExplode = createSliderWithLabel(ED::cpt_Explode, "", vLayoutExplodeButtons, "");
+    int labelExplodeWidth = pairSliderLabelExplode.second->sizeHint().width();
+    QObject::connect(pairSliderLabelExplode.first, &QSlider::valueChanged, this, &ExplodeManager::slidersExplodeValueChanged);
+
+    auto pairSliderLabelSpeed = createSliderWithLabel(ED::cpt_Speed, u8"Чувствительность:", vLayoutExplodeButtons, "");
+    pairSliderLabelSpeed.second->setMinimumWidth(labelExplodeWidth);
+    QObject::connect(pairSliderLabelSpeed.first, &QSlider::valueChanged, this, &ExplodeManager::slidersExplodeValueChanged);
+
+    return gr_WExploding;
+}
+
 QGroupBox* ExplodeManager::createFilterGroupBox()
 {
-    gr_Wfilters = new QGroupBox();
-    gr_Wfilters->setFlat(true);
-    gr_Wfilters->setTitle(QStringLiteral("Фильтр"));
+    gr_Wfilters = createGroupBox(u8"Фильтры", true, false, true);
     QHBoxLayout* fGroupLayout = new QHBoxLayout(gr_Wfilters);
-    fGroupLayout->setMargin(0); fGroupLayout->setSpacing(0);
+    fGroupLayout->setMargin(10); fGroupLayout->setSpacing(0);
 
     QActionGroup* actionGroupFilter = new QActionGroup(m_pExplodeWidget);
     actionGroupFilter->setExclusive(false);
@@ -506,10 +535,8 @@ QGroupBox* ExplodeManager::createFilterGroupBox()
 
 QGroupBox* ExplodeManager::createSelectionGroupBox()
 {
-    gr_WSelections = new QGroupBox();
-    gr_WSelections->setFlat(true);
+    gr_WSelections = createGroupBox(u8"Опции селектирования", true, false, true);
     QVBoxLayout* vGroupLayoutColors = new QVBoxLayout(gr_WSelections);
-    gr_WSelections->setTitle(QStringLiteral("Опции селектирования"));
     QCheckBox* highlightBox = new QCheckBox(QStringLiteral("Динамическое выделение"));
     highlightBox->setChecked(true);
     QObject::connect(highlightBox, SIGNAL(stateChanged(int)), m_pExplodeWidget, SLOT(slotDynamicHighlighting(int)));
@@ -527,6 +554,31 @@ QGroupBox* ExplodeManager::createSelectionGroupBox()
     vGroupLayoutColors->addWidget(selectionColor);
 
     return gr_WSelections;
+}
+
+QGroupBox* ExplodeManager::createRenderingGroupBox()
+{
+    gr_WRendering = createGroupBox(u8"Режим рендера", true, false, true);
+
+    QHBoxLayout* fGroupLayout = new QHBoxLayout(gr_WRendering);
+    fGroupLayout->setMargin(10); fGroupLayout->setSpacing(0);
+
+    QActionGroup* actionGroupFilter = new QActionGroup(m_pExplodeWidget);
+
+    QAction* bodyFilterButton = createActionButton(":/res/renderMods/dimmedWireframe.png", gr_WRendering, fGroupLayout);
+    bodyFilterButton->setToolTip(QStringLiteral("1"));
+    bodyFilterButton->setChecked(true); // Set checked default true because you can select body from start
+
+    actionGroupFilter->addAction(bodyFilterButton);
+    actionGroupFilter->addAction(createActionButton(":/res/renderMods/shaded.png", gr_WRendering, fGroupLayout))->setToolTip(QStringLiteral("2"));
+    actionGroupFilter->addAction(createActionButton(":/res/renderMods/wirefrm.png", gr_WRendering, fGroupLayout))->setToolTip(QStringLiteral("3"));
+    actionGroupFilter->addAction(createActionButton(":/res/renderMods/hiddenremoved.png", gr_WRendering, fGroupLayout))->setToolTip(QStringLiteral("4"));
+
+    m_pExplodeWidget->setGroupFilter(actionGroupFilter);
+    QObject::connect(actionGroupFilter, SIGNAL(triggered(QAction*)), m_pExplodeWidget, SLOT(slotRenderTriggered(QAction*)));
+
+
+    return gr_WRendering;
 }
 
 QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightButton, const std::string& mainTabName)
@@ -628,30 +680,11 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
     QPushButton* buttonReset = createButton(ED::cpt_ResetExplodeView, hLayoutButtonsCreate, u8"Сбросить", u8"Сбросить настройки сцены");
     QObject::connect(buttonReset, &QPushButton::pressed, this, &ExplodeManager::buttonsPressed);
 
-    QGroupBox* groupExplodeButtonGroup = createGroupBox(u8"Разлёт сборки", true, false, true);
-    m_vLayoutTab->addWidget(groupExplodeButtonGroup);
-
-    QVBoxLayout* vLayoutExplodeButtons = createVBoxLayout(groupExplodeButtonGroup);
-
-    QHBoxLayout* hLayoutRadiosExplodeFrom = new QHBoxLayout();
-    vLayoutExplodeButtons->addLayout(hLayoutRadiosExplodeFrom);
-
-    QRadioButton* radioExplodeFromItem = createRadioButton(ED::cpt_ExplodeFromItem, hLayoutRadiosExplodeFrom, u8"От выбранной детали", false);
-    QObject::connect(radioExplodeFromItem, &QRadioButton::toggled, this, &ExplodeManager::radiosExplodeFromToggled);
     
-    QRadioButton* radioExplodeFromCenter = createRadioButton(ED::cpt_ExplodeFromCenter, hLayoutRadiosExplodeFrom, u8"От центра сборки", true);
-    QObject::connect(radioExplodeFromCenter, &QRadioButton::toggled, this, &ExplodeManager::radiosExplodeFromToggled);
-
-    auto pairSliderLabelExplode = createSliderWithLabel(ED::cpt_Explode, "", vLayoutExplodeButtons, "");
-    int labelExplodeWidth = pairSliderLabelExplode.second->sizeHint().width();
-    QObject::connect(pairSliderLabelExplode.first, &QSlider::valueChanged, this, &ExplodeManager::slidersExplodeValueChanged);
-
-    auto pairSliderLabelSpeed = createSliderWithLabel(ED::cpt_Speed, u8"Чувствительность:", vLayoutExplodeButtons, "");
-    pairSliderLabelSpeed.second->setMinimumWidth(labelExplodeWidth);
-    QObject::connect(pairSliderLabelSpeed.first, &QSlider::valueChanged, this, &ExplodeManager::slidersExplodeValueChanged);
-
+    m_vLayoutTab->addWidget(createExplodingGroupBox());
     m_vLayoutTab->addWidget(createFilterGroupBox());
     m_vLayoutTab->addWidget(createSelectionGroupBox());
+    m_vLayoutTab->addWidget(createRenderingGroupBox());
 
     return tabWidget;
 }

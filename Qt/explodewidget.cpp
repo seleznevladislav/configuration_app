@@ -835,6 +835,23 @@ void ExplodeWidget::updateActionCheckFilter()
             action->setChecked(filer.CheckFlag(SubVertex));
     }
 }
+////---------------------------------------------------------------------------
+//// Set a different render mode
+//// ---------------------------------------------------------------------------------
+void ExplodeWidget::slotRenderTriggered(QAction* action)
+{
+    if (action->objectName() == QString("ID_:/res/renderMods/dimmedWireframe.png")){
+        graphicsView()->SetRenderMode(RenderMode::rm_ShadedWithEdges);
+    }else if (action->objectName() == QString("ID_:/res/renderMods/shaded.png")) {
+        graphicsView()->SetRenderMode(RenderMode::rm_Shaded);
+    }else if (action->objectName() == QString("ID_:/res/renderMods/wirefrm.png")) {
+        graphicsView()->SetRenderMode(RenderMode::rm_Wireframe);
+    }else if (action->objectName() == QString("ID_:/res/renderMods/hiddenremoved.png")) {
+        graphicsView()->SetRenderMode(RenderMode::rm_HiddenLinesRemoved);
+    }
+    update();
+}
+
 
 //---------------------------------------------------------------------------
 //
