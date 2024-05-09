@@ -478,26 +478,55 @@ QAction* ExplodeManager::createActionButton(const QString& fileName, QGroupBox* 
     return actFilter;
 }
 
-QGroupBox* ExplodeManager::OTDELNAYAFUNCTHIYA()
+QGroupBox* ExplodeManager::createFilterGroupBox()
 {
-    // Actions on select
-    QGroupBox* groupFilter = new QGroupBox();
-    groupFilter->setTitle(QStringLiteral("Фильтр"));
-    QHBoxLayout* fGroupLayout = new QHBoxLayout(groupFilter);
+    gr_Wfilters = new QGroupBox();
+    gr_Wfilters->setFlat(true);
+    gr_Wfilters->setTitle(QStringLiteral("Фильтр"));
+    QHBoxLayout* fGroupLayout = new QHBoxLayout(gr_Wfilters);
     fGroupLayout->setMargin(0); fGroupLayout->setSpacing(0);
 
     QActionGroup* actionGroupFilter = new QActionGroup(m_pExplodeWidget);
     actionGroupFilter->setExclusive(false);
 
-    actionGroupFilter->addAction(createActionButton(":/res/filterbody24x24.png", groupFilter, fGroupLayout))->setToolTip(QStringLiteral("Тело"));
-    actionGroupFilter->addAction(createActionButton(":/res/filterface24x24.png", groupFilter, fGroupLayout))->setToolTip(QStringLiteral("Грань"));
-    actionGroupFilter->addAction(createActionButton(":/res/filteredge24x24.png", groupFilter, fGroupLayout))->setToolTip(QStringLiteral("Ребро"));
-    actionGroupFilter->addAction(createActionButton(":/res/filtervertex24x24.png", groupFilter, fGroupLayout))->setToolTip(QStringLiteral("Точка"));
+    QAction* bodyFilterButton = createActionButton(":/res/filterbody24x24.png", gr_Wfilters, fGroupLayout);
+    bodyFilterButton->setToolTip(QStringLiteral("Тело"));
+    bodyFilterButton->setChecked(true); // Set checked default true because you can select body from start
+
+    actionGroupFilter->addAction(bodyFilterButton);
+    actionGroupFilter->addAction(createActionButton(":/res/filterface24x24.png", gr_Wfilters, fGroupLayout))->setToolTip(QStringLiteral("Грань"));
+    actionGroupFilter->addAction(createActionButton(":/res/filteredge24x24.png", gr_Wfilters, fGroupLayout))->setToolTip(QStringLiteral("Ребро"));
+    actionGroupFilter->addAction(createActionButton(":/res/filtervertex24x24.png", gr_Wfilters, fGroupLayout))->setToolTip(QStringLiteral("Точка"));
 
     m_pExplodeWidget->setGroupFilter(actionGroupFilter);
     QObject::connect(actionGroupFilter, SIGNAL(triggered(QAction*)), m_pExplodeWidget, SLOT(slotFilterTriggered(QAction*)));
 
-    return groupFilter;
+    return gr_Wfilters;
+}
+
+QGroupBox* ExplodeManager::createSelectionGroupBox()
+{
+    gr_WSelections = new QGroupBox();
+    gr_WSelections->setFlat(true);
+    QVBoxLayout* vGroupLayoutColors = new QVBoxLayout(gr_WSelections);
+    gr_WSelections->setTitle(QStringLiteral("Опции селектирования"));
+    QCheckBox* highlightBox = new QCheckBox(QStringLiteral("Динамическое выделение"));
+    highlightBox->setChecked(true);
+    QObject::connect(highlightBox, SIGNAL(stateChanged(int)), m_pExplodeWidget, SLOT(slotDynamicHighlighting(int)));
+
+    ColorButton* highlightColor = new ColorButton(gr_WSelections);
+    highlightColor->setText(QStringLiteral(" Выделение     "));
+    highlightColor->setColor(m_pExplodeWidget->highlightColor());
+    QObject::connect(highlightColor, SIGNAL(colorChanged(const QColor&)), m_pExplodeWidget, SLOT(slotHighlightColor(const QColor&)));
+    ColorButton* selectionColor = new ColorButton(gr_WSelections);
+    selectionColor->setText(QStringLiteral(" Селектирование"));
+    selectionColor->setColor(m_pExplodeWidget->selectionColor());
+    QObject::connect(selectionColor, SIGNAL(colorChanged(const QColor&)), m_pExplodeWidget, SLOT(slotSelectionColor(const QColor&)));
+    vGroupLayoutColors->addWidget(highlightBox);
+    vGroupLayoutColors->addWidget(highlightColor);
+    vGroupLayoutColors->addWidget(selectionColor);
+
+    return gr_WSelections;
 }
 
 QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightButton, const std::string& mainTabName)
@@ -621,9 +650,8 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
     pairSliderLabelSpeed.second->setMinimumWidth(labelExplodeWidth);
     QObject::connect(pairSliderLabelSpeed.first, &QSlider::valueChanged, this, &ExplodeManager::slidersExplodeValueChanged);
 
-    QGroupBox* specialForSashaZarubin = OTDELNAYAFUNCTHIYA();
-    m_vLayoutTab->addWidget(specialForSashaZarubin);
-
+    m_vLayoutTab->addWidget(createFilterGroupBox());
+    m_vLayoutTab->addWidget(createSelectionGroupBox());
 
     return tabWidget;
 }
