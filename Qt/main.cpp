@@ -234,11 +234,19 @@ int main(int argc, char** argv)
         pOpenScene->slotToggleVisibility(showUnshowRenders->isChecked(), explodeManager->getRenderingGroupBox());
         });
     
+    QAction* showUnshowPlaneCutting= new QAction(QStringLiteral("Скрыть/показать сечение"), optionsMenu);
+    showUnshowPlaneCutting->setCheckable(true);
+    showUnshowPlaneCutting->setChecked(false);
+    QObject::connect(showUnshowPlaneCutting, &QAction::triggered, pOpenScene, [=]() {
+        pOpenScene->togglePlaneCuttingVisibility(showUnshowPlaneCutting->isChecked(), explodeManager->getPlaneCuttingGroupBox());
+        });
+    
 
     optionsMenu->addAction(showUnshowExploding);
     optionsMenu->addAction(showUnshowColors);
     optionsMenu->addAction(showUnshowSelectors);
     optionsMenu->addAction(showUnshowRenders);
+    optionsMenu->addAction(showUnshowPlaneCutting);
 
     // Show window
     QtVision::setWindowPosition(mainWindow);

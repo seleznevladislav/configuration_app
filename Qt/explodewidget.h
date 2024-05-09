@@ -19,9 +19,11 @@
 #include <QPushButton>
 #include <QTableWidget>
 #include <QFile>
+#include <QRadioButton>
 
 // USERS
 #include "explodetree.h"
+#include "controller.h"
 
 struct ParamsParser;
 class ExplodeManager;
@@ -152,6 +154,17 @@ public Q_SLOTS:
     QString openSelectModel();
     void saveModel();
     void loadModel();
+    void enableChanged(int visible);
+    void closeChanged(int visible);
+    void invertChanged(int visible);
+    void togglePlaneCuttingVisibility(bool checked, QGroupBox* groupBox);
+    double GetAngle1() const { return m_angle1; }
+    double GetAngle2() const { return m_angle2; }
+    double GetOffset() const { return m_offset; }
+    void controllerChanged(int state);
+    void freeSectionChanged(bool state);
+    void offsetSectionChanged(bool state);
+    void planeSelect(int val);
 public:
     VSN_SLOT(Public, slotUpdateCommands, void slotUpdateCommands());
 protected:
@@ -201,6 +214,12 @@ private:
     QCursor m_curPoint;
 
     QString m_fileName;
+    SectionPlaneId m_curIdPlane;
+    Controller::ControllerViews defaultView = Controller::ControllerViews::directCtrl;
+    Controller* m_controller;
+    double         m_angle1;
+    double         m_angle2;
+    double         m_offset;
 private:
     Q_DISABLE_COPY(ExplodeWidget)
 };

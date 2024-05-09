@@ -582,6 +582,99 @@ QGroupBox* ExplodeManager::createRenderingGroupBox()
     return gr_WRendering;
 }
 
+QGroupBox* ExplodeManager::createCuttingGroupBox()
+{
+    gr_WCutting = createGroupBox(u8"Режим сечения", true, false, true);
+    gr_WCutting->setVisible(false);
+
+    QVBoxLayout* mainVlayu = new QVBoxLayout(gr_WCutting);
+    QHBoxLayout* fGroupLayout = new QHBoxLayout();
+    mainVlayu->addLayout(fGroupLayout);
+    QVBoxLayout* vGroupLayoutColors = new QVBoxLayout();
+    QVBoxLayout* vGroupLayoutColorsSecond = new QVBoxLayout();
+    fGroupLayout->addLayout(vGroupLayoutColors);
+    fGroupLayout->addLayout(vGroupLayoutColorsSecond);
+
+    QCheckBox* enable = new QCheckBox(QStringLiteral("Сечение"));
+    enable->setChecked(true);
+    enable->setMinimumWidth(100);
+
+    QCheckBox* invert = new QCheckBox();
+    invert->setText(QStringLiteral("Сменить направление"));
+    invert->setChecked(false);
+
+    QCheckBox* closed = new QCheckBox();
+    closed->setText(QStringLiteral("Закрытые грани"));
+    closed->setChecked(true);
+
+    vGroupLayoutColors->addWidget(enable);
+    vGroupLayoutColors->addWidget(invert);
+    vGroupLayoutColors->addWidget(closed);
+
+    // check changing section plane with controller
+    QCheckBox* controller = new QCheckBox();
+    controller->setText(QStringLiteral("Режим значений"));
+    controller->setChecked(true);
+
+    // check changing section plane with controller by free section placement
+    m_PfreeSection = new QRadioButton();
+    m_PfreeSection->setText(QStringLiteral("free section placement"));
+    m_PfreeSection->setChecked(false);
+    m_PfreeSection->setEnabled(controller->isChecked());
+
+    // check changing section plane with controller by offset section plane
+    m_PoffsetSection = new QRadioButton();
+    m_PoffsetSection->setText(QStringLiteral("offset section plane"));
+    m_PoffsetSection->setChecked(true);
+    m_PoffsetSection->setEnabled(controller->isChecked());
+
+    vGroupLayoutColorsSecond->addWidget(controller);
+    vGroupLayoutColorsSecond->addWidget(m_PfreeSection);
+    vGroupLayoutColorsSecond->addWidget(m_PoffsetSection);
+
+
+    QObject::connect(enable, SIGNAL(stateChanged(int)), m_pExplodeWidget, SLOT(enableChanged(int)));
+    QObject::connect(invert, SIGNAL(stateChanged(int)), m_pExplodeWidget, SLOT(invertChanged(int)));
+    QObject::connect(closed, SIGNAL(stateChanged(int)), m_pExplodeWidget, SLOT(closeChanged(int)));
+
+    QObject::connect(m_PfreeSection, SIGNAL(toggled(bool)), m_pExplodeWidget, SLOT(freeSectionChanged(bool)));
+    QObject::connect(m_PoffsetSection, SIGNAL(toggled(bool)), m_pExplodeWidget, SLOT(offsetSectionChanged(bool)));
+
+    QHBoxLayout* horizontalLayu = new QHBoxLayout();
+    mainVlayu->addLayout(horizontalLayu);
+    QVBoxLayout* verticales = new QVBoxLayout();
+    horizontalLayu->addLayout(verticales);
+
+    // position offset of section plane
+    m_Poffset = new QDoubleSpinBox();
+    m_Poffset->setRange(-1000, 1000);
+    m_Poffset->setValue(-30);
+    m_Poffset->setEnabled(false);
+
+    // first angle of section plane direction
+    m_Pa1 = new QDoubleSpinBox();
+    m_Pa1->setRange(0, 359);
+    m_Pa1->setValue(90);
+    m_Pa1->setEnabled(false);
+
+    // second angle of section plane direction
+    m_Pa2 = new QDoubleSpinBox();
+    m_Pa2->setRange(0, 359);
+    m_Pa2->setValue(90);
+    m_Pa2->setEnabled(false);
+
+    QFormLayout* formLayout = new QFormLayout();
+    formLayout->addRow(QStringLiteral("Угол 1"), m_Pa1);
+    formLayout->addRow(QStringLiteral("Угол 2"), m_Pa2);
+    formLayout->addRow(QStringLiteral("Смещение"), m_Poffset);
+
+    verticales->addLayout(formLayout);
+    
+    QObject::connect(controller, SIGNAL(stateChanged(int)), m_pExplodeWidget, SLOT(controllerChanged(int)));
+
+    return gr_WCutting;
+}
+
 QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightButton, const std::string& mainTabName)
 {
     m_pWidget = &widget;
@@ -686,6 +779,7 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
     m_vLayoutTab->addWidget(createFilterGroupBox());
     m_vLayoutTab->addWidget(createSelectionGroupBox());
     m_vLayoutTab->addWidget(createRenderingGroupBox());
+    m_vLayoutTab->addWidget(createCuttingGroupBox());
 
     return tabWidget;
 }

@@ -1023,6 +1023,103 @@ void ExplodeWidget::saveModel()
     }
 }
 
+
+void ExplodeWidget::togglePlaneCuttingVisibility(bool checked, QGroupBox* groupBox) {
+    
+    auto tool = graphicsScene()->GetCuttingTool();
+    if (checked) {
+        
+        
+        m_curIdPlane = tool->AddSectionPlane(MbPlacement3D(MbCartPoint3D(-30, -30, -30), MbVector3D(0, 1, 0)));
+        tool->SetEnable(m_curIdPlane, true);
+        m_controller = new Controller(graphicsScene());
+        m_controller->SetSectionPlaneID(m_curIdPlane);
+        m_controller->SetControllerView(defaultView);
+        m_controller->Show();
+        
+    }else{
+        tool->DeleteSectionPlane(m_curIdPlane);
+        m_controller->Hide();
+    }
+
+    if (groupBox) {
+        groupBox->setVisible(checked);
+    }
+
+    update();
+    Object::Connect(viewport(), &Viewport::RefreshScreen, this, &QtOpenGLWidget::repaintWidget);
+}
+
+//-----------------------------------------------------------------------------
+// 
+// ---
+void ExplodeWidget::enableChanged(int enable)
+{
+    graphicsScene()->GetCuttingTool()->SetEnable(m_curIdPlane, !!enable);
+    update();
+}
+
+void ExplodeWidget::closeChanged(int close)
+{
+    graphicsScene()->GetCuttingTool()->CloseSectionPlane(m_curIdPlane, !!close);
+    update();
+}
+
+void ExplodeWidget::invertChanged(int invert)
+{
+    graphicsScene()->GetCuttingTool()->Invert(m_curIdPlane, !!invert);
+    m_controller->UpdateControllerWidget();
+    update();
+}
+
+void ExplodeWidget::freeSectionChanged(bool state)
+{
+    if (state)
+    {
+        defaultView = Controller::xyzCtrl;
+        m_controller->SetControllerView(defaultView);
+    }
+}
+
+void ExplodeWidget::offsetSectionChanged(bool state)
+{
+    if (state)
+    {
+        defaultView = Controller::directCtrl;
+        m_controller->SetControllerView(defaultView);
+    }
+}
+
+void ExplodeWidget::controllerChanged(int state)
+{
+    const bool checkOn = !!state;
+    m_pExplodeManager->getM_Poffset()->setEnabled(!checkOn);
+    m_pExplodeManager->getM_Pa1()->setEnabled(!checkOn);
+    m_pExplodeManager->getM_Pa2()->setEnabled(!checkOn);
+    m_pExplodeManager->getM_PfreeSection()->setEnabled(checkOn);
+    m_pExplodeManager->getM_PoffsetSection()->setEnabled(checkOn);
+    if (!!state) {
+        m_controller->SetControllerView(defaultView);
+        
+    }
+    else
+    {
+        m_controller->SetControllerView(Controller::NoneCtrl);
+        // getParameters();
+    }
+}
+void ExplodeWidget::planeSelect(int val)
+{
+    auto tool = graphicsScene()->GetCuttingTool();
+    tool->SetSurfaceMaterial(m_curIdPlane, nullptr);
+    tool->EnableInteractiveMode(m_curIdPlane, false);
+
+    tool->GetParams(m_curIdPlane, m_angle1, m_angle2, m_offset);
+    tool->EnableInteractiveMode(m_curIdPlane, true);
+
+    m_controller->SetSectionPlaneID(m_curIdPlane);
+}
+
 /*ColorButton*/
 ColorButton::ColorButton(QWidget* parent)
     : QPushButton(parent)

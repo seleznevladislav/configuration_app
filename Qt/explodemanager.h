@@ -128,6 +128,13 @@ public:
     QGroupBox* getFiltersGroupBox() const { return gr_Wfilters; }
     QGroupBox* getSelectionsGroupBox() const { return gr_WSelections; }
     QGroupBox* getRenderingGroupBox() const { return gr_WRendering; }
+    QGroupBox* getPlaneCuttingGroupBox() const { return gr_WCutting; }
+
+    QDoubleSpinBox* getM_Poffset() const { return m_Poffset; }
+    QDoubleSpinBox* getM_Pa1() const { return m_Pa1; }
+    QDoubleSpinBox* getM_Pa2() const { return m_Pa2; }
+    QRadioButton* getM_PfreeSection() const { return m_PfreeSection; }
+    QRadioButton* getM_PoffsetSection() const { return m_PoffsetSection; }
 private:
     void initWidgets();
     void applyParameter(const ExplodeDispatcher::ControlParameterType paramType, const Variant& data, std::array<bool, 3> params);
@@ -166,6 +173,7 @@ private:
     QGroupBox* createFilterGroupBox();
     QGroupBox* createSelectionGroupBox();
     QGroupBox* createRenderingGroupBox();
+    QGroupBox* createCuttingGroupBox();
 private:
     ExplodeDispatcher m_explodeDispatcher;
     std::map<ExplodeDispatcher::ControlParameterType, QWidget*> m_widgetsMap;
@@ -182,12 +190,21 @@ private:
     QLabel* m_labelLevel                 = nullptr;
     QLabel* m_labelSelectAssembly        = nullptr;
     /// <summary>
+    /// vars for cutting plane
+    /// </summary>
+    QDoubleSpinBox* m_Poffset = nullptr;
+    QDoubleSpinBox* m_Pa1 = nullptr;
+    QDoubleSpinBox* m_Pa2 = nullptr;
+    QRadioButton* m_PfreeSection = nullptr;
+    QRadioButton* m_PoffsetSection = nullptr;
+    /// <summary>
     /// GroupBoxes Scene Widget
     /// </summary>
     QGroupBox* gr_WExploding = nullptr;
     QGroupBox* gr_Wfilters = nullptr;
     QGroupBox* gr_WSelections = nullptr;
     QGroupBox* gr_WRendering = nullptr;
+    QGroupBox* gr_WCutting = nullptr;
     /// <summary>
     /// Vars for create tabs in tab panel
     /// </summary>
