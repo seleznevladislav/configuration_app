@@ -174,6 +174,7 @@ public Q_SLOTS:
     void animationSwitchSlot();
     void animation();
     void animationSlot();
+    void toggleCuttingState();
 public:
     VSN_SLOT(Public, slotUpdateCommands, void slotUpdateCommands());
 protected:

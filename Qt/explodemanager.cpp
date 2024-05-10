@@ -452,7 +452,7 @@ QRadioButton* ExplodeManager::createTypeRadioButton(QHBoxLayout* hLayout, const 
     radiobutton->setChecked(checked);
     hLayout->addWidget(radiobutton);
 
-    QObject::connect(radiobutton, &QRadioButton::toggled, this, [this, type](bool checked) {
+    connect(radiobutton, &QRadioButton::toggled, this, [this, type](bool checked) {
         radiosTypeFromToggled(checked, type);
         });
 

@@ -216,6 +216,9 @@ int main(int argc, char** argv)
     QAction* animationAction = new QAction(QStringLiteral("Анимация"), viewMenu);
     animationAction->setShortcut(QKeySequence(Qt::Key_A));
     QObject::connect(animationAction, &QAction::triggered, pOpenScene, &ExplodeWidget::animationSwitchSlot);
+    QAction* cutAction = new QAction(QStringLiteral("Сечение"), viewMenu);
+    cutAction->setShortcut(QKeySequence(Qt::Key_C));
+    QObject::connect(cutAction, &QAction::triggered, pOpenScene, &ExplodeWidget::toggleCuttingState);
     
     // Add actions in menu options
     QAction* showUnshowExploding = new QAction(QStringLiteral("Скрыть/показать разлёт"), optionsMenu);
@@ -254,6 +257,7 @@ int main(int argc, char** argv)
         });
     
     viewMenu->addAction(animationAction);
+    viewMenu->addAction(cutAction);
 
     optionsMenu->addAction(showUnshowExploding);
     optionsMenu->addAction(showUnshowColors);

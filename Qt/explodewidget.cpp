@@ -1071,21 +1071,20 @@ void ExplodeWidget::saveModel()
     }
 }
 
-
 void ExplodeWidget::togglePlaneCuttingVisibility(bool checked, QGroupBox* groupBox) {
     
     auto tool = graphicsScene()->GetCuttingTool();
     if (checked) {
-        
-        
-        m_curIdPlane = tool->AddSectionPlane(MbPlacement3D(MbCartPoint3D(-30, -30, -30), MbVector3D(0, 1, 0)));
+        m_curIdPlane = tool->AddSectionPlane(MbPlacement3D(MbCartPoint3D(-30, -30, -30), MbVector3D(0, -1, 0)));
+        tool->EnableInteractiveMode(m_curIdPlane, true);
         tool->SetEnable(m_curIdPlane, true);
         m_controller = new Controller(graphicsScene());
         m_controller->SetSectionPlaneID(m_curIdPlane);
         m_controller->SetControllerView(defaultView);
         m_controller->Show();
-        
-    }else{
+    }
+    else
+    {
         tool->DeleteSectionPlane(m_curIdPlane);
         m_controller->Hide();
     }
@@ -1268,4 +1267,22 @@ void ExplodeWidget::animation()
 void ExplodeWidget::animationSlot()
 {
     animation();
+}
+
+void ExplodeWidget::toggleCuttingState()
+{
+    auto tool = graphicsScene()->GetCuttingTool();
+
+    if (tool->IsEnabled(m_curIdPlane))
+    {
+        tool->SetEnable(m_curIdPlane, false);
+        m_controller->Hide();
+    }
+    else
+    {
+        tool->SetEnable(m_curIdPlane, true);
+        m_controller->Show();
+    }
+
+    // TODO: Доделать реализацию 
 }
