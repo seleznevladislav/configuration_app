@@ -162,9 +162,13 @@ public Q_SLOTS:
     double GetAngle2() const { return m_angle2; }
     double GetOffset() const { return m_offset; }
     void controllerChanged(int state);
+    void getParameters();
+    void updateState();
+    void offsetChanged(double val);
+    void angleA1Changed(double val);
+    void angleA2Changed(double val);
     void freeSectionChanged(bool state);
     void offsetSectionChanged(bool state);
-    void planeSelect(int val);
 public:
     VSN_SLOT(Public, slotUpdateCommands, void slotUpdateCommands());
 protected:

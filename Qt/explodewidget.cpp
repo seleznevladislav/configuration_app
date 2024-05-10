@@ -1093,31 +1093,69 @@ void ExplodeWidget::offsetSectionChanged(bool state)
 void ExplodeWidget::controllerChanged(int state)
 {
     const bool checkOn = !!state;
-    m_pExplodeManager->getM_Poffset()->setEnabled(!checkOn);
-    m_pExplodeManager->getM_Pa1()->setEnabled(!checkOn);
-    m_pExplodeManager->getM_Pa2()->setEnabled(!checkOn);
+    QDoubleSpinBox* tst1 = m_pExplodeManager->getM_Poffset();
+    QDoubleSpinBox* tst2 = m_pExplodeManager->getM_Pa1();
+    QDoubleSpinBox* tst3 = m_pExplodeManager->getM_Pa2();
+    tst1->setEnabled(!checkOn);
+    tst2->setEnabled(!checkOn);
+    tst3->setEnabled(!checkOn);
     m_pExplodeManager->getM_PfreeSection()->setEnabled(checkOn);
     m_pExplodeManager->getM_PoffsetSection()->setEnabled(checkOn);
+
+        auto tool = graphicsScene()->GetCuttingTool();
     if (!!state) {
         m_controller->SetControllerView(defaultView);
-        
     }
     else
     {
         m_controller->SetControllerView(Controller::NoneCtrl);
-        // getParameters();
+        getParameters();
     }
 }
-void ExplodeWidget::planeSelect(int val)
+
+void ExplodeWidget::getParameters()
 {
     auto tool = graphicsScene()->GetCuttingTool();
-    tool->SetSurfaceMaterial(m_curIdPlane, nullptr);
-    tool->EnableInteractiveMode(m_curIdPlane, false);
-
     tool->GetParams(m_curIdPlane, m_angle1, m_angle2, m_offset);
-    tool->EnableInteractiveMode(m_curIdPlane, true);
 
-    m_controller->SetSectionPlaneID(m_curIdPlane);
+    QDoubleSpinBox* tst1 = m_pExplodeManager->getM_Poffset();
+    QDoubleSpinBox* tst2 = m_pExplodeManager->getM_Pa1();
+    QDoubleSpinBox* tst3 = m_pExplodeManager->getM_Pa2();
+
+    tst1->setValue(m_offset);
+    tst2->setValue(m_angle1);
+    tst3->setValue(m_angle2);
+}
+
+void ExplodeWidget::updateState()
+{
+    MbVector3D normal(1.0, m_angle1 * M_DEGRAD, m_angle2 * M_DEGRAD);
+    SphericalToCartesian(normal.x, normal.y, normal.z);
+
+    MbPlacement3D place(MbCartPoint3D(), normal);
+    place.Move(place.GetAxisZ() * m_offset);
+
+    graphicsScene()->GetCuttingTool()->Init(m_curIdPlane, place);
+
+    update();
+}
+
+void ExplodeWidget::offsetChanged(double val)
+{
+    m_offset = val;
+    updateState();
+}
+
+void ExplodeWidget::angleA1Changed(double val)
+{
+    m_angle1 = val;
+    updateState();
+}
+
+void ExplodeWidget::angleA2Changed(double val)
+{
+    m_angle2 = val;
+    updateState();
 }
 
 /*ColorButton*/
