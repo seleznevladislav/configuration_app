@@ -113,7 +113,7 @@ void ExplodeWidget::initializeGL()
     // Для Рисунков
     viewport()->SetGradientBackgroundColour(Color(255, 255, 255), Color(255, 255, 255));
     //viewport()->SetGradientBackgroundColour(Color(0, 255, 0), Color(0, 255, 0));
-    viewport()->SetPixelCullingSize(35);
+    viewport()->SetPixelCullingSize(10);
     mainLight()->SetDoubleSided(false);
     graphicsView()->SetSmoothTransition(true);
 
