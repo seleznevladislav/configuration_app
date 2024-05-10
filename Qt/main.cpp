@@ -204,6 +204,11 @@ int main(int argc, char** argv)
     QObject::connect(save3dFile, &QAction::triggered, pOpenScene, [=]() {
         pOpenScene->saveModel();
         });
+
+    // Add actions in menu "View"
+    QAction* animationAction = new QAction(QStringLiteral("Анимация"), viewMenu);
+    animationAction->setShortcut(QKeySequence(Qt::Key_A));
+    QObject::connect(animationAction, &QAction::triggered, pOpenScene, &ExplodeWidget::animationSwitchSlot);
     
     // Add actions in menu options
     QAction* showUnshowExploding = new QAction(QStringLiteral("Скрыть/показать разлёт"), optionsMenu);
@@ -241,6 +246,7 @@ int main(int argc, char** argv)
         pOpenScene->togglePlaneCuttingVisibility(showUnshowPlaneCutting->isChecked(), explodeManager->getPlaneCuttingGroupBox());
         });
     
+    viewMenu->addAction(animationAction);
 
     optionsMenu->addAction(showUnshowExploding);
     optionsMenu->addAction(showUnshowColors);

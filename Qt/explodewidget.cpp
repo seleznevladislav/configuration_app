@@ -76,6 +76,9 @@ ExplodeWidget::ExplodeWidget(QWidget* pParent)
     m_pSolver = std::make_shared<AssemblySolver>(UniteToMainAssembly(m_pModel));
     QtVision::ProcessTypes ptTypes = QtVision::pt_Pan | QtVision::pt_Zoom | QtVision::pt_Rotate;
     QtVision::createProcessesCameraControls(this, ptTypes);
+
+    timer = new QTimer();
+    connect(timer, SIGNAL(timeout()), this, SLOT(animationSlot()));
 }
 
 ExplodeWidget::~ExplodeWidget()
@@ -1222,4 +1225,30 @@ void ColorButton::setColor(const QColor& clr)
         setIcon(icon);
         emit colorChanged(m_color);
     }
+}
+
+void ExplodeWidget::animationSwitchSlot()
+{
+    if (timer->isActive())
+    {
+        timer->stop();
+    }
+    else
+    {
+        timer->start(100);
+    }
+}
+
+void ExplodeWidget::animation()
+{
+    MbCartPoint3D rotationCenter;
+    double sign = viewport()->GetCamera()->GetDefaultUpVector() * viewport()->GetCamera()->GetUpVector();
+    sign = sign <= 0.0 ? 1.0 : sign / fabs(sign);
+    viewport()->GetCamera()->RotateAbout(viewport()->GetCamera()->GetDefaultUpVector(), sign * 0.06, rotationCenter);
+    update();
+}
+
+void ExplodeWidget::animationSlot()
+{
+    animation();
 }

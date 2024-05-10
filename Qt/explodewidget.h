@@ -20,6 +20,8 @@
 #include <QTableWidget>
 #include <QFile>
 #include <QRadioButton>
+#include <QTimer>
+#include <QTime>
 
 // USERS
 #include "explodetree.h"
@@ -169,6 +171,9 @@ public Q_SLOTS:
     void angleA2Changed(double val);
     void freeSectionChanged(bool state);
     void offsetSectionChanged(bool state);
+    void animationSwitchSlot();
+    void animation();
+    void animationSlot();
 public:
     VSN_SLOT(Public, slotUpdateCommands, void slotUpdateCommands());
 protected:
@@ -221,6 +226,8 @@ private:
     SectionPlaneId m_curIdPlane;
     Controller::ControllerViews defaultView = Controller::ControllerViews::directCtrl;
     Controller* m_controller;
+
+    QTimer* timer;
     double         m_angle1;
     double         m_angle2;
     double         m_offset;
