@@ -42,5 +42,6 @@
         <file>res/renderMods/hiddenremoved.png</file>
         <file>res/renderMods/shaded.png</file>
         <file>res/renderMods/wirefrm.png</file>
+        <file>res/Rotate360.png</file>
     </qresource>
 </RCC>

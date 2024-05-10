@@ -664,13 +664,13 @@ QGroupBox* ExplodeManager::createCuttingGroupBox()
 
     // check changing section plane with controller by free section placement
     m_PfreeSection = new QRadioButton();
-    m_PfreeSection->setText(QStringLiteral("free section placement"));
+    m_PfreeSection->setText(QStringLiteral("Свободное перемещение"));
     m_PfreeSection->setChecked(false);
     m_PfreeSection->setEnabled(controller->isChecked());
 
     // check changing section plane with controller by offset section plane
     m_PoffsetSection = new QRadioButton();
-    m_PoffsetSection->setText(QStringLiteral("offset section plane"));
+    m_PoffsetSection->setText(QStringLiteral("Фиксированное перемещение"));
     m_PoffsetSection->setChecked(true);
     m_PoffsetSection->setEnabled(controller->isChecked());
 
@@ -711,7 +711,7 @@ QGroupBox* ExplodeManager::createCuttingGroupBox()
     m_Pa2->setValue(90);
     m_Pa2->setSingleStep(5.0);
     m_Pa2->setEnabled(false);
-
+    
     QFormLayout* formLayout = new QFormLayout();
     formLayout->addRow(QStringLiteral("Угол 1"), m_Pa1);
     formLayout->addRow(QStringLiteral("Угол 2"), m_Pa2);
