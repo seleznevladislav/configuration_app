@@ -649,18 +649,21 @@ QGroupBox* ExplodeManager::createCuttingGroupBox()
     m_Poffset = new QDoubleSpinBox();
     m_Poffset->setRange(-1000, 1000);
     m_Poffset->setValue(-30);
+    m_Poffset->setSingleStep(10.0);
     m_Poffset->setEnabled(false);
 
     // first angle of section plane direction
     m_Pa1 = new QDoubleSpinBox();
     m_Pa1->setRange(0, 359);
     m_Pa1->setValue(90);
+    m_Pa1->setSingleStep(5.0);
     m_Pa1->setEnabled(false);
 
     // second angle of section plane direction
     m_Pa2 = new QDoubleSpinBox();
     m_Pa2->setRange(0, 359);
     m_Pa2->setValue(90);
+    m_Pa2->setSingleStep(5.0);
     m_Pa2->setEnabled(false);
 
     QFormLayout* formLayout = new QFormLayout();
@@ -669,6 +672,10 @@ QGroupBox* ExplodeManager::createCuttingGroupBox()
     formLayout->addRow(QStringLiteral("Смещение"), m_Poffset);
 
     verticales->addLayout(formLayout);
+
+    QObject::connect(m_Poffset, SIGNAL(valueChanged(double)), m_pExplodeWidget, SLOT(offsetChanged(double)));
+    QObject::connect(m_Pa1, SIGNAL(valueChanged(double)), m_pExplodeWidget, SLOT(angleA1Changed(double)));
+    QObject::connect(m_Pa2, SIGNAL(valueChanged(double)), m_pExplodeWidget, SLOT(angleA2Changed(double)));
     
     QObject::connect(controller, SIGNAL(stateChanged(int)), m_pExplodeWidget, SLOT(controllerChanged(int)));
 
