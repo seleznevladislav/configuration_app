@@ -43,12 +43,15 @@ public:
 public:
     void init(SceneSegment* pSegmModel, ExplodeTreeView* pTreeWidget);
     QGroupBox* createGroupExplode(QWidget& widget, const int heightButton, const std::string& mainTabName);
+    QFormLayout* createWarmForm(QVBoxLayout* layout);
+    QFormLayout* createParametrizationForm(QVBoxLayout* layout);
     bool isSelectionEnabled() const;
     bool isCreateGroupGeometry() const;
     bool onSelectItem(const SceneSegment* pSegm);
     QComboBox* m_quantityCombobox = nullptr;
     QComboBox* m_comboConfigure = nullptr;
     QPushButton* m_reconfigureButton = nullptr;
+    QVBoxLayout* m_vLayoutWarmParams = nullptr;
 
     std::vector<ConfigParams> dataTTRM = {
        {u8"ТТРМ 25/57-6,3/1,6", 25, 3, 57, 4, 219, 8, 1500, 750, 2150, 32, 80, 415, 250, 230 },
@@ -165,7 +168,6 @@ private:
     QRadioButton* createRadioButton(const ExplodeDispatcher::ControlParameterType param, QHBoxLayout* hLayout, const char* text, const bool checked);
     QRadioButton* createTypeRadioButton(QHBoxLayout* hLayout, const char* text, const bool checked, int type);
     QTabWidget* createTabWidget(QWidget& widget, const int heightButton, const std::string& mainTabName);
-    QFormLayout* createWarmForm(QVBoxLayout* layout);
     void calculateThickness(QLineEdit* innerTubesLineEdit, QLineEdit* outerTubesLineEdit, QLineEdit* gridsLineEdit, QDoubleSpinBox* lengthSpinBox);
     void onReconfigureButtonClicked();
     QAction* createActionButton(const QString& fileName, QGroupBox* groupFilter, QHBoxLayout* fGroupLayout);

@@ -317,6 +317,7 @@ void ExplodeManager::calculateThickness(QLineEdit* innerTubesLineEdit, QLineEdit
 QFormLayout* ExplodeManager::createWarmForm(QVBoxLayout* layout)
 {
     QFormLayout* formLayout = new QFormLayout;
+    formLayout->setObjectName("warmForm");
 
     QLabel* coolantLabel = new QLabel(u8"Теплоноситель:");
     QLabel* pressureLabel = new QLabel(u8"Рабочие давление:");
@@ -374,6 +375,51 @@ QFormLayout* ExplodeManager::createWarmForm(QVBoxLayout* layout)
     connect(calculateThicknessButton, &QPushButton::clicked, [=]() {
         calculateThickness(thicknessInnerTubesLineEdit, thicknessOuterTubesLineEdit, thicknessGridsLineEdit, lengthSpinBox);
         });
+
+    return formLayout;
+}
+
+QFormLayout* ExplodeManager::createParametrizationForm(QVBoxLayout* layout)
+{
+    QFormLayout* formLayout = new QFormLayout;
+    formLayout->setObjectName("warmForm");
+
+    QDoubleSpinBox* pressureSpinBox = new QDoubleSpinBox;
+    //pressureSpinBox->setRange(2050, 7040); Можно задать диапозон вводимых значений
+    //pressureSpinBox->setSingleStep(50); Можжно задать шаг увелечения/уменьшения
+    //pressureSpinBox->setValue(2050); Инициализация числом
+
+    QLabel* pressureSpinBoxLabel = new QLabel(u8"Давление P:");
+
+    QDoubleSpinBox* innerThicknessSpinBox = new QDoubleSpinBox;
+    QLabel* innerThicknessSpinBoxLabel = new QLabel(u8"Диаметр кожуха D, мм:");
+
+    QDoubleSpinBox* cameraThicknessSpinBox = new QDoubleSpinBox;
+    QLabel* cameraThicknessSpinBoxLabel = new QLabel(u8"Диаметр камеры D, мм:");
+
+    QDoubleSpinBox* iSpinBox = new QDoubleSpinBox;
+    QLabel* iSpinBoxLabel = new QLabel(u8"I0");
+
+    QDoubleSpinBox* iSecondSpinBox = new QDoubleSpinBox;
+    QLabel* iSecondSpinBoxLabel = new QLabel(u8"I2");
+
+    QDoubleSpinBox* iThirdSpinBox = new QDoubleSpinBox;
+    QLabel* iThirdSpinBoxLabel = new QLabel(u8"I3");
+
+    formLayout->addRow(pressureSpinBoxLabel, pressureSpinBox);
+    formLayout->addRow(innerThicknessSpinBoxLabel, innerThicknessSpinBox);
+    formLayout->addRow(cameraThicknessSpinBoxLabel, cameraThicknessSpinBox);
+    formLayout->addRow(iSpinBoxLabel, iSpinBox);
+    formLayout->addRow(iSecondSpinBoxLabel, iSecondSpinBox);
+    formLayout->addRow(iThirdSpinBoxLabel, iThirdSpinBox);
+
+    QFrame* line = new QFrame;
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+    line->setContentsMargins(0, 10, 0, 10);
+    formLayout->addRow(line);
+
+    layout->addLayout(formLayout);
 
     return formLayout;
 }
@@ -726,8 +772,8 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
     m_warmParams->setDisabled(true);
     m_vLayoutConfigureTab->addWidget(m_warmParams);
 
-    QVBoxLayout* vLayoutWarmParams = createVBoxLayout(m_warmParams);
-    QFormLayout* warmForm = createWarmForm(vLayoutWarmParams);
+    m_vLayoutWarmParams = createVBoxLayout(m_warmParams);
+
 
     QToolButton* sizeInfoButton = new QToolButton();
     sizeInfoButton->setIcon(QIcon(":/res/dimensions.png"));
