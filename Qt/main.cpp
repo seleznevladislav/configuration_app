@@ -66,21 +66,28 @@ static void createCommandActions(QWidget* pOpenScene, QToolBar* commandBar, QWid
 
     commandBar->addSeparator();
 
-    QAction* pFixingAction = new QAction(QIcon(":/res/constraints/proc_fix_32.png"), QStringLiteral("Фиксирование"), parent);
-    pFixingAction->setProperty("Commands", QVariant((int)ExplodeWidget::FixItem));
-    // (int)ExplodeWidget::FixItem
-    parent->addAction(pFixingAction);
-    commandBar->addAction(pFixingAction);
-    pFixingAction->setCheckable(true);
-    QObject::connect(pFixingAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommands()));
+    QAction* pRotate360Action = new QAction(QIcon(":/res/Rotate360.png"), QStringLiteral("Вращение 360"), parent);
+    pRotate360Action->setProperty("Commands", QVariant((int)ExplodeWidget::Rotation));
+    parent->addAction(pRotate360Action);
+    commandBar->addAction(pRotate360Action);
+    pRotate360Action->setCheckable(true);
+    QObject::connect(pRotate360Action, SIGNAL(triggered()), pOpenScene, SLOT(viewCommands()));
+
+    //QAction* pFixingAction = new QAction(QIcon(":/res/constraints/proc_fix_32.png"), QStringLiteral("Фиксирование"), parent);
+    //pFixingAction->setProperty("Commands", QVariant((int)ExplodeWidget::FixItem));
+    //// (int)ExplodeWidget::FixItem
+    //parent->addAction(pFixingAction);
+    //commandBar->addAction(pFixingAction);
+    //pFixingAction->setCheckable(true);
+    //QObject::connect(pFixingAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommands()));
 
 
-    QAction* pCoincidenceAction = new QAction(QIcon(":/res/constraints/proc_coin_32.png"), QStringLiteral("Совмещение"), parent);
-    pCoincidenceAction->setProperty("Commands", QVariant((int)ExplodeWidget::Coincident));
-    parent->addAction(pCoincidenceAction);
-    commandBar->addAction(pCoincidenceAction);
-    pCoincidenceAction->setCheckable(true);
-    QObject::connect(pCoincidenceAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommands()));
+    //QAction* pCoincidenceAction = new QAction(QIcon(":/res/constraints/proc_coin_32.png"), QStringLiteral("Совмещение"), parent);
+    //pCoincidenceAction->setProperty("Commands", QVariant((int)ExplodeWidget::Coincident));
+    //parent->addAction(pCoincidenceAction);
+    //commandBar->addAction(pCoincidenceAction);
+    //pCoincidenceAction->setCheckable(true);
+    //QObject::connect(pCoincidenceAction, SIGNAL(triggered()), pOpenScene, SLOT(viewCommands()));
 
 }
 

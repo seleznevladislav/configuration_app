@@ -1,3 +1,4 @@
+#include <windows.h>
 #include <QFileDialog>
 #include <QToolButton>
 #include <QMenu>
@@ -166,7 +167,7 @@ void ExplodeWidget::slotUpdateCommands()
             case Save:
             case FixItem:
             case Rotation:
-                pAction->setEnabled(assm != nullptr && assm->ItemsCount() > 0);
+                pAction->setEnabled(m_pCurrentProcess->IsReady());
                 break;
             case Cancel:
                 pAction->setEnabled(m_pCurrentProcess->IsReady());
@@ -299,17 +300,33 @@ void ExplodeWidget::viewCommands(Commands cmd)
             viewCommands(ExplodeWidget::Select);
         break;
     }
-    //case ExplodeWidget::Rotation:
-    //{
-    //    if (m_pCurrentProcess != nullptr)
-    //        m_pCurrentProcess->CancelObject();
-    //    VSN_DELETE_AND_NULL(m_pCurrentProcess);
-    //    bool bRuning = false;
-    //    m_pCurrentProcess = new PrRotationAboutAxis(value, this, bRuning);
-    //    if (!bRuning)
-    //        viewCommands(AssmSolverSceneWidget::Select);
-    //    break;
-    //}
+    case ExplodeWidget::Rotation:
+    {
+        Camera* camera = viewport()->GetCamera();
+        camera->SetViewOrientation(Orientation::IsoXYZ);
+        for (int i = 0; i < 360; ++i) {
+            Sleep(1);
+            camera->Orbit(M_PI / 180, 0);
+            viewport()->RefreshScreen();
+        }
+        //TOZO: Решить поворот
+        //Point3DF cameraPosition = camera->GetPosition();
+        //const int x = cameraPosition.x;
+        //const int y = cameraPosition.y;
+        //const int z = cameraPosition.z;
+
+        //for (int i = 0; i < 360; ++i) {
+        //    Sleep(1);
+
+        //    float angle = i * M_PI / 180;
+
+        //    // float newX = z * cos(angle) - x * sin(angle);
+        //    // float newY = z * sin(angle) + x * cos(angle);
+
+        //    camera->SetPosition(Point3DF(newX, newY, 0)); // Set the new camera position
+        //    viewport()->RefreshScreen();
+        //}
+    }
     default:
         break;
     };
