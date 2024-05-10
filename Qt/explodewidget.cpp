@@ -338,6 +338,7 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
     if (hasChangeType) 
     {
         m_pExplodeManager->m_comboConfigure->clear();
+        m_pExplodeManager->m_quantityCombobox->setCurrentIndex(0);
 
         if (warmForm)
         {
