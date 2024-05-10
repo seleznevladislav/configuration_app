@@ -332,9 +332,28 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
     int currentIndexofExchanger = action ? action->property("CommandsHeatExhanger").toInt() : static_cast<int>(cmd);
     const bool hasChangeType = m_pCurrentExchandger != currentIndexofExchanger;
 
+    QFormLayout* warmForm = m_pExplodeManager->m_vLayoutWarmParams->
+        findChild<QFormLayout*>("warmForm");
+
     if (hasChangeType) 
     {
         m_pExplodeManager->m_comboConfigure->clear();
+
+        if (warmForm)
+        {
+            m_pExplodeManager->m_vLayoutWarmParams->removeItem(warmForm);
+
+            QLayoutItem* child;
+            while ((child = warmForm->takeAt(0)) != nullptr) {
+                if (child->widget()) {
+                    delete child->widget();
+                }
+
+                delete child;
+            }
+           
+            delete warmForm;
+        }
     }
 
     m_pExplodeManager->m_quantityCombobox->setHidden(!(currentIndexofExchanger == 1 || currentIndexofExchanger == 2));
@@ -351,6 +370,7 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
             int index = m_pExplodeManager->m_comboConfigure->currentIndex();
             m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::TTOR));
 
+            hasChangeType && m_pExplodeManager->createWarmForm(m_pExplodeManager->m_vLayoutWarmParams);
 
             for (const auto& config : m_pExplodeManager->dataTTOR) {
                 values.append(QString::fromStdString(config.name));
@@ -368,6 +388,8 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
             int index = m_pExplodeManager->m_comboConfigure->currentIndex();
             m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::TTRM));
 
+            hasChangeType && m_pExplodeManager->createWarmForm(m_pExplodeManager->m_vLayoutWarmParams);
+
             for (const auto& config : m_pExplodeManager->dataTTRM) {
                 values.append(QString::fromStdString(config.name));
             }
@@ -384,6 +406,8 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
             int index = m_pExplodeManager->m_comboConfigure->currentIndex();
             m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::IP));
 
+            hasChangeType && m_pExplodeManager->createParametrizationForm(m_pExplodeManager->m_vLayoutWarmParams);
+
             for (const auto& config : m_pExplodeManager->dataIP) {
                 values.append(QString::fromStdString(config.name));
             }
@@ -397,6 +421,8 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
         {
             int index = m_pExplodeManager->m_comboConfigure->currentIndex();
             m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::IU));
+
+            //hasChangeType && m_pExplodeManager->createParametrizationForm(m_pExplodeManager->m_vLayoutWarmParams);
 
             for (const auto& config : m_pExplodeManager->dataIU) {
                 values.append(QString::fromStdString(config.name));
@@ -414,6 +440,7 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
     if (hasChangeType)
     {
         m_pExplodeManager->m_comboConfigure->addItems(values);
+        m_pExplodeManager->m_vLayoutWarmParams->update();
     }
 
     update();
