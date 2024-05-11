@@ -43,5 +43,10 @@
         <file>res/renderMods/shaded.png</file>
         <file>res/renderMods/wirefrm.png</file>
         <file>res/Rotate360.png</file>
+        <file>res/drawing/angledim.png</file>
+        <file>res/drawing/diameter.png</file>
+        <file>res/drawing/lineardim.png</file>
+        <file>res/drawing/radius.png</file>
+        <file>res/drawing/select_32.png</file>
     </qresource>
 </RCC>

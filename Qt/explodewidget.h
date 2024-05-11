@@ -22,6 +22,9 @@
 #include <QRadioButton>
 #include <QTimer>
 #include <QTime>
+#include <QVBoxLayout>
+#include <QGroupBox>
+#include <QComboBox>
 
 // USERS
 #include "explodetree.h"
@@ -43,6 +46,27 @@ class AssemblySolver;
 using AssemblySolverPtr = std::shared_ptr<AssemblySolver>;
 using AssemblySolverConstPtr = std::shared_ptr<const AssemblySolver>;
 using namespace std;
+
+
+/* Properties */
+class Properties : public QGroupBox
+{
+    Q_OBJECT
+public:
+    explicit Properties(const QString& strTitle, DimensionRep* dimensionRep, QWidget* parent = nullptr);
+    virtual ~Properties();
+Q_SIGNALS:
+    void updateView();
+public Q_SLOTS:
+    void textOrientationChanged(int);
+    void vTextOrientationChanged(int);
+    void hTextOrientationChanged(int);
+protected:
+    DimensionRep* m_dimensionRep;
+    QComboBox* m_cbTextOrientation;
+    QComboBox* m_cbTextVPosition;
+    QComboBox* m_cbTextHPosition;
+};
 
 /* ListGroupGeometryItem */
 class ListGroupGeometryItem : public QListWidgetItem
@@ -97,6 +121,14 @@ public:
     explicit ExplodeWidget(QWidget* parent = nullptr);
     virtual ~ExplodeWidget();
 public:
+    enum State
+    {
+        Selection,
+        LinearDimension,
+        AngleDimension,
+        DiameterDimension,
+        RadialDimension,
+    };
     enum Commands
     {
         None,
@@ -125,6 +157,9 @@ public:
         IP,
     };
 public:
+    void setMainLayout(QVBoxLayout* mainLayout);
+    void updateButtons();
+    void removePropertiesWidget();
     QColor highlightColor() const;
     QColor selectionColor() const;
 
@@ -142,6 +177,11 @@ public:
     inline void setGroupFilter(QActionGroup* groupFilter);
     int m_pCurrentExchandger;
 public Q_SLOTS:
+    void stopBuildDimensions();
+    void createLinearDimensions();
+    void createAngleDimensions();
+    void createDiameterDimensions();
+    void createRadialDimensions();
     void viewCommands(Commands cmd = None);
     void viewCommandsHeats(Exhanchares cmd = NoneOfOne);
     void openModel();
@@ -181,6 +221,8 @@ protected:
     void slotItemSelectModified();
     void slotCurrentItemsModified(std::list<SelectionItem*>& oldItems, std::list<SelectionItem*>& newItems);
     void updateActionCheckFilter();
+    void clearProperties();
+    MbCartPoint3D mapPointOnPlane(int x, int y, const MbPlane& pl) const;
 private:
     virtual void initializeGL();
     void loadFiles(const QStringList& files);
@@ -193,6 +235,11 @@ private:
     void showAllObjects();
     void clearSelectionObjects();
 Q_SIGNALS:
+    void setCheckedSelect(bool);
+    void setCheckedLinear(bool);
+    void setCheckedAngle(bool);
+    void setCheckedDiameter(bool);
+    void setCheckedRadial(bool);
     void setVisibleProgress(bool);
     void buildProgress(int);
     void setProgressRange(int minimum, int maximum);
@@ -205,6 +252,7 @@ public:
 protected:
     virtual void contextMenuEvent(QContextMenuEvent* event) override;
     virtual void mouseMoveEvent(QMouseEvent* event);
+    virtual void mousePressEvent(QMouseEvent* event) override;
 private:
     AssemblySolverPtr m_pSolver;
     SceneSegment* m_pModelSeg;
@@ -232,6 +280,20 @@ private:
     double         m_angle1;
     double         m_angle2;
     double         m_offset;
+
+    /// <summary>
+    /// params for dimensions
+    /// </summary>
+    State m_state;
+    bool m_startBuildDimension;
+    QVBoxLayout* m_mainLayout;
+    Properties* m_properties;
+    MbModel* m_model;
+    MbCartPoint3D* m_point1;
+    MbCartPoint3D* m_point2;
+    MbCartPoint3D* m_point3;
+    DimensionRep* m_dimensionRep;
+    double m_lineHeight = 60;
 private:
     Q_DISABLE_COPY(ExplodeWidget)
 };
