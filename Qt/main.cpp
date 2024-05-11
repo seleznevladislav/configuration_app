@@ -200,6 +200,7 @@ int main(int argc, char** argv)
     // Add actions in menu file
     QAction* open3dFile = new QAction(QStringLiteral("Открыть файл"), fileMenu);
     fileMenu->addAction(open3dFile);
+    open3dFile->setShortcut(QKeySequence("Ctrl+O"));
 
     QObject::connect(open3dFile, &QAction::triggered, pOpenScene, [=]() {
         pOpenScene->loadModel();
@@ -207,9 +208,18 @@ int main(int argc, char** argv)
 
     QAction* save3dFile = new QAction(QStringLiteral("Сохранить файл"), fileMenu);
     fileMenu->addAction(save3dFile);
+    save3dFile->setShortcut(QKeySequence("Ctrl+S"));
 
     QObject::connect(save3dFile, &QAction::triggered, pOpenScene, [=]() {
         pOpenScene->saveModel();
+        });
+    
+    QAction* saveImageAction = new QAction(QStringLiteral("Сохранить изображение"), fileMenu);
+    fileMenu->addAction(saveImageAction);
+    saveImageAction->setShortcut(QKeySequence("Ctrl+P"));
+
+    QObject::connect(saveImageAction, &QAction::triggered, pOpenScene, [=]() {
+        pOpenScene->saveImage();
         });
 
     // Add actions in menu "View"

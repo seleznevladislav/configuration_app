@@ -215,6 +215,7 @@ public Q_SLOTS:
     void animation();
     void animationSlot();
     void toggleCuttingState();
+    void saveImage(); 
 public:
     VSN_SLOT(Public, slotUpdateCommands, void slotUpdateCommands());
 protected:

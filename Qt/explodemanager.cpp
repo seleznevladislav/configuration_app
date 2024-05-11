@@ -784,6 +784,7 @@ QGroupBox* ExplodeManager::createDimensionsGroupBox()
     QObject::connect(radialButton, SIGNAL(released()), m_pExplodeWidget, SLOT(createRadialDimensions()));
     QObject::connect(m_pExplodeWidget, SIGNAL(setCheckedRadial(bool)), radialButton, SLOT(setChecked(bool)));
 
+    rowLayout1->setMargin(5);
     buttonLayout->addRow(rowLayout1);
     vLayout->addLayout(buttonLayout);
 

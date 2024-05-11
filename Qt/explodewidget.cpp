@@ -3,6 +3,7 @@
 #include <QToolButton>
 #include <QMenu>
 #include <qevent.h>
+#include <vsn_brush.h>
 
 #include <attr_product.h>
 #include <instance.h>
@@ -206,7 +207,9 @@ void ExplodeWidget::createLinearDimensions()
     pTopSegment->AddSegment(pSegment);
     m_dimensionRep = pLinearDimensionRep;
     removePropertiesWidget();
-    m_properties = new Properties(QStringLiteral("Linear properties"), m_dimensionRep);
+
+    const char* test = u8"";
+    m_properties = new Properties(test, m_dimensionRep);
     QObject::connect(m_properties, SIGNAL(updateView()), this, SLOT(update()));
     m_mainLayout->addWidget(m_properties);
     m_state = ExplodeWidget::LinearDimension;
@@ -223,7 +226,8 @@ void ExplodeWidget::createAngleDimensions()
     pTopSegment->AddSegment(pSegment);
     m_dimensionRep = pAngleDimensionRep;
     removePropertiesWidget();
-    m_properties = new Properties(QStringLiteral("Angle properties"), m_dimensionRep);
+    const char* test = u8"";
+    m_properties = new Properties(test, m_dimensionRep);
     QObject::connect(m_properties, SIGNAL(updateView()), this, SLOT(update()));
     m_mainLayout->addWidget(m_properties);
     m_state = ExplodeWidget::AngleDimension;
@@ -244,7 +248,8 @@ void ExplodeWidget::createDiameterDimensions()
     pTopSegment->AddSegment(pSegment);
     m_dimensionRep = pDiameterDimensionRep;
     removePropertiesWidget();
-    m_properties = new Properties(QStringLiteral("Diameter properties"), m_dimensionRep);
+    const char* test = u8"";
+    m_properties = new Properties(test, m_dimensionRep);
     QObject::connect(m_properties, SIGNAL(updateView()), this, SLOT(update()));
     m_mainLayout->addWidget(m_properties);
     m_state = ExplodeWidget::DiameterDimension;
@@ -260,7 +265,8 @@ void ExplodeWidget::createRadialDimensions()
     pTopSegment->AddSegment(pSegment);
     m_dimensionRep = pRadialDimensionRep;
     removePropertiesWidget();
-    m_properties = new Properties(QStringLiteral("Radial properties"), m_dimensionRep);
+    const char* test = u8"";
+    m_properties = new Properties(test, m_dimensionRep);
     QObject::connect(m_properties, SIGNAL(updateView()), this, SLOT(update()));
     m_mainLayout->addWidget(m_properties);
     m_state = ExplodeWidget::RadialDimension;
@@ -1517,9 +1523,30 @@ void ExplodeWidget::toggleCuttingState()
     // TODO: Доделать реализацию 
 }
 
+
+void ExplodeWidget::saveImage()
+{
+    const QString lastUserPath;
+    QString filters = "PNG (*.png)";
+#ifdef Q_OS_WIN
+    const QString fileName = QFileDialog::getSaveFileName(this, tr("Save Image"), lastUserPath, filters);
+#else 
+    const QString fileName = QFileDialog::getSaveFileName(this, tr("Save Image"), lastUserPath, filters, nullptr, QFileDialog::DontUseNativeDialog);
+#endif 
+    if (!fileName.isEmpty())
+    {
+        Color colorBack(255, 255, 255);
+        SnapshotSettings settings;
+        settings.hideSceneWidgets = false;
+        settings.hideViewWidgets = false;
+        settings.background = new VSN::SolidBrush(colorBack);
+        QImage image = grabFrameImage(graphicsView(), settings);
+        image.save(fileName);
+        delete  settings.background;
+    }
+}
+
 // Класс Properties для окна размеров
-
-
 /* Properties */
 Properties::Properties(const QString& strTitle, DimensionRep* dimensionRep, QWidget* parent)
     : QGroupBox(parent)
@@ -1549,7 +1576,7 @@ Properties::Properties(const QString& strTitle, DimensionRep* dimensionRep, QWid
     m_cbTextHPosition->setCurrentIndex(static_cast<int>(m_dimensionRep->GetTextHPosition()));
     connect(m_cbTextHPosition, SIGNAL(currentIndexChanged(int)), this, SLOT(hTextOrientationChanged(int)));
 
-    vGroupLayout->addRow("Text orientation", m_cbTextOrientation);
+    vGroupLayout->addRow("Тип размера", m_cbTextOrientation);
     vGroupLayout->addRow("Позиционирование размера", m_cbTextVPosition);
     vGroupLayout->addRow("Расположение размера", m_cbTextHPosition);
 }
