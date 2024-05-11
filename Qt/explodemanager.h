@@ -132,6 +132,7 @@ public:
     QGroupBox* getSelectionsGroupBox() const { return gr_WSelections; }
     QGroupBox* getRenderingGroupBox() const { return gr_WRendering; }
     QGroupBox* getPlaneCuttingGroupBox() const { return gr_WCutting; }
+    QGroupBox* getPlaneDimensionsGroupBox() const { return gr_WDimensionBox; }
 
     QDoubleSpinBox* getM_Poffset() const { return m_Poffset; }
     QDoubleSpinBox* getM_Pa1() const { return m_Pa1; }
@@ -176,6 +177,7 @@ private:
     QGroupBox* createSelectionGroupBox();
     QGroupBox* createRenderingGroupBox();
     QGroupBox* createCuttingGroupBox();
+    QGroupBox* createDimensionsGroupBox();
 private:
     ExplodeDispatcher m_explodeDispatcher;
     std::map<ExplodeDispatcher::ControlParameterType, QWidget*> m_widgetsMap;
@@ -207,6 +209,7 @@ private:
     QGroupBox* gr_WSelections = nullptr;
     QGroupBox* gr_WRendering = nullptr;
     QGroupBox* gr_WCutting = nullptr;
+    QGroupBox* gr_WDimensionBox = nullptr;
     /// <summary>
     /// Vars for create tabs in tab panel
     /// </summary>

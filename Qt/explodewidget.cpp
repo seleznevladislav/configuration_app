@@ -24,8 +24,7 @@
 #include <last.h>
 
 using namespace BuildMathModel;
-//-----------------------------------------------------------------------------
-// ---
+
 static void _selectSegment(SelectionManagerPtr ptrSelectManager, SceneSegment* pSegment)
 {
     if (pSegment->GetRepresentation() == nullptr)
@@ -42,8 +41,6 @@ static void _selectSegment(SelectionManagerPtr ptrSelectManager, SceneSegment* p
     }
 }
 
-//-----------------------------------------------------------------------------
-// ---
 static void fillSegmentList(ExplodeTreeView* pTreeWidget, SceneSegment* pSegment, SceneSegment* pPrentSegment)
 {
     pTreeWidget->slotAppendItem(pSegment, pPrentSegment);
@@ -68,6 +65,14 @@ ExplodeWidget::ExplodeWidget(QWidget* pParent)
     , m_pModelSeg(nullptr)
     , m_pCurrentProcess(nullptr)
     , m_pGroupFilter(nullptr)
+    , m_state(ExplodeWidget::Selection)
+    , m_startBuildDimension(false)
+    , m_mainLayout(nullptr)
+    , m_properties(nullptr)
+    , m_point1(nullptr)
+    , m_point2(nullptr)
+    , m_point3(nullptr)
+    , m_dimensionRep(nullptr)
     , m_curPoint(QtVision::findCursor(16)/*QCursor(QPixmap(":/res/point_cur.cur"))*/)
     , m_curEdge(QCursor(QPixmap(":/res/cursors/edge.cur")))
     , m_curFace(QCursor(QPixmap(":/res/cursors/face.cur")))
@@ -136,6 +141,130 @@ void ExplodeWidget::initializeGL()
     OrientationMarker* pMarker = graphicsView()->GetOrientationMarker();
     if (pMarker) pMarker->SetStyle(OrientationMarker::Style::BoxMarker);
     if (pMarker) pMarker->SetEnabled(true);
+}
+
+void ExplodeWidget::setMainLayout(QVBoxLayout* mainLayout)
+{
+    m_mainLayout = mainLayout;
+}
+
+// ---
+void ExplodeWidget::updateButtons()
+{
+    emit setCheckedSelect(m_state == ExplodeWidget::Selection);
+    emit setCheckedLinear(m_state == ExplodeWidget::LinearDimension);
+    emit setCheckedAngle(m_state == ExplodeWidget::AngleDimension);
+    emit setCheckedDiameter(m_state == ExplodeWidget::DiameterDimension);
+    emit setCheckedRadial(m_state == ExplodeWidget::RadialDimension);
+}
+
+// ---
+void ExplodeWidget::removePropertiesWidget()
+{
+    if (m_properties)
+    {
+        m_mainLayout->removeWidget(m_properties);
+        delete m_properties;
+        m_properties = nullptr;
+    }
+}
+
+// ---
+void ExplodeWidget::clearProperties()
+{
+    removePropertiesWidget();
+    m_state = ExplodeWidget::Selection;
+    updateButtons();
+}
+
+// ---
+MbCartPoint3D ExplodeWidget::mapPointOnPlane(int x, int y, const MbPlane& pl) const
+{
+    MbCartPoint3D retPnt;
+    Point3DF worldPoint;
+    MbCartPoint logPos(x, y);
+    viewport()->ConvertScreenPointToParallelScreenPlane(logPos, MbCartPoint3D(), worldPoint);
+    double u, v;
+    if (pl.NearDirectPointProjection(worldPoint, viewport()->GetCamera()->GetForward(), u, v, true))
+        pl.PointOn(u, v, retPnt);
+    return retPnt;
+}
+
+// ---
+void ExplodeWidget::stopBuildDimensions()
+{
+    clearProperties();
+}
+
+// ---
+void ExplodeWidget::createLinearDimensions()
+{
+    SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
+    LinearDimensionRep* pLinearDimensionRep = GeometryFactory::Instance()->CreateLinearDimension();
+    pLinearDimensionRep->SetExtensionLineHeight(m_lineHeight / graphicsView()->GetViewport()->GetScale());
+    SceneSegment* pSegment = new SceneSegment(pLinearDimensionRep);
+    pTopSegment->AddSegment(pSegment);
+    m_dimensionRep = pLinearDimensionRep;
+    removePropertiesWidget();
+    m_properties = new Properties(QStringLiteral("Linear properties"), m_dimensionRep);
+    QObject::connect(m_properties, SIGNAL(updateView()), this, SLOT(update()));
+    m_mainLayout->addWidget(m_properties);
+    m_state = ExplodeWidget::LinearDimension;
+    updateButtons();
+}
+
+// ---
+void ExplodeWidget::createAngleDimensions()
+{
+    SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
+    AngleDimensionRep* pAngleDimensionRep = GeometryFactory::Instance()->CreateAngleDimension();
+    pAngleDimensionRep->SetExtensionLineHeight(m_lineHeight / graphicsView()->GetViewport()->GetScale());
+    SceneSegment* pSegment = new SceneSegment(pAngleDimensionRep);
+    pTopSegment->AddSegment(pSegment);
+    m_dimensionRep = pAngleDimensionRep;
+    removePropertiesWidget();
+    m_properties = new Properties(QStringLiteral("Angle properties"), m_dimensionRep);
+    QObject::connect(m_properties, SIGNAL(updateView()), this, SLOT(update()));
+    m_mainLayout->addWidget(m_properties);
+    m_state = ExplodeWidget::AngleDimension;
+
+    pAngleDimensionRep->SetFontSize(20);
+    pAngleDimensionRep->SetLabelColor(Color(200, 0, 0));
+    pAngleDimensionRep->SetDimensionColor(Color(200, 160, 0));
+
+    updateButtons();
+}
+
+//---
+void ExplodeWidget::createDiameterDimensions()
+{
+    SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
+    DiameterDimensionRep* pDiameterDimensionRep = GeometryFactory::Instance()->CreateDiameterDimension();
+    SceneSegment* pSegment = new SceneSegment(pDiameterDimensionRep);
+    pTopSegment->AddSegment(pSegment);
+    m_dimensionRep = pDiameterDimensionRep;
+    removePropertiesWidget();
+    m_properties = new Properties(QStringLiteral("Diameter properties"), m_dimensionRep);
+    QObject::connect(m_properties, SIGNAL(updateView()), this, SLOT(update()));
+    m_mainLayout->addWidget(m_properties);
+    m_state = ExplodeWidget::DiameterDimension;
+    updateButtons();
+}
+
+//---
+void ExplodeWidget::createRadialDimensions()
+{
+    SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
+    RadialDimensionRep* pRadialDimensionRep = GeometryFactory::Instance()->CreateRadialDimension();
+    SceneSegment* pSegment = new SceneSegment(pRadialDimensionRep);
+    pTopSegment->AddSegment(pSegment);
+    m_dimensionRep = pRadialDimensionRep;
+    removePropertiesWidget();
+    m_properties = new Properties(QStringLiteral("Radial properties"), m_dimensionRep);
+    QObject::connect(m_properties, SIGNAL(updateView()), this, SLOT(update()));
+    m_mainLayout->addWidget(m_properties);
+    m_state = ExplodeWidget::RadialDimension;
+    updateButtons();
 }
 
 // TODO: неиспользуемая функция
@@ -960,21 +1089,122 @@ void ExplodeWidget::slotToggleVisibility(bool checked, QGroupBox* groupBox) {
 // ---
 void ExplodeWidget::mouseMoveEvent(QMouseEvent* event)
 {
-    QtVision::QtOpenGLSceneWidget::mouseMoveEvent(event);
-
-    ObjectType type = ObjectType::None;
-    if (SelectionItem* item = m_ptrSelectManager->GetHighlightItem())
-        type = item->GetType();
-
-    QCursor curCursor;
-    switch (type)
+    if (m_startBuildDimension && m_dimensionRep)
     {
-    case ObjectType::Vertex: curCursor = m_curVertex; break;
-    case ObjectType::Edge:   curCursor = m_curEdge;   break;
-    case ObjectType::Face:   curCursor = m_curFace;   break;
-    default: curCursor = m_curPoint; break;
+        if (LinearDimensionRep* linearDimensionRep = vobject_cast<LinearDimensionRep*>(m_dimensionRep))
+        {
+            MbPlacement3D initPlane;
+            MbPlane pl(initPlane); // plane X, Y
+            *m_point2 = mapPointOnPlane(event->pos().x(), event->pos().y(), pl);
+            linearDimensionRep->SetMeasuredGeometry(*m_point1, *m_point2, pl);
+            update();
+        }
+        else if (DiameterDimensionRep* diameterDimensionRep = vobject_cast<DiameterDimensionRep*>(m_dimensionRep))
+        {
+            MbPlacement3D initPlane(*m_point1);
+            MbPlane pl(initPlane); // plane X, Y
+            *m_point2 = mapPointOnPlane(event->pos().x(), event->pos().y(), pl);
+            double rad = m_point1->DistanceToPoint(*m_point2);
+            MbArc3D arc(initPlane, rad, rad, M_PI2);
+            diameterDimensionRep->SetMeasuredGeometry(arc);
+            update();
+        }
+        else if (RadialDimensionRep* radialDimensionRep = vobject_cast<RadialDimensionRep*>(m_dimensionRep))
+        {
+            MbPlacement3D initPlane(*m_point1);
+            MbPlane pl(initPlane); // plane X, Y
+            *m_point2 = mapPointOnPlane(event->pos().x(), event->pos().y(), pl);
+            double rad = m_point1->DistanceToPoint(*m_point2);
+            MbArc3D arc(initPlane, rad, rad, M_PI2);
+            radialDimensionRep->SetMeasuredGeometry(arc);
+            update();
+        }
+        else if (AngleDimensionRep* angleDimensionRep = vobject_cast<AngleDimensionRep*>(m_dimensionRep))
+        {
+            if (!m_point3)
+                return;
+            MbPlacement3D initPlane;
+            MbPlane pl(initPlane); // plane X, Y
+            *m_point3 = mapPointOnPlane(event->pos().x(), event->pos().y(), pl);
+            angleDimensionRep->SetMeasuredGeometry(*m_point1, *m_point2, *m_point3);
+            update();
+        }
     }
-    setCursor(curCursor);
+    else {
+        QtVision::QtOpenGLSceneWidget::mouseMoveEvent(event);
+
+        ObjectType type = ObjectType::None;
+        if (SelectionItem* item = m_ptrSelectManager->GetHighlightItem())
+            type = item->GetType();
+
+        QCursor curCursor;
+        switch (type)
+        {
+        case ObjectType::Vertex: curCursor = m_curVertex; break;
+        case ObjectType::Edge:   curCursor = m_curEdge;   break;
+        case ObjectType::Face:   curCursor = m_curFace;   break;
+        default: curCursor = m_curPoint; break;
+        }
+        setCursor(curCursor);
+    }
+}
+
+
+void ExplodeWidget::mousePressEvent(QMouseEvent* event)
+{
+    QtOpenGLSceneWidget::mousePressEvent(event);
+    if (event->button() != Qt::LeftButton)
+        return;
+
+    if (!m_startBuildDimension && vobject_cast<LinearDimensionRep*>(m_dimensionRep))
+    {
+        MbPlacement3D initPlane;
+        MbPlane pl(initPlane); // plane X, Y
+        m_point1 = new MbCartPoint3D(mapPointOnPlane(event->pos().x(), event->pos().y(), pl));
+        m_point2 = new MbCartPoint3D(*m_point1);
+        m_startBuildDimension = true;
+    }
+    else if (!m_startBuildDimension && vobject_cast<DiameterDimensionRep*>(m_dimensionRep))
+    {
+        MbPlacement3D initPlane;
+        MbPlane pl(initPlane); // plane X, Y
+        m_point1 = new MbCartPoint3D(mapPointOnPlane(event->pos().x(), event->pos().y(), pl));
+        m_point2 = new MbCartPoint3D(*m_point1);
+        m_startBuildDimension = true;
+    }
+    else if (!m_startBuildDimension && vobject_cast<RadialDimensionRep*>(m_dimensionRep))
+    {
+        MbPlacement3D initPlane;
+        MbPlane pl(initPlane); // plane X, Y
+        m_point1 = new MbCartPoint3D(mapPointOnPlane(event->pos().x(), event->pos().y(), pl));
+        m_point2 = new MbCartPoint3D(*m_point1);
+        m_startBuildDimension = true;
+    }
+    else if (!m_startBuildDimension && vobject_cast<AngleDimensionRep*>(m_dimensionRep))
+    {
+        MbPlacement3D initPlane;
+        MbPlane pl(initPlane); // plane X, Y
+        m_point1 = new MbCartPoint3D(mapPointOnPlane(event->pos().x(), event->pos().y(), pl));
+        m_startBuildDimension = true;
+    }
+    else if (m_startBuildDimension && !m_point2 && vobject_cast<AngleDimensionRep*>(m_dimensionRep))
+    {
+        MbPlacement3D initPlane;
+        MbPlane pl(initPlane); // plane X, Y
+        m_point2 = new MbCartPoint3D(mapPointOnPlane(event->pos().x(), event->pos().y(), pl));
+        m_point3 = new MbCartPoint3D(*m_point2);
+    }
+    else if (m_startBuildDimension)
+    {
+        VSN_DELETE_AND_NULL(m_point1);
+        VSN_DELETE_AND_NULL(m_point2);
+        VSN_DELETE_AND_NULL(m_point3);
+        m_startBuildDimension = false;
+        m_dimensionRep = nullptr;
+        m_state = ExplodeWidget::Selection;
+        updateButtons();
+        clearProperties();
+    }
 }
 //---------------------------------------------------------------------------------------
 //
@@ -1285,4 +1515,70 @@ void ExplodeWidget::toggleCuttingState()
     }
 
     // TODO: Доделать реализацию 
+}
+
+// Класс Properties для окна размеров
+
+
+/* Properties */
+Properties::Properties(const QString& strTitle, DimensionRep* dimensionRep, QWidget* parent)
+    : QGroupBox(parent)
+    , m_dimensionRep(dimensionRep)
+{
+    setTitle(strTitle);
+    QFormLayout* vGroupLayout = new QFormLayout(this);
+    m_cbTextOrientation = new QComboBox(this);
+    m_cbTextOrientation->addItem("Заморозить", QVariant(DimensionGeometry::to_Freeze));    //В плоскости размера. \en In size plane. \~
+    m_cbTextOrientation->addItem("Скриншот", QVariant(DimensionGeometry::to_ScreenOnly));  //В плоскости экрана. \en In screen plane. \~
+    m_cbTextOrientation->addItem("Читаемый", QVariant(DimensionGeometry::to_Readable));    //В плоскости размера с поворотом по вектору взгляда. \en In dimension plane with a turn by view vector. \~
+    m_cbTextOrientation->setCurrentIndex(static_cast<int>(m_dimensionRep->GetTextOrientation()));
+    connect(m_cbTextOrientation, SIGNAL(currentIndexChanged(int)), this, SLOT(textOrientationChanged(int)));
+
+    m_cbTextVPosition = new QComboBox(this);
+    m_cbTextVPosition->addItem("Над", QVariant(DimensionGeometry::vpos_Above));
+    m_cbTextVPosition->addItem("Снизу", QVariant(DimensionGeometry::vpos_Below));
+    m_cbTextVPosition->addItem("По центру", QVariant(DimensionGeometry::vpos_Center));
+    m_cbTextVPosition->setCurrentIndex(static_cast<int>(m_dimensionRep->GetTextVPosition()));
+    connect(m_cbTextVPosition, SIGNAL(currentIndexChanged(int)), this, SLOT(vTextOrientationChanged(int)));
+
+    m_cbTextHPosition = new QComboBox(this);
+    m_cbTextHPosition->addItem("Слева", QVariant(DimensionGeometry::hpos_Left));
+    m_cbTextHPosition->addItem("Справа", QVariant(DimensionGeometry::hpos_Right));
+    m_cbTextHPosition->addItem("По центру", QVariant(DimensionGeometry::hpos_Center));
+    m_cbTextHPosition->addItem("Авто", QVariant(DimensionGeometry::hpos_Auto));
+    m_cbTextHPosition->setCurrentIndex(static_cast<int>(m_dimensionRep->GetTextHPosition()));
+    connect(m_cbTextHPosition, SIGNAL(currentIndexChanged(int)), this, SLOT(hTextOrientationChanged(int)));
+
+    vGroupLayout->addRow("Text orientation", m_cbTextOrientation);
+    vGroupLayout->addRow("Позиционирование размера", m_cbTextVPosition);
+    vGroupLayout->addRow("Расположение размера", m_cbTextHPosition);
+}
+
+// ---
+Properties::~Properties()
+{
+}
+
+// ---
+void Properties::textOrientationChanged(int index)
+{
+    QVariant var = m_cbTextOrientation->itemData(index);
+    m_dimensionRep->SetTextOrientation((DimensionGeometry::TextOrientation)var.toUInt());
+    emit updateView();
+}
+
+// ---
+void Properties::vTextOrientationChanged(int index)
+{
+    QVariant var = m_cbTextVPosition->itemData(index);
+    m_dimensionRep->SetTextVPosition((DimensionGeometry::TextVPosition)var.toUInt());
+    emit updateView();
+}
+
+// ---
+void Properties::hTextOrientationChanged(int index)
+{
+    QVariant var = m_cbTextHPosition->itemData(index);
+    m_dimensionRep->SetTextHPosition((DimensionGeometry::TextHPosition)var.toUInt());
+    emit updateView();
 }

@@ -256,6 +256,13 @@ int main(int argc, char** argv)
         pOpenScene->togglePlaneCuttingVisibility(showUnshowPlaneCutting->isChecked(), explodeManager->getPlaneCuttingGroupBox());
         });
     
+    QAction* showUnshowimensionPlane= new QAction(QStringLiteral("Скрыть/показать проставление размеров"), optionsMenu);
+    showUnshowimensionPlane->setCheckable(true);
+    showUnshowimensionPlane->setChecked(false);
+    QObject::connect(showUnshowimensionPlane, &QAction::triggered, pOpenScene, [=]() {
+        pOpenScene->slotToggleVisibility(showUnshowimensionPlane->isChecked(), explodeManager->getPlaneDimensionsGroupBox());
+        });
+    
     viewMenu->addAction(animationAction);
     viewMenu->addAction(cutAction);
 
@@ -264,6 +271,7 @@ int main(int argc, char** argv)
     optionsMenu->addAction(showUnshowSelectors);
     optionsMenu->addAction(showUnshowRenders);
     optionsMenu->addAction(showUnshowPlaneCutting);
+    optionsMenu->addAction(showUnshowimensionPlane);
 
     // Show window
     QtVision::setWindowPosition(mainWindow);

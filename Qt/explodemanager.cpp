@@ -728,6 +728,71 @@ QGroupBox* ExplodeManager::createCuttingGroupBox()
     return gr_WCutting;
 }
 
+QGroupBox* ExplodeManager::createDimensionsGroupBox()
+{
+    gr_WDimensionBox = createGroupBox(u8"Проставление размеров", true, false, true);
+    gr_WDimensionBox->setVisible(false);
+
+    QHBoxLayout* hLayout = new QHBoxLayout(gr_WDimensionBox);
+    hLayout->setMargin(10); hLayout->setSpacing(0);
+
+    QVBoxLayout* vLayout = new QVBoxLayout();
+    vLayout->setAlignment(Qt::AlignTop);
+    hLayout->addLayout(vLayout);
+    QFormLayout* buttonLayout = new QFormLayout();
+    buttonLayout->setMargin(0);
+    buttonLayout->setSpacing(0);
+
+    QHBoxLayout* rowLayout1 = new QHBoxLayout();
+    QToolButton* selectButton = new QToolButton(gr_WDimensionBox);
+    selectButton->setCheckable(true);
+    selectButton->setIconSize(sizeIcons);
+    selectButton->setIcon(QIcon(":/res/drawing/select_32.png"));
+    rowLayout1->addWidget(selectButton);
+    QObject::connect(selectButton, SIGNAL(released()), m_pExplodeWidget, SLOT(stopBuildDimensions()));
+    QObject::connect(m_pExplodeWidget, SIGNAL(setCheckedSelect(bool)), selectButton, SLOT(setChecked(bool)));
+
+    QToolButton* linearButton = new QToolButton(gr_WDimensionBox);
+    linearButton->setCheckable(true);
+    linearButton->setIconSize(sizeIcons);
+    linearButton->setIcon(QIcon(":/res/drawing/lineardim.png"));
+    rowLayout1->addWidget(linearButton);
+    QObject::connect(linearButton, SIGNAL(released()), m_pExplodeWidget, SLOT(createLinearDimensions()));
+    QObject::connect(m_pExplodeWidget, SIGNAL(setCheckedLinear(bool)), linearButton, SLOT(setChecked(bool)));
+
+    QToolButton* angleButton = new QToolButton(gr_WDimensionBox);
+    angleButton->setCheckable(true);
+    angleButton->setIconSize(sizeIcons);
+    angleButton->setIcon(QIcon(":/res/drawing/angledim.png"));
+    rowLayout1->addWidget(angleButton);
+    QObject::connect(angleButton, SIGNAL(released()), m_pExplodeWidget, SLOT(createAngleDimensions()));
+    QObject::connect(m_pExplodeWidget, SIGNAL(setCheckedAngle(bool)), angleButton, SLOT(setChecked(bool)));
+
+    QToolButton* diameterButton = new QToolButton(gr_WDimensionBox);
+    diameterButton->setCheckable(true);
+    diameterButton->setIconSize(sizeIcons);
+    diameterButton->setIcon(QIcon(":/res/drawing/diameter.png"));
+    rowLayout1->addWidget(diameterButton);
+    QObject::connect(diameterButton, SIGNAL(released()), m_pExplodeWidget, SLOT(createDiameterDimensions()));
+    QObject::connect(m_pExplodeWidget, SIGNAL(setCheckedDiameter(bool)), diameterButton, SLOT(setChecked(bool)));
+
+    QToolButton* radialButton = new QToolButton(gr_WDimensionBox);
+    radialButton->setCheckable(true);
+    radialButton->setIconSize(sizeIcons);
+    radialButton->setIcon(QIcon(":/res/drawing/radius.png"));
+    rowLayout1->addWidget(radialButton);
+    QObject::connect(radialButton, SIGNAL(released()), m_pExplodeWidget, SLOT(createRadialDimensions()));
+    QObject::connect(m_pExplodeWidget, SIGNAL(setCheckedRadial(bool)), radialButton, SLOT(setChecked(bool)));
+
+    buttonLayout->addRow(rowLayout1);
+    vLayout->addLayout(buttonLayout);
+
+    m_pExplodeWidget->setMainLayout(vLayout);
+    m_pExplodeWidget->updateButtons();
+
+    return gr_WDimensionBox;
+}
+
 QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightButton, const std::string& mainTabName)
 {
     m_pWidget = &widget;
@@ -833,6 +898,7 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
     m_vLayoutTab->addWidget(createSelectionGroupBox());
     m_vLayoutTab->addWidget(createRenderingGroupBox());
     m_vLayoutTab->addWidget(createCuttingGroupBox());
+    m_vLayoutTab->addWidget(createDimensionsGroupBox());
 
     return tabWidget;
 }
