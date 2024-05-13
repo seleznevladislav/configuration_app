@@ -2,7 +2,7 @@
 
 using namespace BuildMathModel;
 
-SPtr<MbSolid> ParametricModelCreator::Zarubincreate_011_ConnectorWithFlanec(double ktDiam, double ktThickness, double t, double visotaOpori)
+SPtr<MbSolid> ParametricModelCreator::Zarubincreate_011_ConnectorWithFlanec(double ktDiam, double ktThickness, double t, double visotaOpori, double dU)
 {
     const double inner = ktDiam + 2 * ktThickness;
     const double outer = (ktDiam + 10) + 2 * ktThickness;
@@ -31,7 +31,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_011_ConnectorWithFlanec(doub
     params.keepCant = ts_negative;
     params.strict = true;
 
-    // Outer
+    // Outer нижний
     SpacePointsVector bigRadiusCylPnts;
 
     bigRadiusCylPnts.push_back(MbCartPoint3D(0, 0, Length / 2));
@@ -42,6 +42,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_011_ConnectorWithFlanec(doub
 
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, bigRadiusCylPnts, blockNames), bigRadiusCyl);
 
+    // Outer верхний
     SpacePointsVector bigRadiusCylPntsSecond;
 
     bigRadiusCylPntsSecond.push_back(MbCartPoint3D(0, t, Length / 2));
@@ -52,11 +53,12 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_011_ConnectorWithFlanec(doub
 
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, bigRadiusCylPntsSecond, blockNames), bigRadiusCylSecond);
 
+    // Outer Центральный
     SpacePointsVector bigRadiusCylPntsThird;
 
     bigRadiusCylPntsThird.push_back(MbCartPoint3D(0, middle + high / 2, 0));
     bigRadiusCylPntsThird.push_back(MbCartPoint3D(0, middle - high / 2, 0));
-    bigRadiusCylPntsThird.push_back(MbCartPoint3D(outer / 2, middle + high / 2, 0));
+    bigRadiusCylPntsThird.push_back(MbCartPoint3D(dU / 2 + 10, middle + high / 2, 0));
 
     SolidSPtr bigRadiusCylThird;
 
@@ -72,7 +74,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_011_ConnectorWithFlanec(doub
     ::BooleanResult(resultOuterFirst, cm_Copy, bigRadiusCylSecond, cm_Copy,
         MbBooleanOperationParams(bo_Union, flagsBool, operBoolNames), resultOuterSecond);
 
-    // Inner
+    // Inner нижний
     SpacePointsVector bigRadiusCylPntsInner;
 
     bigRadiusCylPntsInner.push_back(MbCartPoint3D(0, 0, Length / 2));
@@ -83,6 +85,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_011_ConnectorWithFlanec(doub
 
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, bigRadiusCylPntsInner, blockNames), bigRadiusCylInner);
 
+    // Inner верхний
     SpacePointsVector bigRadiusCylPntsSecondInner;
 
     bigRadiusCylPntsSecondInner.push_back(MbCartPoint3D(0, t, Length / 2));
@@ -93,11 +96,12 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_011_ConnectorWithFlanec(doub
 
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, bigRadiusCylPntsSecondInner, blockNames), bigRadiusCylSecondInner);
 
+    // Inner центральный
     SpacePointsVector bigRadiusCylPntsThirdInner;
 
     bigRadiusCylPntsThirdInner.push_back(MbCartPoint3D(0, middle + high / 2, 0));
     bigRadiusCylPntsThirdInner.push_back(MbCartPoint3D(0, middle - high / 2, 0));
-    bigRadiusCylPntsThirdInner.push_back(MbCartPoint3D(inner / 2, middle + high / 2, 0));
+    bigRadiusCylPntsThirdInner.push_back(MbCartPoint3D(dU / 2, middle + high / 2, 0));
 
     SolidSPtr bigRadiusCylThirdInner;
 
@@ -125,14 +129,10 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_011_ConnectorWithFlanec(doub
 
     c3d::EdgesSPtrVector initCurves;
     initCurves.clear();
+    initCurves.emplace_back(allEdges[20]);
+    initCurves.emplace_back(allEdges[23]);
+    initCurves.emplace_back(allEdges[25]);
     initCurves.emplace_back(allEdges[26]);
-    initCurves.emplace_back(allEdges[27]);
-    initCurves.emplace_back(allEdges[29]);
-    initCurves.emplace_back(allEdges[31]);
-    initCurves.emplace_back(allEdges[33]);
-    initCurves.emplace_back(allEdges[35]);
-    initCurves.emplace_back(allEdges[36]);
-    initCurves.emplace_back(allEdges[37]);
 
     FacesSPtrVector initBounds;
 

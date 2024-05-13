@@ -1094,8 +1094,8 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     Detail_008->SetColor(83, 123, 151);
     SPtr<MbSolid> Detail_009(Zarubincreate_009_curevedTube(ttDiam, ttThickness, t));
     Detail_009->SetColor(71, 91, 71);
-    SPtr<MbSolid> Detail_010(Zarubincreate_010_Connector(ktDiam, ktThickness, t));
-    SPtr<MbSolid> Detail_011(Zarubincreate_011_ConnectorWithFlanec(ktDiam, ktThickness, t, visotaOpori));
+    SPtr<MbSolid> Detail_010(Zarubincreate_010_Connector(ktDiam, ktThickness, t, dU));
+    SPtr<MbSolid> Detail_011(Zarubincreate_011_ConnectorWithFlanec(ktDiam, ktThickness, t, visotaOpori, dU));
 
     SPtr<MbSolid> BoltM10(BoltGostTTOR(10));
     BoltM10->SetColor(151, 148, 139);
@@ -1107,19 +1107,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     std::vector<SPtr<MbItem>> pair;
 
     SPtr<MbInstance> Item_001_001(new MbInstance(*Detail_001, lcs));
-
-    //MbProperties* mp = new MbProperties();
-
-    //  size_t currpos = 'Test';
-
-    //  TCHAR bc = IDS_ITEM_0733;
-
-    //  mp->SetName(bc);
-    //  c3d::string_t description;
-    //  //IDS_ITEM_0733
-
-    //  Item_001_001->GetProperties(*mp);
-
     SPtr<MbInstance> Item_001_002(new MbInstance(*Detail_001, lcs));
     SPtr<MbInstance> Item_001_003(new MbInstance(*Detail_001, lcs));
     SPtr<MbInstance> Item_001_004(new MbInstance(*Detail_001, lcs));
@@ -1146,9 +1133,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     SPtr<MbInstance> Item_007_003(new MbInstance(*Detail_007, lcs));
     SPtr<MbInstance> Item_007_004(new MbInstance(*Detail_007, lcs));
 
-    SPtr<MbInstance> Item_007_005(new MbInstance(*Detail_007, lcs));
-    SPtr<MbInstance> Item_007_006(new MbInstance(*Detail_007, lcs));
-
     // Фланцы специальнае для камеры
     SPtr<MbInstance> Item_008_001(new MbInstance(*Detail_008, lcs));
     SPtr<MbInstance> Item_008_002(new MbInstance(*Detail_008, lcs));
@@ -1168,6 +1152,9 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     SPtr<MbInstance> Item_008_014(new MbInstance(*Detail_008, lcs));
     SPtr<MbInstance> Item_008_015(new MbInstance(*Detail_008, lcs));
     SPtr<MbInstance> Item_008_016(new MbInstance(*Detail_008, lcs));
+
+    SPtr<MbInstance> Item_008_017(new MbInstance(*Detail_008, lcs));
+    SPtr<MbInstance> Item_008_018(new MbInstance(*Detail_008, lcs));
 
     SPtr<MbInstance> Item_009_001(new MbInstance(*Detail_009, lcs));
     SPtr<MbInstance> Item_009_002(new MbInstance(*Detail_009, lcs));
@@ -1255,9 +1242,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     pair.push_back(Item_007_003);
     pair.push_back(Item_007_004);
 
-    pair.push_back(Item_007_005);
-    pair.push_back(Item_007_006);
-
     pair.push_back(Item_008_001);
     pair.push_back(Item_008_002);
     pair.push_back(Item_008_003);
@@ -1275,6 +1259,9 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     pair.push_back(Item_008_014);
     pair.push_back(Item_008_015);
     pair.push_back(Item_008_016);
+
+    pair.push_back(Item_008_017);
+    pair.push_back(Item_008_018);
 
     pair.push_back(Item_009_001);
     pair.push_back(Item_009_002);
@@ -1763,15 +1750,15 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
         {
 
             MtGeomArgument Face1312(Detail_003->GetFace(3), Item_003_001);
-            MtGeomArgument Face2321(Detail_011->GetFace(2), Item_011_001);
+            MtGeomArgument Face2321(Detail_011->GetFace(3), Item_011_001);
 
             assm->AddConstraint(GCM_DISTANCE, Face1312, Face2321, MtParVariant(l2 - shirinaOpori - 40));
 
             MtGeomArgument ConnectorsPlane1(Detail_002->GetFace(3), Item_002_001);
             MtGeomArgument ConnectorsPlane2(Detail_002->GetFace(3), Item_002_002);
 
-            MtGeomArgument ConnectorsPlane3(Detail_011->GetFace(8), Item_011_001);
-            MtGeomArgument ConnectorsPlane4(Detail_011->GetFace(9), Item_011_001);
+            MtGeomArgument ConnectorsPlane3(Detail_011->GetFace(7), Item_011_001);
+            MtGeomArgument ConnectorsPlane4(Detail_011->GetFace(8), Item_011_001);
 
             assm->AddConstraint(GCM_CONCENTRIC, ConnectorsPlane2, ConnectorsPlane3);
             assm->AddConstraint(GCM_CONCENTRIC, ConnectorsPlane1, ConnectorsPlane4);
@@ -1779,7 +1766,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
         // Расстояние/Концентричность Соединение
         {
-
             MtGeomArgument Face1312(Detail_003->GetFace(3), Item_003_001);
             MtGeomArgument Face2321(Detail_010->GetFace(2), Item_010_001);
 
@@ -1797,19 +1783,21 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
         // Совмещение/Концентричность фланцы на соеденение
         {
-            MtGeomArgument facebody1(Detail_007->GetFace(12), Item_007_005);
-            MtGeomArgument facebody2(Detail_007->GetFace(12), Item_007_006);
+
+            Item_008_017->Rotate(axVert, M_PI);
+            MtGeomArgument facebody1(Detail_007->GetFace(12), Item_008_017);
+            MtGeomArgument facebody2(Detail_007->GetFace(12), Item_008_018);
             MtGeomArgument facebody3(Detail_011->GetFace(5), Item_011_001);
             MtGeomArgument facebody4(Detail_011->GetFace(0), Item_011_001);
 
             assm->AddConstraint(GCM_COINCIDENT, facebody1, facebody3);
             assm->AddConstraint(GCM_COINCIDENT, facebody2, facebody4);
 
-            MtGeomArgument ConnectorsPlane1(Detail_007->GetFace(3), Item_007_005);
-            MtGeomArgument ConnectorsPlane2(Detail_007->GetFace(3), Item_007_006);
+            MtGeomArgument ConnectorsPlane1(Detail_007->GetFace(14), Item_008_017);
+            MtGeomArgument ConnectorsPlane2(Detail_007->GetFace(14), Item_008_018);
 
-            MtGeomArgument ConnectorsPlane3(Detail_011->GetFace(12), Item_011_001);
-            MtGeomArgument ConnectorsPlane4(Detail_011->GetFace(17), Item_011_001);
+            MtGeomArgument ConnectorsPlane3(Detail_011->GetFace(6), Item_011_001);
+            MtGeomArgument ConnectorsPlane4(Detail_011->GetFace(6), Item_011_001);
 
             assm->AddConstraint(GCM_CONCENTRIC, ConnectorsPlane1, ConnectorsPlane3);
             assm->AddConstraint(GCM_CONCENTRIC, ConnectorsPlane2, ConnectorsPlane4);
@@ -2228,8 +2216,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     Item_007_002->AddAttribute(sixProductInfo);
     Item_007_003->AddAttribute(sixProductInfo);
     Item_007_004->AddAttribute(sixProductInfo);
-    Item_007_005->AddAttribute(sixProductInfo);
-    Item_007_006->AddAttribute(sixProductInfo);
     Item_008_001->AddAttribute(sevenProductInfo);
     Item_008_002->AddAttribute(sevenProductInfo);
     Item_008_003->AddAttribute(sevenProductInfo);
@@ -2246,6 +2232,8 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     Item_008_014->AddAttribute(sevenProductInfo);
     Item_008_015->AddAttribute(sevenProductInfo);
     Item_008_016->AddAttribute(sevenProductInfo);
+    Item_008_017->AddAttribute(sevenProductInfo);
+    Item_008_018->AddAttribute(sevenProductInfo);
     Item_009_001->AddAttribute(eightProductInfo);
     Item_009_002->AddAttribute(eightProductInfo);
     Item_009_003->AddAttribute(eightProductInfo);
