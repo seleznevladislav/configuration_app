@@ -533,9 +533,9 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
             }
 
             BuildParamsForHeatExchangerTTOR config = m_pExplodeManager->dataTTOR[index > 0 ? index : 0];
-
+            int configurationQuantity = m_pExplodeManager->m_quantityCombobox->currentIndex();
     
-            m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(config);
+            m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(config, configurationQuantity);
             openModel();
             break;
         }
@@ -804,20 +804,20 @@ void ExplodeWidget::createScene()
 
 void ExplodeWidget::createSceneZarubin()
 {
-    m_pModel.reset();
-    m_pTreeWidget->clear();
-    sceneContent()->Clear();
+    //m_pModel.reset();
+    //m_pTreeWidget->clear();
+    //sceneContent()->Clear();
 
-    // TOZO: Завести переменную для определения сборки и добавить кнопки в main toolbar left srea
-    // TOZO: Не работает дерево, хз почему
-    m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsForHeatExchangerTTOR());
+    //// TOZO: Завести переменную для определения сборки и добавить кнопки в main toolbar left srea
+    //// TOZO: Не работает дерево, хз почему
+    //m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsForHeatExchangerTTOR());
 
-    SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
-    Q_ASSERT(pTopSegment != nullptr);
-    ProgressBuild* pProgressBuild = m_pSceneGenerator->CreateProgressBuild();
-    Object::Connect(pProgressBuild, &ProgressBuild::BuildAllCompleted, this, &ExplodeWidget::slotFinishBuildRep);
-    m_pSegmModel = m_pSceneGenerator->CreateSceneSegment(m_pModel, pTopSegment, false);
-    m_pSceneGenerator->StartBuildGeometry();
+    //SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
+    //Q_ASSERT(pTopSegment != nullptr);
+    //ProgressBuild* pProgressBuild = m_pSceneGenerator->CreateProgressBuild();
+    //Object::Connect(pProgressBuild, &ProgressBuild::BuildAllCompleted, this, &ExplodeWidget::slotFinishBuildRep);
+    //m_pSegmModel = m_pSceneGenerator->CreateSceneSegment(m_pModel, pTopSegment, false);
+    //m_pSceneGenerator->StartBuildGeometry();
 }
 
 void ExplodeWidget::createSceneIP()

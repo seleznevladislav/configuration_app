@@ -167,9 +167,10 @@ namespace BuildMathModel {
 		static int variantsConfB;
 
 		static int assemblyHeight;
+		static int assemblyHeightTTOR;
 	public:
 		static MbModel* CreatePneymocylinderModelTTRM(ConfigParams params, int configurationQuantity);
-		static MbModel* CreatePneymocylinderModelZarubin(BuildParamsForHeatExchangerTTOR params);
+		static MbModel* CreatePneymocylinderModelZarubin(BuildParamsForHeatExchangerTTOR params, int configurationQuantity);
 
 		static MbModel* CreatePneymocylinderModelFukina(ConfigParams_IP params);
 		static MbModel* CreatePneymocylinderModelVasinkina(ConfigParams_IU params);
@@ -179,7 +180,7 @@ namespace BuildMathModel {
 
 	private:
 		static  SPtr<MbAssembly> CreatePneumocylinderAssembly(ConfigParams params, int configurationQuantity);
-		static  SPtr<MbAssembly> CreateTTOR(BuildParamsForHeatExchangerTTOR params);
+		static  SPtr<MbAssembly> CreateTTOR(BuildParamsForHeatExchangerTTOR params, int configurationQuantity);
 
 		static  SPtr<MbAssembly> CreateIP(ConfigParams_IP params);
 		static  SPtr<MbAssembly> CreateIU(ConfigParams_IU params);

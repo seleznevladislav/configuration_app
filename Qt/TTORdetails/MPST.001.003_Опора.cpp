@@ -51,6 +51,8 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora(double dV, double 
         distancePoint = (width - distanceP) / 2;
     }
 
+    assemblyHeightTTOR = high; // Задаётся высота теплообменика, для дальнейшей организации элемента сборки в блок
+
 
     MbSNameMaker blockNames(1, MbSNameMaker::i_SideNone, 0);
 

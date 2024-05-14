@@ -175,7 +175,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_006_RezhetkaTeplTube(double 
 
     const double rastchet = (ttDiam + ttThickness * 2) / 2;
     // Создание отверстий
-    SolidSPtr result = HolyHole2(&Solid, 4, firstParam, 9);
+    SolidSPtr result = HolyHole2(&Solid, 4, firstParam, 8);
 
     return result;
 }
