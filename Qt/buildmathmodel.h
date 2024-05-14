@@ -167,9 +167,10 @@ namespace BuildMathModel {
 		static int variantsConfB;
 
 		static int assemblyHeight;
+		static int assemblyHeightTTOR;
 	public:
 		static MbModel* CreatePneymocylinderModelTTRM(ConfigParams params, int configurationQuantity);
-		static MbModel* CreatePneymocylinderModelZarubin(BuildParamsForHeatExchangerTTOR params);
+		static MbModel* CreatePneymocylinderModelZarubin(BuildParamsForHeatExchangerTTOR params, int configurationQuantity);
 
 		static MbModel* CreatePneymocylinderModelFukina(ConfigParams_IP params);
 		static MbModel* CreatePneymocylinderModelVasinkina(ConfigParams_IU params);
@@ -179,7 +180,7 @@ namespace BuildMathModel {
 
 	private:
 		static  SPtr<MbAssembly> CreatePneumocylinderAssembly(ConfigParams params, int configurationQuantity);
-		static  SPtr<MbAssembly> CreateTTOR(BuildParamsForHeatExchangerTTOR params);
+		static  SPtr<MbAssembly> CreateTTOR(BuildParamsForHeatExchangerTTOR params, int configurationQuantity);
 
 		static  SPtr<MbAssembly> CreateIP(ConfigParams_IP params);
 		static  SPtr<MbAssembly> CreateIU(ConfigParams_IU params);
@@ -212,8 +213,8 @@ namespace BuildMathModel {
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_007_FlanecKozhux(double ktDiam, double ktThickness);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_008_FlanecSpecial(double ttDiam, double ttThickness);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_009_curevedTube(double ttDiam, double ttThickness, double t);
-		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_010_Connector(double ktDiam, double ktThickness, double t);
-		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_011_ConnectorWithFlanec(double ktDiam, double ktThickness, double t, double visotaOpori);
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_010_Connector(double ktDiam, double ktThickness, double t, double dU);
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_011_ConnectorWithFlanec(double ktDiam, double ktThickness, double t, double visotaOpori, double dU);
 
 		// GHOSTS TTOR
 		static SPtr<MbSolid> ParametricModelCreator::BoltGostTTOR(double diam);

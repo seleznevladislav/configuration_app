@@ -9,6 +9,7 @@ int ParametricModelCreator::colorScheme = 0;
 int ParametricModelCreator::variantsConf = 0;
 int ParametricModelCreator::variantsConfB = 0;
 int ParametricModelCreator::assemblyHeight = 0;
+int ParametricModelCreator::assemblyHeightTTOR = 0;
 
 MbModel* ParametricModelCreator::CreatePneymocylinderModelTTRM(ConfigParams params, int configurationQuantity)
 {
@@ -18,10 +19,10 @@ MbModel* ParametricModelCreator::CreatePneymocylinderModelTTRM(ConfigParams para
 	return model;
 }
 
-MbModel* ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsForHeatExchangerTTOR params)
+MbModel* ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsForHeatExchangerTTOR params, int configurationQuantity)
 {
 	MbModel* model = new MbModel();
-	auto pneumocylinderAssembly = CreateTTOR(params);
+	auto pneumocylinderAssembly = CreateTTOR(params, configurationQuantity);
 	model->AddItem(*pneumocylinderAssembly);
 	return model;
 }
