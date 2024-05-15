@@ -1098,8 +1098,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
     SPtr<MbSolid> Detail_011(Zarubincreate_011_ConnectorWithFlanec(ktDiam, ktThickness, t, visotaOpori, dU));
 
-    SPtr<MbSolid> Detail_012(Zarubincreate_012_curevedTubeBig(ttDiam, ttThickness, visotaOpori, t));
-
     // Bolts
     SPtr<MbSolid> BoltM8(BoltGostTTOR(12));
     BoltM8->SetColor(151, 148, 139);
@@ -1385,7 +1383,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
     pair.push_back(Item_004_001);
 
-    // pair.push_back(Item_005_001);
+    pair.push_back(Item_005_001);
 
     pair.push_back(Item_006_001);
     pair.push_back(Item_006_002);
@@ -1598,7 +1596,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     pair.push_back(NutBoltM16_015);
     pair.push_back(NutBoltM16_016);
 #pragma endregion
-    
+
     SPtr<MbAssembly> assm(new MbAssembly(pair));
     {
 
@@ -3374,15 +3372,31 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     {
         std::vector<SPtr<MbItem>> assmPairs;
 
+
+        SPtr<MbSolid> Detail_012(Zarubincreate_012_curevedTubeBig(ttDiam, ttThickness, visotaOpori, t));
+
+        //Detail_012->Rotate(axVert, -M_PI / 2);
+        Detail_012->Rotate(ayVert, M_PI);
+        Detail_012->Move(MbVector3D(75, -825 + assemblyHeightTTOR,- 657.5));
+        //TOZO: if для ROTATE
+        //TOZO не забыть про болты на крышке
+        /*if () {
+
+        }*/
+
         for (int i = 0; i < configurationQuantity + 1; ++i)
         {
             SPtr<MbInstance> assmInstance(new MbInstance(*assm, lcs));
+
+            SPtr<MbInstance> Item_012_001(new MbInstance(*Detail_012, lcs));
 
             assmPairs.push_back(assmInstance);
 
             if (i >= 1)
             {
-                assmInstance->Move(MbVector3D(0, assemblyHeightTTOR* i, 0));
+                Item_012_001->Move(MbVector3D(0, -assemblyHeightTTOR * i, 0));
+                assmPairs.push_back(Item_012_001);
+                assmInstance->Move(MbVector3D(0, -assemblyHeightTTOR* i, 0));
             }
         }
 
