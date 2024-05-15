@@ -1061,7 +1061,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     double l3 = params.l3;
     double t = params.t;
 
-    const double visotaOpori = 850;
+    const double visotaOpori = H1*2;
     const double shirinaOpori = 200;
     double distanceRezhetka = 500; //l2 - 400
     double distanceTubesKozhux = (-1) * (distanceRezhetka + 90.0);
@@ -1095,7 +1095,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     SPtr<MbSolid> Detail_009(Zarubincreate_009_curevedTube(ttDiam, ttThickness, t));
     Detail_009->SetColor(71, 91, 71);
     SPtr<MbSolid> Detail_010(Zarubincreate_010_Connector(ktDiam, ktThickness, t, dU));
+
     SPtr<MbSolid> Detail_011(Zarubincreate_011_ConnectorWithFlanec(ktDiam, ktThickness, t, visotaOpori, dU));
+
+    SPtr<MbSolid> Detail_012(Zarubincreate_012_curevedTubeBig(ttDiam, ttThickness, visotaOpori, t));
 
     // Bolts
     SPtr<MbSolid> BoltM8(BoltGostTTOR(12));
@@ -1185,6 +1188,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
     SPtr<MbInstance> Item_010_001(new MbInstance(*Detail_010, lcs));
     SPtr<MbInstance> Item_011_001(new MbInstance(*Detail_011, lcs));
+    SPtr<MbInstance> Item_012_001(new MbInstance(*Detail_012, lcs));
 
     SPtr<MbInstance> BoltM8_001(new MbInstance(*BoltM8, lcs));
     SPtr<MbInstance> BoltM8_002(new MbInstance(*BoltM8, lcs));
@@ -1358,6 +1362,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
     pair.push_back(Item_010_001);
     pair.push_back(Item_011_001);
+    pair.push_back(Item_012_001);
 
     // Ghosts М8
     pair.push_back(BoltM8_001);
