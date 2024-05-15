@@ -215,6 +215,7 @@ namespace BuildMathModel {
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_009_curevedTube(double ttDiam, double ttThickness, double t);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_010_Connector(double ktDiam, double ktThickness, double t, double dU);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_011_ConnectorWithFlanec(double ktDiam, double ktThickness, double t, double visotaOpori, double dU);
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_012_curevedTubeBig(double ttDiam, double ttThickness, double visotaOpori, double t);
 
 		// GHOSTS TTOR
 		static SPtr<MbSolid> ParametricModelCreator::BoltGostTTOR(double diam);
