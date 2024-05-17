@@ -43,6 +43,7 @@ public:
 public:
     void init(SceneSegment* pSegmModel, ExplodeTreeView* pTreeWidget);
     QGroupBox* createGroupExplode(QWidget& widget, const int heightButton, const std::string& mainTabName);
+    void createCalculationTab(const int numberOfHeatExchanger);
     QFormLayout* createWarmForm(QVBoxLayout* layout);
     QFormLayout* createParametrizationForm(QVBoxLayout* layout);
     bool isSelectionEnabled() const;
@@ -193,6 +194,15 @@ private:
     QGroupBox* m_warmParams              = nullptr;
     QLabel* m_labelLevel                 = nullptr;
     QLabel* m_labelSelectAssembly        = nullptr;
+    /// <summary>
+    /// vars tab management
+    /// </summary>
+    QTabWidget* m_mainTabWidget;
+    QWidget* m_calculationTab;
+    QVBoxLayout* m_vLayoutCalculationTabTTOR = nullptr;
+    QVBoxLayout* m_vLayoutCalculationTabTTRM = nullptr;
+    QVBoxLayout* m_vLayoutCalculationTabIP = nullptr;
+    QVBoxLayout* m_vLayoutCalculationTabIU = nullptr;
     /// <summary>
     /// vars for cutting plane
     /// </summary>
