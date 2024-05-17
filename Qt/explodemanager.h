@@ -52,6 +52,8 @@ public:
     QComboBox* m_comboConfigure = nullptr;
     QPushButton* m_reconfigureButton = nullptr;
     QVBoxLayout* m_vLayoutWarmParams = nullptr;
+    bool isCheckedManualType = false;
+    ConfigParams manualTTRMParams;
 
     std::vector<ConfigParams> dataTTRM = {
        {u8"ТТРМ 25/57-6,3/1,6", 25, 3, 57, 4, 219, 8, 1500, 750, 2150, 32, 80, 415, 250, 230 },
@@ -169,7 +171,8 @@ private:
     QRadioButton* createRadioButton(const ExplodeDispatcher::ControlParameterType param, QHBoxLayout* hLayout, const char* text, const bool checked);
     QRadioButton* createTypeRadioButton(QHBoxLayout* hLayout, const char* text, const bool checked, int type);
     QTabWidget* createTabWidget(QWidget& widget, const int heightButton, const std::string& mainTabName);
-    void calculateThickness(QLineEdit* innerTubesLineEdit, QLineEdit* outerTubesLineEdit, QLineEdit* gridsLineEdit, QDoubleSpinBox* lengthSpinBox);
+    ConfigParams findClosestMatch(int dimCamera, int param, const std::string& structName);
+    void calculateThickness(QFormLayout* form);
     void onReconfigureButtonClicked();
     QAction* createActionButton(const QString& fileName, QGroupBox* groupFilter, QHBoxLayout* fGroupLayout);
     QGroupBox* createExplodingGroupBox();
@@ -193,6 +196,7 @@ private:
     QGroupBox* m_warmParams              = nullptr;
     QLabel* m_labelLevel                 = nullptr;
     QLabel* m_labelSelectAssembly        = nullptr;
+    QDoubleSpinBox* m_lengthSpinBox      = nullptr;
     /// <summary>
     /// vars for cutting plane
     /// </summary>
@@ -217,6 +221,12 @@ private:
     const std::string m_tabNameSeparator = "_";
     bool m_isSelectionDisabled = true;
     int m_heightButton = 0;
+
+    int mp_thicknessCameraResult;
+    int mp_thicknessInnerResult;
+    int mp_thicknessOuterResult;
+    int mp_dimCamera;
+    int mp_dimOuterTube;
 };
 
 #endif // __VSN_EXPLODEGROUP_H

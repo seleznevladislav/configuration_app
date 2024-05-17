@@ -267,7 +267,7 @@ void ExplodeManager::radiosTypeFromToggled(bool checked, int type)
 {
     if (checked)
     {
-        bool isCheckedManualType = type == 2;
+        isCheckedManualType = type == 2 && (m_pExplodeWidget->m_pCurrentExchandger == 1 || m_pExplodeWidget->m_pCurrentExchandger == 2);
         
         m_comboConfigure->setDisabled(isCheckedManualType);
         m_warmParams->setDisabled(!isCheckedManualType);
@@ -298,19 +298,80 @@ QVBoxLayout* ExplodeManager::createVBoxLayout(QGroupBox* group)
     return vLayout;
 }
 
-void ExplodeManager::calculateThickness(QLineEdit* innerTubesLineEdit, QLineEdit* outerTubesLineEdit, QLineEdit* gridsLineEdit, QDoubleSpinBox* lengthSpinBox) {
+ConfigParams ExplodeManager::findClosestMatch(int dimCamera, int param, const std::string& structName) {
+    vector<ConfigParams> filteredElements;
+
+    // Фильтрация элементов по диаметру камеры
+    for (const ConfigParams& element : dataTTRM) {
+        if (element.assortmentCamera == dimCamera) {
+            filteredElements.push_back(element);
+        }
+    }
+
+    filteredElements = dimCamera == 0 ? dataTTRM : filteredElements;
+
+    unordered_map<string, function<int(const ConfigParams&)>> paramAccess = {
+        {"LENGTH", [](const ConfigParams& e) { return e.LENGTH; }},
+        {"thicknessOuterTubes", [](const ConfigParams& e) { return e.thicknessOuterTubes; }},
+        {"assortmentCamera", [](const ConfigParams& e) { return e.assortmentCamera; }},
+    };
+
+    // Поиск элемента, четвертый элемент которого ближе всего ко второму параметру
+    ConfigParams closestElement = filteredElements[0];
+    int minDifference = abs(paramAccess[structName](filteredElements[0]) - param);
+
+    for (const ConfigParams& element : filteredElements) {
+        int difference = abs(paramAccess[structName](element) - param);
+
+        if (difference < minDifference) {
+            closestElement = element;
+            minDifference = difference;
+        }
+    }
+
+    return closestElement;
+}
+
+void ExplodeManager::calculateThickness(QFormLayout* form) {
     // Здесь выполняется ваш расчет
     // Например, предположим, что вы вычислили значения толщины
-    double thicknessInnerTubes = 5.0;
-    double thicknessOuterTubes = 6.0;
-    double thicknessGrids = 7.0;
+    QComboBox* steelComboBox = qobject_cast<QComboBox*>(form->itemAt(1)->widget());
+    QComboBox* pressureInnerComboBox = qobject_cast<QComboBox*>(form->itemAt(3)->widget());
+    QComboBox* pressureOuterComboBox = qobject_cast<QComboBox*>(form->itemAt(5)->widget());
+    QComboBox* dimOuterComboBox = qobject_cast<QComboBox*>(form->itemAt(7)->widget());
+    QComboBox* dimCameraComboBox = qobject_cast<QComboBox*>(form->itemAt(9)->widget());
 
-    // Устанавливаем вычисленные значения в соответствующие QLineEdit
-    innerTubesLineEdit->setText(QString::number(thicknessInnerTubes));
-    outerTubesLineEdit->setText(QString::number(thicknessOuterTubes));
-    gridsLineEdit->setText(QString::number(thicknessGrids));
+    int steelMark = steelComboBox->currentData().toInt();
+    float pressureInner = pressureInnerComboBox->currentData().toFloat();
+    float pressureOuter = pressureOuterComboBox->currentData().toFloat();
+    mp_dimOuterTube = dimOuterComboBox->currentData().toInt();
 
-    lengthSpinBox->setDisabled(false);
+    QPair<int, int> cameraValues = dimCameraComboBox->currentData().value<QPair<int, int>>();
+    mp_dimCamera = cameraValues.first;
+    int cameraHeight = cameraValues.second;
+
+    int thicknessOuter = ceil((pressureOuter * mp_dimOuterTube) / (2 * 0.9 * steelMark - pressureOuter) + 2.5);
+    mp_thicknessOuterResult = max(thicknessOuter, 4);
+
+    ConfigParams foundElement = findClosestMatch(mp_dimCamera, mp_thicknessOuterResult, "thicknessOuterTubes");
+
+    int thicknessInner = ceil((pressureInner * foundElement.assortmentInnerTubes) / (2 * 0.9 * steelMark - pressureInner) + 2.5);
+    mp_thicknessInnerResult = max(thicknessInner, 4);
+
+    const int R = pow(mp_dimCamera, 2) / (4 * cameraHeight);
+    int thicknessCamera = ceil((pressureOuter * R) / (2 * steelMark * 0.9 - 0.5 * pressureOuter) + 2.5);
+    mp_thicknessCameraResult = max(thicknessCamera, 4);
+
+    QLineEdit* innerTubesLineEdit = qobject_cast<QLineEdit*>(form->itemAt(12)->widget());
+    innerTubesLineEdit->setText(QString::number(mp_thicknessInnerResult));
+
+    QLineEdit* outerTubesLineEdit = qobject_cast<QLineEdit*>(form->itemAt(14)->widget());
+    outerTubesLineEdit->setText(QString::number(mp_thicknessOuterResult));
+
+    QLineEdit* thicknessGridsLineEdit = qobject_cast<QLineEdit*>(form->itemAt(16)->widget());
+    thicknessGridsLineEdit->setText(QString::number(mp_thicknessCameraResult));
+
+    m_lengthSpinBox->setDisabled(false);
     m_reconfigureButton->setDisabled(false);
 }
 
@@ -319,19 +380,60 @@ QFormLayout* ExplodeManager::createWarmForm(QVBoxLayout* layout)
     QFormLayout* formLayout = new QFormLayout;
     formLayout->setObjectName("warmForm");
 
-    QLabel* coolantLabel = new QLabel(u8"Теплоноситель:");
-    QLabel* pressureLabel = new QLabel(u8"Рабочие давление:");
-    
-    QComboBox* coolantComboBox = new QComboBox;
-    coolantComboBox->addItem(u8"Вода");
-    QComboBox* pressureComboBox = new QComboBox;
-    pressureComboBox->addItem("6");
+    QLabel* steelLabel = new QLabel(u8"Марка металла аппарата:");
+    QLabel* pressureInnerLabel = new QLabel(u8"Рабочие давление в трубе:");
+    QLabel* pressureOuterLabel = new QLabel(u8"Рабочие давление в кожухе:");
 
-    formLayout->addRow(coolantLabel, coolantComboBox);
-    formLayout->addRow(pressureLabel, pressureComboBox);
+    QLabel* dimYLabel = new QLabel(u8"Внешний диаметр кожуха, Dy:");
+    QLabel* dimCameraLabel = new QLabel(u8"Диаметр камеры, D:");
+    
+    QComboBox* steelComboBox = new QComboBox;
+    steelComboBox->addItem(u8"Вст.3", 140);
+    steelComboBox->addItem(u8"20, 20К", 147);
+    steelComboBox->addItem(u8"О9Г2С, 16ГС, 17ГС, 10Г2С1", 183);
+    steelComboBox->addItem(u8"10Г2", 180);
+    steelComboBox->addItem(u8"12ХМ", 147);
+    steelComboBox->addItem(u8"12МX", 147);
+    steelComboBox->addItem(u8"15ХМ", 155);
+    steelComboBox->addItem(u8"15Х5М", 146);
+    steelComboBox->addItem(u8"15Х5М-У", 240);
+    steelComboBox->addItem(u8"08Х22Н6Т, 08Х21Н6М2Т", 240);
+    steelComboBox->addItem(u8"03Х21Н21М4ГБ", 80);
+    steelComboBox->addItem(u8"03Х18Н11", 160);
+    steelComboBox->addItem(u8"03Х16Н15М3", 153);
+    steelComboBox->addItem(u8"06ХН28МДТ, 03ХН28МДТ", 147);
+
+    QComboBox* pressureInnerComboBox = new QComboBox;
+    pressureInnerComboBox->addItem("6,3", 6.3);
+    pressureInnerComboBox->addItem("10", 10);
+    pressureInnerComboBox->addItem("16", 16);
+    
+
+    QComboBox* pressureOuterComboBox = new QComboBox;
+    pressureOuterComboBox->addItem("1,6", 1.6);
+    pressureOuterComboBox->addItem("4,0", 4.0);
+    pressureOuterComboBox->addItem("6,3", 6.3);
+    pressureOuterComboBox->addItem("10,0", 10.0);
+
+    QComboBox* dimYComboBox = new QComboBox;
+    dimYComboBox->addItem("57", 57);
+    dimYComboBox->addItem("76", 76);
+    dimYComboBox->addItem("89", 89);
+    dimYComboBox->addItem("108", 108);
+
+    QComboBox* dimCameraComboBox = new QComboBox;
+    dimCameraComboBox->addItem("219", QVariant::fromValue(QPair<int, int>(219, 55)));
+    dimCameraComboBox->addItem("273", QVariant::fromValue(QPair<int, int>(273, 68)));
+    dimCameraComboBox->addItem("325", QVariant::fromValue(QPair<int, int>(325, 81)));
+
+    formLayout->addRow(steelLabel, steelComboBox);
+    formLayout->addRow(pressureInnerLabel, pressureInnerComboBox);
+    formLayout->addRow(pressureOuterLabel, pressureOuterComboBox);
+    formLayout->addRow(dimYLabel, dimYComboBox);
+    formLayout->addRow(dimCameraLabel, dimCameraComboBox);
 
     QPushButton* calculateThicknessButton = new QPushButton;
-    calculateThicknessButton->setText(u8"Посчитать толщину стенок");
+    calculateThicknessButton->setText(u8"Расчитать толщину стенок");
     calculateThicknessButton->setIcon(QIcon(":/res/calculate.png"));
     calculateThicknessButton->setContentsMargins(0, 5, 0, 5);
 
@@ -359,21 +461,21 @@ QFormLayout* ExplodeManager::createWarmForm(QVBoxLayout* layout)
     line->setContentsMargins(0, 10, 0, 10);
     formLayout->addRow(line);
 
-    QDoubleSpinBox* lengthSpinBox = new QDoubleSpinBox;
-    lengthSpinBox->setDisabled(true);
-    lengthSpinBox->setRange(2050, 7040);
-    lengthSpinBox->setSingleStep(50);
-    lengthSpinBox->setValue(2050);
+    m_lengthSpinBox = new QDoubleSpinBox;
+    m_lengthSpinBox->setDisabled(true);
+    m_lengthSpinBox->setRange(2050, 7040);
+    m_lengthSpinBox->setSingleStep(50);
+    m_lengthSpinBox->setValue(2050);
 
     QLabel* lengthSpinBoxLabel = new QLabel(u8"Длина L, мм:");
 
-    formLayout->addRow(lengthSpinBoxLabel, lengthSpinBox);
+    formLayout->addRow(lengthSpinBoxLabel, m_lengthSpinBox);
     
 
     layout->addLayout(formLayout);
 
     connect(calculateThicknessButton, &QPushButton::clicked, [=]() {
-        calculateThickness(thicknessInnerTubesLineEdit, thicknessOuterTubesLineEdit, thicknessGridsLineEdit, lengthSpinBox);
+        calculateThickness(formLayout);
         });
 
     return formLayout;
@@ -509,6 +611,20 @@ QGroupBox* ExplodeManager::createGroupExplode(QWidget& widget, const int heightB
 }
 
 void ExplodeManager::onReconfigureButtonClicked() {
+    if (isCheckedManualType) {
+        ConfigParams lengthParams = findClosestMatch(0, m_lengthSpinBox->value(), "LENGTH");
+        manualTTRMParams = findClosestMatch(0, mp_dimCamera, "assortmentCamera");
+
+        manualTTRMParams.thicknessInnerTubes = mp_thicknessInnerResult;
+        manualTTRMParams.thicknessOuterTubes = mp_thicknessOuterResult;      
+        manualTTRMParams.LENGTH = m_lengthSpinBox->value();
+        manualTTRMParams.length0 = lengthParams.length0;
+        manualTTRMParams.length1 = lengthParams.length1;
+        manualTTRMParams.length2 = lengthParams.length2;
+        manualTTRMParams.length3 = lengthParams.length3;
+        manualTTRMParams.lengthK = lengthParams.lengthK;
+    }
+
     if (m_pExplodeWidget) {
         QVariant propertyValue = m_reconfigureButton->property("CommandsHeatExhanger");
         ExplodeWidget::Exhanchares cmd = static_cast<ExplodeWidget::Exhanchares>(propertyValue.toInt());

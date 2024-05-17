@@ -550,7 +550,10 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
                 values.append(QString::fromStdString(config.name));
             }
 
-            ConfigParams config = m_pExplodeManager->dataTTRM[index > 0 ? index : 0];
+            ConfigParams config = m_pExplodeManager->isCheckedManualType 
+                ? m_pExplodeManager->manualTTRMParams 
+                : m_pExplodeManager->dataTTRM[index > 0 ? index : 0];
+
             int configurationQuantity = m_pExplodeManager->m_quantityCombobox->currentIndex();
 
             m_pModel = ParametricModelCreator::CreatePneymocylinderModelTTRM(config, configurationQuantity);
