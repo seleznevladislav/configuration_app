@@ -23,6 +23,8 @@ static QSize sizeIcons = QSize(32, 32);
 ExplodeManager::ExplodeManager(ExplodeWidget* pExplodeWidget)
     : QObject(nullptr)
     , m_pExplodeWidget(pExplodeWidget)
+    , m_mainTabWidget(nullptr)
+    , m_calculationTab(nullptr)
 {
 }
 
@@ -73,7 +75,7 @@ void ExplodeManager::initWidgets()
     m_groupExpl->setEnabled(true);
     m_tabWidget->setTabsClosable(true);
 
-    const int amountOfMainTabs = 2;
+    const int amountOfMainTabs = 3;
 
     for (int idx = m_tabWidget->count() - amountOfMainTabs; idx > 0; --idx)
         tabWidgetCloseRequested(idx);
@@ -82,6 +84,7 @@ void ExplodeManager::initWidgets()
     QTabBar::ButtonPosition closeSide = (QTabBar::ButtonPosition)tabBar->style()->styleHint(QStyle::SH_TabBar_CloseButtonPosition, 0/*, this*/);
     tabBar->setTabButton(0, closeSide, 0);
     tabBar->setTabButton(1, closeSide, 0);
+    tabBar->setTabButton(2, closeSide, 0);
     m_parametersForUpdateGUI = m_explodeDispatcher.GetControlParameters();
 }
 
@@ -610,6 +613,109 @@ QGroupBox* ExplodeManager::createGroupExplode(QWidget& widget, const int heightB
     return m_groupExpl;
 }
 
+enum class FluidType {
+    Water,
+    Oil,
+    EthyleneGlycol,
+    Air,
+    R134a,
+    Methanol,
+    Ethanol,
+    Propane,
+    Custom // для пользовательских жидкостей
+};
+
+QStringList fluidTypeNames = {
+    u8"Вода",
+    u8"Нефть",
+    u8"Этиленгликоль",
+    u8"Воздух",
+    u8"R134a",
+    u8"Метанол",
+    u8"Этанол",
+    u8"Пропан",
+    u8"Пользовательская"
+};
+
+void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
+{
+    m_calculationTab = new QWidget();
+
+    m_mainTabWidget->addTab(m_calculationTab, u8"Расчеты");
+
+    switch (numberOfHeatExchanger)
+    {
+        case 1: //ExplodeWidget::TTOR
+        {
+            m_vLayoutCalculationTabTTOR = new QVBoxLayout();
+
+            // Поля для ввода температур
+            m_vLayoutCalculationTabTTOR->addWidget(new QLabel(u8"Температура горячей среды на входе (°C):"));
+            QLineEdit* hotInletTemp = new QLineEdit();
+            m_vLayoutCalculationTabTTOR->addWidget(hotInletTemp);
+
+            m_vLayoutCalculationTabTTOR->addWidget(new QLabel(u8"Температура холодной среды на входе (°C):"));
+            QLineEdit* coldInletTemp = new QLineEdit();
+            m_vLayoutCalculationTabTTOR->addWidget(coldInletTemp);
+
+            // Поля для ввода скоростей
+            m_vLayoutCalculationTabTTOR->addWidget(new QLabel(u8"Скорость горячей среды (м/с):"));
+            QLineEdit* hotVelocity = new QLineEdit();
+            m_vLayoutCalculationTabTTOR->addWidget(hotVelocity);
+
+            m_vLayoutCalculationTabTTOR->addWidget(new QLabel(u8"Скорость холодной среды (м/с):"));
+            QLineEdit* coldVelocity = new QLineEdit();
+            m_vLayoutCalculationTabTTOR->addWidget(coldVelocity);
+
+            // Комбобоксы для выбора теплоносителей
+            m_vLayoutCalculationTabTTOR->addWidget(new QLabel(u8"Горячий теплоноситель:"));
+            QComboBox* hotFluidComboBox = new QComboBox();
+            hotFluidComboBox->addItems(fluidTypeNames);
+            m_vLayoutCalculationTabTTOR->addWidget(hotFluidComboBox);
+
+            m_vLayoutCalculationTabTTOR->addWidget(new QLabel(u8"Холодный теплоноситель:"));
+            QComboBox* coldFluidComboBox = new QComboBox();
+            coldFluidComboBox->addItems(fluidTypeNames);
+            m_vLayoutCalculationTabTTOR->addWidget(coldFluidComboBox);
+
+            // Поля для ввода теплопередающего коэффициента и площади теплообменника
+            m_vLayoutCalculationTabTTOR->addWidget(new QLabel(u8"Коэффициент теплопередачи (Вт/м²·°C):"));
+            QLineEdit* heatTransferCoefficient = new QLineEdit();
+            m_vLayoutCalculationTabTTOR->addWidget(heatTransferCoefficient);
+
+            m_vLayoutCalculationTabTTOR->addWidget(new QLabel(u8"Площадь теплообменника (м²):"));
+            QLineEdit* area = new QLineEdit();
+            m_vLayoutCalculationTabTTOR->addWidget(area);
+
+            m_calculationTab->setLayout(m_vLayoutCalculationTabTTOR);
+        }
+        case 2: //ExplodeWidget::TTRM
+        {
+            m_vLayoutCalculationTabTTRM = new QVBoxLayout();
+
+            m_calculationTab->setLayout(m_vLayoutCalculationTabTTRM);
+            break;
+        }
+        case 3: //ExplodeWidget::IP
+        {
+            m_vLayoutCalculationTabIP = new QVBoxLayout();
+
+            m_calculationTab->setLayout(m_vLayoutCalculationTabIP);
+            break;
+        }
+        case 4: //ExplodeWidget::IU
+        {
+
+            m_vLayoutCalculationTabIU = new QVBoxLayout();
+
+            m_calculationTab->setLayout(m_vLayoutCalculationTabIU);
+            break;
+        }
+        default:
+            break;
+    }
+} 
+
 void ExplodeManager::onReconfigureButtonClicked() {
     if (isCheckedManualType) {
         ConfigParams lengthParams = findClosestMatch(0, m_lengthSpinBox->value(), "LENGTH");
@@ -914,10 +1020,10 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
 {
     m_pWidget = &widget;
     m_heightButton = heightButton;
-    QTabWidget* tabWidget = new QTabWidget();
+    m_mainTabWidget = new QTabWidget();
 
-    tabWidget->addTab(new QWidget(), m_mainTabName.c_str());
-    tabWidget->addTab(new QWidget(), u8"Параметризация");
+    m_mainTabWidget->addTab(new QWidget(), m_mainTabName.c_str());
+    m_mainTabWidget->addTab(new QWidget(), u8"Параметризация");
 
     m_vLayoutTab = new QVBoxLayout();
     m_vLayoutTab->setSpacing(2);
@@ -927,12 +1033,12 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
 
     m_vLayoutTab->setContentsMargins(4, 2, 4, 2);
 
-    tabWidget->currentWidget()->setLayout(m_vLayoutTab);
-    tabWidget->widget(1)->setLayout(m_vLayoutConfigureTab);
+    m_mainTabWidget->currentWidget()->setLayout(m_vLayoutTab);
+    m_mainTabWidget->widget(1)->setLayout(m_vLayoutConfigureTab);
 
     m_vLayoutTab->setSizeConstraint(QLayout::SetMinimumSize);
-    QObject::connect(tabWidget, &QTabWidget::currentChanged, this, &ExplodeManager::tabWidgetCurrentChanged);
-    QObject::connect(tabWidget, &QTabWidget::tabCloseRequested, this, &ExplodeManager::tabWidgetCloseRequested);
+    QObject::connect(m_mainTabWidget, &QTabWidget::currentChanged, this, &ExplodeManager::tabWidgetCurrentChanged);
+    QObject::connect(m_mainTabWidget, &QTabWidget::tabCloseRequested, this, &ExplodeManager::tabWidgetCloseRequested);
 
     m_quantityCombobox = createCombobox(m_vLayoutConfigureTab);
     m_quantityCombobox->addItem(u8"Одиночный", 0);
@@ -955,7 +1061,6 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
     m_vLayoutConfigureTab->addWidget(m_warmParams);
 
     m_vLayoutWarmParams = createVBoxLayout(m_warmParams);
-
 
     QToolButton* sizeInfoButton = new QToolButton();
     sizeInfoButton->setIcon(QIcon(":/res/dimensions.png"));
@@ -1009,7 +1114,6 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
     QPushButton* buttonReset = createButton(ED::cpt_ResetExplodeView, hLayoutButtonsCreate, u8"Сбросить", u8"Сбросить настройки сцены");
     QObject::connect(buttonReset, &QPushButton::pressed, this, &ExplodeManager::buttonsPressed);
 
-    
     m_vLayoutTab->addWidget(createExplodingGroupBox());
     m_vLayoutTab->addWidget(createFilterGroupBox());
     m_vLayoutTab->addWidget(createSelectionGroupBox());
@@ -1017,5 +1121,5 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
     m_vLayoutTab->addWidget(createCuttingGroupBox());
     m_vLayoutTab->addWidget(createDimensionsGroupBox());
 
-    return tabWidget;
+    return m_mainTabWidget;
 }

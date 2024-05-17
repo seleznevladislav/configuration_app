@@ -596,6 +596,8 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
             break;
     };
 
+    m_pExplodeManager->createCalculationTab(currentIndexofExchanger);
+
     if (hasChangeType)
     {
         m_pExplodeManager->m_comboConfigure->addItems(values);
