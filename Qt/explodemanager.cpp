@@ -537,6 +537,12 @@ QStringList fluidTypeNames = {
 
 void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
 {
+
+    if (m_calculationTab) {
+
+        m_mainTabWidget->removeTab(2);
+    }
+
     m_calculationTab = new QWidget();
 
     m_mainTabWidget->addTab(m_calculationTab, u8"Расчеты");
@@ -590,6 +596,16 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
         case 2: //ExplodeWidget::TTRM
         {
             m_vLayoutCalculationTabTTRM = new QVBoxLayout();
+
+            // Поля для ввода температур
+            m_vLayoutCalculationTabTTRM->addWidget(new QLabel(u8"Температура горячей среды на входе (°C):"));
+            QLineEdit* hotInletTemp = new QLineEdit();
+            m_vLayoutCalculationTabTTRM->addWidget(hotInletTemp);
+
+            m_vLayoutCalculationTabTTRM->addWidget(new QLabel(u8"Температура холодной среды на входе (°C):"));
+            QLineEdit* coldInletTemp = new QLineEdit();
+            m_vLayoutCalculationTabTTRM->addWidget(coldInletTemp);
+
 
             m_calculationTab->setLayout(m_vLayoutCalculationTabTTRM);
             break;
