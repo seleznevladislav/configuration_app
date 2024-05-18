@@ -127,6 +127,22 @@ public:
         {u8"1800У-2,5-2,5-М4/20-6-2-Т", 1840, 7950, 20, 1.6, 1800, 1140, 1100, 562, 1.6},
         {u8"2000У-2,5-2,5-М4/20-6-2-Т", 2040, 8210, 20, 1.6, 2000, 1240, 1200, 562, 1.6},
     };
+
+    //  std::string name; // 0 - Наименование
+    //  double p;         // 1 - Кинематический коэффициент вязкости
+    //  double c;		  // 2 - Коэффициент теплопроводности,
+    //  double laymbda;	  // 3 - Коэффициент линейного расширения вещества
+
+    std::vector<date_fluidProperties> fluidsProperties = {
+        {u8"Ацетон",                813 , 2114, 0.174},
+        {u8"Бензин",                900 , 1800, 0.145},
+        {u8"Вода дистиллированная", 1000, 4187, 0.550},
+        {u8"Керосин",               850 , 2430, 0.121},
+        {u8"Нефтяное масло",        890 , 2430, 0.104},
+        {u8"Ртуть чистая",         13600,  138, 8.140},
+        {u8"Спирт метиловый",       810,  2470, 0.214},
+        {u8"Спирт этиловый",        806,  2303, 0.188},
+    };
 public:
     QGroupBox* getExplodingGroupBox() const { return gr_WExploding; }
     QGroupBox* getFiltersGroupBox() const { return gr_Wfilters; }
@@ -172,6 +188,7 @@ private:
     QTabWidget* createTabWidget(QWidget& widget, const int heightButton, const std::string& mainTabName);
     void calculateThickness(QLineEdit* innerTubesLineEdit, QLineEdit* outerTubesLineEdit, QLineEdit* gridsLineEdit, QDoubleSpinBox* lengthSpinBox);
     void onReconfigureButtonClicked();
+    void onCalculationButtonClicked();
     QAction* createActionButton(const QString& fileName, QGroupBox* groupFilter, QHBoxLayout* fGroupLayout);
     QGroupBox* createExplodingGroupBox();
     QGroupBox* createFilterGroupBox();
@@ -203,6 +220,7 @@ private:
     QVBoxLayout* m_vLayoutCalculationTabTTRM = nullptr;
     QVBoxLayout* m_vLayoutCalculationTabIP = nullptr;
     QVBoxLayout* m_vLayoutCalculationTabIU = nullptr;
+    QPushButton* m_CalculationButton = nullptr;
     /// <summary>
     /// vars for cutting plane
     /// </summary>
