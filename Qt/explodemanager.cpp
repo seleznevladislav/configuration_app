@@ -13,6 +13,7 @@
 #include <QComboBox>
 #include <QString>
 #include <QStringList>
+#include <QWindow>
 
 
 #include <last.h>
@@ -613,32 +614,14 @@ QGroupBox* ExplodeManager::createGroupExplode(QWidget& widget, const int heightB
     return m_groupExpl;
 }
 
-enum class FluidType {
-    Water,
-    Oil,
-    EthyleneGlycol,
-    Air,
-    R134a,
-    Methanol,
-    Ethanol,
-    Propane,
-    Custom // для пользовательских жидкостей
-};
-
-QStringList fluidTypeNames = {
-    u8"Вода",
-    u8"Нефть",
-    u8"Этиленгликоль",
-    u8"Воздух",
-    u8"R134a",
-    u8"Метанол",
-    u8"Этанол",
-    u8"Пропан",
-    u8"Пользовательская"
-};
-
 void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
 {
+
+    if (m_calculationTab) {
+
+        m_mainTabWidget->removeTab(2);
+    }
+
     m_calculationTab = new QWidget();
 
     m_mainTabWidget->addTab(m_calculationTab, u8"Расчеты");
@@ -670,12 +653,16 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
             // Комбобоксы для выбора теплоносителей
             m_vLayoutCalculationTabTTOR->addWidget(new QLabel(u8"Горячий теплоноситель:"));
             QComboBox* hotFluidComboBox = new QComboBox();
-            hotFluidComboBox->addItems(fluidTypeNames);
+            for (const auto& fluid : fluidsProperties) {
+                hotFluidComboBox->addItem(QString::fromStdString(fluid.name));
+            }
             m_vLayoutCalculationTabTTOR->addWidget(hotFluidComboBox);
 
             m_vLayoutCalculationTabTTOR->addWidget(new QLabel(u8"Холодный теплоноситель:"));
             QComboBox* coldFluidComboBox = new QComboBox();
-            coldFluidComboBox->addItems(fluidTypeNames);
+            for (const auto& fluid : fluidsProperties) {
+                coldFluidComboBox->addItem(QString::fromStdString(fluid.name));
+            }
             m_vLayoutCalculationTabTTOR->addWidget(coldFluidComboBox);
 
             // Поля для ввода теплопередающего коэффициента и площади теплообменника
@@ -687,11 +674,32 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
             QLineEdit* area = new QLineEdit();
             m_vLayoutCalculationTabTTOR->addWidget(area);
 
+            m_CalculationButton = new QPushButton;
+            m_CalculationButton->setText(u8"Рассчитать теплообменный аппарат");
+            connect(m_CalculationButton, &QPushButton::clicked, this, &ExplodeManager::onCalculationButtonClicked);
+            m_vLayoutCalculationTabTTOR->addWidget(m_CalculationButton);
+
             m_calculationTab->setLayout(m_vLayoutCalculationTabTTOR);
         }
         case 2: //ExplodeWidget::TTRM
         {
             m_vLayoutCalculationTabTTRM = new QVBoxLayout();
+
+            // Комбобоксы для выбора теплоносителей
+            m_vLayoutCalculationTabTTRM->addWidget(new QLabel(u8"Горячий теплоноситель:"));
+            QComboBox* hotFluidComboBox = new QComboBox();
+            for (const auto& fluid : fluidsProperties) {
+                hotFluidComboBox->addItem(QString::fromStdString(fluid.name));
+            }
+            m_vLayoutCalculationTabTTRM->addWidget(hotFluidComboBox);
+
+            m_vLayoutCalculationTabTTRM->addWidget(new QLabel(u8"Холодный теплоноситель:"));
+            QComboBox* coldFluidComboBox = new QComboBox();
+            for (const auto& fluid : fluidsProperties) {
+                coldFluidComboBox->addItem(QString::fromStdString(fluid.name));
+            }
+            m_vLayoutCalculationTabTTRM->addWidget(coldFluidComboBox);
+
 
             m_calculationTab->setLayout(m_vLayoutCalculationTabTTRM);
             break;
@@ -737,6 +745,12 @@ void ExplodeManager::onReconfigureButtonClicked() {
 
         m_pExplodeWidget->viewCommandsHeats(cmd);
     }
+}
+
+void ExplodeManager::onCalculationButtonClicked() {
+    QWindow* test = new QWindow();
+    test->setTitle(QStringLiteral("Рассчитал"));
+    test->show();
 }
 
 QAction* ExplodeManager::createActionButton(const QString& fileName, QGroupBox* groupFilter, QHBoxLayout* fGroupLayout)

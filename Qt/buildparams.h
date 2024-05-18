@@ -107,12 +107,10 @@ namespace BuildMathModel {
 		int l3 = 6390;*/
 	};
 
-	// TODO: 1) Прописываем здесь свою структуру данных 
-	//struct testConfigParams
-	//{
-	//	std::string name; // Название аппарата ТТРМ 455 4.5 32
-	//	int lengthK; // Параметр из таблицы
-	//	int length0; //  Параметр из таблицы
-	//	int LENGTH; // Параметр из таблицы
-	//};
+	struct date_fluidProperties{
+		std::string name; // 0 - Наименование
+		double p;         // 1 - Кинематический коэффициент вязкости
+		double c;		  // 2 - Коэффициент теплопроводности,
+		double laymbda;	  // 3 - Коэффициент линейного расширения вещества
+	};
 }
