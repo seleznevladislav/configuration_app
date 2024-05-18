@@ -376,6 +376,7 @@ void ExplodeManager::calculateThickness(QFormLayout* form) {
     thicknessGridsLineEdit->setText(QString::number(mp_thicknessCameraResult));
 
     m_lengthSpinBox->setDisabled(false);
+    m_closestLengthButton->setDisabled(false);
     m_reconfigureButton->setDisabled(false);
 }
 
@@ -473,7 +474,18 @@ QFormLayout* ExplodeManager::createWarmForm(QVBoxLayout* layout)
 
     QLabel* lengthSpinBoxLabel = new QLabel(u8"Длина L, мм:");
 
-    formLayout->addRow(lengthSpinBoxLabel, m_lengthSpinBox);
+    m_closestLengthButton = new QToolButton();
+    m_closestLengthButton->setDisabled(true);
+    m_closestLengthButton->setIcon(QIcon(":/res/arrow.png"));
+    m_closestLengthButton->setToolTip(u8"Ближайший стандартный размер");
+
+    QWidget* widgetContainer = new QWidget;
+    QHBoxLayout* hLayout = new QHBoxLayout(widgetContainer);
+    hLayout->addWidget(m_lengthSpinBox);
+    hLayout->addWidget(m_closestLengthButton);
+    hLayout->setContentsMargins(0, 0, 0, 0);
+
+    formLayout->addRow(lengthSpinBoxLabel, widgetContainer);
     
 
     layout->addLayout(formLayout);
@@ -481,6 +493,12 @@ QFormLayout* ExplodeManager::createWarmForm(QVBoxLayout* layout)
     connect(calculateThicknessButton, &QPushButton::clicked, [=]() {
         calculateThickness(formLayout);
         });
+
+    connect(m_closestLengthButton, &QToolButton::clicked, [=]() {
+        ConfigParams foundElement = findClosestMatch(mp_dimCamera, m_lengthSpinBox->value(), "LENGTH");
+
+        m_lengthSpinBox->setValue(foundElement.LENGTH);
+    });
 
     return formLayout;
 }
@@ -1078,7 +1096,7 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
 
     QToolButton* sizeInfoButton = new QToolButton();
     sizeInfoButton->setIcon(QIcon(":/res/dimensions.png"));
-    sizeInfoButton->setToolTip(u8"Посмотреть размеры");
+    sizeInfoButton->setToolTip(u8"Посмотреть размеры аппарата");
     m_vLayoutConfigureTab->addWidget(sizeInfoButton);
 
     QDialog* modalDialog = new QDialog();

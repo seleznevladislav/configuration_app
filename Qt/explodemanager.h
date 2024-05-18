@@ -215,6 +215,7 @@ private:
     QLabel* m_labelLevel                 = nullptr;
     QLabel* m_labelSelectAssembly        = nullptr;
     QDoubleSpinBox* m_lengthSpinBox      = nullptr;
+    QToolButton* m_closestLengthButton     = nullptr;
     /// <summary>
     /// vars tab management
     /// </summary>
