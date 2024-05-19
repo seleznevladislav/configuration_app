@@ -937,7 +937,7 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
 
             QLabel* tempOutLabel = new QLabel(u8"Температура на выходе, °C:");
             QDoubleSpinBox* tempOutHSpinBox = new QDoubleSpinBox;
-            tempOutHSpinBox->setRange(-100, 150);
+            tempOutHSpinBox->setReadOnly(true);
             QDoubleSpinBox* tempOutCSpinBox = new QDoubleSpinBox;
             tempOutCSpinBox->setRange(-100, 150);
             QWidget* tempOutContainer = createPairWidget(tempOutHSpinBox, tempOutCSpinBox);
@@ -958,12 +958,12 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
             avTemCLineEdit->setReadOnly(true);
             QWidget* avTemContainer = createPairWidget(avTemHLineEdit, avTemCLineEdit);
 
-            QLabel* wallTemLabel = new QLabel(u8"Температура стенки внутренней трубы, t\u1D64\u1D62:");
+            /*QLabel* wallTemLabel = new QLabel(u8"Температура стенки внутренней трубы, t\u1D64\u1D62:");
             QLineEdit* wallTemHEdit = new QLineEdit;
             wallTemHEdit->setReadOnly(true);
             QLineEdit* wallTemCEdit = new QLineEdit;
             wallTemCEdit->setReadOnly(true);
-            QWidget* wallTemContainer = createPairWidget(wallTemHEdit, wallTemCEdit);
+            QWidget* wallTemContainer = createPairWidget(wallTemHEdit, wallTemCEdit);*/
 
             QLabel* temPowerLabel = new QLabel(u8"Передаваемая тепловая мощность, N:");
             QLineEdit* temPowerLabelEdit = new QLineEdit;
@@ -990,22 +990,81 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
             reinoldsCEdit->setReadOnly(true);
             QWidget* reinoldsContainer = createPairWidget(reinoldsHEdit, reinoldsCEdit);
 
+            QLabel* PrLabel = new QLabel(u8"Число Прандтля для воды (при t\u1D62), Pr\u1D62:");
+            QLineEdit* PrHEdit = new QLineEdit;
+            PrHEdit->setReadOnly(true);
+            QLineEdit* PrCEdit = new QLineEdit;
+            PrCEdit->setReadOnly(true);
+            QWidget* PrContainer = createPairWidget(PrHEdit, PrCEdit);
+
+            QLabel* NuLabel = new QLabel(u8"Критерий Нуссельта, Nu\u1D62:");
+            QLineEdit* NuHEdit = new QLineEdit;
+            NuHEdit->setReadOnly(true);
+            QLineEdit* NuCEdit = new QLineEdit;
+            NuCEdit->setReadOnly(true);
+            QWidget* NuContainer = createPairWidget(NuHEdit, NuCEdit);
+
+            QLabel* QCapacityLabel = new QLabel(u8"К-т теплоотдачи (стенке и от стенки), α\u1D62:");
+            QLineEdit* QCapacityHEdit = new QLineEdit;
+            QCapacityHEdit->setReadOnly(true);
+            QLineEdit* QCapacityCEdit = new QLineEdit;
+            QCapacityCEdit->setReadOnly(true);
+            QWidget* QCapacityContainer = createPairWidget(QCapacityHEdit, QCapacityCEdit);
+
+            QLabel* CapacityLabel = new QLabel(u8"К-т теплопередачи, K:");
+            QLineEdit* CapacityEdit = new QLineEdit;
+            CapacityEdit->setReadOnly(true);
+
+            QLabel* maxTempLabel = new QLabel(u8"Максимальный температурный напор, Δtmax:");
+            QLineEdit* maxTempEdit = new QLineEdit;
+            maxTempEdit->setReadOnly(true);
+
+            QLabel* minTempLabel = new QLabel(u8"Минимальный температурный напор, Δtmin:");
+            QLineEdit* minTempEdit = new QLineEdit;
+            minTempEdit->setReadOnly(true);
+
+            QLabel* avTempLabel = new QLabel(u8"Средний температурный напор, Δtср:");
+            QLineEdit* avTempEdit = new QLineEdit;
+            avTempEdit->setReadOnly(true);
+
+            QLabel* tempCapacityLabel = new QLabel(u8"Плотность теплового потока, q:");
+            QLineEdit* tempCapacityEdit = new QLineEdit;
+            tempCapacityEdit->setReadOnly(true);
+
+            QLabel* squareLabel = new QLabel(u8"Площадь поверхности нагрева, F:");
+            QLineEdit* squareEdit = new QLineEdit;
+            squareEdit->setReadOnly(true);
+
+            /*QLabel* lengthLabel = new QLabel(u8"Расчётная длина, L:");
+            QLineEdit* lengthEdit = new QLineEdit;
+            lengthEdit->setReadOnly(true);*/
+
+            QLabel* quantityLabel = new QLabel(u8"Расчётное число секций, n:");
+            QLineEdit* quantityEdit = new QLineEdit;
+            quantityEdit->setReadOnly(true);
+
             formLayout->addRow(avTemLabel, avTemContainer);
-            formLayout->addRow(wallTemLabel, wallTemContainer);
+            //formLayout->addRow(wallTemLabel, wallTemContainer);
             formLayout->addRow(temPowerLabel, temPowerLabelEdit);
             formLayout->addRow(densityLabel, densityContainer);
             formLayout->addRow(speedLabel, speedContainer);
             formLayout->addRow(reinoldsLabel, reinoldsContainer);
+            formLayout->addRow(PrLabel, PrContainer);
+            formLayout->addRow(NuLabel, NuContainer);
+            formLayout->addRow(QCapacityLabel, QCapacityContainer);
+            formLayout->addRow(CapacityLabel, CapacityEdit);
+            formLayout->addRow(maxTempLabel, maxTempEdit);
+            formLayout->addRow(minTempLabel, minTempEdit);
+            formLayout->addRow(avTempLabel, avTempEdit);
+            formLayout->addRow(tempCapacityLabel, tempCapacityEdit);
+            formLayout->addRow(squareLabel, squareEdit);
+            //formLayout->addRow(lengthLabel, lengthEdit);
+            formLayout->addRow(quantityLabel, quantityEdit);
+            
 
             connect(calculationButton, &QPushButton::clicked, [=]() {
                 const int hotFluidIndex = hotFluidComboBox->currentIndex();
                 const int coldFluidIndex = coldFluidComboBox->currentIndex();
-
-                const double tempInH = tempInHSpinBox->value();
-                const double tempOutH = tempOutHSpinBox->value();
-                const double avTemH = (tempInH + tempOutH) / 2;
-
-                avTemHLineEdit->setText(QString::number(avTemH));
 
                 const double tempInC = tempInCSpinBox->value();
                 const double tempOutC = tempOutCSpinBox->value();
@@ -1014,9 +1073,18 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
                 avTemCLineEdit->setText(QString::number(avTemC));
 
                 const double consumtion = consumptionCSpinBox->value();
-                const int fluidC = hotFluidComboBox->currentData().toInt();
-                temPowerLabelEdit->setText(QString::number(consumtion * fluidC * (tempOutC - tempInC)) + u8" Вт");
-               
+                const int fluidC = fluidsProperties[coldFluidIndex].capacity;
+                const double temPower = consumtion * fluidC * (tempOutC - tempInC);
+                temPowerLabelEdit->setText(QString::number(temPower) + u8" Вт");
+
+                const double tempInH = tempInHSpinBox->value();
+                const double tempOutH = tempInH - temPower / (consumptionHSpinBox->value() * fluidsProperties[hotFluidIndex].capacity);
+                const double avTemH = (tempInH + tempOutH) / 2;
+
+                tempOutHSpinBox->setValue(tempOutH);
+
+                avTemHLineEdit->setText(QString::number(avTemH));
+       
                 const double densityH = fluidDensity[hotFluidIndex][round(avTemH / 10) + 10];
                 const double densityC = fluidDensity[coldFluidIndex][round(avTemC / 10) + 10];
                 densityHEdit->setText(QString::number(densityH) + u8" кг/м\xB3");
@@ -1082,8 +1150,13 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
                 hViscocity = hViscocity * pow(10, -6);
                 сViscocity = сViscocity * pow(10, -6);
 
-                const double speedH = (4 * consumptionHSpinBox->value()) / (fluidsProperties[hotFluidIndex].p * M_PI * pow(params.assortmentInnerTubes / 10 / 100, 2));
-                const double speedC = (4 * consumptionCSpinBox->value()) / (fluidsProperties[coldFluidIndex].p * M_PI * pow(params.assortmentOuterTubes / 10 / 100, 2));
+                const double D1 = params.assortmentInnerTubes / 10 / 100;
+                const double D2 = params.assortmentOuterTubes / 10 / 100;
+                const double d1 = (params.assortmentInnerTubes - params.thicknessInnerTubes * 2) / 10 / 100;
+                const double d2 = (params.assortmentOuterTubes - params.thicknessOuterTubes * 2) / 10 / 100;
+
+                const double speedH = (4 * consumptionHSpinBox->value()) / (fluidsProperties[hotFluidIndex].p * M_PI * pow(d1, 2));
+                const double speedC = (4 * consumptionCSpinBox->value()) / (fluidsProperties[coldFluidIndex].p * M_PI * (pow(d2, 2) - pow(D1, 2)));
                 speedHEdit->setText(QString::number(speedH) + u8" м/с");
                 speedCEdit->setText(QString::number(speedC) + u8" м/с");
 
@@ -1092,7 +1165,44 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
                 reinoldsHEdit->setText(QString::number(reinoldsH));
                 reinoldsCEdit->setText(QString::number(reinoldsC));
 
-              
+                const double hotPr = hotFluidIndex == 2 ? 7.5 - 0.0694 * avTemH : fluidsProperties[hotFluidIndex].Pr;
+                const double coldPr = coldFluidIndex == 2 ? 7.5 - 0.0694 * avTemC : fluidsProperties[coldFluidIndex].Pr;
+                PrHEdit->setText(QString::number(hotPr));
+                PrCEdit->setText(QString::number(coldPr));
+
+                double NusseltHotIndex = 0.021 * pow(reinoldsH, 0.8) * pow(hotPr, 0.43) * pow((hotPr / hotPr), 0.25);
+                double NusseltColdIndex = 0.017 * pow(reinoldsC, 0.8) * pow(coldPr, 0.43) * pow((coldPr / coldPr), 0.25) * pow(((d2) / D1), 0.18);
+                NuHEdit->setText(QString::number(NusseltHotIndex));
+                NuCEdit->setText(QString::number(NusseltColdIndex));
+
+                double Qa1 = NusseltHotIndex * (fluidsProperties[hotFluidIndex].laymbda / d1);
+                double Qa2 = NusseltColdIndex * (fluidsProperties[coldFluidIndex].laymbda / (d2 - D1));
+                QCapacityHEdit->setText(QString::number(Qa1) + u8" Вт/(м\xB2*К)");
+                QCapacityCEdit->setText(QString::number(Qa2) + u8" Вт/(м\xB2*К)");
+
+                const double K = 1 / (1 / Qa1 + ((D1 - d1) / 2) / 50 + 1 / Qa2);
+                CapacityEdit->setText(QString::number(K) + u8" Вт/(м\xB2*К)");
+
+                const double maxTemp = abs(tempInH - tempInC);
+                maxTempEdit->setText(QString::number(maxTemp) + u8" °C");
+
+                const double minTemp = abs(tempOutH - tempOutC);
+                minTempEdit->setText(QString::number(minTemp) + u8" °C");
+
+                const double averageTemp = (maxTemp - minTemp) / log(maxTemp / minTemp);
+                avTempEdit->setText(QString::number(averageTemp) + u8" °C");
+
+                const double tempCapacity = K * averageTemp;
+                tempCapacityEdit->setText(QString::number(tempCapacity) + u8" Вт/(м\xB2)");
+
+                const double squareTemp = temPower / tempCapacity;
+                squareEdit->setText(QString::number(squareTemp) + u8" м\xB2");
+
+               /* const double length = squareTemp / (M_PI * d1);
+                lengthEdit->setText(QString::number(length) + u8" м");*/
+
+                const double quantity = round(squareTemp / (M_PI * d1 * params.lengthK / 10 / 100));
+                quantityEdit->setText(QString::number(quantity));
             });
 
             m_calculationTab->setLayout(formLayout);
