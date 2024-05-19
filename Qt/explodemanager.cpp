@@ -632,6 +632,116 @@ QGroupBox* ExplodeManager::createGroupExplode(QWidget& widget, const int heightB
     return m_groupExpl;
 }
 
+// Расчет вязкости viscosity
+double calculateHeatTransferCoefficient(double hotVelocity, double coldVelocity, double diameter, double p, double c, double laymbda) {
+    // Helper lambda for calculating Pr
+    auto calcPr = [](double cp, double lambda) {
+        // Assume average dynamic viscosity for typical fluids (in Pa·s)
+        double avgViscosity = 0.001; // среднее значение вязкости
+        return (cp * avgViscosity) / lambda;
+        };
+
+    // Helper lambda for calculating Nu
+    auto calcNu = [](double Re, double Pr) {
+        if (Re < 2300) {
+            return 3.66; // for laminar flow
+        }
+        else {
+            return 0.023 * std::pow(Re, 0.8) * std::pow(Pr, 0.4); // for turbulent flow
+        }
+        };
+
+    // Calculate Re and Pr for hot fluid
+    double Re_hot = (p * hotVelocity * diameter) / 0.001; // используя среднее значение вязкости
+    double Pr_hot = calcPr(c, laymbda);
+
+    // Calculate Nu for hot fluid
+    double Nu_hot = calcNu(Re_hot, Pr_hot);
+
+    // Calculate heat transfer coefficient for hot fluid
+    double h_hot = (Nu_hot * laymbda) / diameter;
+
+    // Calculate Re and Pr for cold fluid
+    double Re_cold = (p * coldVelocity * diameter) / 0.001; // используя среднее значение вязкости
+    double Pr_cold = calcPr(c, laymbda);
+
+    // Calculate Nu for cold fluid
+    double Nu_cold = calcNu(Re_cold, Pr_cold);
+
+    // Calculate heat transfer coefficient for cold fluid
+    double h_cold = (Nu_cold * laymbda) / diameter;
+
+    // Overall heat transfer coefficient U
+    //double delta = geometry.wallThickness; // ну это толщина стенки d2_diam - d1_diam 
+    //double lambda_wall = geometry.wallThermalConductivity; // Теплопроводность материала 
+    double delta = 6; // ну это толщина стенки d2_diam - d1_diam 
+    double lambda_wall = 140; // Теплопроводность материала 
+
+    double heatTransferCoefficient = 1.0 / ((1.0 / h_hot) + (delta / lambda_wall) + (1.0 / h_cold));
+    return heatTransferCoefficient;
+}
+
+// Константы и пороги
+const double epsilon = 0.01; // Порог для сходимости
+const int maxIterations = 100; // Максимальное количество итераций
+
+double calculateMassFlowRate(double density, double area, double velocity) {
+    return density * area * velocity;
+}
+
+double calculateLogMeanTempDifference(double deltaTMax, double deltaTMin) {
+    if (deltaTMax == deltaTMin) return deltaTMax;
+    return (deltaTMax - deltaTMin) / std::log(deltaTMax / deltaTMin);
+}
+
+double getCorrectionFactor(double P, double R) {
+    return 0.8;
+}
+
+//void iterateHeatExchanger(double HeatParams, double hotOutletTemp, double coldOutletTemp) {
+//
+//    double U_heatTransferCoef;	// Вязкость (Если есть, иначе расчет)
+//
+//    if (U_heatTransferCoef == 0) {
+//        // calculateHeatTransferCoefficient();
+//    }
+//
+//    double area = hx.geometry.area;
+//    double G1 = calculateMassFlowRate(hx.hotFluid.density, area, hx.hotVelocity);
+//    double G2 = calculateMassFlowRate(hx.coldFluid.density, area, hx.coldVelocity);
+//
+//    hotOutletTemp = hx.hotInletTemp;
+//    coldOutletTemp = hx.coldInletTemp;
+//
+//    for (int iteration = 0; iteration < maxIterations; ++iteration) {
+//        double deltaTMax = hx.hotInletTemp - coldOutletTemp;
+//        double deltaTMin = hotOutletTemp - hx.coldInletTemp;
+//
+//        double logMeanTempDiff = calculateLogMeanTempDifference(deltaTMax, deltaTMin);
+//
+//        double P = (coldOutletTemp - hx.coldInletTemp) / (hx.hotInletTemp - coldOutletTemp);
+//        double R = (hx.hotInletTemp - hotOutletTemp) / (coldOutletTemp - hx.coldInletTemp);
+//
+//        double correctionFactor = getCorrectionFactor(P, R);
+//        double avgTempDiff = logMeanTempDiff * correctionFactor;
+//
+//        double Q = hx.heatTransferCoefficient * avgTempDiff * hx.geometry.area;
+//
+//        double newHotOutletTemp = hx.hotInletTemp - Q / (G1 * hx.hotFluid.specificHeat);
+//        double newColdOutletTemp = hx.coldInletTemp + Q / (G2 * hx.coldFluid.specificHeat);
+//
+//        if (std::abs(newHotOutletTemp - hotOutletTemp) < epsilon &&
+//            std::abs(newColdOutletTemp - coldOutletTemp) < epsilon) {
+//            hotOutletTemp = newHotOutletTemp;
+//            coldOutletTemp = newColdOutletTemp;
+//            break;
+//        }
+//
+//        hotOutletTemp = newHotOutletTemp;
+//        coldOutletTemp = newColdOutletTemp;
+//    }
+//}
+
 void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
 {
 
@@ -650,50 +760,94 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
         {
             m_vLayoutCalculationTabTTOR = new QVBoxLayout();
 
-            // Поля для ввода температур
-            m_vLayoutCalculationTabTTOR->addWidget(new QLabel(u8"Температура горячей среды на входе (°C):"));
-            QLineEdit* hotInletTemp = new QLineEdit();
-            m_vLayoutCalculationTabTTOR->addWidget(hotInletTemp);
-
-            m_vLayoutCalculationTabTTOR->addWidget(new QLabel(u8"Температура холодной среды на входе (°C):"));
-            QLineEdit* coldInletTemp = new QLineEdit();
-            m_vLayoutCalculationTabTTOR->addWidget(coldInletTemp);
-
-            // Поля для ввода скоростей
-            m_vLayoutCalculationTabTTOR->addWidget(new QLabel(u8"Скорость горячей среды (м/с):"));
-            QLineEdit* hotVelocity = new QLineEdit();
-            m_vLayoutCalculationTabTTOR->addWidget(hotVelocity);
-
-            m_vLayoutCalculationTabTTOR->addWidget(new QLabel(u8"Скорость холодной среды (м/с):"));
-            QLineEdit* coldVelocity = new QLineEdit();
-            m_vLayoutCalculationTabTTOR->addWidget(coldVelocity);
-
             // Комбобоксы для выбора теплоносителей
-            m_vLayoutCalculationTabTTOR->addWidget(new QLabel(u8"Горячий теплоноситель:"));
+            QHBoxLayout* comboTeplHLayout = new QHBoxLayout();
+            QVBoxLayout* comboTeplV1Layout = new QVBoxLayout();
+            QVBoxLayout* comboTeplV2Layout = new QVBoxLayout();
+
+            comboTeplV1Layout->addWidget(new QLabel(u8"Горячий теплоноситель:"));
             QComboBox* hotFluidComboBox = new QComboBox();
             for (const auto& fluid : fluidsProperties) {
                 hotFluidComboBox->addItem(QString::fromStdString(fluid.name));
             }
-            m_vLayoutCalculationTabTTOR->addWidget(hotFluidComboBox);
+            comboTeplV1Layout->addWidget(hotFluidComboBox);
 
-            m_vLayoutCalculationTabTTOR->addWidget(new QLabel(u8"Холодный теплоноситель:"));
+            comboTeplV2Layout->addWidget(new QLabel(u8"Холодный теплоноситель:"));
             QComboBox* coldFluidComboBox = new QComboBox();
             for (const auto& fluid : fluidsProperties) {
                 coldFluidComboBox->addItem(QString::fromStdString(fluid.name));
             }
-            m_vLayoutCalculationTabTTOR->addWidget(coldFluidComboBox);
+            comboTeplV2Layout->addWidget(coldFluidComboBox);
 
-            // Поля для ввода теплопередающего коэффициента и площади теплообменника
-            m_vLayoutCalculationTabTTOR->addWidget(new QLabel(u8"Коэффициент теплопередачи (Вт/м²·°C):"));
-            QLineEdit* heatTransferCoefficient = new QLineEdit();
-            m_vLayoutCalculationTabTTOR->addWidget(heatTransferCoefficient);
+            comboTeplHLayout->addLayout(comboTeplV1Layout);
+            comboTeplHLayout->addLayout(comboTeplV2Layout);
+            m_vLayoutCalculationTabTTOR->addLayout(comboTeplHLayout);
 
-            m_vLayoutCalculationTabTTOR->addWidget(new QLabel(u8"Площадь теплообменника (м²):"));
-            QLineEdit* area = new QLineEdit();
-            m_vLayoutCalculationTabTTOR->addWidget(area);
+            // Поля для ввода температур
+            QHBoxLayout* tempsHLayout = new QHBoxLayout();
+            QVBoxLayout* tempsV1Layout = new QVBoxLayout();
+            QVBoxLayout* tempsV2Layout = new QVBoxLayout();
+
+            tempsV1Layout->addWidget(new QLabel(u8"Температура горячей среды на входе (°C):"));
+            QLineEdit* hotInletTemp = new QLineEdit();
+            tempsV1Layout->addWidget(hotInletTemp);
+
+            tempsV2Layout->addWidget(new QLabel(u8"Температура холодной среды на входе (°C):"));
+            QLineEdit* coldInletTemp = new QLineEdit();
+
+            tempsV2Layout->addWidget(coldInletTemp);
+            tempsHLayout->addLayout(tempsV1Layout);
+            tempsHLayout->addLayout(tempsV2Layout);
+            m_vLayoutCalculationTabTTOR->addLayout(tempsHLayout);
+
+            // Поля для ввода скоростей
+            QHBoxLayout* speedHLayout = new QHBoxLayout();
+            QVBoxLayout* speedV1Layout = new QVBoxLayout();
+            QVBoxLayout* speedV2Layout = new QVBoxLayout();
+
+            speedV1Layout->addWidget(new QLabel(u8"Скорость горячей среды (м/с):"));
+            QLineEdit* hotVelocity = new QLineEdit();
+            speedV1Layout->addWidget(hotVelocity);
+
+            speedV2Layout->addWidget(new QLabel(u8"Скорость холодной среды (м/с):"));
+            QLineEdit* coldVelocity = new QLineEdit();
+            speedV2Layout->addWidget(coldVelocity);
+
+            speedHLayout->addLayout(speedV1Layout);
+            speedHLayout->addLayout(speedV2Layout);
+            m_vLayoutCalculationTabTTOR->addLayout(speedHLayout);
+
+            // Комбобоксы для Выбора материала
+            m_vLayoutCalculationTabTTOR->addWidget(new QLabel(u8"Материал труб теплообменника:"));
+            QComboBox* materialCombobox = new QComboBox();
+            for (const auto& fluid : materialProperties) {
+                materialCombobox->addItem(QString::fromStdString(fluid.name));
+            }
+            m_vLayoutCalculationTabTTOR->addWidget(materialCombobox);
 
             m_CalculationButton = new QPushButton;
             m_CalculationButton->setText(u8"Рассчитать теплообменный аппарат");
+            
+            int n = m_quantityCombobox->currentIndex(); // 0 = 4, 1 = 8 итд
+
+            //HeatExchanger hx;
+            //hx.hotFluid = { 1000, 4180 }; // Свойства воды
+            //hx.coldFluid = { 800, 2000 }; // Свойства нефти
+            //hx.geometry = { 0.05 * 10, 10 }; // Примерные геометрические параметры (площадь и длина)
+            //hx.hotInletTemp = 150.0;
+            //hx.coldInletTemp = 20.0;
+            //hx.hotVelocity = 1.0;
+            //hx.coldVelocity = 1.0;
+            //hx.heatTransferCoefficient = 500; // Примерное значение
+
+            //double hotOutletTemp;
+            //double coldOutletTemp;
+
+            // iterateHeatExchanger(hx, hotOutletTemp, coldOutletTemp);
+
+            //std::cout << "Температура горячей среды на выходе: " << hotOutletTemp << " °C" << std::endl;
+            //std::cout << "Температура холодной среды на выходе: " << coldOutletTemp << " °C" << std::endl;
+
             connect(m_CalculationButton, &QPushButton::clicked, this, &ExplodeManager::onCalculationButtonClicked);
             m_vLayoutCalculationTabTTOR->addWidget(m_CalculationButton);
 
