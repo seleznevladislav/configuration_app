@@ -44,6 +44,7 @@ public:
     void init(SceneSegment* pSegmModel, ExplodeTreeView* pTreeWidget);
     QGroupBox* createGroupExplode(QWidget& widget, const int heightButton, const std::string& mainTabName);
     void createCalculationTab(const int numberOfHeatExchanger);
+    void iterateHeatExchanger(double hotOutletTemp, double coldOutletTemp);
     QFormLayout* createWarmForm(QVBoxLayout* layout);
     QFormLayout* createParametrizationForm(QVBoxLayout* layout);
     bool isSelectionEnabled() const;
@@ -130,11 +131,11 @@ public:
         {u8"2000У-2,5-2,5-М4/20-6-2-Т", 2040, 8210, 20, 1.6, 2000, 1240, 1200, 562, 1.6},
     };
 
-    //  std::string name; // 0 - Наименование 
-    //  double p;         // 1 - Кинематический коэффициент вязкости 
-    //  double c;		  // 2 - Коэффициент теплопроводности, 
-    //  double laymbda;	  // 3 - Коэффициент линейного расширения вещества 
-    //  double laymbda;	  // 4 - Коэффициент взякости (Есть не у всех, если что высчитывается, если 0 ) 
+    //  std::string name;     // 0 - Наименование
+    //  double p;             // 1 - Кинематический коэффициент вязкости (кг/м3)
+    //  double c;		      // 2 - Коэффициент теплопроводности (кДЖ/ кг*C)
+    //  double laymbda;	      // 3 - Коэффициент линейного расширения вещества (Вт/ м*C)
+    //  double u_viscocity;	  // 4 - Коэффициент взякости (Есть не у всех, если что высчитывается, если 0 ) (Па/с)
 
     std::vector<data_fluidProperties> fluidsProperties = {
         {u8"Ацетон",                813 , 2.114, 0.174, 0.395},
@@ -170,7 +171,7 @@ public:
         data_fluidProperties hotFluid; // Свойства горячего теплоносителя
         data_fluidProperties coldFluid; // Свойства холодного теплоносителя
         data_tubeProperties teplTube; // Геометрические параметры теплообменника
-        data_tubeProperties geometry; // Геометрические параметры теплообменника
+        data_tubeProperties kozhuxTube; // Геометрические параметры теплообменника
         double hotInletTemp; // Температура горячего теплоносителя на входе, °C
         double coldInletTemp; // Температура холодного теплоносителя на входе, °C
         double hotVelocity; // Скорость горячего теплоносителя, м/с
@@ -252,11 +253,16 @@ private:
     // <summary>
     /// vars for calculations TTOR
     /// </summary>
-    int selectedTemplonos1;
-    int selectedTemplonos2;
     HeatExchanger dataExchangerForTTORCalculation;
     data_tubeProperties dataOfCurrentTubeTepl;
     data_tubeProperties dataOfCurrentTubeKozhux;
+    QComboBox* m_PhotFluidComboBox;
+    QComboBox* m_PcoldFluidComboBox;
+    QLineEdit* m_PhotVelocity;
+    QLineEdit* m_PcoldVelocity;
+    QLineEdit* m_PhotInletTemp;
+    QLineEdit* m_PcoldInletTemp;
+    QComboBox* m_PmaterialCombobox;
     /// <summary>
     /// vars tab management
     /// </summary>

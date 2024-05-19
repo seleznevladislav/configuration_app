@@ -692,49 +692,89 @@ double getCorrectionFactor(double P, double R) {
     return 0.8;
 }
 
-//void iterateHeatExchanger(double HeatParams, double hotOutletTemp, double coldOutletTemp) {
-//
-//    double U_heatTransferCoef;	// Вязкость (Если есть, иначе расчет)
-//
-//    if (U_heatTransferCoef == 0) {
-//        // calculateHeatTransferCoefficient();
-//    }
-//
-//    double area = hx.geometry.area;
-//    double G1 = calculateMassFlowRate(hx.hotFluid.density, area, hx.hotVelocity);
-//    double G2 = calculateMassFlowRate(hx.coldFluid.density, area, hx.coldVelocity);
-//
-//    hotOutletTemp = hx.hotInletTemp;
-//    coldOutletTemp = hx.coldInletTemp;
-//
-//    for (int iteration = 0; iteration < maxIterations; ++iteration) {
-//        double deltaTMax = hx.hotInletTemp - coldOutletTemp;
-//        double deltaTMin = hotOutletTemp - hx.coldInletTemp;
-//
-//        double logMeanTempDiff = calculateLogMeanTempDifference(deltaTMax, deltaTMin);
-//
-//        double P = (coldOutletTemp - hx.coldInletTemp) / (hx.hotInletTemp - coldOutletTemp);
-//        double R = (hx.hotInletTemp - hotOutletTemp) / (coldOutletTemp - hx.coldInletTemp);
-//
-//        double correctionFactor = getCorrectionFactor(P, R);
-//        double avgTempDiff = logMeanTempDiff * correctionFactor;
-//
-//        double Q = hx.heatTransferCoefficient * avgTempDiff * hx.geometry.area;
-//
-//        double newHotOutletTemp = hx.hotInletTemp - Q / (G1 * hx.hotFluid.specificHeat);
-//        double newColdOutletTemp = hx.coldInletTemp + Q / (G2 * hx.coldFluid.specificHeat);
-//
-//        if (std::abs(newHotOutletTemp - hotOutletTemp) < epsilon &&
-//            std::abs(newColdOutletTemp - coldOutletTemp) < epsilon) {
-//            hotOutletTemp = newHotOutletTemp;
-//            coldOutletTemp = newColdOutletTemp;
-//            break;
-//        }
-//
-//        hotOutletTemp = newHotOutletTemp;
-//        coldOutletTemp = newColdOutletTemp;
-//    }
-//}
+void ExplodeManager::iterateHeatExchanger(double hotOutletTemp, double coldOutletTemp) {
+
+    int amountsOftube;
+    switch (m_quantityCombobox->currentIndex()) {
+    case 0:
+        amountsOftube = 4;
+        break;
+    case 1:
+        amountsOftube = 8;
+        break;
+    case 2:
+        amountsOftube = 12;
+        break;
+    case 3:
+        amountsOftube = 14;
+        break;
+    default:
+        amountsOftube = 0;
+        break;
+    }
+
+    // Calculate the cross-sectional areas
+    const double tubeCrossSectionTeploobmen = amountsOftube * M_PI * std::pow(dataExchangerForTTORCalculation.teplTube.d1_diam / 2.0, 2);
+    const double tubeCrossSectionKozhux = amountsOftube * (M_PI * std::pow(dataExchangerForTTORCalculation.kozhuxTube.d1_diam / 2.0, 2) -
+        M_PI * std::pow(dataExchangerForTTORCalculation.teplTube.d2_diam / 2.0, 2));
+
+    // Calculate the surface areas
+    const double areaHot = tubeCrossSectionTeploobmen * dataExchangerForTTORCalculation.teplTube.L_length;
+    const double areaCold = tubeCrossSectionKozhux * dataExchangerForTTORCalculation.teplTube.L_length;
+
+    data_fluidProperties selectedFluidHot = dataExchangerForTTORCalculation.hotFluid = fluidsProperties[m_PhotFluidComboBox->currentIndex()];
+    data_fluidProperties selectedFluidCold = dataExchangerForTTORCalculation.coldFluid = fluidsProperties[m_PcoldFluidComboBox->currentIndex()];
+    data_materialProperties selectedMaterial = materialProperties[m_PmaterialCombobox->currentIndex()];
+
+    double U_heatTransferCoef;	// Вязкость (Если есть, иначе расчет)
+
+    double speedFluidHot = m_PhotVelocity->text().toDouble();
+    double speedFluidCold = m_PcoldVelocity->text().toDouble();
+    
+    double hotInletTemp = m_PhotInletTemp->text().toDouble();
+    double coldInletTemp = m_PcoldInletTemp->text().toDouble();
+
+    if (selectedFluidHot.u_viscocity == 0) {
+        selectedFluidHot.u_viscocity = calculateHeatTransferCoefficient(speedFluidHot, speedFluidCold, dataExchangerForTTORCalculation.teplTube.d1_diam, 
+            selectedFluidHot.p, selectedFluidHot.c, selectedFluidHot.laymbda, (dataExchangerForTTORCalculation.teplTube.d2_diam - dataExchangerForTTORCalculation.teplTube.d1_diam) / 2, selectedMaterial.laymbdaMateral);
+    }
+    if (selectedFluidCold.u_viscocity == 0) {
+        selectedFluidCold.u_viscocity = calculateHeatTransferCoefficient(speedFluidHot, speedFluidCold, dataExchangerForTTORCalculation.teplTube.d1_diam,
+            selectedFluidCold.p, selectedFluidCold.c, selectedFluidCold.laymbda, (dataExchangerForTTORCalculation.teplTube.d2_diam - dataExchangerForTTORCalculation.teplTube.d1_diam) / 2, selectedMaterial.laymbdaMateral);
+    }
+
+    double G1 = calculateMassFlowRate(selectedFluidHot.p, areaHot, speedFluidHot);
+    double G2 = calculateMassFlowRate(selectedFluidCold.p, areaCold, speedFluidCold);
+
+    for (int iteration = 0; iteration < maxIterations; ++iteration) {
+        double deltaTMax = hotInletTemp - coldOutletTemp;
+        double deltaTMin = hotOutletTemp - coldInletTemp;
+
+        double logMeanTempDiff = calculateLogMeanTempDifference(deltaTMax, deltaTMin);
+
+        double P = (coldOutletTemp - coldInletTemp) / (hotInletTemp - coldOutletTemp);
+        double R = (hotInletTemp - hotOutletTemp) / (coldOutletTemp - coldInletTemp);
+
+        double correctionFactor = getCorrectionFactor(P, R);
+        double avgTempDiff = logMeanTempDiff * correctionFactor;
+
+        double Q1 = selectedFluidHot.u_viscocity * avgTempDiff * areaHot;
+        double Q2 = selectedFluidCold.u_viscocity * avgTempDiff * areaCold;
+
+        double newHotOutletTemp = hotInletTemp - Q1 / (G1 * selectedFluidHot.c);
+        double newColdOutletTemp = coldInletTemp + Q2 / (G2 * selectedFluidHot.c);
+
+        if (std::abs(newHotOutletTemp - hotOutletTemp) < epsilon &&
+            std::abs(newColdOutletTemp - coldOutletTemp) < epsilon) {
+            hotOutletTemp = newHotOutletTemp;
+            coldOutletTemp = newColdOutletTemp;
+            break;
+        }
+
+        hotOutletTemp = newHotOutletTemp;
+        coldOutletTemp = newColdOutletTemp;
+    }
+}
 
 void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
 {
@@ -760,18 +800,18 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
             QVBoxLayout* comboTeplV2Layout = new QVBoxLayout();
 
             comboTeplV1Layout->addWidget(new QLabel(u8"Горячий теплоноситель:"));
-            QComboBox* hotFluidComboBox = new QComboBox();
+            m_PhotFluidComboBox = new QComboBox();
             for (const auto& fluid : fluidsProperties) {
-                hotFluidComboBox->addItem(QString::fromStdString(fluid.name));
+                m_PhotFluidComboBox->addItem(QString::fromStdString(fluid.name));
             }
-            comboTeplV1Layout->addWidget(hotFluidComboBox);
+            comboTeplV1Layout->addWidget(m_PhotFluidComboBox);
 
             comboTeplV2Layout->addWidget(new QLabel(u8"Холодный теплоноситель:"));
-            QComboBox* coldFluidComboBox = new QComboBox();
+            m_PcoldFluidComboBox = new QComboBox();
             for (const auto& fluid : fluidsProperties) {
-                coldFluidComboBox->addItem(QString::fromStdString(fluid.name));
+                m_PcoldFluidComboBox->addItem(QString::fromStdString(fluid.name));
             }
-            comboTeplV2Layout->addWidget(coldFluidComboBox);
+            comboTeplV2Layout->addWidget(m_PcoldFluidComboBox);
 
             comboTeplHLayout->addLayout(comboTeplV1Layout);
             comboTeplHLayout->addLayout(comboTeplV2Layout);
@@ -783,13 +823,13 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
             QVBoxLayout* tempsV2Layout = new QVBoxLayout();
 
             tempsV1Layout->addWidget(new QLabel(u8"Температура горячей среды на входе (°C):"));
-            QLineEdit* hotInletTemp = new QLineEdit();
-            tempsV1Layout->addWidget(hotInletTemp);
+            m_PhotInletTemp = new QLineEdit();
+            tempsV1Layout->addWidget(m_PhotInletTemp);
 
             tempsV2Layout->addWidget(new QLabel(u8"Температура холодной среды на входе (°C):"));
-            QLineEdit* coldInletTemp = new QLineEdit();
+            m_PcoldInletTemp = new QLineEdit();
 
-            tempsV2Layout->addWidget(coldInletTemp);
+            tempsV2Layout->addWidget(m_PcoldInletTemp);
             tempsHLayout->addLayout(tempsV1Layout);
             tempsHLayout->addLayout(tempsV2Layout);
             m_vLayoutCalculationTabTTOR->addLayout(tempsHLayout);
@@ -800,12 +840,12 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
             QVBoxLayout* speedV2Layout = new QVBoxLayout();
 
             speedV1Layout->addWidget(new QLabel(u8"Скорость горячей среды (м/с):"));
-            QLineEdit* hotVelocity = new QLineEdit();
-            speedV1Layout->addWidget(hotVelocity);
+            m_PhotVelocity = new QLineEdit();
+            speedV1Layout->addWidget(m_PhotVelocity);
 
             speedV2Layout->addWidget(new QLabel(u8"Скорость холодной среды (м/с):"));
-            QLineEdit* coldVelocity = new QLineEdit();
-            speedV2Layout->addWidget(coldVelocity);
+            m_PcoldVelocity = new QLineEdit();
+            speedV2Layout->addWidget(m_PcoldVelocity);
 
             speedHLayout->addLayout(speedV1Layout);
             speedHLayout->addLayout(speedV2Layout);
@@ -813,11 +853,11 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
 
             // Комбобоксы для Выбора материала
             m_vLayoutCalculationTabTTOR->addWidget(new QLabel(u8"Материал труб теплообменника:"));
-            QComboBox* materialCombobox = new QComboBox();
+            m_PmaterialCombobox = new QComboBox();
             for (const auto& fluid : materialProperties) {
-                materialCombobox->addItem(QString::fromStdString(fluid.name));
+                m_PmaterialCombobox->addItem(QString::fromStdString(fluid.name));
             }
-            m_vLayoutCalculationTabTTOR->addWidget(materialCombobox);
+            m_vLayoutCalculationTabTTOR->addWidget(m_PmaterialCombobox);
 
             m_CalculationButton = new QPushButton;
             m_CalculationButton->setText(u8"Рассчитать теплообменный аппарат");
