@@ -633,7 +633,7 @@ QGroupBox* ExplodeManager::createGroupExplode(QWidget& widget, const int heightB
 }
 
 // Расчет вязкости viscosity
-double calculateHeatTransferCoefficient(double hotVelocity, double coldVelocity, double diameter, double p, double c, double laymbda) {
+double calculateHeatTransferCoefficient(double hotVelocity, double coldVelocity, double diameter, double p, double c, double laymbda, double thicknessWall, double lambda_wall) {
     // Helper lambda for calculating Pr
     auto calcPr = [](double cp, double lambda) {
         // Assume average dynamic viscosity for typical fluids (in Pa·s)
@@ -671,13 +671,7 @@ double calculateHeatTransferCoefficient(double hotVelocity, double coldVelocity,
     // Calculate heat transfer coefficient for cold fluid
     double h_cold = (Nu_cold * laymbda) / diameter;
 
-    // Overall heat transfer coefficient U
-    //double delta = geometry.wallThickness; // ну это толщина стенки d2_diam - d1_diam 
-    //double lambda_wall = geometry.wallThermalConductivity; // Теплопроводность материала 
-    double delta = 6; // ну это толщина стенки d2_diam - d1_diam 
-    double lambda_wall = 140; // Теплопроводность материала 
-
-    double heatTransferCoefficient = 1.0 / ((1.0 / h_hot) + (delta / lambda_wall) + (1.0 / h_cold));
+    double heatTransferCoefficient = 1.0 / ((1.0 / h_hot) + (thicknessWall / lambda_wall) + (1.0 / h_cold));
     return heatTransferCoefficient;
 }
 

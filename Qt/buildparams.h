@@ -122,12 +122,8 @@ namespace BuildMathModel {
 	};
 	
 	struct data_tubeProperties {
-		double d1_diam;				// 0 - Диаметр трубы тепл внутри
-		double d2_diam;				// 1 - Диаметр трубы тепл снаружи
-		double D1_diam;				// 2 - Диаметр трубы кожух внутри
-		double D2_diam;				// 3 - Диаметр трубы кожух снаружи
+		double d1_diam;				// 0 - Диаметр трубы внутри
+		double d2_diam;				// 1 - Диаметр трубы снаружи
 		double L_length;			// 4 - Длина трубы
-		double N_amount;			// 5 - Число труб (дефолт 4)
-		double S_add;				// 6 - Доп площадь, тут можно камеру учитывать
 	};
 }

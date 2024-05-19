@@ -169,12 +169,14 @@ public:
     struct HeatExchanger {
         data_fluidProperties hotFluid; // Свойства горячего теплоносителя
         data_fluidProperties coldFluid; // Свойства холодного теплоносителя
+        data_tubeProperties teplTube; // Геометрические параметры теплообменника
         data_tubeProperties geometry; // Геометрические параметры теплообменника
         double hotInletTemp; // Температура горячего теплоносителя на входе, °C
         double coldInletTemp; // Температура холодного теплоносителя на входе, °C
         double hotVelocity; // Скорость горячего теплоносителя, м/с
         double coldVelocity; // Скорость холодного теплоносителя, м/с
         double heatTransferCoefficient; // Коэффициент теплопередачи, Вт/(м²·°C) (k - расчитывается жестко)
+        double S_add;				// Доп площадь, тут можно камеру учитывать
     };
 public:
     QGroupBox* getExplodingGroupBox() const { return gr_WExploding; }
@@ -247,6 +249,14 @@ private:
     QLabel* m_labelSelectAssembly        = nullptr;
     QDoubleSpinBox* m_lengthSpinBox      = nullptr;
     QToolButton* m_closestLengthButton     = nullptr;
+    // <summary>
+    /// vars for calculations TTOR
+    /// </summary>
+    int selectedTemplonos1;
+    int selectedTemplonos2;
+    HeatExchanger dataExchangerForTTORCalculation;
+    data_tubeProperties dataOfCurrentTubeTepl;
+    data_tubeProperties dataOfCurrentTubeKozhux;
     /// <summary>
     /// vars tab management
     /// </summary>

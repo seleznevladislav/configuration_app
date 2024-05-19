@@ -22,7 +22,7 @@ MbModel* ParametricModelCreator::CreatePneymocylinderModelTTRM(ConfigParams para
 MbModel* ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsForHeatExchangerTTOR params, int configurationQuantity)
 {
 	MbModel* model = new MbModel();
-	auto pneumocylinderAssembly = CreateTTOR(params, configurationQuantity);
+	auto pneumocylinderAssembly = CreateTTOR(params, configurationQuantity, false); // TOZO hideStandartDetails
 	model->AddItem(*pneumocylinderAssembly);
 	return model;
 }
