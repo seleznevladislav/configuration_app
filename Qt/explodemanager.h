@@ -262,7 +262,11 @@ private:
     QLineEdit* m_PcoldVelocity;
     QLineEdit* m_PhotInletTemp;
     QLineEdit* m_PcoldInletTemp;
+    QLineEdit* m_PrresultTemp1;
+    QLineEdit* m_PrresultTemp2;
     QComboBox* m_PmaterialCombobox;
+    double m_PoutletTemp1;
+    double m_PoutletTemp2;
     /// <summary>
     /// vars tab management
     /// </summary>
