@@ -676,7 +676,8 @@ double calculateHeatTransferCoefficient(double hotVelocity, double coldVelocity,
 }
 
 // Константы и пороги
-const double epsilon = 0.01; // Порог для сходимости
+//const double epsilon = 0.01; // Порог для сходимости
+const double epsilon = 0.001; // Порог для сходимости
 const int maxIterations = 100; // Максимальное количество итераций
 
 double calculateMassFlowRate(double density, double area, double velocity) {
@@ -774,6 +775,8 @@ void ExplodeManager::iterateHeatExchanger(double hotOutletTemp, double coldOutle
         hotOutletTemp = newHotOutletTemp;
         coldOutletTemp = newColdOutletTemp;
     }
+    m_PoutletTemp1 = hotOutletTemp;
+    m_PoutletTemp2 = coldOutletTemp;
 }
 
 void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
@@ -861,31 +864,29 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
 
             m_CalculationButton = new QPushButton;
             m_CalculationButton->setText(u8"Рассчитать теплообменный аппарат");
-            
-            int n = m_quantityCombobox->currentIndex(); // 0 = 4, 1 = 8 итд
-
-            //HeatExchanger hx;
-            //hx.hotFluid = { 1000, 4180 }; // Свойства воды
-            //hx.coldFluid = { 800, 2000 }; // Свойства нефти
-            //hx.geometry = { 0.05 * 10, 10 }; // Примерные геометрические параметры (площадь и длина)
-            //hx.hotInletTemp = 150.0;
-            //hx.coldInletTemp = 20.0;
-            //hx.hotVelocity = 1.0;
-            //hx.coldVelocity = 1.0;
-            //hx.heatTransferCoefficient = 500; // Примерное значение
-
-            //double hotOutletTemp;
-            //double coldOutletTemp;
-
-            // iterateHeatExchanger(hx, hotOutletTemp, coldOutletTemp);
-
-            //std::cout << "Температура горячей среды на выходе: " << hotOutletTemp << " °C" << std::endl;
-            //std::cout << "Температура холодной среды на выходе: " << coldOutletTemp << " °C" << std::endl;
 
             connect(m_CalculationButton, &QPushButton::clicked, this, &ExplodeManager::onCalculationButtonClicked);
             m_vLayoutCalculationTabTTOR->addWidget(m_CalculationButton);
 
+            // Поля для ввода скоростей
+            QHBoxLayout* resultHLayout = new QHBoxLayout();
+            QVBoxLayout* resultV1Layout = new QVBoxLayout();
+            QVBoxLayout* resultV2Layout = new QVBoxLayout();
+
+            resultV1Layout->addWidget(new QLabel(u8"Расчет 1:"));
+            m_PrresultTemp1 = new QLineEdit();
+            resultV1Layout->addWidget(m_PrresultTemp1);
+
+            resultV2Layout->addWidget(new QLabel(u8"Расчет 2:"));
+            m_PrresultTemp2 = new QLineEdit();
+            resultV2Layout->addWidget(m_PrresultTemp2);
+
+            resultHLayout->addLayout(resultV1Layout);
+            resultHLayout->addLayout(resultV2Layout);
+            m_vLayoutCalculationTabTTOR->addLayout(resultHLayout);
+
             m_calculationTab->setLayout(m_vLayoutCalculationTabTTOR);
+
         }
         case 2: //ExplodeWidget::TTRM
         {
@@ -957,6 +958,26 @@ void ExplodeManager::onCalculationButtonClicked() {
     QWindow* test = new QWindow();
     test->setTitle(QStringLiteral("Рассчитал"));
     test->show();
+
+    double hotInletTemp = m_PhotInletTemp->text().toDouble();
+    double coldInletTemp = m_PcoldInletTemp->text().toDouble();
+
+    int index = m_comboConfigure->currentIndex();
+
+    BuildParamsForHeatExchangerTTOR config = dataTTOR[index > 0 ? index : 0];
+
+    dataExchangerForTTORCalculation.teplTube.d1_diam = config.ttDiam;
+    dataExchangerForTTORCalculation.teplTube.d2_diam = config.ttDiam + config.ttThickness*2;
+    dataExchangerForTTORCalculation.teplTube.L_length = config.lK + 500;
+    
+    dataExchangerForTTORCalculation.kozhuxTube.d1_diam = config.ktDiam;
+    dataExchangerForTTORCalculation.kozhuxTube.d2_diam = config.ktDiam + config.ktThickness*2;
+    dataExchangerForTTORCalculation.kozhuxTube.L_length = config.lK;
+
+    iterateHeatExchanger(hotInletTemp, coldInletTemp);
+
+    m_PrresultTemp1->setText(QString::number(m_PoutletTemp1));
+    m_PrresultTemp2->setText(QString::number(m_PoutletTemp2));
 }
 
 QAction* ExplodeManager::createActionButton(const QString& fileName, QGroupBox* groupFilter, QHBoxLayout* fGroupLayout)
