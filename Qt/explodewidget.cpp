@@ -111,10 +111,6 @@ void ExplodeWidget::initializeGL()
     pLight->SetPosition(-100.0, -1.0, -1.0);
     pLight->SetDoubleSided(false);
 
-    // Render Statistics
-    setAboutSceneWidget(new QtVision::QtAboutSceneWidget(this));
-    RenderStatistics::SetActivation(true);
-
     GlobalFlags::SetPixelCullingEnabled(true);
 
     GlobalFlags::SetFaceCulling(CullFaces::Back);
@@ -512,6 +508,7 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
         }
 
         m_pExplodeManager->createCalculationTab(currentIndexofExchanger);
+        m_pExplodeManager->createParametrizationForm(currentIndexofExchanger, m_pExplodeManager->m_vLayoutWarmParams);
     }
 
     m_pExplodeManager->m_quantityCombobox->setHidden(!(currentIndexofExchanger == 1 || currentIndexofExchanger == 2));
@@ -528,8 +525,6 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
             int index = m_pExplodeManager->m_comboConfigure->currentIndex();
             m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::TTOR));
 
-            hasChangeType && m_pExplodeManager->createWarmForm(m_pExplodeManager->m_vLayoutWarmParams);
-
             for (const auto& config : m_pExplodeManager->dataTTOR) {
                 values.append(QString::fromStdString(config.name));
             }
@@ -545,8 +540,6 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
         {
             int index = m_pExplodeManager->m_comboConfigure->currentIndex();
             m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::TTRM));
-
-            hasChangeType && m_pExplodeManager->createWarmForm(m_pExplodeManager->m_vLayoutWarmParams);
 
             for (const auto& config : m_pExplodeManager->dataTTRM) {
                 values.append(QString::fromStdString(config.name));
@@ -567,8 +560,6 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
             int index = m_pExplodeManager->m_comboConfigure->currentIndex();
             m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::IP));
 
-            hasChangeType && m_pExplodeManager->createParametrizationForm(m_pExplodeManager->m_vLayoutWarmParams);
-
             for (const auto& config : m_pExplodeManager->dataIP) {
                 values.append(QString::fromStdString(config.name));
             }
@@ -582,8 +573,6 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
         {
             int index = m_pExplodeManager->m_comboConfigure->currentIndex();
             m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::IU));
-
-            //hasChangeType && m_pExplodeManager->createParametrizationForm(m_pExplodeManager->m_vLayoutWarmParams);
 
             for (const auto& config : m_pExplodeManager->dataIU) {
                 values.append(QString::fromStdString(config.name));

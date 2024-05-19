@@ -13,6 +13,7 @@
 #include <QDoubleSpinBox>
 #include "qtoolbutton.h"
 #include "QWidget"
+#include <QMessageBox>
 
 using namespace BuildMathModel;
 
@@ -46,8 +47,7 @@ public:
     void createCalculationTab(const int numberOfHeatExchanger);
     void createParametrizationTab(const int numberOfHeatExchanger);
     void iterateHeatExchanger(double hotOutletTemp, double coldOutletTemp);
-    QFormLayout* createWarmForm(QVBoxLayout* layout);
-    QFormLayout* createParametrizationForm(QVBoxLayout* layout);
+    QFormLayout* createParametrizationForm(const int numberOfHeatExchanger, QVBoxLayout* layout);
     bool isSelectionEnabled() const;
     bool isCreateGroupGeometry() const;
     bool onSelectItem(const SceneSegment* pSegm);
@@ -252,6 +252,7 @@ private:
     QGroupBox* createCuttingGroupBox();
     QGroupBox* createDimensionsGroupBox();
     QWidget* createPairWidget(QWidget* widget1, QWidget* widget2);
+    QMessageBox* ExplodeManager::createWarning(QString* warningText);
 private:
     ExplodeDispatcher m_explodeDispatcher;
     std::map<ExplodeDispatcher::ControlParameterType, QWidget*> m_widgetsMap;
