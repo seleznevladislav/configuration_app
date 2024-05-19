@@ -107,10 +107,23 @@ namespace BuildMathModel {
 		int l3 = 6390;*/
 	};
 
-	struct date_fluidProperties{
-		std::string name; // 0 - Наименование
-		double p;         // 1 - Кинематический коэффициент вязкости
-		double c;		  // 2 - Коэффициент теплопроводности,
-		double laymbda;	  // 3 - Коэффициент линейного расширения вещества
+	struct data_fluidProperties {
+		std::string name;     // 0 - Наименование
+		double p;             // 1 - Кинематический коэффициент вязкости (кг/м3)
+		double c;		      // 2 - Коэффициент теплопроводности (кДЖ/ кг*C)
+		double laymbda;	      // 3 - Коэффициент линейного расширения вещества (Вт/ м*C)
+		double u_viscocity;	  // 4 - Коэффициент взякости (Есть не у всех, если что высчитывается, если 0 ) (Па/с)
+	};
+
+	struct data_materialProperties {
+		std::string name;				// 0 - Наименование
+		double tMaterial;               // 1 - При какой температуре коэффициентр теплопроводности
+		double laymbdaMateral;		    // 2 - Коэффициент теплопроводности (Вт/ m*c)
+	};
+	
+	struct data_tubeProperties {
+		double d1_diam;				// 0 - Диаметр трубы внутри
+		double d2_diam;				// 1 - Диаметр трубы снаружи
+		double L_length;			// 4 - Длина трубы
 	};
 }
