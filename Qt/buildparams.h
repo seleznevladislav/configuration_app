@@ -58,53 +58,40 @@ namespace BuildMathModel {
 	struct ConfigParams_IP
 	{
 		std::string name;
-		int Dvne; //внешний диаметр кожуха
+		int Dv_Kzh;
 		double L_Base;//длина кожуха
 		double s;//толщина стенки
 		double p;//давление
 		int DKr;//внутренний диаметр камеры
 
 		//расстояния для фланцев внизу кожух:
-		/*int l0 = 460;
-		int l = 350;
-		int l2 = 1750;
-		int l3 = 6390;*/
-
-
+		int l0;
+		//	int l = 350;
+		int l2;
+		int l3;
 		//для фланцев
 		double Dn;
 		double Dy;
-
 	};
 
 	struct ConfigParams_IU
 	{
 		std::string name;
-		int diamVne = 840;
-		double Length = 5395.;
-		int S = 20;
-		double pressure = 1.6;
+		double p = 1.6;
 		int diam = 800;
-
-		int D_KamVne = 540;
+		double Length = 5395.;
 		int D_Kam = 500;
 		int Kam_L = 562;
-
-		double p = 1.6;
-
-
+		int S = 20;
+		int l = 350;
+		int l2 = 1750;
+		int l3 = 6390;
 		//float CylS;
 		//float EllS;
 		//float PerS;
 
 		//float napr;
 		//float C;
-
-		//расстояния для фланцев внизу кожух:
-		/*int l0 = 460;
-		int l = 350;
-		int l2 = 1750;
-		int l3 = 6390;*/
 	};
 
 	struct date_fluidProperties{

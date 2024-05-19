@@ -25,6 +25,7 @@
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QComboBox>
+#include <QMessageBox>
 
 // USERS
 #include "explodetree.h"

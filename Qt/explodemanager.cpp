@@ -271,11 +271,11 @@ void ExplodeManager::radiosTypeFromToggled(bool checked, int type)
 {
     if (checked)
     {
-        isCheckedManualType = type == 2 && (m_pExplodeWidget->m_pCurrentExchandger == 1 || m_pExplodeWidget->m_pCurrentExchandger == 2);
+        isCheckedManualType = type == 2  /*&& (m_pExplodeWidget->m_pCurrentExchandger == 1 || m_pExplodeWidget->m_pCurrentExchandger == 2)*/;
         
         m_comboConfigure->setDisabled(isCheckedManualType);
         m_warmParams->setDisabled(!isCheckedManualType);
-        m_reconfigureButton->setDisabled(isCheckedManualType);
+        //m_reconfigureButton->setDisabled(isCheckedManualType);
     }
 }
 
@@ -490,27 +490,35 @@ QFormLayout* ExplodeManager::createParametrizationForm(QVBoxLayout* layout)
     QFormLayout* formLayout = new QFormLayout;
     formLayout->setObjectName("warmForm");
 
-    QDoubleSpinBox* pressureSpinBox = new QDoubleSpinBox;
-    //pressureSpinBox->setRange(2050, 7040); Можно задать диапозон вводимых значений
-    //pressureSpinBox->setSingleStep(50); Можжно задать шаг увелечения/уменьшения
-    //pressureSpinBox->setValue(2050); Инициализация числом
+    pressureSpinBox = new QDoubleSpinBox;
+    pressureSpinBox->setRange(1.6, 2.5); //Можно задать диапозон вводимых значений
+    pressureSpinBox->setSingleStep(0.1); //Можно задать шаг увелечения/уменьшения
+    pressureSpinBox->setValue(1.6); //Инициализация числом
 
     QLabel* pressureSpinBoxLabel = new QLabel(u8"Давление P:");
 
-    QDoubleSpinBox* innerThicknessSpinBox = new QDoubleSpinBox;
+    innerThicknessSpinBox = new QDoubleSpinBox;
     QLabel* innerThicknessSpinBoxLabel = new QLabel(u8"Диаметр кожуха D, мм:");
+    innerThicknessSpinBox->setRange(800, 2000);
 
-    QDoubleSpinBox* cameraThicknessSpinBox = new QDoubleSpinBox;
+    cameraThicknessSpinBox = new QDoubleSpinBox;
     QLabel* cameraThicknessSpinBoxLabel = new QLabel(u8"Диаметр камеры D, мм:");
+    cameraThicknessSpinBox->setRange(500, 1100);
 
-    QDoubleSpinBox* iSpinBox = new QDoubleSpinBox;
-    QLabel* iSpinBoxLabel = new QLabel(u8"I0");
+    iSpinBox = new QDoubleSpinBox;
+    QLabel* iSpinBoxLabel = new QLabel(u8"l");
+    iSpinBox->setRange(350, 600);
+    iSpinBox->setValue(350); //Инициализация числом
 
-    QDoubleSpinBox* iSecondSpinBox = new QDoubleSpinBox;
-    QLabel* iSecondSpinBoxLabel = new QLabel(u8"I2");
+    iSecondSpinBox = new QDoubleSpinBox;
+    QLabel* iSecondSpinBoxLabel = new QLabel(u8"l2");
+    iSecondSpinBox->setRange(1750, 2000);
+    iSecondSpinBox->setValue(1750); //Инициализация числом
 
-    QDoubleSpinBox* iThirdSpinBox = new QDoubleSpinBox;
-    QLabel* iThirdSpinBoxLabel = new QLabel(u8"I3");
+    iThirdSpinBox = new QDoubleSpinBox;
+    QLabel* iThirdSpinBoxLabel = new QLabel(u8"l3");
+    iThirdSpinBox->setRange(6390, 6500);
+    iThirdSpinBox->setValue(6390); //Инициализация числом
 
     formLayout->addRow(pressureSpinBoxLabel, pressureSpinBox);
     formLayout->addRow(innerThicknessSpinBoxLabel, innerThicknessSpinBox);
@@ -722,7 +730,28 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
         default:
             break;
     }
-} 
+}
+
+bool ExplodeManager::checkValidate() {
+    if ((innerThicknessSpinBox->value() >= 800) &&
+        (cameraThicknessSpinBox->value() >= 500) &&
+        (pressureSpinBox->value() >= 1.6))
+    {
+        if ((innerThicknessSpinBox->value() > cameraThicknessSpinBox->value()) &&
+            (iSecondSpinBox->value() < iThirdSpinBox->value())) {
+            return true;
+        }
+        else {
+            QMessageBox::warning(nullptr, u8"Предупреждение", u8"Диаметр кожуха должен быть больше диаметра камеры");
+            return false;
+        }
+    }
+    else {
+        QMessageBox::warning(nullptr, u8"Предупреждение", u8"Значения должны соответствовать условиям");
+        return false;
+    }
+}
+
 
 void ExplodeManager::onReconfigureButtonClicked() {
     if (isCheckedManualType) {
@@ -746,6 +775,7 @@ void ExplodeManager::onReconfigureButtonClicked() {
         m_pExplodeWidget->viewCommandsHeats(cmd);
     }
 }
+
 
 void ExplodeManager::onCalculationButtonClicked() {
     QWindow* test = new QWindow();
@@ -1067,7 +1097,7 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
     m_vLayoutConfigureTab->addLayout(hLayoutTypeRadioBox);
 
     QRadioButton* techicalSizesRadioItem = createTypeRadioButton(hLayoutTypeRadioBox, u8"Построение по размерам ТУ", true, 1);
-    QRadioButton* manualSizesRadioItem = createTypeRadioButton(hLayoutTypeRadioBox, u8"Построение вручную", false, 2);
+    manualSizesRadioItem = createTypeRadioButton(hLayoutTypeRadioBox, u8"Построение вручную", false, 2);
 
     // Группа параметров для расчёта толщины стенок.
     m_warmParams = createGroupBox(u8"Параметры", false, false, true);

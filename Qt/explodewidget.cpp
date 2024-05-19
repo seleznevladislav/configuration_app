@@ -571,9 +571,26 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
                 values.append(QString::fromStdString(config.name));
             }
 
-            ConfigParams_IP config = m_pExplodeManager->dataIP[index > 0 ? index : 0];
-            m_pModel = ParametricModelCreator::CreatePneymocylinderModelFukina(config);
-            openModel();
+            ConfigParams_IP config;
+            if (m_pExplodeManager->manualSizesRadioItem->isChecked()) {
+                //m_pExplodeManager->m_warmParams->setDisabled(true);
+                if (m_pExplodeManager->checkValidate()) {
+                    m_pExplodeManager->params_IP.Dv_Kzh = m_pExplodeManager->innerThicknessSpinBox->value();
+                    m_pExplodeManager->params_IP.DKr = m_pExplodeManager->cameraThicknessSpinBox->value();
+                    m_pExplodeManager->params_IP.p = m_pExplodeManager->pressureSpinBox->value();
+                    m_pExplodeManager->params_IP.l0 = m_pExplodeManager->iSpinBox->value();
+                    m_pExplodeManager->params_IP.l2 = m_pExplodeManager->iSecondSpinBox->value();
+                    m_pExplodeManager->params_IP.l3 = m_pExplodeManager->iThirdSpinBox->value();
+                    config = m_pExplodeManager->params_IP;
+                    m_pModel = ParametricModelCreator::CreatePneymocylinderModelFukina(config);
+                    openModel();
+                }
+            }
+            else {
+                config = m_pExplodeManager->dataIP[index > 0 ? index : 0];
+                m_pModel = ParametricModelCreator::CreatePneymocylinderModelFukina(config);
+                openModel();
+            }
             break;
         }
         case ExplodeWidget::IU: 
@@ -581,15 +598,31 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
             int index = m_pExplodeManager->m_comboConfigure->currentIndex();
             m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::IU));
 
-            //hasChangeType && m_pExplodeManager->createParametrizationForm(m_pExplodeManager->m_vLayoutWarmParams);
+            hasChangeType && m_pExplodeManager->createParametrizationForm(m_pExplodeManager->m_vLayoutWarmParams);
 
             for (const auto& config : m_pExplodeManager->dataIU) {
                 values.append(QString::fromStdString(config.name));
             }
 
-            ConfigParams_IU config = m_pExplodeManager->dataIU[index > 0 ? index : 0];
-            m_pModel = ParametricModelCreator::CreatePneymocylinderModelVasinkina(config);
-            openModel();
+            ConfigParams_IU config;
+            if (m_pExplodeManager->manualSizesRadioItem->isChecked()) {
+                if (m_pExplodeManager->checkValidate()) {
+                    m_pExplodeManager->params_IU.diam = m_pExplodeManager->innerThicknessSpinBox->value();
+                    m_pExplodeManager->params_IU.D_Kam = m_pExplodeManager->cameraThicknessSpinBox->value();
+                    m_pExplodeManager->params_IU.p = m_pExplodeManager->pressureSpinBox->value();
+                    m_pExplodeManager->params_IU.l = m_pExplodeManager->iSpinBox->value();
+                    m_pExplodeManager->params_IU.l2 = m_pExplodeManager->iSecondSpinBox->value();
+                    m_pExplodeManager->params_IU.l3 = m_pExplodeManager->iThirdSpinBox->value();
+                    config = m_pExplodeManager->params_IU;
+                    m_pModel = ParametricModelCreator::CreatePneymocylinderModelVasinkina(config);
+                    openModel();
+                }
+            }
+            else {
+                config = m_pExplodeManager->dataIU[index > 0 ? index : 0];
+                m_pModel = ParametricModelCreator::CreatePneymocylinderModelVasinkina(config);
+                openModel();
+            }
             break;
         }
         default:
