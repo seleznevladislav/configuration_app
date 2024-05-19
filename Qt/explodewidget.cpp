@@ -510,6 +510,8 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
            
             delete warmForm;
         }
+
+        m_pExplodeManager->createCalculationTab(currentIndexofExchanger);
     }
 
     m_pExplodeManager->m_quantityCombobox->setHidden(!(currentIndexofExchanger == 1 || currentIndexofExchanger == 2));
@@ -595,8 +597,6 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
         default:
             break;
     };
-
-    m_pExplodeManager->createCalculationTab(currentIndexofExchanger);
 
     if (hasChangeType)
     {
