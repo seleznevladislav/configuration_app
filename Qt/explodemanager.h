@@ -44,6 +44,7 @@ public:
     void init(SceneSegment* pSegmModel, ExplodeTreeView* pTreeWidget);
     QGroupBox* createGroupExplode(QWidget& widget, const int heightButton, const std::string& mainTabName);
     void createCalculationTab(const int numberOfHeatExchanger);
+    void createParametrizationTab(const int numberOfHeatExchanger);
     void iterateHeatExchanger(double hotOutletTemp, double coldOutletTemp);
     QFormLayout* createWarmForm(QVBoxLayout* layout);
     QFormLayout* createParametrizationForm(QVBoxLayout* layout);
