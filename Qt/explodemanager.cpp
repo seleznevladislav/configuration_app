@@ -827,12 +827,14 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
 
             tempsV1Layout->addWidget(new QLabel(u8"Температура горячей среды на входе (°C):"));
             m_PhotInletTemp = new QLineEdit();
+            m_PhotInletTemp->setText(QString::number(200));
             tempsV1Layout->addWidget(m_PhotInletTemp);
 
             tempsV2Layout->addWidget(new QLabel(u8"Температура холодной среды на входе (°C):"));
             m_PcoldInletTemp = new QLineEdit();
-
+            m_PcoldInletTemp->setText(QString::number(200));
             tempsV2Layout->addWidget(m_PcoldInletTemp);
+
             tempsHLayout->addLayout(tempsV1Layout);
             tempsHLayout->addLayout(tempsV2Layout);
             m_vLayoutCalculationTabTTOR->addLayout(tempsHLayout);
@@ -844,10 +846,12 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
 
             speedV1Layout->addWidget(new QLabel(u8"Скорость горячей среды (м/с):"));
             m_PhotVelocity = new QLineEdit();
+            m_PhotVelocity->setText(QString::number(3.2));
             speedV1Layout->addWidget(m_PhotVelocity);
 
             speedV2Layout->addWidget(new QLabel(u8"Скорость холодной среды (м/с):"));
             m_PcoldVelocity = new QLineEdit();
+            m_PcoldVelocity->setText(QString::number(2.4));
             speedV2Layout->addWidget(m_PcoldVelocity);
 
             speedHLayout->addLayout(speedV1Layout);
