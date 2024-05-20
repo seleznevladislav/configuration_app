@@ -4,7 +4,7 @@ using namespace BuildMathModel;
 
 const double DEG_TO_RAD = M_PI / 180.0;
 
-static SPtr<MbSolid> Create_U_Pipe(double p, int D_Kzh, int D_Kr) {
+static SPtr<MbSolid> Create_U_Pipe(double p, double D_Kzh, double D_Kr) {
     MbPlacement3D pl;
     const int d = 20; //внутренний диаметр трубы
     const int d_v = d + 2; // внешний диаметр трубы
@@ -93,7 +93,7 @@ static SPtr<MbSolid> Create_U_Pipe(double p, int D_Kzh, int D_Kr) {
     return MainSolid;
 }
 
-SPtr<MbSolid> ParametricModelCreator::CreatePipe(double p, int D_Kzh, int D_Kr) {
+SPtr<MbSolid> ParametricModelCreator::CreatePipe(double p, double D_Kzh, double D_Kr) {
     MbPlacement3D pl;
     const int d = 20; //внутренний диаметр трубы
     const int d_v = d + 2; // внешний диаметр трубы
@@ -200,10 +200,8 @@ SPtr<MbSolid> ParametricModelCreator::CreatePipe(double p, int D_Kzh, int D_Kr) 
     return pUnion;
 }
 
-
-
 //Отверстия в перегородке
-static SPtr<MbSolid> CreateOtvVPeregorodka(SPtr<MbSolid> OsnovaPereg, int D_Kzh, double p, int D_Kr) {
+static SPtr<MbSolid> CreateOtvVPeregorodka(SPtr<MbSolid> OsnovaPereg, double D_Kzh, double p, double D_Kr) {
     RPArray<MbContour>* ptrContoursR = new RPArray<MbContour>();
 
     double bigD;//диаметр ограничительной окружности
@@ -235,7 +233,7 @@ static SPtr<MbSolid> CreateOtvVPeregorodka(SPtr<MbSolid> OsnovaPereg, int D_Kzh,
     double x;
     double y;
     int t;
-    int d = 20.6;
+    double d = 20.6;
 
 
     t = 26; //расстояние между окружностями
@@ -297,11 +295,11 @@ static SPtr<MbSolid> CreateMirror(SPtr<MbSolid> SolidForMirror, double degr, MbA
 }
 
 //Создание перегородки для труб
-SPtr<MbSolid> ParametricModelCreator::CreatePeregorodka(double p, int D_Kzh, int D_Kr) {
+SPtr<MbSolid> ParametricModelCreator::CreatePeregorodka(double p, double D_Kzh, double D_Kr) {
 
-    int S1;
-    int D3;
-    int dop = 12 * 2;
+    double S1;
+    double D3;
+    double dop = 12 * 2;
 
     if ((500 <= D_Kr) && (D_Kr < 600)) {
         S1 = 10;
@@ -370,11 +368,11 @@ SPtr<MbSolid> ParametricModelCreator::CreatePeregorodka(double p, int D_Kzh, int
 
 
 //Создание неподвижной решетки
-SPtr<MbSolid> ParametricModelCreator::CreateOsnovaNePodResh(double p, int D_Kzh, int D_Kr) {
+SPtr<MbSolid> ParametricModelCreator::CreateOsnovaNePodResh(double p, double D_Kzh, double D_Kr) {
 
-    int S;
-    int D1;
-    int D4;
+    double S;
+    double D1;
+    double D4;
     //добавить зависимость от давления
 
     if ((500 <= D_Kr) && (D_Kr < 600)) {
@@ -463,14 +461,12 @@ SPtr<MbSolid> ParametricModelCreator::CreateOsnovaNePodResh(double p, int D_Kzh,
     return MassivOtv1;
 }
 
-
-
 //Стойка
-SPtr<MbSolid> ParametricModelCreator::CreateStoyka(int D_Kzh, double L_Base, int s)
+SPtr<MbSolid> ParametricModelCreator::CreateStoyka(double D_Kzh, double L_Base, double s)
 {
-    int b; //выдавливание нижнего прямоугольника 
-    int h; //высота, на которую опускаем стойку 
-    int Width;
+    double b; //выдавливание нижнего прямоугольника 
+    double h; //высота, на которую опускаем стойку 
+    double Width;
     if (D_Kzh <= 800) {
         b = 18;
         h = 180;
@@ -516,7 +512,7 @@ SPtr<MbSolid> ParametricModelCreator::CreateStoyka(int D_Kzh, double L_Base, int
     MbPlacement3D pl;
     MbPlane* pPlaneXZ = new MbPlane(MbCartPoint3D(0, 0, 0), MbCartPoint3D(1, 0, 0), MbCartPoint3D(0, 0, 1));
 
-    int D_Kzh_V = D_Kzh + 2 * s;
+    double D_Kzh_V = D_Kzh + 2 * s;
     MbCartPoint p1P(-Width, D_Kzh_V / 2 - 50);
     MbCartPoint p2P(Width, D_Kzh_V / 2 - 50);
     MbCartPoint p3P(Width, -D_Kzh_V / 2 - 50);
@@ -740,7 +736,7 @@ static SPtr<MbSolid> CreateSechenie(SPtr<MbSolid> solid) {
 
 //Крышки
  //Основное тело
-static SPtr<MbSolid> CreateBaseCover(int Dy, double p) {
+static SPtr<MbSolid> CreateBaseCover(double Dy, double p) {
 
     double b;
     double d2;
@@ -752,7 +748,7 @@ static SPtr<MbSolid> CreateBaseCover(int Dy, double p) {
     double h1;
 
     if (p == 1.6) {
-        switch (Dy) {
+        switch ((int)Dy) {
         case 50:
             b = 14;
             d2 = 46;
@@ -958,11 +954,11 @@ static SPtr<MbSolid> CreateCylForCover(SPtr<MbSolid> OsnMassiv, double b,
 
 
 
-SPtr<MbSolid> ParametricModelCreator::CreateUnionCover(int Dy, double p, int id, int D_Kzh, int DKr) {
+SPtr<MbSolid> ParametricModelCreator::CreateUnionCover(double Dy, double p, int id, double D_Kzh, double DKr) {
 
-    int b;
-    int d;
-    int D1;
+    double b;
+    double d;
+    double D1;
     int num;
 
     //сбоку на эллиптическом днище
@@ -1114,7 +1110,7 @@ SPtr<MbSolid> ParametricModelCreator::CreateUnionCover(int Dy, double p, int id,
 
 
     // if (p == 1.6) {
-    switch (Dy) {
+    switch ((int)Dy) {
     case 50:
         b = 14;
         d = 18;

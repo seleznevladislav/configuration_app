@@ -78,14 +78,14 @@ namespace BuildMathModel {
 	{
 		std::string name;
 		double p = 1.6;
-		int diam = 800;
+		double diam = 800;
 		double Length = 5395.;
-		int D_Kam = 500;
-		int Kam_L = 562;
-		int S = 20;
-		int l = 350;
-		int l2 = 1750;
-		int l3 = 6390;
+		double D_Kam = 500;
+		double Kam_L = 562;
+		double S = 20;
+		double l = 350;
+		double l2 = 1750;
+		double l3 = 6390;
 		//float CylS;
 		//float EllS;
 		//float PerS;

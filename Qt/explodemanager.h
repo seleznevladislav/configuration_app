@@ -13,7 +13,7 @@
 #include <QDoubleSpinBox>
 #include "qtoolbutton.h"
 #include "QWidget"
-//#include "QMessageBox"
+#include "QMessageBox"
 
 using namespace BuildMathModel;
 
@@ -56,7 +56,6 @@ public:
     QVBoxLayout* m_vLayoutWarmParams = nullptr;
     bool isCheckedManualType = false;
     ConfigParams manualTTRMParams;
-    QGroupBox* m_warmParams = nullptr;
    
 
     //IP/IU
@@ -68,13 +67,8 @@ public:
     QDoubleSpinBox* iSpinBox = nullptr;//l
     QDoubleSpinBox* iSecondSpinBox = nullptr;//l2
     QDoubleSpinBox* iThirdSpinBox = nullptr;//l3
-    ConfigParams_IU params_IU = {
-         u8"800ИУ-2,5-2,5-М4/20-6-2-Т",  1.6, 800,  7120, 500,  562, 20, 350, 1750, 6390
-    };
-
-    ConfigParams_IP params_IP = {
-      u8"800ИП-1,6-2,5-М1/25-6-2 ", 800, 7120, 20, 1.6, 500, 460, 1750, 6390
-    };
+    ConfigParams_IU params_IU;
+    ConfigParams_IP params_IP;
 
     std::vector<ConfigParams> dataTTRM = {
        {u8"ТТРМ 25/57-6,3/1,6", 25, 3, 57, 4, 219, 8, 1500, 750, 2150, 32, 80, 415, 250, 230 },
@@ -232,7 +226,7 @@ private:
     QVBoxLayout* m_vLayoutTab            = nullptr;
     QVBoxLayout* m_vLayoutConfigureTab   = nullptr;
     QGroupBox* m_groupExpl               = nullptr;
-    //QGroupBox* m_warmParams              = nullptr;
+    QGroupBox* m_warmParams              = nullptr;
     QLabel* m_labelLevel                 = nullptr;
     QLabel* m_labelSelectAssembly        = nullptr;
     QDoubleSpinBox* m_lengthSpinBox      = nullptr;

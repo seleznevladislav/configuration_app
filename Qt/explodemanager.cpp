@@ -271,11 +271,11 @@ void ExplodeManager::radiosTypeFromToggled(bool checked, int type)
 {
     if (checked)
     {
-        isCheckedManualType = type == 2  /*&& (m_pExplodeWidget->m_pCurrentExchandger == 1 || m_pExplodeWidget->m_pCurrentExchandger == 2)*/;
+        isCheckedManualType = type == 2 && (m_pExplodeWidget->m_pCurrentExchandger == 1 || m_pExplodeWidget->m_pCurrentExchandger == 2 || m_pExplodeWidget->m_pCurrentExchandger == 3);
         
         m_comboConfigure->setDisabled(isCheckedManualType);
-        m_warmParams->setDisabled(!isCheckedManualType);
-        //m_reconfigureButton->setDisabled(isCheckedManualType);
+        m_warmParams->setDisabled(false);//!isCheckedManualType
+        m_reconfigureButton->setDisabled(false);//isCheckedManualType
     }
 }
 
@@ -737,6 +737,7 @@ bool ExplodeManager::checkValidate() {
         (cameraThicknessSpinBox->value() >= 500) &&
         (pressureSpinBox->value() >= 1.6))
     {
+
         if ((innerThicknessSpinBox->value() > cameraThicknessSpinBox->value()) &&
             (iSecondSpinBox->value() < iThirdSpinBox->value())) {
             return true;

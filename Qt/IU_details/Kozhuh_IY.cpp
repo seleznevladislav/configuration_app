@@ -12,7 +12,7 @@ MbAxis3D axisZ(pl.GetAxisZ());*/
 
 //Создание цилиндра кожуха
 static SPtr<MbSolid> CreateKzhBase(double D, double L_Base, double s) {
-    int D_v = D + 2 * s;
+    double D_v = D + 2 * s;
     //цилиндр с внешним диаметром
     MbSNameMaker operNames(1, MbSNameMaker::i_SideNone, 0);
     SolidSPtr pCyl1;
@@ -168,7 +168,7 @@ SPtr<MbSolid> ParametricModelCreator::CreateMassivOtv(SPtr<MbSolid> Osnova, doub
 
 
 //Создание фланца
-static SPtr<MbSolid> CreateTrubaOnKzh(int id, int D_Kzh, double p, int DKr, double s) {
+static SPtr<MbSolid> CreateTrubaOnKzh(int id, double D_Kzh, double p, double DKr, double s) {
     MbPlacement3D pl;
 
     double DKrVne = DKr + 2 * s;
@@ -1167,8 +1167,7 @@ static SPtr<MbSolid> CreateTrubaOnKzh(int id, int D_Kzh, double p, int DKr, doub
 
 //Выдавливание между кожухом и фланцем
 static SPtr<MbSolid> CreateTrubaOnKzhExtr(SPtr<MbSolid> Kzh, SPtr<MbSolid> Tr,
-    double Dn, int id, double p, int D_Kzh, int DKr) {
-
+    double Dn, int id, double p, double D_Kzh, double DKr) {
 
     if (id == 1) {
         Dn = 222;
@@ -1212,7 +1211,6 @@ static SPtr<MbSolid> CreateTrubaOnKzhExtr(SPtr<MbSolid> Kzh, SPtr<MbSolid> Tr,
             Dn = 222;
         }
     }
-
 
     if (id == 5) {
         if ((800 <= D_Kzh) && (D_Kzh < 1000)) {
@@ -1272,7 +1270,6 @@ static SPtr<MbSolid> CreateTrubaOnKzhExtr(SPtr<MbSolid> Kzh, SPtr<MbSolid> Tr,
         }
     }
 
-
     if (id == 9) {
         if ((800 <= D_Kzh) && (D_Kzh < 1000)) {
             Dn = 278;
@@ -1303,9 +1300,7 @@ static SPtr<MbSolid> CreateTrubaOnKzhExtr(SPtr<MbSolid> Kzh, SPtr<MbSolid> Tr,
         }
     }
 
-
-
-    MbArc* pArc = new MbArc(MbCartPoint(0, 0), Dn / 2);
+    MbArc* pArc = new MbArc(MbCartPoint(0, 0), Dn / 2.);
     MbContour* ptrContour = new MbContour();
     ptrContour->AddSegment(pArc);
 
@@ -1345,7 +1340,7 @@ static SPtr<MbSolid> CreateTrubaOnKzhExtr(SPtr<MbSolid> Kzh, SPtr<MbSolid> Tr,
     return pSptrSolid;
 }
 
-static SPtr<MbSolid> CreateHole(SPtr<MbSolid> Base, int Dy, int D_Kzh, int DKr, double grad, double x, double y, int id) {
+static SPtr<MbSolid> CreateHole(SPtr<MbSolid> Base, double Dy, double D_Kzh, double DKr, double grad, double x, double y, int id) {
     if (id == 1) {
         Dy = 200;
     }
@@ -1488,7 +1483,7 @@ static SPtr<MbSolid> CreateHole(SPtr<MbSolid> Base, int Dy, int D_Kzh, int DKr, 
     MbCartPoint3D p1, p2, p3;
     p1.Init(0, 0, 0);//основание
     p2.Init(110, 0, 0);//высота
-    p3.Init(110, Dy / 2, 0);//радиус
+    p3.Init(110, Dy / 2., 0);//радиус
     arrPnts1.clear();
     arrPnts1.push_back(p1);
     arrPnts1.push_back(p2);
@@ -1503,16 +1498,16 @@ static SPtr<MbSolid> CreateHole(SPtr<MbSolid> Base, int Dy, int D_Kzh, int DKr, 
 
 
 //DKr здесь внутренний диаметр камеры
-static SPtr<MbSolid> CreateKzhWithTr(SPtr<MbSolid> Kzh, int D_Kzh, double L_Base, double p, int DKr, int s, int l, int l2, int l3) {
+static SPtr<MbSolid> CreateKzhWithTr(SPtr<MbSolid> Kzh, double D_Kzh, double L_Base, double p, double DKr, double s, double l, double l2, double l3) {
     MbPlacement3D pl;
     MbAxis3D axisX(pl.GetAxisX());
     MbAxis3D axisY(pl.GetAxisY());
     MbAxis3D axisZ(pl.GetAxisZ());
 
-    int D_Kzh_V = D_Kzh + 2 * s;
+    double D_Kzh_V = D_Kzh + 2 * s;
 
 
-    int l0 = 460;
+    double l0 = 460;
     //int l = 350;
     //int l2 = 1750;
     //int l3 = 6390;
@@ -1632,14 +1627,13 @@ static SPtr<MbSolid> CreateKzhWithTr(SPtr<MbSolid> Kzh, int D_Kzh, double L_Base
     return pSptrKzh11;
 }
 
-
-static SPtr<MbSolid> CreateHoleKzh(SPtr<MbSolid> Kzh, int D_Kzh, double L_Base, int DKr, double s, int l, int l2, int l3) {
+static SPtr<MbSolid> CreateHoleKzh(SPtr<MbSolid> Kzh, double D_Kzh, double L_Base, double DKr, double s, double l, double l2, double l3) {
     SolidSPtr pSptrKzh1, pSptrKzh3, pSptrKzh4, pSptrKzh5,
         pSptrKzh9, pSptrKzh10, pSptrKzh11;
 
-    int D_Kzh_V = D_Kzh + 2 * s;
+    double D_Kzh_V = D_Kzh + 2 * s;
 
-    int l0 = 800;
+    double l0 = 800;
 
     /*
     if ((800 <= D_Kzh) && (D_Kzh < 1000)) {
@@ -1691,7 +1685,8 @@ static SPtr<MbSolid> CreateHoleKzh(SPtr<MbSolid> Kzh, int D_Kzh, double L_Base, 
 
     double Dy = 100;//условно, внутри функций будет меняться все равно
 
-    int RADA = (int)D_Kzh_V / 4;
+   // int RADA = (int)D_Kzh_V / 4;
+    double RADA = D_Kzh_V / 4.;
     pSptrKzh1 = CreateHole(Kzh, Dy, D_Kzh, DKr, 0, -RADA, 0, 1);//Kozhuh, Dy, Rad elDno, x, y
     pSptrKzh3 = CreateHole(pSptrKzh1, Dy, D_Kzh, DKr, 90., l, -D_Kzh_V / 2, 3);
     pSptrKzh4 = CreateHole(pSptrKzh3, Dy, D_Kzh, DKr, 90., l2, -D_Kzh_V / 2, 4);
@@ -1703,14 +1698,16 @@ static SPtr<MbSolid> CreateHoleKzh(SPtr<MbSolid> Kzh, int D_Kzh, double L_Base, 
     return pSptrKzh11;
 }
 
-static SPtr<MbSolid> CreateEllipticDno(int D, int s) {
+static SPtr<MbSolid> CreateEllipticDno(double D, double s) {
     const double DEG_TO_RAD = M_PI / 180.0;
 
-    int D_v = D + 2 * s;
+    double D_v = D + 2 * s;
 
     //H эллипса
-    int RADA = (int)D_v / 4;
-    int RADC = (int)D / 4;
+    double RADA = D_v / 4.;
+    double RADC = D / 4.;
+    //int RADA = (int)D_v / 4;
+    //int RADC = (int)D / 4;
 
     double RADB = D_v / 2.;
     double RADD = D / 2.;
@@ -1785,9 +1782,7 @@ static SPtr<MbSolid> CreateEllipticDno(int D, int s) {
 }
 
 
-
 SPtr<MbSolid> ParametricModelCreator::CreateUnionKozhuh_IU(ConfigParams_IU params) {
-    // const double Dvne = params.diamVne;
     const double s = params.S;
     const double D_Kzh = params.diam;
     const double D_Kam = params.D_Kam;
@@ -1795,33 +1790,32 @@ SPtr<MbSolid> ParametricModelCreator::CreateUnionKozhuh_IU(ConfigParams_IU param
     const double D_Kzh_V = D_Kzh + 2 * s;
     const double L = params.Length;
     const double DKr = params.D_Kam;
-    //const double D_Kzh = params.diam;
 
-    int l5;
+    double l5;
 
     if ((500 <= DKr) && (DKr < 600)) {
-        l5 = 320;
+        l5 = 320.;
     }
     else if ((600 <= DKr) && (DKr < 700)) {
-        l5 = 380;
+        l5 = 380.;
     }
     else if ((700 <= DKr) && (DKr < 800)) {
-        l5 = 440;
+        l5 = 440.;
     }
     else if ((800 <= DKr) && (DKr < 900)) {
-        l5 = 500;
+        l5 = 500.;
     }
     else if ((900 <= DKr) && (DKr < 1000)) {
-        l5 = 560;
+        l5 = 560.;
     }
     else if ((1000 <= DKr) && (DKr < 1100)) {
-        l5 = 570;
+        l5 = 570.;
     }
     else if ((1100 <= DKr) && (DKr < 1200)) {
-        l5 = 600;
+        l5 = 600.;
     }
     else if (1200 <= DKr) {
-        l5 = 610;
+        l5 = 610.;
     }
 
 
@@ -1855,7 +1849,7 @@ SPtr<MbSolid> ParametricModelCreator::CreateUnionKozhuh_IU(ConfigParams_IU param
 
     MbAxis3D axisZ(pl.GetAxisZ());
     pSptrFlanecOnLoft->Rotate(axisZ, 270 * DEG_TO_RAD);
-    pSptrFlanecOnLoft->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(L_Base + L_Loft, -(D_Kzh_V - D_Kam_V) / 2, 0)));
+    pSptrFlanecOnLoft->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(L_Base + L_Loft, -(D_Kzh_V - D_Kam_V) / 2., 0)));
     SolidSPtr pSptrSolid;
     BooleanResult(pKzhWithOtv, cm_Copy, pSptrFlanecOnLoft, cm_Copy,
         MbBooleanOperationParams(bo_Union, true, operNames), pSptrSolid);
@@ -1920,7 +1914,7 @@ SPtr<MbSolid> ParametricModelCreator::CreateKamera(ConfigParams_IU params) {
     const double D_Kam_V = params.D_Kam + 2 * s;
     const double D_Kr = params.D_Kam;
 
-    int l5;
+    double l5;
 
     if ((500 <= D_Kam) && (D_Kam < 600)) {
         l5 = 320;

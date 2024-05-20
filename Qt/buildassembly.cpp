@@ -4136,7 +4136,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIU(ConfigParams_IU params)
 
 
         int face = 0;
-        switch (params.diam) {
+        switch ((int)params.diam) {
         case 800:
             face = 304;//152
             break;

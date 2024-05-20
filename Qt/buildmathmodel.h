@@ -238,11 +238,11 @@ namespace BuildMathModel {
 		//IU details
 		static SPtr<MbSolid> ParametricModelCreator::CreateUnionKozhuh_IU(ConfigParams_IU params);
 		static SPtr<MbSolid> ParametricModelCreator::CreateKamera(ConfigParams_IU params);
-		static SPtr<MbSolid> ParametricModelCreator::CreateStoyka(int D_Kzh, double L_Base, int s);
-		static SPtr<MbSolid> ParametricModelCreator::CreateUnionCover(int Dy, double p, int id, int D_Kzh, int DKr);
-		static SPtr<MbSolid> ParametricModelCreator::CreateOsnovaNePodResh(double p, int D_Kzh, int D_Kr);
-		static SPtr<MbSolid> ParametricModelCreator::CreatePeregorodka(double p, int D_Kzh, int D_Kr);
-		static SPtr<MbSolid> ParametricModelCreator::CreatePipe(double p, int D_Kzh, int D_Kr);
+		static SPtr<MbSolid> ParametricModelCreator::CreateStoyka(double D_Kzh, double L_Base, double s);
+		static SPtr<MbSolid> ParametricModelCreator::CreateUnionCover(double Dy, double p, int id, double D_Kzh, double DKr);
+		static SPtr<MbSolid> ParametricModelCreator::CreateOsnovaNePodResh(double p, double D_Kzh, double D_Kr);
+		static SPtr<MbSolid> ParametricModelCreator::CreatePeregorodka(double p, double D_Kzh, double D_Kr);
+		static SPtr<MbSolid> ParametricModelCreator::CreatePipe(double p, double D_Kzh, double D_Kr);
 		
 	};
 

@@ -571,6 +571,7 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
                 values.append(QString::fromStdString(config.name));
             }
 
+            
             ConfigParams_IP config;
             if (m_pExplodeManager->manualSizesRadioItem->isChecked()) {
                 //m_pExplodeManager->m_warmParams->setDisabled(true);
