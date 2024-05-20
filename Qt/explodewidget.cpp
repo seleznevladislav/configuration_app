@@ -359,14 +359,11 @@ void ExplodeWidget::viewCommands(Commands cmd)
     case ExplodeWidget::Open:
     {
         viewCommands(ExplodeWidget::Select);
-        createSceneZarubin();
-        // loadModel();
         break;
     }
     case ExplodeWidget::Save:
     {
         viewCommands(ExplodeWidget::Select);
-        // saveModel();
         break;
     }
     case ExplodeWidget::Select:
@@ -443,23 +440,6 @@ void ExplodeWidget::viewCommands(Commands cmd)
             camera->Orbit(M_PI / 180, 0);
             viewport()->RefreshScreen();
         }
-        //TOZO: Решить поворот
-        //Point3DF cameraPosition = camera->GetPosition();
-        //const int x = cameraPosition.x;
-        //const int y = cameraPosition.y;
-        //const int z = cameraPosition.z;
-
-        //for (int i = 0; i < 360; ++i) {
-        //    Sleep(1);
-
-        //    float angle = i * M_PI / 180;
-
-        //    // float newX = z * cos(angle) - x * sin(angle);
-        //    // float newY = z * sin(angle) + x * cos(angle);
-
-        //    camera->SetPosition(Point3DF(newX, newY, 0)); // Set the new camera position
-        //    viewport()->RefreshScreen();
-        //}
     }
     default:
         break;
@@ -796,32 +776,12 @@ void ExplodeWidget::createScene()
     m_pSceneGenerator->StartBuildGeometry();
 }
 
-void ExplodeWidget::createSceneZarubin()
-{
-    //m_pModel.reset();
-    //m_pTreeWidget->clear();
-    //sceneContent()->Clear();
-
-    //// TOZO: Завести переменную для определения сборки и добавить кнопки в main toolbar left srea
-    //// TOZO: Не работает дерево, хз почему
-    //m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsForHeatExchangerTTOR());
-
-    //SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
-    //Q_ASSERT(pTopSegment != nullptr);
-    //ProgressBuild* pProgressBuild = m_pSceneGenerator->CreateProgressBuild();
-    //Object::Connect(pProgressBuild, &ProgressBuild::BuildAllCompleted, this, &ExplodeWidget::slotFinishBuildRep);
-    //m_pSegmModel = m_pSceneGenerator->CreateSceneSegment(m_pModel, pTopSegment, false);
-    //m_pSceneGenerator->StartBuildGeometry();
-}
-
 void ExplodeWidget::createSceneIP()
 {
     m_pModel.reset();
     m_pTreeWidget->clear();
     sceneContent()->Clear();
 
-    // TOZO: Завести переменную для определения сборки и добавить кнопки в main toolbar left srea
-    // TOZO: Не работает дерево, хз почему
     m_pModel = ParametricModelCreator::CreatePneymocylinderModelFukina(ConfigParams_IP());
 
     SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
@@ -838,8 +798,6 @@ void ExplodeWidget::createSceneIU()
     m_pTreeWidget->clear();
     sceneContent()->Clear();
 
-    // TOZO: Завести переменную для определения сборки и добавить кнопки в main toolbar left srea
-    // TOZO: Не работает дерево, хз почему
     m_pModel = ParametricModelCreator::CreatePneymocylinderModelVasinkina(ConfigParams_IU());
 
     SceneSegment* pTopSegment = sceneContent()->GetRootSegment();

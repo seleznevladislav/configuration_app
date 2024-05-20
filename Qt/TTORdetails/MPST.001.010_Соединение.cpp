@@ -6,7 +6,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_010_Connector(double ktDiam,
 {
     const double inner = ktDiam + 2 * ktThickness;
     const double outer = (ktDiam + 10) + 2 * ktThickness;
-    const double Length = 255; // TOZO: Определить длину опор
+    const double Length = 255;
 
     MbSNameMaker blockNames(1, MbSNameMaker::i_SideNone, 0);
 
