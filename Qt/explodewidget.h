@@ -26,7 +26,6 @@
 #include <QGroupBox>
 #include <QComboBox>
 
-
 // USERS
 #include "explodetree.h"
 #include "controller.h"

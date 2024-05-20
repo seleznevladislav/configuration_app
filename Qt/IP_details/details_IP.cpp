@@ -70,9 +70,9 @@ static SPtr<MbSolid> CreateMassivOtv_IP(SPtr<MbSolid> Osnova, double b,
     return  pSolidMassivOtv;
 }
 
-static SPtr<MbSolid> CreateKzhBase(int Dv_Kzh, double L_Base, double s) {
+static SPtr<MbSolid> CreateKzhBase(double Dv_Kzh, double L_Base, double s) {
 
-    int Dvne = Dv_Kzh + s * 2;
+    double Dvne = Dv_Kzh + s * 2;
 
     //цилиндр с внешним диаметром
     MbSNameMaker operNames(1, MbSNameMaker::i_SideNone, 0);
@@ -110,9 +110,9 @@ static SPtr<MbSolid> CreateKzhBase(int Dv_Kzh, double L_Base, double s) {
 }
 
 // Создание конусообразной части кожуха
-static SPtr<MbSolid> CreateLoft(int Dv_Kzh, int DKrvne, int DKr, double L, double s) {
+static SPtr<MbSolid> CreateLoft(double Dv_Kzh, double DKrvne, double DKr, double L, double s) {
 
-    int Dvne = Dv_Kzh + s * 2;
+    double Dvne = Dv_Kzh + s * 2;
     //ЛОФТ ПОБОЛЬШЕ
     RPArray<MbSurface> arrSurf;
 
@@ -185,10 +185,10 @@ static SPtr<MbSolid> CreateLoft(int Dv_Kzh, int DKrvne, int DKr, double L, doubl
 
 
 //Создание фланца
-static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, int DKr, double s, int Dv_Kzh) {
+static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, double DKr, double s, double Dv_Kzh) {
     MbPlacement3D pl;
 
-    int DKrVne = DKr + 2 * s;
+    double DKrVne = DKr + 2 * s;
 
     double Dy = 123;
     double D;
@@ -1102,92 +1102,92 @@ static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, int DKr, double s, int Dv
             num = 24;
         }
         else if ((600 <= DKr) && (DKr < 700)) {
-            Dy = 600;
-            D = 840;
-            D2 = 720;
+            Dy = DKr;
+            D = 840 + (DKr - 600);
+            D2 = 720 + (DKr - 600);
             b = 41;
-            Dm = 660;
+            Dm = 660 + (DKr - 600);
             Dn = DKrVne;
             H = 86;
-            D1 = 770;
+            D1 = 770 + (DKr - 600);
             d = 26;
             num = 24;
         }
 
         else if ((700 <= DKr) && (DKr < 800)) {
-            Dy = 700;
-            D = 940;
-            D2 = 820;
+            Dy = DKr;
+            D = 940 + (DKr - 700);
+            D2 = 820 + (DKr - 700);
             b = 41;
-            Dm = 760;
+            Dm = 760 + (DKr - 700);
             Dn = DKrVne;
             H = 86;
-            D1 = 870;
+            D1 = 870 + (DKr - 700);
             d = 26;
             num = 24;
         }
 
         else if ((800 <= DKr) && (DKr < 900)) {
-            Dy = 800;
-            D = 1020;
-            D2 = 900;
+            Dy = DKr;
+            D = 1020 + (DKr - 800);
+            D2 = 900 + (DKr - 800);
             b = 52;
-            Dm = 844;
+            Dm = 844 + (DKr - 800);
             Dn = DKrVne;
             H = 86;
-            D1 = 950;
+            D1 = 950 + (DKr - 800);
             d = 26;
             num = 24;
         }
 
         else if ((900 <= DKr) && (DKr < 1000)) {
-            Dy = 900;
-            D = 1120;
-            D2 = 1000;
+            Dy = DKr;
+            D = 1120 + (DKr - 900);
+            D2 = 1000 + (DKr - 900);
             b = 63;
-            Dm = 944;
+            Dm = 944 + (DKr - 900);
             Dn = DKrVne;
             H = 86;
-            D1 = 1050;
+            D1 = 1050 + (DKr - 900);
             d = 28;
             num = 24;
         }
 
         else if ((1000 <= DKr) && (DKr < 1100)) {
-            Dy = 1000;
-            D = 1255;
-            D2 = 1110;
+            Dy = DKr;
+            D = 1255 + (DKr - 1000);
+            D2 = 1110 + (DKr - 1000);
             b = 63;
-            Dm = 1060;
+            Dm = 1060 + (DKr - 1000);
             Dn = DKrVne;
             H = 86;
-            D1 = 1170;
+            D1 = 1170 + (DKr - 1000);
             d = 30;
             num = 24;
         }
 
         else if ((1100 <= DKr) && (DKr < 1200)) {
-            Dy = 1100;
-            D = 1355;
-            D2 = 1210;
+            Dy = DKr;
+            D = 1355 + (DKr - 1100);
+            D2 = 1210 + (DKr - 1100);
             b = 63;
-            Dm = 1160;
+            Dm = 1160 + (DKr - 1100);
             Dn = DKrVne;
             H = 86;
-            D1 = 1270;
+            D1 = 1270 + (DKr - 1100);
             d = 32;
             num = 24;
         }
 
         else if (1200 <= DKr) {
             Dy = DKr;
-            D = 1485;
-            D2 = 1325;
+            D = 1485 + (DKr - 1200);
+            D2 = 1325 + (DKr - 1200);
             b = 75;
-            Dm = 1268;
+            Dm = 1268 + (DKr - 1200);
             Dn = DKrVne;
             H = 86;
-            D1 = 1390;
+            D1 = 1390 + (DKr - 1200);
             d = 34;
             num = 24;
         }
@@ -1230,7 +1230,7 @@ static SPtr<MbSolid> CreateTubeOnKzh(int id, double p, int DKr, double s, int Dv
 
 //Выдавливание между кожухом и фланцем
 static SPtr<MbSolid> CreateTubeOnKzhExtr(SPtr<MbSolid> Kzh, SPtr<MbSolid> Tr,
-    double Dn, int id, double p, int DKr, int Dv_Kzh) {
+    double Dn, int id, double p, double DKr, double Dv_Kzh) {
 
     if (id == 1) {
         Dn = 222;
@@ -1414,7 +1414,7 @@ static SPtr<MbSolid> CreateTubeOnKzhExtr(SPtr<MbSolid> Kzh, SPtr<MbSolid> Tr,
 }
 
 //
-static SPtr<MbSolid> CreateHole(SPtr<MbSolid> Base, int Dy, int DKr, double grad, double x, double y, int id, int Dv_Kzh) {
+static SPtr<MbSolid> CreateHole(SPtr<MbSolid> Base, double Dy, double DKr, double grad, double x, double y, int id, double Dv_Kzh) {
 
     if (id == 1) {
         Dy = 200;
@@ -1570,9 +1570,9 @@ static SPtr<MbSolid> CreateHole(SPtr<MbSolid> Base, int Dy, int DKr, double grad
 }
 
 //Кожух вместе с фланцами
-static SPtr<MbSolid> CreateKzhWithTubes(SPtr<MbSolid> Kzh, double L_Base, double p, int DKr, double Dn, double s, int Dv_Kzh, int l2, int l3) {
+static SPtr<MbSolid> CreateKzhWithTubes(SPtr<MbSolid> Kzh, double L_Base, double p, double DKr, double Dn, double s, double Dv_Kzh, int l2, int l3) {
 
-    int Dvne = Dv_Kzh + s * 2;
+    double Dvne = Dv_Kzh + s * 2;
 
     MbPlacement3D pl;
     MbAxis3D axisX(pl.GetAxisX());
@@ -1583,7 +1583,7 @@ static SPtr<MbSolid> CreateKzhWithTubes(SPtr<MbSolid> Kzh, double L_Base, double
     SolidSPtr copyKzh = CreateKzhBase(Dv_Kzh, 5395., 20.);
 
 
-    int RADA = (int)Dvne / 4;
+    double RADA = Dvne / 4;
 
     SolidSPtr pSptrKzh1;
     Kzh->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(RADA, 0, 0)));//RADA -Elliptic Dno
@@ -1644,12 +1644,12 @@ static SPtr<MbSolid> CreateKzhWithTubes(SPtr<MbSolid> Kzh, double L_Base, double
 }
 
 //Отверстие во фланцах на кожухе
-static SPtr<MbSolid> CreateHoleKzh(SPtr<MbSolid> Kzh, double L_Base, double Dy, int DKr, int Dv_Kzh, double s, int l2, int l3) {
+static SPtr<MbSolid> CreateHoleKzh(SPtr<MbSolid> Kzh, double L_Base, double Dy, double DKr, double Dv_Kzh, double s, int l2, int l3) {
     SolidSPtr pSptrKzh1, pSptrKzh3, pSptrKzh4, pSptrKzh5,
         pSptrKzh9, pSptrKzh10, pSptrKzh11;
-    int Dvne = Dv_Kzh + s * 2;
+    double Dvne = Dv_Kzh + s * 2;
 
-    int RADA = (int)Dvne / 4;
+    double RADA = Dvne / 4;
     pSptrKzh1 = CreateHole(Kzh, Dy, DKr, 0, -RADA, 0, 1, Dv_Kzh);//Kozhuh, Dy, Rad elDno, x, y
     pSptrKzh3 = CreateHole(pSptrKzh1, Dy, DKr, 90., 350, -Dvne / 2, 3, Dv_Kzh);
     pSptrKzh4 = CreateHole(pSptrKzh3, Dy, DKr, 90., l2, -Dvne / 2, 4, Dv_Kzh);
@@ -1662,17 +1662,17 @@ static SPtr<MbSolid> CreateHoleKzh(SPtr<MbSolid> Kzh, double L_Base, double Dy, 
 }
 
 //Эллиптическое дно
-static SPtr<MbSolid> CreateEllipticBottom(int Dv_Kzh, int s) {
+static SPtr<MbSolid> CreateEllipticBottom(double Dv_Kzh, double s) {
     const double DEG_TO_RAD = M_PI / 180.0;
 
-    int Dvne = Dv_Kzh + s * 2;
+    double Dvne = Dv_Kzh + s * 2;
 
     //H эллипса
-    int RADA = (int)Dvne / 4;
-    int RADC = (int)(Dvne - 2 * s) / 4;
+    double RADA = (int)Dvne / 4;
+    double RADC = (int)(Dvne - 2 * s) / 4;
 
-    int RADB = Dvne / 2;
-    int RADD = Dvne / 2 - s;
+    double RADB = Dvne / 2;
+    double RADD = Dvne / 2 - s;
 
     //внешняя дуга
     MbCartPoint p1(-RADA, 0);
@@ -1743,12 +1743,12 @@ static SPtr<MbSolid> CreateEllipticBottom(int Dv_Kzh, int s) {
 }
 
 //Итоговый кожух
-SPtr<MbSolid> ParametricModelCreator::CreateUnionKzh_IP(int Dv_Kzh, double L_Base,
-    int s, double p, int DKr, double Dn, double Dy, int l2, int l3) {
+SPtr<MbSolid> ParametricModelCreator::CreateUnionKzh_IP(double Dv_Kzh, double L_Base,
+    double s, double p, double DKr, double Dn, double Dy, int l2, int l3) {
 
-    int Dvne = Dv_Kzh + s * 2;
+    double Dvne = Dv_Kzh + s * 2;
 
-    int l5;
+    double l5;
 
     if ((500 <= DKr) && (DKr < 600)) {
         l5 = 460;
@@ -1774,6 +1774,7 @@ SPtr<MbSolid> ParametricModelCreator::CreateUnionKzh_IP(int Dv_Kzh, double L_Bas
     else if (1200 <= DKr) {
         l5 = 890;
     }
+
 
 
     double L_Loft = (L_Base - l5 / 2 - 86) / 5.23;
@@ -1803,10 +1804,10 @@ SPtr<MbSolid> ParametricModelCreator::CreateUnionKzh_IP(int Dv_Kzh, double L_Bas
 }
 
 //Труба
-SPtr<MbSolid> ParametricModelCreator::CreatePipe_IP(int Dv_Kzh, double p, int DKr) {
+SPtr<MbSolid> ParametricModelCreator::CreatePipe_IP(double Dv_Kzh, double p, double DKr) {
     const int d = 21, dvne = 25; //для основы тела
     const int height = 6000; //высота
-    int bigD;
+    double bigD;
 
 
     if ((500 <= DKr) && (DKr < 600)) {
@@ -2262,7 +2263,7 @@ static SPtr<MbSolid> CreateCylForCover(SPtr<MbSolid> OsnMassiv, double b,
 }
 
 //Создание итоговой крышки
-SPtr<MbSolid> ParametricModelCreator::CreateUnionCover_IP(int Dy, double p, int id, int Dv_Kzh, int DKr) {
+SPtr<MbSolid> ParametricModelCreator::CreateUnionCover_IP(int Dy, double p, int id, double Dv_Kzh, double DKr) {
 
     int b;
     int d;
@@ -2602,7 +2603,7 @@ SPtr<MbSolid> ParametricModelCreator::CreateUnionCover_IP(int Dy, double p, int 
 }
 
 //Кольцо плавающей головки
-SPtr<MbSolid> ParametricModelCreator::CreateRingOn_IP(int Dv_Kzh, double p, int DKr) {
+SPtr<MbSolid> ParametricModelCreator::CreateRingOn_IP(double Dv_Kzh, double p, double DKr) {
 
     int S;
     int D2;
@@ -2611,49 +2612,49 @@ SPtr<MbSolid> ParametricModelCreator::CreateRingOn_IP(int Dv_Kzh, double p, int 
     if (p == 1.6) {
         if ((500 <= DKr) && (DKr < 600)) {
             S = 40;
-            D2 = 396;
+            D2 = 396 + (DKr - 500);
             d = 26;
             num = 12;
         }
         else if ((600 <= DKr) && (DKr < 700)) {
             S = 45;
-            D2 = 496;
+            D2 = 496 + (DKr - 600);
             d = 26;
             num = 12;
         }
         else if ((700 <= DKr) && (DKr < 800)) {
             S = 55;
-            D2 = 592;
+            D2 = 592 + (DKr - 700);
             d = 26;
             num = 12;
         }
         else if ((800 <= DKr) && (DKr < 900)) {
             S = 60;
-            D2 = 690;
+            D2 = 690 + (DKr - 800);
             d = 26;
             num = 12;
         }
         else if ((900 <= DKr) && (DKr < 1000)) {
             S = 65;
-            D2 = 790;
+            D2 = 790 + (DKr - 900);
             d = 26;
             num = 12;
         }
         else if ((1000 <= DKr) && (DKr < 1100)) {
             S = 70;
-            D2 = 890;
+            D2 = 890 + (DKr - 1000);
             d = 26;
             num = 12;
         }
         else if ((1100 <= DKr) && (DKr < 1200)) {
             S = 75;
-            D2 = 990;
+            D2 = 990 + (DKr - 1100);
             d = 26;
             num = 12;
         }
         else if (1200 <= DKr) {
             S = 75;
-            D2 = 1090;
+            D2 = 1090 + (DKr - 1200);
             d = 26;
             num = 12;
         }
@@ -2668,43 +2669,43 @@ SPtr<MbSolid> ParametricModelCreator::CreateRingOn_IP(int Dv_Kzh, double p, int 
         }
         else if ((600 <= DKr) && (DKr < 700)) {
             S = 45;
-            D2 = 496;
+            D2 = 496 + (DKr - 600);
             d = 26;
             num = 12;
         }
         else if ((700 <= DKr) && (DKr < 800)) {
             S = 55;
-            D2 = 592;
+            D2 = 592 + (DKr - 700);
             d = 26;
             num = 12;
         }
         else if ((800 <= DKr) && (DKr < 900)) {
             S = 60;
-            D2 = 690;
+            D2 = 690 + (DKr - 800);
             d = 26;
             num = 12;
         }
         else if ((900 <= DKr) && (DKr < 1000)) {
             S = 65;
-            D2 = 790;
+            D2 = 790 + (DKr - 900);
             d = 26;
             num = 12;
         }
         else if (1000 <= DKr < 1100) {
             S = 70;
-            D2 = 890;
+            D2 = 890 + (DKr - 1000);
             d = 26;
             num = 12;
         }
         else if ((1100 <= DKr) && (DKr < 1200)) {
             S = 75;
-            D2 = 990;
+            D2 = 990 + (DKr - 1100);
             d = 26;
             num = 12;
         }
         else if (1200 <= DKr) {
             S = 75;
-            D2 = 1090;
+            D2 = 1090 + (DKr - 1200);
             d = 26;
             num = 12;
         }
@@ -2740,10 +2741,10 @@ SPtr<MbSolid> ParametricModelCreator::CreateRingOn_IP(int Dv_Kzh, double p, int 
 }
 
 //Базовое тело камеры 
-static SPtr<MbSolid> CreateBaseForCamera(int DKr, int DKrvne, int Dv_Kzh, double p, double s) {
+static SPtr<MbSolid> CreateBaseForCamera(double DKr, double DKrvne, double Dv_Kzh, double p, double s) {
 
-    int l5;
-    int Dvne = Dv_Kzh + s * 2;
+    double l5;
+    double Dvne = Dv_Kzh + s * 2;
     if ((500 <= DKr) && (DKr < 600)) {
         l5 = 460;
     }
@@ -2819,13 +2820,36 @@ static SPtr<MbSolid> CreateMirror(SPtr<MbSolid> SolidForMirror, double degr, MbA
 }
 
 //Итоговая камера
-SPtr<MbSolid> ParametricModelCreator::CreateUnionKamera_IP(double L, int Dv_Kzh, double p, int DKr, double Dn, double Dy, double s) {
+SPtr<MbSolid> ParametricModelCreator::CreateUnionKamera_IP(double Dv_Kzh, double p, double DKr, double Dn, double Dy, double s) {
     MbSNameMaker operNames(1, MbSNameMaker::i_SideNone, 0);
     PArray<MbSNameMaker> cNames(0, 1, false);
 
-
-    int Dvne = Dv_Kzh + s * 2;
-
+    double l5;
+    double Dvne = Dv_Kzh + s * 2;
+    if ((500 <= DKr) && (DKr < 600)) {
+        l5 = 460;
+    }
+    else if ((600 <= DKr) && (DKr < 700)) {
+        l5 = 550;
+    }
+    else if ((700 <= DKr) && (DKr < 800)) {
+        l5 = 620;
+    }
+    else if ((800 <= DKr) && (DKr < 900)) {
+        l5 = 700;
+    }
+    else if ((900 <= DKr) && (DKr < 1000)) {
+        l5 = 760;
+    }
+    else if ((1000 <= DKr) && (DKr < 1100)) {
+        l5 = 780;
+    }
+    else if ((1100 <= DKr) && (DKr < 1200)) {
+        l5 = 840;
+    }
+    else if (1200 <= DKr) {
+        l5 = 890;
+    }
     //Создание половины камеры
     SolidSPtr HalfKamera = CreateBaseForCamera(DKr, DKr + s * 2, Dv_Kzh, p, s);
     //Создание второй половины камеры с помощью отзеркаливания
@@ -2851,10 +2875,10 @@ SPtr<MbSolid> ParametricModelCreator::CreateUnionKamera_IP(double L, int Dv_Kzh,
 
     // перегородка 
     SArray<MbCartPoint> arrPnts1s(4);
-    arrPnts1s.Add(MbCartPoint((L - 8) / 2, 0));
-    arrPnts1s.Add(MbCartPoint((L - 8) / 2, 12));
-    arrPnts1s.Add(MbCartPoint((-L + 8) / 2, 12));
-    arrPnts1s.Add(MbCartPoint((-L + 8) / 2, 0));
+    arrPnts1s.Add(MbCartPoint((l5 - 8) / 2, 0));
+    arrPnts1s.Add(MbCartPoint((l5 - 8) / 2, 12));
+    arrPnts1s.Add(MbCartPoint((-l5 + 8) / 2, 12));
+    arrPnts1s.Add(MbCartPoint((-l5 + 8) / 2, 0));
 
     MbPolyline* pPolyline1s1 = new MbPolyline(arrPnts1s, true);
     MbContour* pContourPolyline1s1 = new MbContour(*pPolyline1s1, true);
@@ -2879,10 +2903,10 @@ SPtr<MbSolid> ParametricModelCreator::CreateUnionKamera_IP(double L, int Dv_Kzh,
 }
 
 //Отверстия в перегородке
-static SPtr<MbSolid> CreateOtvVPeregorodka(SPtr<MbSolid> OsnovaPereg, int Dv_Kzh, double p, int DKr) {
+static SPtr<MbSolid> CreateOtvVPeregorodka(SPtr<MbSolid> OsnovaPereg, double Dv_Kzh, double p, double DKr) {
     RPArray<MbContour>* ptrContoursR = new RPArray<MbContour>();
 
-    int bigD;
+    double bigD;
 
     if (500 <= DKr && DKr < 600) {
         bigD = 366 + (DKr - 500);
@@ -2961,7 +2985,7 @@ static SPtr<MbSolid> CreateOtvVPeregorodka(SPtr<MbSolid> OsnovaPereg, int Dv_Kzh
 }
 
 //Создание перегородки для труб
-SPtr<MbSolid> ParametricModelCreator::CreateOsnovaPeregorodka_IP(int Dv_Kzh, double p, int DKr /*double S1, double D3*/) {
+SPtr<MbSolid> ParametricModelCreator::CreateOsnovaPeregorodka_IP(double Dv_Kzh, double p, double DKr /*double S1, double D3*/) {
 
     int S1;
     int D3;
@@ -3032,7 +3056,7 @@ SPtr<MbSolid> ParametricModelCreator::CreateOsnovaPeregorodka_IP(int Dv_Kzh, dou
 
 //Создание решеток
 //Итоговая неподвижная решетка
-SPtr<MbSolid> ParametricModelCreator::CreateOsnovaNePodResh_IP(int Dv_Kzh, double p, int DKr /*double D1, double S, double D4*/) {
+SPtr<MbSolid> ParametricModelCreator::CreateOsnovaNePodResh_IP(double Dv_Kzh, double p, double DKr /*double D1, double S, double D4*/) {
 
     int S;
     int D1;
@@ -3165,7 +3189,7 @@ SPtr<MbSolid> ParametricModelCreator::CreateOsnovaNePodResh_IP(int Dv_Kzh, doubl
 }
 
 //Итоговая подвижная решетка
-SPtr<MbSolid> ParametricModelCreator::CreateOsnovaReshPod_IP(int Dv_Kzh, double p, int DKr /*double S, double D2, double D5*/) {
+SPtr<MbSolid> ParametricModelCreator::CreateOsnovaReshPod_IP(double Dv_Kzh, double p, double DKr /*double S, double D2, double D5*/) {
 
     int S;
     int D2;
@@ -3296,8 +3320,8 @@ SPtr<MbSolid> ParametricModelCreator::CreateKrKameraEll_IP(ConfigParams_IP param
     MbPlane* pPlaneXZ = new MbPlane(MbCartPoint3D(0, 0, 0), MbCartPoint3D(1, 0, 0), MbCartPoint3D(0, 0, 1));
     MbPlane* pPlaneYZ = new MbPlane(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, 1, 0), MbCartPoint3D(0, 0, 1));
 
-    const int DvneKam = params.DKr + params.s * 2;
-    int Dvne = params.Dv_Kzh + params.s * 2;
+    double DvneKam = params.DKr + params.s * 2;
+    double Dvne = params.Dv_Kzh + params.s * 2;
     double l;
 
     if ((500 <= params.DKr) && (params.DKr < 600)) {
@@ -3453,9 +3477,9 @@ SPtr<MbSolid> ParametricModelCreator::CreateKrKameraEll_IP(ConfigParams_IP param
 }
 
 //Стойка
-SPtr<MbSolid> ParametricModelCreator::CreateStoyka_IP(int Dv_Kzh, double L_Base, double s)
+SPtr<MbSolid> ParametricModelCreator::CreateStoyka_IP(double Dv_Kzh, double L_Base, double s)
 {
-    int Dvne = Dv_Kzh + s * 2;
+    double Dvne = Dv_Kzh + s * 2;
     int b; //выдавливание нижнего прямоугольника 
     int h; //высота, на которую опускаем стойку 
     int Width;
@@ -3654,7 +3678,7 @@ SPtr<MbSolid> ParametricModelCreator::CreateStoyka_IP(int Dv_Kzh, double L_Base,
 }
 
 //Крышка плавающей головки
-SPtr<MbSolid> ParametricModelCreator::CreateKrPlGol_IP(double p, int Dv_Kzh, int DKr)
+SPtr<MbSolid> ParametricModelCreator::CreateKrPlGol_IP(double p, double Dv_Kzh, double DKr)
 {
 
     int S;
@@ -3665,66 +3689,66 @@ SPtr<MbSolid> ParametricModelCreator::CreateKrPlGol_IP(double p, int Dv_Kzh, int
             S = 40;
         }
         else if ((600 <= DKr) && (DKr < 700)) {
-            D2 = 496;
+            D2 = 496 + (DKr - 600);
             S = 45;
         }
         else if ((700 <= DKr) && (DKr < 800)) {
-            D2 = 592;
+            D2 = 592 + (DKr - 700);
             S = 55;
         }
         else if ((800 <= DKr) && (DKr < 900)) {
-            D2 = 690;
+            D2 = 690 + (DKr - 800);
             S = 60;
         }
         else if ((900 <= DKr) && (DKr < 1000)) {
-            D2 = 790;
+            D2 = 790 + (DKr - 900);
             S = 65;
         }
         else if ((1000 <= DKr) && (DKr < 1100)) {
-            D2 = 890;
+            D2 = 890 + (DKr - 1000);
             S = 70;
         }
         else if ((1100 <= DKr) && (DKr < 1200)) {
-            D2 = 990;
+            D2 = 990 + (DKr - 1100);
             S = 75;
         }
         else if (1200 <= DKr) {
-            D2 = 1090;
+            D2 = 1090 + (DKr - 1200);
             S = 75;
         }
     }
 
     else if (p == 2.5) {
         if ((500 <= DKr) && (DKr < 600)) {
-            D2 = 396;
+            D2 = 396 + (DKr - 500);
             S = 50;
         }
         else if ((600 <= DKr) && (DKr < 700)) {
-            D2 = 496;
+            D2 = 496 + (DKr - 600);
             S = 45;
         }
         else if ((700 <= DKr) && (DKr < 800)) {
-            D2 = 592;
+            D2 = 592 + (DKr - 700);
             S = 55;
         }
         else if ((800 <= DKr) && (DKr < 900)) {
-            D2 = 690;
+            D2 = 690 + (DKr - 800);
             S = 60;
         }
         else if ((900 <= DKr) && (DKr < 1000)) {
-            D2 = 790;
+            D2 = 790 + (DKr - 900);
             S = 65;
         }
         else if ((1000 <= DKr) && (DKr < 1100)) {
-            D2 = 890;
+            D2 = 890 + (DKr - 1000);
             S = 70;
         }
         else if ((1100 <= DKr) && (DKr < 1200)) {
-            D2 = 990;
+            D2 = 990 + (DKr - 1100);
             S = 75;
         }
         else if (1200 <= DKr) {
-            D2 = 1090;
+            D2 = 1090 + (DKr - 1200);
             S = 75;
         }
     }

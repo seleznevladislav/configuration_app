@@ -1019,105 +1019,105 @@ static SPtr<MbSolid> CreateTrubaOnKzh(int id, double D_Kzh, double p, double DKr
     //фланец на кожухе для соединения с камерой
     if (id == 13) {
         if ((500 <= DKr) && (DKr < 600)) {
-            Dy = 500;
-            D = 723;
-            D2 = 605;
+            Dy = DKr;
+            D = 723 + (DKr - 500);
+            D2 = 605 + (DKr - 500);
             b = 40;
-            Dm = 616;
+            Dm = 616 + (DKr - 500);
             Dn = DKrVne;
             H = 86;
-            D1 = 650;
+            D1 = 650 + (DKr - 500);
             d = 26;
             num = 24;
         }
         else if ((600 <= DKr) && (DKr < 700)) {
-            Dy = 600;
-            D = 840;
-            D2 = 720;
+            Dy = DKr;
+            D = 840 + (DKr - 600);
+            D2 = 720 + (DKr - 600);
             b = 41;
-            Dm = 660;
+            Dm = 660 + (DKr - 600);
             Dn = DKrVne;
             H = 86;
-            D1 = 770;
+            D1 = 770 + (DKr - 600);
             d = 26;
             num = 24;
         }
 
         else if ((700 <= DKr) && (DKr < 800)) {
-            Dy = 700;
-            D = 940;
-            D2 = 820;
+            Dy = DKr;
+            D = 940 + (DKr - 700);
+            D2 = 820 + (DKr - 700);
             b = 41;
-            Dm = 760;
+            Dm = 760 + (DKr - 700);
             Dn = DKrVne;
             H = 86;
-            D1 = 870;
+            D1 = 870 + (DKr - 700);
             d = 26;
             num = 24;
         }
 
         else if ((800 <= DKr) && (DKr < 900)) {
-            Dy = 800;
-            D = 1020;
-            D2 = 900;
+            Dy = DKr;
+            D = 1020 + (DKr - 800);
+            D2 = 900 + (DKr - 800);
             b = 52;
-            Dm = 844;
+            Dm = 844 + (DKr - 800);
             Dn = DKrVne;
             H = 86;
-            D1 = 950;
+            D1 = 950 + (DKr - 800);
             d = 26;
             num = 24;
         }
 
         else if ((900 <= DKr) && (DKr < 1000)) {
-            Dy = 900;
-            D = 1120;
-            D2 = 1000;
+            Dy = DKr;
+            D = 1120 + (DKr - 900);
+            D2 = 1000 + (DKr - 900);
             b = 63;
-            Dm = 944;
+            Dm = 944 + (DKr - 900);
             Dn = DKrVne;
             H = 86;
-            D1 = 1050;
-            d = 26;
+            D1 = 1050 + (DKr - 900);
+            d = 28;
             num = 24;
         }
 
         else if ((1000 <= DKr) && (DKr < 1100)) {
-            Dy = 1000;
-            D = 1255;
-            D2 = 1110;
+            Dy = DKr;
+            D = 1255 + (DKr - 1000);
+            D2 = 1110 + (DKr - 1000);
             b = 63;
-            Dm = 1060;
+            Dm = 1060 + (DKr - 1000);
             Dn = DKrVne;
             H = 86;
-            D1 = 1170;
-            d = 26;
+            D1 = 1170 + (DKr - 1000);
+            d = 30;
             num = 24;
         }
 
         else if ((1100 <= DKr) && (DKr < 1200)) {
-            Dy = 1100;
-            D = 1355;
-            D2 = 1210;
+            Dy = DKr;
+            D = 1355 + (DKr - 1100);
+            D2 = 1210 + (DKr - 1100);
             b = 63;
-            Dm = 1160;
+            Dm = 1160 + (DKr - 1100);
             Dn = DKrVne;
             H = 86;
-            D1 = 1270;
-            d = 26;
+            D1 = 1270 + (DKr - 1100);
+            d = 32;
             num = 24;
         }
 
         else if (1200 <= DKr) {
-            Dy = 1200;
-            D = 1485;
-            D2 = 1325;
+            Dy = DKr;
+            D = 1485 + (DKr - 1200);
+            D2 = 1325 + (DKr - 1200);
             b = 75;
-            Dm = 1268;
+            Dm = 1268 + (DKr - 1200);
             Dn = DKrVne;
             H = 86;
-            D1 = 1390;
-            d = 26;
+            D1 = 1390 + (DKr - 1200);
+            d = 34;
             num = 24;
         }
     }

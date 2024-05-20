@@ -58,11 +58,11 @@ namespace BuildMathModel {
 	struct ConfigParams_IP
 	{
 		std::string name;
-		int Dv_Kzh;
+		double Dv_Kzh;
 		double L_Base;//длина кожуха
 		double s;//толщина стенки
 		double p;//давление
-		int DKr;//внутренний диаметр камеры
+		double DKr;//внутренний диаметр камеры
 
 		//расстояния для фланцев внизу кожух:
 		int l0;
@@ -72,6 +72,7 @@ namespace BuildMathModel {
 		//для фланцев
 		double Dn;
 		double Dy;
+
 	};
 
 	struct ConfigParams_IU
@@ -94,10 +95,26 @@ namespace BuildMathModel {
 		//float C;
 	};
 
-	struct date_fluidProperties{
-		std::string name; // 0 - Наименование
-		double p;         // 1 - Кинематический коэффициент вязкости
-		double c;		  // 2 - Коэффициент теплопроводности,
-		double laymbda;	  // 3 - Коэффициент линейного расширения вещества
+	struct data_fluidProperties {
+		std::string name;     // 0 - Наименование
+		double p;             // 1 - Плотность
+		double c;		      // 2 - Коэффициент теплопроводности (кДЖ/ кг*C)
+		double laymbda;	      // 3 - Коэффициент линейного расширения вещества (Вт/ м*C)
+		double u_viscocity;	  // 4 - Коэффициент динамической взякости (Есть не у всех, если что высчитывается, если 0 ) (Па/с)
+		double viscocity;	  // 5 - Коэффициент кинематической взякости (Есть не у всех, если что высчитывается, если 0 ) (м2/с)
+		double capacity;	  // 6 - Теплоёмкость
+		double Pr;			  // 7 - Теплоёмкость
+	};
+
+	struct data_materialProperties {
+		std::string name;				// 0 - Наименование
+		double tMaterial;               // 1 - При какой температуре коэффициентр теплопроводности
+		double laymbdaMateral;		    // 2 - Коэффициент теплопроводности (Вт/ m*c)
+	};
+	
+	struct data_tubeProperties {
+		double d1_diam;				// 0 - Диаметр трубы внутри
+		double d2_diam;				// 1 - Диаметр трубы снаружи
+		double L_length;			// 4 - Длина трубы
 	};
 }

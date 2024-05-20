@@ -1042,7 +1042,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     return assm;
 }
 
-SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerTTOR params, int configurationQuantity)
+SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerTTOR params, int configurationQuantity, bool hideStandartDetails)
 {
 #pragma region PARAMS
     double ttDiam = params.ttDiam;
@@ -1196,175 +1196,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     SPtr<MbInstance> Item_010_001(new MbInstance(*Detail_010, lcs));
     SPtr<MbInstance> Item_011_001(new MbInstance(*Detail_011, lcs));
 
-#pragma region GHOSTS_INSTANCE
-    SPtr<MbInstance> BoltM8_001(new MbInstance(*BoltM8, lcs));
-    SPtr<MbInstance> BoltM8_002(new MbInstance(*BoltM8, lcs));
-    SPtr<MbInstance> BoltM8_003(new MbInstance(*BoltM8, lcs));
-    SPtr<MbInstance> BoltM8_004(new MbInstance(*BoltM8, lcs));
-
-    SPtr<MbInstance> BoltM10_001(new MbInstance(*BoltM10, lcs));
-    SPtr<MbInstance> BoltM10_002(new MbInstance(*BoltM10, lcs));
-    SPtr<MbInstance> BoltM10_003(new MbInstance(*BoltM10, lcs));
-    SPtr<MbInstance> BoltM10_004(new MbInstance(*BoltM10, lcs));
-    SPtr<MbInstance> BoltM10_005(new MbInstance(*BoltM10, lcs));
-    SPtr<MbInstance> BoltM10_006(new MbInstance(*BoltM10, lcs));
-    SPtr<MbInstance> BoltM10_007(new MbInstance(*BoltM10, lcs));
-    SPtr<MbInstance> BoltM10_008(new MbInstance(*BoltM10, lcs));
-    SPtr<MbInstance> BoltM10_009(new MbInstance(*BoltM10, lcs));
-    SPtr<MbInstance> BoltM10_010(new MbInstance(*BoltM10, lcs));
-    SPtr<MbInstance> BoltM10_011(new MbInstance(*BoltM10, lcs));
-    SPtr<MbInstance> BoltM10_012(new MbInstance(*BoltM10, lcs));
-    SPtr<MbInstance> BoltM10_013(new MbInstance(*BoltM10, lcs));
-    SPtr<MbInstance> BoltM10_014(new MbInstance(*BoltM10, lcs));
-    SPtr<MbInstance> BoltM10_015(new MbInstance(*BoltM10, lcs));
-    SPtr<MbInstance> BoltM10_016(new MbInstance(*BoltM10, lcs));
-
-    SPtr<MbInstance> BoltM12_001(new MbInstance(*BoltM12, lcs));
-    SPtr<MbInstance> BoltM12_002(new MbInstance(*BoltM12, lcs));
-    SPtr<MbInstance> BoltM12_003(new MbInstance(*BoltM12, lcs));
-    SPtr<MbInstance> BoltM12_004(new MbInstance(*BoltM12, lcs));
-    SPtr<MbInstance> BoltM12_005(new MbInstance(*BoltM12, lcs));
-    SPtr<MbInstance> BoltM12_006(new MbInstance(*BoltM12, lcs));
-    SPtr<MbInstance> BoltM12_007(new MbInstance(*BoltM12, lcs));
-    SPtr<MbInstance> BoltM12_008(new MbInstance(*BoltM12, lcs));
-    SPtr<MbInstance> BoltM12_009(new MbInstance(*BoltM12, lcs));
-    SPtr<MbInstance> BoltM12_010(new MbInstance(*BoltM12, lcs));
-    SPtr<MbInstance> BoltM12_011(new MbInstance(*BoltM12, lcs));
-    SPtr<MbInstance> BoltM12_012(new MbInstance(*BoltM12, lcs));
-    SPtr<MbInstance> BoltM12_013(new MbInstance(*BoltM12, lcs));
-    SPtr<MbInstance> BoltM12_014(new MbInstance(*BoltM12, lcs));
-    SPtr<MbInstance> BoltM12_015(new MbInstance(*BoltM12, lcs));
-    SPtr<MbInstance> BoltM12_016(new MbInstance(*BoltM12, lcs));
-
-    SPtr<MbInstance> BoltM16_001(new MbInstance(*BoltM16, lcs));
-    SPtr<MbInstance> BoltM16_002(new MbInstance(*BoltM16, lcs));
-    SPtr<MbInstance> BoltM16_003(new MbInstance(*BoltM16, lcs));
-    SPtr<MbInstance> BoltM16_004(new MbInstance(*BoltM16, lcs));
-    SPtr<MbInstance> BoltM16_005(new MbInstance(*BoltM16, lcs));
-    SPtr<MbInstance> BoltM16_006(new MbInstance(*BoltM16, lcs));
-    SPtr<MbInstance> BoltM16_007(new MbInstance(*BoltM16, lcs));
-    SPtr<MbInstance> BoltM16_008(new MbInstance(*BoltM16, lcs));
-    SPtr<MbInstance> BoltM16_009(new MbInstance(*BoltM16, lcs));
-    SPtr<MbInstance> BoltM16_010(new MbInstance(*BoltM16, lcs));
-    SPtr<MbInstance> BoltM16_011(new MbInstance(*BoltM16, lcs));
-    SPtr<MbInstance> BoltM16_012(new MbInstance(*BoltM16, lcs));
-    SPtr<MbInstance> BoltM16_013(new MbInstance(*BoltM16, lcs));
-    SPtr<MbInstance> BoltM16_014(new MbInstance(*BoltM16, lcs));
-    SPtr<MbInstance> BoltM16_015(new MbInstance(*BoltM16, lcs));
-    SPtr<MbInstance> BoltM16_016(new MbInstance(*BoltM16, lcs));
-
-    SPtr<MbInstance> WasherM8_001(new MbInstance(*WasherM8, lcs));
-    SPtr<MbInstance> WasherM8_002(new MbInstance(*WasherM8, lcs));
-    SPtr<MbInstance> WasherM8_003(new MbInstance(*WasherM8, lcs));
-    SPtr<MbInstance> WasherM8_004(new MbInstance(*WasherM8, lcs));
-
-    SPtr<MbInstance> WasherM10_001(new MbInstance(*WasherM10, lcs));
-    SPtr<MbInstance> WasherM10_002(new MbInstance(*WasherM10, lcs));
-    SPtr<MbInstance> WasherM10_003(new MbInstance(*WasherM10, lcs));
-    SPtr<MbInstance> WasherM10_004(new MbInstance(*WasherM10, lcs));
-    SPtr<MbInstance> WasherM10_005(new MbInstance(*WasherM10, lcs));
-    SPtr<MbInstance> WasherM10_006(new MbInstance(*WasherM10, lcs));
-    SPtr<MbInstance> WasherM10_007(new MbInstance(*WasherM10, lcs));
-    SPtr<MbInstance> WasherM10_008(new MbInstance(*WasherM10, lcs));
-    SPtr<MbInstance> WasherM10_009(new MbInstance(*WasherM10, lcs));
-    SPtr<MbInstance> WasherM10_010(new MbInstance(*WasherM10, lcs));
-    SPtr<MbInstance> WasherM10_011(new MbInstance(*WasherM10, lcs));
-    SPtr<MbInstance> WasherM10_012(new MbInstance(*WasherM10, lcs));
-    SPtr<MbInstance> WasherM10_013(new MbInstance(*WasherM10, lcs));
-    SPtr<MbInstance> WasherM10_014(new MbInstance(*WasherM10, lcs));
-    SPtr<MbInstance> WasherM10_015(new MbInstance(*WasherM10, lcs));
-    SPtr<MbInstance> WasherM10_016(new MbInstance(*WasherM10, lcs));
-
-    SPtr<MbInstance> WasherM12_001(new MbInstance(*WasherM12, lcs));
-    SPtr<MbInstance> WasherM12_002(new MbInstance(*WasherM12, lcs));
-    SPtr<MbInstance> WasherM12_003(new MbInstance(*WasherM12, lcs));
-    SPtr<MbInstance> WasherM12_004(new MbInstance(*WasherM12, lcs));
-    SPtr<MbInstance> WasherM12_005(new MbInstance(*WasherM12, lcs));
-    SPtr<MbInstance> WasherM12_006(new MbInstance(*WasherM12, lcs));
-    SPtr<MbInstance> WasherM12_007(new MbInstance(*WasherM12, lcs));
-    SPtr<MbInstance> WasherM12_008(new MbInstance(*WasherM12, lcs));
-    SPtr<MbInstance> WasherM12_009(new MbInstance(*WasherM12, lcs));
-    SPtr<MbInstance> WasherM12_010(new MbInstance(*WasherM12, lcs));
-    SPtr<MbInstance> WasherM12_011(new MbInstance(*WasherM12, lcs));
-    SPtr<MbInstance> WasherM12_012(new MbInstance(*WasherM12, lcs));
-    SPtr<MbInstance> WasherM12_013(new MbInstance(*WasherM12, lcs));
-    SPtr<MbInstance> WasherM12_014(new MbInstance(*WasherM12, lcs));
-    SPtr<MbInstance> WasherM12_015(new MbInstance(*WasherM12, lcs));
-    SPtr<MbInstance> WasherM12_016(new MbInstance(*WasherM12, lcs));
-
-    SPtr<MbInstance> WasherM16_001(new MbInstance(*WasherM16, lcs));
-    SPtr<MbInstance> WasherM16_002(new MbInstance(*WasherM16, lcs));
-    SPtr<MbInstance> WasherM16_003(new MbInstance(*WasherM16, lcs));
-    SPtr<MbInstance> WasherM16_004(new MbInstance(*WasherM16, lcs));
-    SPtr<MbInstance> WasherM16_005(new MbInstance(*WasherM16, lcs));
-    SPtr<MbInstance> WasherM16_006(new MbInstance(*WasherM16, lcs));
-    SPtr<MbInstance> WasherM16_007(new MbInstance(*WasherM16, lcs));
-    SPtr<MbInstance> WasherM16_008(new MbInstance(*WasherM16, lcs));
-    SPtr<MbInstance> WasherM16_009(new MbInstance(*WasherM16, lcs));
-    SPtr<MbInstance> WasherM16_010(new MbInstance(*WasherM16, lcs));
-    SPtr<MbInstance> WasherM16_011(new MbInstance(*WasherM16, lcs));
-    SPtr<MbInstance> WasherM16_012(new MbInstance(*WasherM16, lcs));
-    SPtr<MbInstance> WasherM16_013(new MbInstance(*WasherM16, lcs));
-    SPtr<MbInstance> WasherM16_014(new MbInstance(*WasherM16, lcs));
-    SPtr<MbInstance> WasherM16_015(new MbInstance(*WasherM16, lcs));
-    SPtr<MbInstance> WasherM16_016(new MbInstance(*WasherM16, lcs));
-
-    SPtr<MbInstance> NutBoltM8_001(new MbInstance(*NutBoltM8, lcs));
-    SPtr<MbInstance> NutBoltM8_002(new MbInstance(*NutBoltM8, lcs));
-    SPtr<MbInstance> NutBoltM8_003(new MbInstance(*NutBoltM8, lcs));
-    SPtr<MbInstance> NutBoltM8_004(new MbInstance(*NutBoltM8, lcs));
-
-    SPtr<MbInstance> NutBoltM10_001(new MbInstance(*NutBoltM10, lcs));
-    SPtr<MbInstance> NutBoltM10_002(new MbInstance(*NutBoltM10, lcs));
-    SPtr<MbInstance> NutBoltM10_003(new MbInstance(*NutBoltM10, lcs));
-    SPtr<MbInstance> NutBoltM10_004(new MbInstance(*NutBoltM10, lcs));
-    SPtr<MbInstance> NutBoltM10_005(new MbInstance(*NutBoltM10, lcs));
-    SPtr<MbInstance> NutBoltM10_006(new MbInstance(*NutBoltM10, lcs));
-    SPtr<MbInstance> NutBoltM10_007(new MbInstance(*NutBoltM10, lcs));
-    SPtr<MbInstance> NutBoltM10_008(new MbInstance(*NutBoltM10, lcs));
-    SPtr<MbInstance> NutBoltM10_009(new MbInstance(*NutBoltM10, lcs));
-    SPtr<MbInstance> NutBoltM10_010(new MbInstance(*NutBoltM10, lcs));
-    SPtr<MbInstance> NutBoltM10_011(new MbInstance(*NutBoltM10, lcs));
-    SPtr<MbInstance> NutBoltM10_012(new MbInstance(*NutBoltM10, lcs));
-    SPtr<MbInstance> NutBoltM10_013(new MbInstance(*NutBoltM10, lcs));
-    SPtr<MbInstance> NutBoltM10_014(new MbInstance(*NutBoltM10, lcs));
-    SPtr<MbInstance> NutBoltM10_015(new MbInstance(*NutBoltM10, lcs));
-    SPtr<MbInstance> NutBoltM10_016(new MbInstance(*NutBoltM10, lcs));
-
-    SPtr<MbInstance> NutBoltM12_001(new MbInstance(*NutBoltM12, lcs));
-    SPtr<MbInstance> NutBoltM12_002(new MbInstance(*NutBoltM12, lcs));
-    SPtr<MbInstance> NutBoltM12_003(new MbInstance(*NutBoltM12, lcs));
-    SPtr<MbInstance> NutBoltM12_004(new MbInstance(*NutBoltM12, lcs));
-    SPtr<MbInstance> NutBoltM12_005(new MbInstance(*NutBoltM12, lcs));
-    SPtr<MbInstance> NutBoltM12_006(new MbInstance(*NutBoltM12, lcs));
-    SPtr<MbInstance> NutBoltM12_007(new MbInstance(*NutBoltM12, lcs));
-    SPtr<MbInstance> NutBoltM12_008(new MbInstance(*NutBoltM12, lcs));
-    SPtr<MbInstance> NutBoltM12_009(new MbInstance(*NutBoltM12, lcs));
-    SPtr<MbInstance> NutBoltM12_010(new MbInstance(*NutBoltM12, lcs));
-    SPtr<MbInstance> NutBoltM12_011(new MbInstance(*NutBoltM12, lcs));
-    SPtr<MbInstance> NutBoltM12_012(new MbInstance(*NutBoltM12, lcs));
-    SPtr<MbInstance> NutBoltM12_013(new MbInstance(*NutBoltM12, lcs));
-    SPtr<MbInstance> NutBoltM12_014(new MbInstance(*NutBoltM12, lcs));
-    SPtr<MbInstance> NutBoltM12_015(new MbInstance(*NutBoltM12, lcs));
-    SPtr<MbInstance> NutBoltM12_016(new MbInstance(*NutBoltM12, lcs));
-
-    SPtr<MbInstance> NutBoltM16_001(new MbInstance(*NutBoltM16, lcs));
-    SPtr<MbInstance> NutBoltM16_002(new MbInstance(*NutBoltM16, lcs));
-    SPtr<MbInstance> NutBoltM16_003(new MbInstance(*NutBoltM16, lcs));
-    SPtr<MbInstance> NutBoltM16_004(new MbInstance(*NutBoltM16, lcs));
-    SPtr<MbInstance> NutBoltM16_005(new MbInstance(*NutBoltM16, lcs));
-    SPtr<MbInstance> NutBoltM16_006(new MbInstance(*NutBoltM16, lcs));
-    SPtr<MbInstance> NutBoltM16_007(new MbInstance(*NutBoltM16, lcs));
-    SPtr<MbInstance> NutBoltM16_008(new MbInstance(*NutBoltM16, lcs));
-    SPtr<MbInstance> NutBoltM16_009(new MbInstance(*NutBoltM16, lcs));
-    SPtr<MbInstance> NutBoltM16_010(new MbInstance(*NutBoltM16, lcs));
-    SPtr<MbInstance> NutBoltM16_011(new MbInstance(*NutBoltM16, lcs));
-    SPtr<MbInstance> NutBoltM16_012(new MbInstance(*NutBoltM16, lcs));
-    SPtr<MbInstance> NutBoltM16_013(new MbInstance(*NutBoltM16, lcs));
-    SPtr<MbInstance> NutBoltM16_014(new MbInstance(*NutBoltM16, lcs));
-    SPtr<MbInstance> NutBoltM16_015(new MbInstance(*NutBoltM16, lcs));
-    SPtr<MbInstance> NutBoltM16_016(new MbInstance(*NutBoltM16, lcs));
-#pragma endregion
 
 #pragma region PUSH_BACK
     //Переменные для подсборки
@@ -1423,178 +1254,519 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     pair.push_back(Item_010_001);
     pair.push_back(Item_011_001);
 
-    // Ghosts М8
-    pair.push_back(BoltM8_001);
-    pair.push_back(BoltM8_002);
-    pair.push_back(BoltM8_003);
-    pair.push_back(BoltM8_004);
+    SPtr<MbInstance> BoltM8_001;
+    SPtr<MbInstance> BoltM8_002;
+    SPtr<MbInstance> BoltM8_003;
+    SPtr<MbInstance> BoltM8_004;
 
-    pair.push_back(WasherM8_001);
-    pair.push_back(WasherM8_002);
-    pair.push_back(WasherM8_003);
-    pair.push_back(WasherM8_004);
+    SPtr<MbInstance> BoltM10_001;
+    SPtr<MbInstance> BoltM10_002;
+    SPtr<MbInstance> BoltM10_003;
+    SPtr<MbInstance> BoltM10_004;
+    SPtr<MbInstance> BoltM10_005;
+    SPtr<MbInstance> BoltM10_006;
+    SPtr<MbInstance> BoltM10_007;
+    SPtr<MbInstance> BoltM10_008;
+    SPtr<MbInstance> BoltM10_009;
+    SPtr<MbInstance> BoltM10_010;
+    SPtr<MbInstance> BoltM10_011;
+    SPtr<MbInstance> BoltM10_012;
+    SPtr<MbInstance> BoltM10_013;
+    SPtr<MbInstance> BoltM10_014;
+    SPtr<MbInstance> BoltM10_015;
+    SPtr<MbInstance> BoltM10_016;
+                                
+    SPtr<MbInstance> BoltM12_001;
+    SPtr<MbInstance> BoltM12_002;
+    SPtr<MbInstance> BoltM12_003;
+    SPtr<MbInstance> BoltM12_004;
+    SPtr<MbInstance> BoltM12_005;
+    SPtr<MbInstance> BoltM12_006;
+    SPtr<MbInstance> BoltM12_007;
+    SPtr<MbInstance> BoltM12_008;
+    SPtr<MbInstance> BoltM12_009;
+    SPtr<MbInstance> BoltM12_010;
+    SPtr<MbInstance> BoltM12_011;
+    SPtr<MbInstance> BoltM12_012;
+    SPtr<MbInstance> BoltM12_013;
+    SPtr<MbInstance> BoltM12_014;
+    SPtr<MbInstance> BoltM12_015;
+    SPtr<MbInstance> BoltM12_016;
 
-    pair.push_back(NutBoltM8_001);
-    pair.push_back(NutBoltM8_002);
-    pair.push_back(NutBoltM8_003);
-    pair.push_back(NutBoltM8_004);
+    SPtr<MbInstance> BoltM16_001;
+    SPtr<MbInstance> BoltM16_002;
+    SPtr<MbInstance> BoltM16_003;
+    SPtr<MbInstance> BoltM16_004;
+    SPtr<MbInstance> BoltM16_005;
+    SPtr<MbInstance> BoltM16_006;
+    SPtr<MbInstance> BoltM16_007;
+    SPtr<MbInstance> BoltM16_008;
+    SPtr<MbInstance> BoltM16_009;
+    SPtr<MbInstance> BoltM16_010;
+    SPtr<MbInstance> BoltM16_011;
+    SPtr<MbInstance> BoltM16_012;
+    SPtr<MbInstance> BoltM16_013;
+    SPtr<MbInstance> BoltM16_014;
+    SPtr<MbInstance> BoltM16_015;
+    SPtr<MbInstance> BoltM16_016;
 
-    // Ghosts M10
-    pair.push_back(BoltM10_001);
-    pair.push_back(BoltM10_002);
-    pair.push_back(BoltM10_003);
-    pair.push_back(BoltM10_004);
-    pair.push_back(BoltM10_005);
-    pair.push_back(BoltM10_006);
-    pair.push_back(BoltM10_007);
-    pair.push_back(BoltM10_008);
-    pair.push_back(BoltM10_009);
-    pair.push_back(BoltM10_010);
-    pair.push_back(BoltM10_011);
-    pair.push_back(BoltM10_012);
-    pair.push_back(BoltM10_013);
-    pair.push_back(BoltM10_014);
-    pair.push_back(BoltM10_015);
-    pair.push_back(BoltM10_016);
+    SPtr<MbInstance> WasherM8_001;
+    SPtr<MbInstance> WasherM8_002;
+    SPtr<MbInstance> WasherM8_003;
+    SPtr<MbInstance> WasherM8_004;
 
-    pair.push_back(WasherM10_001);
-    pair.push_back(WasherM10_002);
-    pair.push_back(WasherM10_003);
-    pair.push_back(WasherM10_004);
-    pair.push_back(WasherM10_005);
-    pair.push_back(WasherM10_006);
-    pair.push_back(WasherM10_007);
-    pair.push_back(WasherM10_008);
-    pair.push_back(WasherM10_009);
-    pair.push_back(WasherM10_010);
-    pair.push_back(WasherM10_011);
-    pair.push_back(WasherM10_012);
-    pair.push_back(WasherM10_013);
-    pair.push_back(WasherM10_014);
-    pair.push_back(WasherM10_015);
-    pair.push_back(WasherM10_016);
+    SPtr<MbInstance> WasherM10_001;
+    SPtr<MbInstance> WasherM10_002;
+    SPtr<MbInstance> WasherM10_003;
+    SPtr<MbInstance> WasherM10_004;
+    SPtr<MbInstance> WasherM10_005;
+    SPtr<MbInstance> WasherM10_006;
+    SPtr<MbInstance> WasherM10_007;
+    SPtr<MbInstance> WasherM10_008;
+    SPtr<MbInstance> WasherM10_009;
+    SPtr<MbInstance> WasherM10_010;
+    SPtr<MbInstance> WasherM10_011;
+    SPtr<MbInstance> WasherM10_012;
+    SPtr<MbInstance> WasherM10_013;
+    SPtr<MbInstance> WasherM10_014;
+    SPtr<MbInstance> WasherM10_015;
+    SPtr<MbInstance> WasherM10_016;
+                                  ;
+    SPtr<MbInstance> WasherM12_001;
+    SPtr<MbInstance> WasherM12_002;
+    SPtr<MbInstance> WasherM12_003;
+    SPtr<MbInstance> WasherM12_004;
+    SPtr<MbInstance> WasherM12_005;
+    SPtr<MbInstance> WasherM12_006;
+    SPtr<MbInstance> WasherM12_007;
+    SPtr<MbInstance> WasherM12_008;
+    SPtr<MbInstance> WasherM12_009;
+    SPtr<MbInstance> WasherM12_010;
+    SPtr<MbInstance> WasherM12_011;
+    SPtr<MbInstance> WasherM12_012;
+    SPtr<MbInstance> WasherM12_013;
+    SPtr<MbInstance> WasherM12_014;
+    SPtr<MbInstance> WasherM12_015;
+    SPtr<MbInstance> WasherM12_016;
+                                  ;
+    SPtr<MbInstance> WasherM16_001;
+    SPtr<MbInstance> WasherM16_002;
+    SPtr<MbInstance> WasherM16_003;
+    SPtr<MbInstance> WasherM16_004;
+    SPtr<MbInstance> WasherM16_005;
+    SPtr<MbInstance> WasherM16_006;
+    SPtr<MbInstance> WasherM16_007;
+    SPtr<MbInstance> WasherM16_008;
+    SPtr<MbInstance> WasherM16_009;
+    SPtr<MbInstance> WasherM16_010;
+    SPtr<MbInstance> WasherM16_011;
+    SPtr<MbInstance> WasherM16_012;
+    SPtr<MbInstance> WasherM16_013;
+    SPtr<MbInstance> WasherM16_014;
+    SPtr<MbInstance> WasherM16_015;
+    SPtr<MbInstance> WasherM16_016;
+                                  ;
+    SPtr<MbInstance> NutBoltM8_001;
+    SPtr<MbInstance> NutBoltM8_002;
+    SPtr<MbInstance> NutBoltM8_003;
+    SPtr<MbInstance> NutBoltM8_004;
 
-    pair.push_back(NutBoltM10_001);
-    pair.push_back(NutBoltM10_002);
-    pair.push_back(NutBoltM10_003);
-    pair.push_back(NutBoltM10_004);
-    pair.push_back(NutBoltM10_005);
-    pair.push_back(NutBoltM10_006);
-    pair.push_back(NutBoltM10_007);
-    pair.push_back(NutBoltM10_008);
-    pair.push_back(NutBoltM10_009);
-    pair.push_back(NutBoltM10_010);
-    pair.push_back(NutBoltM10_011);
-    pair.push_back(NutBoltM10_012);
-    pair.push_back(NutBoltM10_013);
-    pair.push_back(NutBoltM10_014);
-    pair.push_back(NutBoltM10_015);
-    pair.push_back(NutBoltM10_016);
+    SPtr<MbInstance> NutBoltM10_001;
+    SPtr<MbInstance> NutBoltM10_002;
+    SPtr<MbInstance> NutBoltM10_003;
+    SPtr<MbInstance> NutBoltM10_004;
+    SPtr<MbInstance> NutBoltM10_005;
+    SPtr<MbInstance> NutBoltM10_006;
+    SPtr<MbInstance> NutBoltM10_007;
+    SPtr<MbInstance> NutBoltM10_008;
+    SPtr<MbInstance> NutBoltM10_009;
+    SPtr<MbInstance> NutBoltM10_010;
+    SPtr<MbInstance> NutBoltM10_011;
+    SPtr<MbInstance> NutBoltM10_012;
+    SPtr<MbInstance> NutBoltM10_013;
+    SPtr<MbInstance> NutBoltM10_014;
+    SPtr<MbInstance> NutBoltM10_015;
+    SPtr<MbInstance> NutBoltM10_016;
+                                   ;
+    SPtr<MbInstance> NutBoltM12_001;
+    SPtr<MbInstance> NutBoltM12_002;
+    SPtr<MbInstance> NutBoltM12_003;
+    SPtr<MbInstance> NutBoltM12_004;
+    SPtr<MbInstance> NutBoltM12_005;
+    SPtr<MbInstance> NutBoltM12_006;
+    SPtr<MbInstance> NutBoltM12_007;
+    SPtr<MbInstance> NutBoltM12_008;
+    SPtr<MbInstance> NutBoltM12_009;
+    SPtr<MbInstance> NutBoltM12_010;
+    SPtr<MbInstance> NutBoltM12_011;
+    SPtr<MbInstance> NutBoltM12_012;
+    SPtr<MbInstance> NutBoltM12_013;
+    SPtr<MbInstance> NutBoltM12_014;
+    SPtr<MbInstance> NutBoltM12_015;
+    SPtr<MbInstance> NutBoltM12_016;
+                                   ;
+    SPtr<MbInstance> NutBoltM16_001;
+    SPtr<MbInstance> NutBoltM16_002;
+    SPtr<MbInstance> NutBoltM16_003;
+    SPtr<MbInstance> NutBoltM16_004;
+    SPtr<MbInstance> NutBoltM16_005;
+    SPtr<MbInstance> NutBoltM16_006;
+    SPtr<MbInstance> NutBoltM16_007;
+    SPtr<MbInstance> NutBoltM16_008;
+    SPtr<MbInstance> NutBoltM16_009;
+    SPtr<MbInstance> NutBoltM16_010;
+    SPtr<MbInstance> NutBoltM16_011;
+    SPtr<MbInstance> NutBoltM16_012;
+    SPtr<MbInstance> NutBoltM16_013;
+    SPtr<MbInstance> NutBoltM16_014;
+    SPtr<MbInstance> NutBoltM16_015;
+    SPtr<MbInstance> NutBoltM16_016;
 
-    // Ghosts M12
-    pair.push_back(BoltM12_001);
-    pair.push_back(BoltM12_002);
-    pair.push_back(BoltM12_003);
-    pair.push_back(BoltM12_004);
-    pair.push_back(BoltM12_005);
-    pair.push_back(BoltM12_006);
-    pair.push_back(BoltM12_007);
-    pair.push_back(BoltM12_008);
-    pair.push_back(BoltM12_009);
-    pair.push_back(BoltM12_010);
-    pair.push_back(BoltM12_011);
-    pair.push_back(BoltM12_012);
-    pair.push_back(BoltM12_013);
-    pair.push_back(BoltM12_014);
-    pair.push_back(BoltM12_015);
-    pair.push_back(BoltM12_016);
+#pragma region GHOSTS_INSTANCE
+    if (hideStandartDetails) {
+        BoltM8_001 = new MbInstance(*BoltM8, lcs);
+        BoltM8_002 = new MbInstance(*BoltM8, lcs);
+        BoltM8_003 = new MbInstance(*BoltM8, lcs);
+        BoltM8_004 = new MbInstance(*BoltM8, lcs);
 
-    pair.push_back(WasherM12_001);
-    pair.push_back(WasherM12_002);
-    pair.push_back(WasherM12_003);
-    pair.push_back(WasherM12_004);
-    pair.push_back(WasherM12_005);
-    pair.push_back(WasherM12_006);
-    pair.push_back(WasherM12_007);
-    pair.push_back(WasherM12_008);
-    pair.push_back(WasherM12_009);
-    pair.push_back(WasherM12_010);
-    pair.push_back(WasherM12_011);
-    pair.push_back(WasherM12_012);
-    pair.push_back(WasherM12_013);
-    pair.push_back(WasherM12_014);
-    pair.push_back(WasherM12_015);
-    pair.push_back(WasherM12_016);
+        BoltM10_001 = new MbInstance(*BoltM10, lcs);
+        BoltM10_002 = new MbInstance(*BoltM10, lcs);
+        BoltM10_003 = new MbInstance(*BoltM10, lcs);
+        BoltM10_004 = new MbInstance(*BoltM10, lcs);
+        BoltM10_005 = new MbInstance(*BoltM10, lcs);
+        BoltM10_006 = new MbInstance(*BoltM10, lcs);
+        BoltM10_007 = new MbInstance(*BoltM10, lcs);
+        BoltM10_008 = new MbInstance(*BoltM10, lcs);
+        BoltM10_009 = new MbInstance(*BoltM10, lcs);
+        BoltM10_010 = new MbInstance(*BoltM10, lcs);
+        BoltM10_011 = new MbInstance(*BoltM10, lcs);
+        BoltM10_012 = new MbInstance(*BoltM10, lcs);
+        BoltM10_013 = new MbInstance(*BoltM10, lcs);
+        BoltM10_014 = new MbInstance(*BoltM10, lcs);
+        BoltM10_015 = new MbInstance(*BoltM10, lcs);
+        BoltM10_016 = new MbInstance(*BoltM10, lcs);
+                    
+        BoltM12_001 = new MbInstance(*BoltM12, lcs);
+        BoltM12_002 = new MbInstance(*BoltM12, lcs);
+        BoltM12_003 = new MbInstance(*BoltM12, lcs);
+        BoltM12_004 = new MbInstance(*BoltM12, lcs);
+        BoltM12_005 = new MbInstance(*BoltM12, lcs);
+        BoltM12_006 = new MbInstance(*BoltM12, lcs);
+        BoltM12_007 = new MbInstance(*BoltM12, lcs);
+        BoltM12_008 = new MbInstance(*BoltM12, lcs);
+        BoltM12_009 = new MbInstance(*BoltM12, lcs);
+        BoltM12_010 = new MbInstance(*BoltM12, lcs);
+        BoltM12_011 = new MbInstance(*BoltM12, lcs);
+        BoltM12_012 = new MbInstance(*BoltM12, lcs);
+        BoltM12_013 = new MbInstance(*BoltM12, lcs);
+        BoltM12_014 = new MbInstance(*BoltM12, lcs);
+        BoltM12_015 = new MbInstance(*BoltM12, lcs);
+        BoltM12_016 = new MbInstance(*BoltM12, lcs);
+                    
+        BoltM16_001 = new MbInstance(*BoltM16, lcs);
+        BoltM16_002 = new MbInstance(*BoltM16, lcs);
+        BoltM16_003 = new MbInstance(*BoltM16, lcs);
+        BoltM16_004 = new MbInstance(*BoltM16, lcs);
+        BoltM16_005 = new MbInstance(*BoltM16, lcs);
+        BoltM16_006 = new MbInstance(*BoltM16, lcs);
+        BoltM16_007 = new MbInstance(*BoltM16, lcs);
+        BoltM16_008 = new MbInstance(*BoltM16, lcs);
+        BoltM16_009 = new MbInstance(*BoltM16, lcs);
+        BoltM16_010 = new MbInstance(*BoltM16, lcs);
+        BoltM16_011 = new MbInstance(*BoltM16, lcs);
+        BoltM16_012 = new MbInstance(*BoltM16, lcs);
+        BoltM16_013 = new MbInstance(*BoltM16, lcs);
+        BoltM16_014 = new MbInstance(*BoltM16, lcs);
+        BoltM16_015 = new MbInstance(*BoltM16, lcs);
+        BoltM16_016 = new MbInstance(*BoltM16, lcs);
 
-    pair.push_back(NutBoltM12_001);
-    pair.push_back(NutBoltM12_002);
-    pair.push_back(NutBoltM12_003);
-    pair.push_back(NutBoltM12_004);
-    pair.push_back(NutBoltM12_005);
-    pair.push_back(NutBoltM12_006);
-    pair.push_back(NutBoltM12_007);
-    pair.push_back(NutBoltM12_008);
-    pair.push_back(NutBoltM12_009);
-    pair.push_back(NutBoltM12_010);
-    pair.push_back(NutBoltM12_011);
-    pair.push_back(NutBoltM12_012);
-    pair.push_back(NutBoltM12_013);
-    pair.push_back(NutBoltM12_014);
-    pair.push_back(NutBoltM12_015);
-    pair.push_back(NutBoltM12_016);
+        WasherM8_001 = new MbInstance(*WasherM8, lcs);
+        WasherM8_002 = new MbInstance(*WasherM8, lcs);
+        WasherM8_003 = new MbInstance(*WasherM8, lcs);
+        WasherM8_004 = new MbInstance(*WasherM8, lcs);
 
-    //Ghosts 16
-    // Ghosts M10
-    pair.push_back(BoltM16_001);
-    pair.push_back(BoltM16_002);
-    pair.push_back(BoltM16_003);
-    pair.push_back(BoltM16_004);
-    pair.push_back(BoltM16_005);
-    pair.push_back(BoltM16_006);
-    pair.push_back(BoltM16_007);
-    pair.push_back(BoltM16_008);
-    pair.push_back(BoltM16_009);
-    pair.push_back(BoltM16_010);
-    pair.push_back(BoltM16_011);
-    pair.push_back(BoltM16_012);
-    pair.push_back(BoltM16_013);
-    pair.push_back(BoltM16_014);
-    pair.push_back(BoltM16_015);
-    pair.push_back(BoltM16_016);
+        WasherM10_001 = new MbInstance(*WasherM10, lcs);
+        WasherM10_002 = new MbInstance(*WasherM10, lcs);
+        WasherM10_003 = new MbInstance(*WasherM10, lcs);
+        WasherM10_004 = new MbInstance(*WasherM10, lcs);
+        WasherM10_005 = new MbInstance(*WasherM10, lcs);
+        WasherM10_006 = new MbInstance(*WasherM10, lcs);
+        WasherM10_007 = new MbInstance(*WasherM10, lcs);
+        WasherM10_008 = new MbInstance(*WasherM10, lcs);
+        WasherM10_009 = new MbInstance(*WasherM10, lcs);
+        WasherM10_010 = new MbInstance(*WasherM10, lcs);
+        WasherM10_011 = new MbInstance(*WasherM10, lcs);
+        WasherM10_012 = new MbInstance(*WasherM10, lcs);
+        WasherM10_013 = new MbInstance(*WasherM10, lcs);
+        WasherM10_014 = new MbInstance(*WasherM10, lcs);
+        WasherM10_015 = new MbInstance(*WasherM10, lcs);
+        WasherM10_016 = new MbInstance(*WasherM10, lcs);
+                      
+        WasherM12_001 = new MbInstance(*WasherM12, lcs);
+        WasherM12_002 = new MbInstance(*WasherM12, lcs);
+        WasherM12_003 = new MbInstance(*WasherM12, lcs);
+        WasherM12_004 = new MbInstance(*WasherM12, lcs);
+        WasherM12_005 = new MbInstance(*WasherM12, lcs);
+        WasherM12_006 = new MbInstance(*WasherM12, lcs);
+        WasherM12_007 = new MbInstance(*WasherM12, lcs);
+        WasherM12_008 = new MbInstance(*WasherM12, lcs);
+        WasherM12_009 = new MbInstance(*WasherM12, lcs);
+        WasherM12_010 = new MbInstance(*WasherM12, lcs);
+        WasherM12_011 = new MbInstance(*WasherM12, lcs);
+        WasherM12_012 = new MbInstance(*WasherM12, lcs);
+        WasherM12_013 = new MbInstance(*WasherM12, lcs);
+        WasherM12_014 = new MbInstance(*WasherM12, lcs);
+        WasherM12_015 = new MbInstance(*WasherM12, lcs);
+        WasherM12_016 = new MbInstance(*WasherM12, lcs);
+                      
+        WasherM16_001 = new MbInstance(*WasherM16, lcs);
+        WasherM16_002 = new MbInstance(*WasherM16, lcs);
+        WasherM16_003 = new MbInstance(*WasherM16, lcs);
+        WasherM16_004 = new MbInstance(*WasherM16, lcs);
+        WasherM16_005 = new MbInstance(*WasherM16, lcs);
+        WasherM16_006 = new MbInstance(*WasherM16, lcs);
+        WasherM16_007 = new MbInstance(*WasherM16, lcs);
+        WasherM16_008 = new MbInstance(*WasherM16, lcs);
+        WasherM16_009 = new MbInstance(*WasherM16, lcs);
+        WasherM16_010 = new MbInstance(*WasherM16, lcs);
+        WasherM16_011 = new MbInstance(*WasherM16, lcs);
+        WasherM16_012 = new MbInstance(*WasherM16, lcs);
+        WasherM16_013 = new MbInstance(*WasherM16, lcs);
+        WasherM16_014 = new MbInstance(*WasherM16, lcs);
+        WasherM16_015 = new MbInstance(*WasherM16, lcs);
+        WasherM16_016 = new MbInstance(*WasherM16, lcs);
+                      
+        NutBoltM8_001 = new MbInstance(*NutBoltM8, lcs);
+        NutBoltM8_002 = new MbInstance(*NutBoltM8, lcs);
+        NutBoltM8_003 = new MbInstance(*NutBoltM8, lcs);
+        NutBoltM8_004 = new MbInstance(*NutBoltM8, lcs);
 
-    pair.push_back(WasherM16_001);
-    pair.push_back(WasherM16_002);
-    pair.push_back(WasherM16_003);
-    pair.push_back(WasherM16_004);
-    pair.push_back(WasherM16_005);
-    pair.push_back(WasherM16_006);
-    pair.push_back(WasherM16_007);
-    pair.push_back(WasherM16_008);
-    pair.push_back(WasherM16_009);
-    pair.push_back(WasherM16_010);
-    pair.push_back(WasherM16_011);
-    pair.push_back(WasherM16_012);
-    pair.push_back(WasherM16_013);
-    pair.push_back(WasherM16_014);
-    pair.push_back(WasherM16_015);
-    pair.push_back(WasherM16_016);
+        NutBoltM10_001 = new MbInstance(*NutBoltM10, lcs);
+        NutBoltM10_002 = new MbInstance(*NutBoltM10, lcs);
+        NutBoltM10_003 = new MbInstance(*NutBoltM10, lcs);
+        NutBoltM10_004 = new MbInstance(*NutBoltM10, lcs);
+        NutBoltM10_005 = new MbInstance(*NutBoltM10, lcs);
+        NutBoltM10_006 = new MbInstance(*NutBoltM10, lcs);
+        NutBoltM10_007 = new MbInstance(*NutBoltM10, lcs);
+        NutBoltM10_008 = new MbInstance(*NutBoltM10, lcs);
+        NutBoltM10_009 = new MbInstance(*NutBoltM10, lcs);
+        NutBoltM10_010 = new MbInstance(*NutBoltM10, lcs);
+        NutBoltM10_011 = new MbInstance(*NutBoltM10, lcs);
+        NutBoltM10_012 = new MbInstance(*NutBoltM10, lcs);
+        NutBoltM10_013 = new MbInstance(*NutBoltM10, lcs);
+        NutBoltM10_014 = new MbInstance(*NutBoltM10, lcs);
+        NutBoltM10_015 = new MbInstance(*NutBoltM10, lcs);
+        NutBoltM10_016 = new MbInstance(*NutBoltM10, lcs);
+                       
+        NutBoltM12_001 = new MbInstance(*NutBoltM12, lcs);
+        NutBoltM12_002 = new MbInstance(*NutBoltM12, lcs);
+        NutBoltM12_003 = new MbInstance(*NutBoltM12, lcs);
+        NutBoltM12_004 = new MbInstance(*NutBoltM12, lcs);
+        NutBoltM12_005 = new MbInstance(*NutBoltM12, lcs);
+        NutBoltM12_006 = new MbInstance(*NutBoltM12, lcs);
+        NutBoltM12_007 = new MbInstance(*NutBoltM12, lcs);
+        NutBoltM12_008 = new MbInstance(*NutBoltM12, lcs);
+        NutBoltM12_009 = new MbInstance(*NutBoltM12, lcs);
+        NutBoltM12_010 = new MbInstance(*NutBoltM12, lcs);
+        NutBoltM12_011 = new MbInstance(*NutBoltM12, lcs);
+        NutBoltM12_012 = new MbInstance(*NutBoltM12, lcs);
+        NutBoltM12_013 = new MbInstance(*NutBoltM12, lcs);
+        NutBoltM12_014 = new MbInstance(*NutBoltM12, lcs);
+        NutBoltM12_015 = new MbInstance(*NutBoltM12, lcs);
+        NutBoltM12_016 = new MbInstance(*NutBoltM12, lcs);
+                       
+        NutBoltM16_001 = new MbInstance(*NutBoltM16, lcs);
+        NutBoltM16_002 = new MbInstance(*NutBoltM16, lcs);
+        NutBoltM16_003 = new MbInstance(*NutBoltM16, lcs);
+        NutBoltM16_004 = new MbInstance(*NutBoltM16, lcs);
+        NutBoltM16_005 = new MbInstance(*NutBoltM16, lcs);
+        NutBoltM16_006 = new MbInstance(*NutBoltM16, lcs);
+        NutBoltM16_007 = new MbInstance(*NutBoltM16, lcs);
+        NutBoltM16_008 = new MbInstance(*NutBoltM16, lcs);
+        NutBoltM16_009 = new MbInstance(*NutBoltM16, lcs);
+        NutBoltM16_010 = new MbInstance(*NutBoltM16, lcs);
+        NutBoltM16_011 = new MbInstance(*NutBoltM16, lcs);
+        NutBoltM16_012 = new MbInstance(*NutBoltM16, lcs);
+        NutBoltM16_013 = new MbInstance(*NutBoltM16, lcs);
+        NutBoltM16_014 = new MbInstance(*NutBoltM16, lcs);
+        NutBoltM16_015 = new MbInstance(*NutBoltM16, lcs);
+        NutBoltM16_016 = new MbInstance(*NutBoltM16, lcs);
 
-    pair.push_back(NutBoltM16_001);
-    pair.push_back(NutBoltM16_002);
-    pair.push_back(NutBoltM16_003);
-    pair.push_back(NutBoltM16_004);
-    pair.push_back(NutBoltM16_005);
-    pair.push_back(NutBoltM16_006);
-    pair.push_back(NutBoltM16_007);
-    pair.push_back(NutBoltM16_008);
-    pair.push_back(NutBoltM16_009);
-    pair.push_back(NutBoltM16_010);
-    pair.push_back(NutBoltM16_011);
-    pair.push_back(NutBoltM16_012);
-    pair.push_back(NutBoltM16_013);
-    pair.push_back(NutBoltM16_014);
-    pair.push_back(NutBoltM16_015);
-    pair.push_back(NutBoltM16_016);
+        // Ghosts М8
+        pair.push_back(BoltM8_001);
+        pair.push_back(BoltM8_002);
+        pair.push_back(BoltM8_003);
+        pair.push_back(BoltM8_004);
+
+        pair.push_back(WasherM8_001);
+        pair.push_back(WasherM8_002);
+        pair.push_back(WasherM8_003);
+        pair.push_back(WasherM8_004);
+
+        pair.push_back(NutBoltM8_001);
+        pair.push_back(NutBoltM8_002);
+        pair.push_back(NutBoltM8_003);
+        pair.push_back(NutBoltM8_004);
+
+        // Ghosts M10
+        pair.push_back(BoltM10_001);
+        pair.push_back(BoltM10_002);
+        pair.push_back(BoltM10_003);
+        pair.push_back(BoltM10_004);
+        pair.push_back(BoltM10_005);
+        pair.push_back(BoltM10_006);
+        pair.push_back(BoltM10_007);
+        pair.push_back(BoltM10_008);
+        pair.push_back(BoltM10_009);
+        pair.push_back(BoltM10_010);
+        pair.push_back(BoltM10_011);
+        pair.push_back(BoltM10_012);
+        pair.push_back(BoltM10_013);
+        pair.push_back(BoltM10_014);
+        pair.push_back(BoltM10_015);
+        pair.push_back(BoltM10_016);
+
+        pair.push_back(WasherM10_001);
+        pair.push_back(WasherM10_002);
+        pair.push_back(WasherM10_003);
+        pair.push_back(WasherM10_004);
+        pair.push_back(WasherM10_005);
+        pair.push_back(WasherM10_006);
+        pair.push_back(WasherM10_007);
+        pair.push_back(WasherM10_008);
+        pair.push_back(WasherM10_009);
+        pair.push_back(WasherM10_010);
+        pair.push_back(WasherM10_011);
+        pair.push_back(WasherM10_012);
+        pair.push_back(WasherM10_013);
+        pair.push_back(WasherM10_014);
+        pair.push_back(WasherM10_015);
+        pair.push_back(WasherM10_016);
+
+        pair.push_back(NutBoltM10_001);
+        pair.push_back(NutBoltM10_002);
+        pair.push_back(NutBoltM10_003);
+        pair.push_back(NutBoltM10_004);
+        pair.push_back(NutBoltM10_005);
+        pair.push_back(NutBoltM10_006);
+        pair.push_back(NutBoltM10_007);
+        pair.push_back(NutBoltM10_008);
+        pair.push_back(NutBoltM10_009);
+        pair.push_back(NutBoltM10_010);
+        pair.push_back(NutBoltM10_011);
+        pair.push_back(NutBoltM10_012);
+        pair.push_back(NutBoltM10_013);
+        pair.push_back(NutBoltM10_014);
+        pair.push_back(NutBoltM10_015);
+        pair.push_back(NutBoltM10_016);
+
+        // Ghosts M12
+        pair.push_back(BoltM12_001);
+        pair.push_back(BoltM12_002);
+        pair.push_back(BoltM12_003);
+        pair.push_back(BoltM12_004);
+        pair.push_back(BoltM12_005);
+        pair.push_back(BoltM12_006);
+        pair.push_back(BoltM12_007);
+        pair.push_back(BoltM12_008);
+        pair.push_back(BoltM12_009);
+        pair.push_back(BoltM12_010);
+        pair.push_back(BoltM12_011);
+        pair.push_back(BoltM12_012);
+        pair.push_back(BoltM12_013);
+        pair.push_back(BoltM12_014);
+        pair.push_back(BoltM12_015);
+        pair.push_back(BoltM12_016);
+
+        pair.push_back(WasherM12_001);
+        pair.push_back(WasherM12_002);
+        pair.push_back(WasherM12_003);
+        pair.push_back(WasherM12_004);
+        pair.push_back(WasherM12_005);
+        pair.push_back(WasherM12_006);
+        pair.push_back(WasherM12_007);
+        pair.push_back(WasherM12_008);
+        pair.push_back(WasherM12_009);
+        pair.push_back(WasherM12_010);
+        pair.push_back(WasherM12_011);
+        pair.push_back(WasherM12_012);
+        pair.push_back(WasherM12_013);
+        pair.push_back(WasherM12_014);
+        pair.push_back(WasherM12_015);
+        pair.push_back(WasherM12_016);
+
+        pair.push_back(NutBoltM12_001);
+        pair.push_back(NutBoltM12_002);
+        pair.push_back(NutBoltM12_003);
+        pair.push_back(NutBoltM12_004);
+        pair.push_back(NutBoltM12_005);
+        pair.push_back(NutBoltM12_006);
+        pair.push_back(NutBoltM12_007);
+        pair.push_back(NutBoltM12_008);
+        pair.push_back(NutBoltM12_009);
+        pair.push_back(NutBoltM12_010);
+        pair.push_back(NutBoltM12_011);
+        pair.push_back(NutBoltM12_012);
+        pair.push_back(NutBoltM12_013);
+        pair.push_back(NutBoltM12_014);
+        pair.push_back(NutBoltM12_015);
+        pair.push_back(NutBoltM12_016);
+
+        //Ghosts 16
+        // Ghosts M10
+        pair.push_back(BoltM16_001);
+        pair.push_back(BoltM16_002);
+        pair.push_back(BoltM16_003);
+        pair.push_back(BoltM16_004);
+        pair.push_back(BoltM16_005);
+        pair.push_back(BoltM16_006);
+        pair.push_back(BoltM16_007);
+        pair.push_back(BoltM16_008);
+        pair.push_back(BoltM16_009);
+        pair.push_back(BoltM16_010);
+        pair.push_back(BoltM16_011);
+        pair.push_back(BoltM16_012);
+        pair.push_back(BoltM16_013);
+        pair.push_back(BoltM16_014);
+        pair.push_back(BoltM16_015);
+        pair.push_back(BoltM16_016);
+
+        pair.push_back(WasherM16_001);
+        pair.push_back(WasherM16_002);
+        pair.push_back(WasherM16_003);
+        pair.push_back(WasherM16_004);
+        pair.push_back(WasherM16_005);
+        pair.push_back(WasherM16_006);
+        pair.push_back(WasherM16_007);
+        pair.push_back(WasherM16_008);
+        pair.push_back(WasherM16_009);
+        pair.push_back(WasherM16_010);
+        pair.push_back(WasherM16_011);
+        pair.push_back(WasherM16_012);
+        pair.push_back(WasherM16_013);
+        pair.push_back(WasherM16_014);
+        pair.push_back(WasherM16_015);
+        pair.push_back(WasherM16_016);
+
+        pair.push_back(NutBoltM16_001);
+        pair.push_back(NutBoltM16_002);
+        pair.push_back(NutBoltM16_003);
+        pair.push_back(NutBoltM16_004);
+        pair.push_back(NutBoltM16_005);
+        pair.push_back(NutBoltM16_006);
+        pair.push_back(NutBoltM16_007);
+        pair.push_back(NutBoltM16_008);
+        pair.push_back(NutBoltM16_009);
+        pair.push_back(NutBoltM16_010);
+        pair.push_back(NutBoltM16_011);
+        pair.push_back(NutBoltM16_012);
+        pair.push_back(NutBoltM16_013);
+        pair.push_back(NutBoltM16_014);
+        pair.push_back(NutBoltM16_015);
+        pair.push_back(NutBoltM16_016);
+    }
+#pragma endregion
+
 #pragma endregion
 
     SPtr<MbAssembly> assm(new MbAssembly(pair));
@@ -2078,6 +2250,8 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
         }
 
 #pragma region GHOST_Constraints
+
+        if (hideStandartDetails) {
         // Концентричность ШайбыM10 - Фланец специальный внешние
         {
 
@@ -2311,7 +2485,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
             assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTf, CircleTest2TTf);
             assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTf, CircleTest3TTf);
             assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTf, CircleTest4TTf);
-            
+
             //
             MtGeomArgument FaceTest1TTd(WasherM10->GetFace(0), WasherM10_013);
             MtGeomArgument FaceTest2TTd(WasherM10->GetFace(0), WasherM10_014);
@@ -2439,6 +2613,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
             assm->AddConstraint(GCM_COINCIDENT, setWasherFaceTest1TTd, setWasherCircleTest3TTd);
             assm->AddConstraint(GCM_COINCIDENT, setWasherFaceTest1TTd, setWasherCircleTest4TTd);
         }
+        
         // Концентричность Гайка - Решетка теплообменных труб M12
         {
 
@@ -3282,6 +3457,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
             assm->AddConstraint(GCM_COINCIDENT, setWasherFaceTest1TT, setWasherCircleTest3TT);
             assm->AddConstraint(GCM_COINCIDENT, setWasherFaceTest1TT, setWasherCircleTest4TT);
         }
+        }
 #pragma endregion
 
 
@@ -3365,8 +3541,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     Item_011_001->AddAttribute(tenProductInfo);
 
     assm->AddAttribute(AssemblyInfo);
-    assm->Rotate(axVert, -M_PI/2);
-    assm->Rotate(azVert, -M_PI / 2);
+    assm->Rotate(axVert, -M_PI / 2);
+    if (hideStandartDetails) {
+        assm->Rotate(azVert, -M_PI / 2);
+    }
 
     if (configurationQuantity > 0)
     {
@@ -3410,10 +3588,8 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
 SPtr<MbAssembly> ParametricModelCreator::CreateIP(ConfigParams_IP params)
 {
-    const double L = 622;
-
     SPtr<MbSolid> pKozhuh(CreateUnionKzh_IP(params.Dv_Kzh, params.L_Base, params.s, params.p, params.DKr, params.Dn, params.Dy, params.l2, params.l3)); //Кожух
-    SPtr<MbSolid> pKamera(CreateUnionKamera_IP(L, params.Dv_Kzh, params.p, params.DKr, params.Dn, params.Dy, params.s)); //Камера
+    SPtr<MbSolid> pKamera(CreateUnionKamera_IP(params.Dv_Kzh, params.p, params.DKr, params.Dn, params.Dy, params.s)); //Камера
 
     SPtr<MbSolid> pKrKameraEl(CreateKrKameraEll_IP(params));//Крышка на камере эллипс
     SPtr<MbSolid> pKrKamera(CreateUnionCover_IP(params.Dy, params.p, 6, params.Dv_Kzh, params.DKr)); //Крышка на камере снизу
@@ -3430,7 +3606,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIP(ConfigParams_IP params)
     SPtr<MbSolid> pPeregorodka(CreateOsnovaPeregorodka_IP(params.Dv_Kzh, params.p, params.DKr /*S1,D3*/));//Перегородка
     SPtr<MbSolid> pReshetkaPod(CreateOsnovaReshPod_IP(params.Dv_Kzh, params.p, params.DKr /*S,D2,D5*/));//Подвижная решетка
     SPtr<MbSolid> pRingPL(CreateRingOn_IP(params.Dv_Kzh, params.p, params.DKr));//Кольцо плавающей головки
- //   SPtr<MbSolid> pKrPlGol(CreateKrPlGol_IP(params.p, params.Dv_Kzh, params.DKr));//Крышка плавающей головки
+    SPtr<MbSolid> pKrPlGol(CreateKrPlGol_IP(params.p, params.Dv_Kzh, params.DKr));//Крышка плавающей головки
     SPtr<MbSolid> pPipe1(CreatePipe_IP(params.Dv_Kzh, params.p, params.DKr));//Труба
 
     pKozhuh->SetColor(255, 204, 255);
@@ -3460,10 +3636,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIP(ConfigParams_IP params)
     pReshNePod->Rotate(azVert, M_PI / 2);
     pPeregorodka->Rotate(ayVert, M_PI / 2);
     pPeregorodka->Rotate(azVert, M_PI / 2);
-    //  pKrPlGol->Rotate(azVert, M_PI);
-    //  pKrPlGol->Rotate(ayVert, -M_PI);
-      // pPipe1->Rotate(axVert, M_PI );
-     //  pPipe1->Rotate(ayVert, M_PI/2);
+    pKrPlGol->Rotate(azVert, M_PI);
+    pKrPlGol->Rotate(ayVert, -M_PI);
+    // pPipe1->Rotate(axVert, M_PI );
+   //  pPipe1->Rotate(ayVert, M_PI/2);
 
     pReshetkaPod->Rotate(ayVert, M_PI / 2);
     pReshetkaPod->Rotate(azVert, M_PI / 2);
@@ -3490,9 +3666,9 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIP(ConfigParams_IP params)
     SPtr<MbInstance> comp19(new MbInstance(*pPeregorodka, lcs));
     SPtr<MbInstance> comp20(new MbInstance(*pReshetkaPod, lcs));
     SPtr<MbInstance> comp21(new MbInstance(*pRingPL, lcs));
-    //  SPtr<MbInstance> comp22(new MbInstance(*pKrPlGol, lcs));
+    SPtr<MbInstance> comp22(new MbInstance(*pKrPlGol, lcs));
 
-      // трубы
+    // трубы
     SPtr<MbInstance> comp23(new MbInstance(*pPipe1, lcs));
 
     std::vector<SPtr<MbInstance>> pair;
@@ -3517,7 +3693,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIP(ConfigParams_IP params)
     pair.push_back(comp19);
     pair.push_back(comp20);
     pair.push_back(comp21);
-    //  pair.push_back(comp22);
+    pair.push_back(comp22);
     pair.push_back(comp23);
 
     SPtr<MbAssembly> assm(new MbAssembly(pair));
@@ -3734,13 +3910,13 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIP(ConfigParams_IP params)
 
 
         // Концентричность между крышкой и подвижной решеткой
-       // MtGeomArgument facePerKrPl(pKrPlGol->GetFace(5), comp22);
-      //  assm->AddConstraint(GCM_CONCENTRIC, facePerKrPl, facePo1);
+        MtGeomArgument facePerKrPl(pKrPlGol->GetFace(5), comp22);
+        assm->AddConstraint(GCM_CONCENTRIC, facePerKrPl, facePo1);
 
         // Линейниый размер между крышкой и подвижной решеткой 
-      //  MtGeomArgument facePerKrPl1(pKrPlGol->GetFace(18), comp22);
-      //  MtGeomArgument facePerKrPl2(pReshetkaPod->GetFace(6), comp20);
-      //  assm->AddConstraint(GCM_DISTANCE, facePerKrPl1, facePerKrPl2, 0.0);
+        MtGeomArgument facePerKrPl1(pKrPlGol->GetFace(18), comp22);
+        MtGeomArgument facePerKrPl2(pReshetkaPod->GetFace(6), comp20);
+        assm->AddConstraint(GCM_DISTANCE, facePerKrPl1, facePerKrPl2, 0.0);
 
 
         int face = 0;
@@ -4226,5 +4402,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIU(ConfigParams_IU params)
     //comp21->AddAttribute(pPipeInfo);
     assm->AddAttribute(AssemblyInfo);
     */
+
     return assm;
 }

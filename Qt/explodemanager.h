@@ -13,7 +13,7 @@
 #include <QDoubleSpinBox>
 #include "qtoolbutton.h"
 #include "QWidget"
-#include "QMessageBox"
+#include <QMessageBox>
 
 using namespace BuildMathModel;
 
@@ -45,8 +45,9 @@ public:
     void init(SceneSegment* pSegmModel, ExplodeTreeView* pTreeWidget);
     QGroupBox* createGroupExplode(QWidget& widget, const int heightButton, const std::string& mainTabName);
     void createCalculationTab(const int numberOfHeatExchanger);
-    QFormLayout* createWarmForm(QVBoxLayout* layout);
-    QFormLayout* createParametrizationForm(QVBoxLayout* layout);
+    void createParametrizationTab(const int numberOfHeatExchanger);
+    void iterateHeatExchanger(double hotOutletTemp, double coldOutletTemp);
+    QFormLayout* createParametrizationForm(const int numberOfHeatExchanger, QVBoxLayout* layout);
     bool isSelectionEnabled() const;
     bool isCreateGroupGeometry() const;
     bool onSelectItem(const SceneSegment* pSegm);
@@ -55,20 +56,11 @@ public:
     QPushButton* m_reconfigureButton = nullptr;
     QVBoxLayout* m_vLayoutWarmParams = nullptr;
     bool isCheckedManualType = false;
-    ConfigParams manualTTRMParams;
-   
-
-    //IP/IU
-    QRadioButton* manualSizesRadioItem = nullptr;//построение вручную
-    QDoubleSpinBox* innerThicknessSpinBox = nullptr;//диаметр кожуха
-    QDoubleSpinBox* cameraThicknessSpinBox = nullptr;//диаметр камеры
-    QDoubleSpinBox* pressureSpinBox = nullptr;//значение давления
     bool checkValidate();
-    QDoubleSpinBox* iSpinBox = nullptr;//l
-    QDoubleSpinBox* iSecondSpinBox = nullptr;//l2
-    QDoubleSpinBox* iThirdSpinBox = nullptr;//l3
-    ConfigParams_IU params_IU;
-    ConfigParams_IP params_IP;
+    ConfigParams manualTTRMParams;
+    ConfigParams_IP manualIPParams = { u8"800ИП-1,6-2,5-М1/25-6-2 ", 800, 7120, 20, 1.6, 500, 460, 1750, 6390 };
+    ConfigParams_IU manualIUParams = { u8"800ИУ-2,5-2,5-М4/20-6-2-Т",  1.6, 800,  7120, 500,  562, 20, 350, 1750, 6390 };
+
 
     std::vector<ConfigParams> dataTTRM = {
        {u8"ТТРМ 25/57-6,3/1,6", 25, 3, 57, 4, 219, 8, 1500, 750, 2150, 32, 80, 415, 250, 230 },
@@ -123,16 +115,16 @@ public:
        {u8"ТТОР 159/219-4,0/4,0", 159, 6, 219, 7, 6000, 7280, 800, 150, 1080, 535, 3000, 780, 1475, 550, 320},
     };
     std::vector<ConfigParams_IP> dataIP = {
-      {u8"800ИП-1,6-2,5-М1/25-6-2 ", 800, 7120, 20, 1.6, 500, 460, 1750, 6390},
-       {u8"800ИП-2,5-4,0-М1/25-6-2 ", 800, 7120, 20, 2.5, 500, 460, 1750, 6390},
-       {u8"1000ИП-1,6-2,5-М1/25-6-2", 1000, 7205, 20, 1.6, 600, 525, 1750, 6400},
-       {u8"1000ИП-2,5-4,0-М1/25-6-2", 1000, 7205, 20, 2.5, 600, 525, 1750, 6400},
-       {u8"1200ИП-1,6-2,5-М1/25-6-2", 1200, 7335, 20, 1.6, 700, 575, 1750, 6280},
-       {u8"1400ИП-1,6-2,5-М1/25-6-2", 1400, 7690, 20, 1.6, 800, 630, 1750, 6400},
-       {u8"1600ИП-1,6-2,5-М1/25-6-2", 1600, 7735, 20, 1.6, 900, 705, 1550, 6300},
-       {u8"1800ИП-1,6-2,5-М1/25-6-2", 1800, 7950, 20, 1.6, 1000, 760, 1550, 6350},
-       {u8"1800ИП-2,5-4,0-М1/25-6-2", 1800, 7950, 20, 1.6, 1100, 760, 1750, 6370},
-       {u8"2000ИП-1,6-2,5-М1/25-6-2", 2000, 8210, 20, 1.6, 1200, 790, 1610, 6560},
+       {u8"800ИП-1,6-2,5-М1/25-6-2 ", 800, 7120, 20, 1.6, 500, 460, 1750, 6390},
+        {u8"800ИП-2,5-4,0-М1/25-6-2 ", 800, 7120, 20, 2.5, 500, 460, 1750, 6390},
+        {u8"1000ИП-1,6-2,5-М1/25-6-2", 1000, 7205, 20, 1.6, 600, 525, 1750, 6400},
+        {u8"1000ИП-2,5-4,0-М1/25-6-2", 1000, 7205, 20, 2.5, 600, 525, 1750, 6400},
+        {u8"1200ИП-1,6-2,5-М1/25-6-2", 1200, 7335, 20, 1.6, 700, 575, 1750, 6280},
+        {u8"1400ИП-1,6-2,5-М1/25-6-2", 1400, 7690, 20, 1.6, 800, 630, 1750, 6400},
+        {u8"1600ИП-1,6-2,5-М1/25-6-2", 1600, 7735, 20, 1.6, 900, 705, 1550, 6300},
+        {u8"1800ИП-1,6-2,5-М1/25-6-2", 1800, 7950, 20, 1.6, 1000, 760, 1550, 6350},
+        {u8"1800ИП-2,5-4,0-М1/25-6-2", 1800, 7950, 20, 1.6, 1100, 760, 1750, 6370},
+        {u8"2000ИП-1,6-2,5-М1/25-6-2", 2000, 8210, 20, 1.6, 1200, 790, 1610, 6560},
     };
     std::vector<ConfigParams_IU> dataIU = {
         {u8"800ИУ-2,5-2,5-М4/20-6-2-Т",  1.6, 800,  7120, 500,  562, 20, 350, 1750, 6390 },
@@ -145,21 +137,71 @@ public:
         {u8"2000ИУ-2,5-2,5-М4/20-6-2-Т", 1.6, 2000, 8210, 1200, 562, 20, 400, 1610, 6560 },
     };
 
-    //  std::string name; // 0 - Наименование
-    //  double p;         // 1 - Кинематический коэффициент вязкости
-    //  double c;		  // 2 - Коэффициент теплопроводности,
-    //  double laymbda;	  // 3 - Коэффициент линейного расширения вещества
+    //  std::string name;     // 0 - Наименование
+    //  double p;             // 1 - Плотность
+    //  double c;		      // 2 - Коэффициент теплопроводности (кДЖ/ кг*C)
+    //  double laymbda;	      // 3 - Коэффициент линейного расширения вещества (Вт/ м*C)
+    //  double u_viscocity;	  // 4 - Коэффициент динамический взякости (Есть не у всех, если что высчитывается, если 0 ) (Па/с)
+    //  double viscocity;	  // 5 - Коэффициент кинематической взякости (Есть не у всех, если что высчитывается, если 0 ) (Па/с)
+    //  double Pr;	          // 6 - Коэффициент кинематической взякости (Есть не у всех, если что высчитывается, если 0 ) (Па/с)
 
-    std::vector<date_fluidProperties> fluidsProperties = {
-        {u8"Ацетон",                813 , 2114, 0.174},
-        {u8"Бензин",                900 , 1800, 0.145},
-        {u8"Вода дистиллированная", 1000, 4187, 0.550},
-        {u8"Керосин",               850 , 2430, 0.121},
-        {u8"Нефтяное масло",        890 , 2430, 0.104},
-        {u8"Ртуть чистая",         13600,  138, 8.140},
-        {u8"Спирт метиловый",       810,  2470, 0.214},
-        {u8"Спирт этиловый",        806,  2303, 0.188},
+    std::vector<data_fluidProperties> fluidsProperties = {
+        {u8"Ацетон",                813 , 2.114, 0.174, 0.395, 0.455, 2100, 4.3},
+        {u8"Бензин",                900 , 1.800, 0.145, 0, 0.88, 1400, 4.4},
+        {u8"Вода дистиллированная", 1000, 4.187, 0.550, 0, 0, 4200, 7},
+        {u8"Керосин",               850 , 2.430, 0.121, 0, 0, 1880, 10},
+        {u8"Нефтяное масло 5w40",   890 , 2.430, 0.104, 0, 0, 2100, 7 },
+        {u8"Ртуть чистая",         13600, 0.138, 8.140, 0, 0.1, 130, 0.025},
+        {u8"Спирт метиловый",       810,  2.470, 0.214, 0.817, 0.5, 2500, 6.7 },
+        {u8"Спирт этиловый",        806,  2.303, 0.188, 1.780, 0.25, 2400, 16.2 },
     };
+
+    struct data_materialProperties {
+        std::string name;				// 0 - Наименование
+        double tMaterial;               // 1 - При какой температуре коэффициентр теплопроводности
+        double laymbdaMateral;		    // 2 - Коэффициент теплопроводности (Вт/ m*c)
+    };
+
+    std::vector<data_materialProperties> materialProperties = {
+        {u8"Сталь углеродистая 20",         200, 48.5},
+        {u8"Сталь углеродистая 40",         200, 48.1},
+        {u8"Алюминий",                      200, 229},
+        {u8"Алюминий сплав 92% Al, 8% Mg",  200, 148},
+        {u8"Медь (99,9%)",                  200, 378},
+        {u8"Железо (99,9%)",                200, 61.6},
+        {u8"Цинк (99,993%)",                200, 104.7},
+        {u8"Вольфрам",                      200, 140.7},
+        {u8"Золото (99,999%)",              200, 308.2},
+    };
+
+    // Струтктура для параметров телообменника при расчетах
+    struct HeatExchanger {
+        data_fluidProperties hotFluid; // Свойства горячего теплоносителя
+        data_fluidProperties coldFluid; // Свойства холодного теплоносителя
+        data_tubeProperties teplTube; // Геометрические параметры теплообменника
+        data_tubeProperties kozhuxTube; // Геометрические параметры теплообменника
+        double hotInletTemp; // Температура горячего теплоносителя на входе, °C
+        double coldInletTemp; // Температура холодного теплоносителя на входе, °C
+        double hotVelocity; // Скорость горячего теплоносителя, м/с
+        double coldVelocity; // Скорость холодного теплоносителя, м/с
+        double heatTransferCoefficient; // Коэффициент теплопередачи, Вт/(м²·°C) (k - расчитывается жестко)
+        double S_add;				// Доп площадь, тут можно камеру учитывать
+    };
+
+    std::vector<std::vector<double>> fluidDensity = {
+        { 884.5, 877.2, 870.1, 863.2, 856, 849.1, 841.4, 834.3, 827, 820, 813, 801.9, 790.5, 778.5, 767.4, 756.4, 744.6, 732.6, 720.5, 703.5, 690.4 },
+        { 851.25, 842.25, 833.25, 824.25, 815.25, 806.25, 797.25, 788.25, 779.25, 770.25, 761.25, 752.25, 743.25, 734.25, 725.25, 716.25, 707.25, 698.25, 689.25, 680.25, 671.25 },
+        { 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 999.8, 999.7, 998.2, 995.7, 992.2, 988.0, 983.2, 977.8, 971.8, 965.3, 958.4 },
+        { 1010.0, 1005.0, 1000.0, 995.0, 990.0, 985.0, 980.0, 975.0, 970.0, 965.0, 960.0, 950.0, 940.0,930.0, 920.0, 910.0, 900.0, 890.0, 880.0, 870.0, 860.0 },
+        { 850.0, 855.0, 860.0, 865.0, 870.0, 875.0, 880.0, 885.0, 890.0, 895.0, 900.0, 905.0, 910.0, 915.0, 920.0, 925.0, 930.0, 935.0, 940.0, 945.0, 950.0 },
+        { 13595.1, 13678.0, 13757.0, 13830.0, 13898.0, 13959.0, 14015.0, 14064.0, 14107.0, 14143.0, 14171.0, 14192.0, 14204.0, 14208.0, 14204.0, 14192.0, 14171.0, 14143.0, 14107.0, 14064.0, 14015.0 },
+        { 791.0, 791.0, 790.9, 790.5, 789.2, 787.1, 784.3, 780.8, 776.5, 771.5, 765.5, 758.8, 751.4, 743.2, 734.3, 724.7, 714.4, 703.3, 691.4, 678.7, 665.3 },
+        { 826.4, 826, 825, 824, 823, 822, 821, 817, 815, 806, 797, 789, 780, 772, 763, 754, 744, 735, 726, 716, 693 },
+    };
+
+    std::vector<double> waterViscocity = { 1.787, 1.519, 1.307, 1.004, 0.801, 0.658, 0.475, 0.413, 0.365, 0.326, 0.294 };
+    std::vector<double> cerosinViscocity = { 5.9, 4.2, 3.6, 3, 2.4, 1.2, 1.1, 1, 0.9, 0.7, 0.6 };
+    std::vector<double> oilViscocity = { 100, 95, 90, 85, 80, 75, 70, 55, 40, 25, 12 };
 public:
     QGroupBox* getExplodingGroupBox() const { return gr_WExploding; }
     QGroupBox* getFiltersGroupBox() const { return gr_Wfilters; }
@@ -214,6 +256,8 @@ private:
     QGroupBox* createRenderingGroupBox();
     QGroupBox* createCuttingGroupBox();
     QGroupBox* createDimensionsGroupBox();
+    QWidget* createPairWidget(QWidget* widget1, QWidget* widget2);
+    QMessageBox* ExplodeManager::createWarning(QString* warningText);
 private:
     ExplodeDispatcher m_explodeDispatcher;
     std::map<ExplodeDispatcher::ControlParameterType, QWidget*> m_widgetsMap;
@@ -230,6 +274,24 @@ private:
     QLabel* m_labelLevel                 = nullptr;
     QLabel* m_labelSelectAssembly        = nullptr;
     QDoubleSpinBox* m_lengthSpinBox      = nullptr;
+    QToolButton* m_closestLengthButton     = nullptr;
+    // <summary>
+    /// vars for calculations TTOR
+    /// </summary>
+    HeatExchanger dataExchangerForTTORCalculation;
+    data_tubeProperties dataOfCurrentTubeTepl;
+    data_tubeProperties dataOfCurrentTubeKozhux;
+    QComboBox* m_PhotFluidComboBox;
+    QComboBox* m_PcoldFluidComboBox;
+    QLineEdit* m_PhotVelocity;
+    QLineEdit* m_PcoldVelocity;
+    QLineEdit* m_PhotInletTemp;
+    QLineEdit* m_PcoldInletTemp;
+    QLineEdit* m_PrresultTemp1;
+    QLineEdit* m_PrresultTemp2;
+    QComboBox* m_PmaterialCombobox;
+    double m_PoutletTemp1;
+    double m_PoutletTemp2;
     /// <summary>
     /// vars tab management
     /// </summary>
@@ -270,6 +332,24 @@ private:
     int mp_thicknessOuterResult;
     int mp_dimCamera;
     int mp_dimOuterTube;
+
+    //IU вручную
+    double mp_IU_p;
+    double mp_IU_D_Kzh;
+    double mp_IU_D_Kam;
+    double mp_IU_D_l;
+    double mp_IU_D_l2;
+    double mp_IU_D_l3;
+
+    //IP вручную
+    double mp_IP_p;
+    double mp_IP_D_Kzh;
+    double mp_IP_D_Kam;
+    double mp_IP_D_l;
+    double mp_IP_D_l2;
+    double mp_IP_D_l3;
+    
+
 };
 
 #endif // __VSN_EXPLODEGROUP_H
