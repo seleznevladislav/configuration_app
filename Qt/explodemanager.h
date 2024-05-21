@@ -247,6 +247,7 @@ private:
     QTabWidget* createTabWidget(QWidget& widget, const int heightButton, const std::string& mainTabName);
     ConfigParams findClosestMatch(int dimCamera, int param, const std::string& structName);
     void calculateThickness(QFormLayout* form);
+    void calculateThickness_IU_IP(QFormLayout* form);
     void onReconfigureButtonClicked();
     void onCalculationButtonClicked();
     QAction* createActionButton(const QString& fileName, QGroupBox* groupFilter, QHBoxLayout* fGroupLayout);
@@ -340,6 +341,8 @@ private:
     double mp_IU_D_l;
     double mp_IU_D_l2;
     double mp_IU_D_l3;
+    int mp_IU_s;
+    int mp_IU_s_ell;
 
     //IP вручную
     double mp_IP_p;
@@ -348,6 +351,8 @@ private:
     double mp_IP_D_l;
     double mp_IP_D_l2;
     double mp_IP_D_l3;
+    int mp_IP_s;
+    int mp_IP_s_ell;
     
 
 };

@@ -381,6 +381,33 @@ void ExplodeManager::calculateThickness(QFormLayout* form) {
     m_reconfigureButton->setDisabled(false);
 }
 
+void ExplodeManager::calculateThickness_IU_IP(QFormLayout* form) {
+    QComboBox* pressureComboBox = qobject_cast<QComboBox*>(form->itemAt(1)->widget());
+    QDoubleSpinBox* innerThicknessSpinBox = qobject_cast<QDoubleSpinBox*>(form->itemAt(3)->widget());
+    QDoubleSpinBox* tensionSpinBox = qobject_cast<QDoubleSpinBox*>(form->itemAt(13)->widget());
+    QComboBox* corrosionComboBox = qobject_cast<QComboBox*>(form->itemAt(15)->widget());
+   
+
+    float pressure = pressureComboBox->currentData().toFloat();//давление
+    float Dy = innerThicknessSpinBox->value();//диаметр обечайки
+    float tension = tensionSpinBox->value();//допускаемое напряжение
+    int corrosion = corrosionComboBox->currentData().toInt();//поправка на коррозию
+
+    float h = Dy / 4;//высота выпуклой части днища
+
+    float d0 = 200;//диаметр отверстия на элл днище
+    float z = 1 - d0 / Dy;//коэффициент неукрепленного отверстия
+
+    mp_IU_s = ceil(pressure * Dy / (2 * 0.9 * tension - pressure) + corrosion);
+    mp_IU_s_ell = ceil(pressure * Dy / (4 * z * tension - pressure) + Dy / (2 * h) + corrosion);
+
+    QLineEdit* thicknessInnerKzh = qobject_cast<QLineEdit*>(form->itemAt(19)->widget());
+    thicknessInnerKzh->setText(QString::number(mp_IU_s));
+
+    QLineEdit* thicknessElliptic = qobject_cast<QLineEdit*>(form->itemAt(21)->widget());
+    thicknessElliptic->setText(QString::number(mp_IU_s_ell));
+}
+
 QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExchanger, QVBoxLayout* layout)
 {
     QFormLayout* formLayout = new QFormLayout;
@@ -527,6 +554,18 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
         
         QLabel* pressureSpinBoxLabel = new QLabel(u8"Давление P:");
 
+        QDoubleSpinBox* tensionSpinBox = new QDoubleSpinBox;
+        QLabel* tensionSpinBoxLabel = new QLabel(u8"Допускаемое напряжение стали, МПа");
+        tensionSpinBox->setRange(50, 1000);//временно
+
+        QComboBox* corrosionComboBox = new QComboBox;
+        corrosionComboBox->addItem(u8"1", 1);
+        corrosionComboBox->addItem(u8"2", 2);
+        corrosionComboBox->addItem(u8"3", 3);
+        corrosionComboBox->addItem(u8"4", 4);
+        corrosionComboBox->addItem(u8"5", 5);
+        QLabel* corrosionComboBoxLabel = new QLabel(u8"Поправка на коррозию, мм:");
+
         QDoubleSpinBox* innerThicknessSpinBox = new QDoubleSpinBox;
         QLabel* innerThicknessSpinBoxLabel = new QLabel(u8"Диаметр кожуха D, мм:");
         innerThicknessSpinBox->setRange(800, 2000);
@@ -538,19 +577,21 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
         cameraThicknessSpinBox->setValue(500);
 
         QDoubleSpinBox* iSpinBox = new QDoubleSpinBox;
-        QLabel* iSpinBoxLabel = new QLabel(u8"I0");
+        QLabel* iSpinBoxLabel = new QLabel(u8"l0");
         iSpinBox->setRange(350, 600);
         iSpinBox->setValue(350);
 
         QDoubleSpinBox* iSecondSpinBox = new QDoubleSpinBox;
-        QLabel* iSecondSpinBoxLabel = new QLabel(u8"I2");
+        QLabel* iSecondSpinBoxLabel = new QLabel(u8"l2");
         iSecondSpinBox->setRange(1750, 2000);
         iSecondSpinBox->setValue(1750);
 
         QDoubleSpinBox* iThirdSpinBox = new QDoubleSpinBox;
-        QLabel* iThirdSpinBoxLabel = new QLabel(u8"I3");
+        QLabel* iThirdSpinBoxLabel = new QLabel(u8"l3");
         iThirdSpinBox->setRange(6390, 6500);
         iThirdSpinBox->setValue(6390);
+
+
 
         formLayout->addRow(pressureSpinBoxLabel, pressureComboBox);
         formLayout->addRow(innerThicknessSpinBoxLabel, innerThicknessSpinBox);
@@ -558,6 +599,8 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
         formLayout->addRow(iSpinBoxLabel, iSpinBox);
         formLayout->addRow(iSecondSpinBoxLabel, iSecondSpinBox);
         formLayout->addRow(iThirdSpinBoxLabel, iThirdSpinBox);
+        formLayout->addRow(tensionSpinBoxLabel, tensionSpinBox);
+        formLayout->addRow(corrosionComboBoxLabel, corrosionComboBox);
 
         QFrame* line = new QFrame;
         line->setFrameShape(QFrame::HLine);
@@ -575,6 +618,19 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
 
         formLayout->addRow(calculateThicknessButton);
 
+
+        QLineEdit* thicknessInnerKzh = new QLineEdit;
+        thicknessInnerKzh->setReadOnly(true);
+        QLabel* thicknessInnerKzhLabel = new QLabel(u8"Толщина стенок кожуха, мм:");
+
+        QLineEdit* thicknessElliptic = new QLineEdit;
+        thicknessElliptic->setReadOnly(true);
+        QLabel* thicknessEllipticLabel = new QLabel(u8"Толщина эллиптического днища, мм:");
+
+        formLayout->addRow(thicknessInnerKzhLabel, thicknessInnerKzh);
+        formLayout->addRow(thicknessEllipticLabel, thicknessElliptic);
+
+
         connect(calculateThicknessButton, &QPushButton::clicked, [=]() {
             mp_IU_p = pressureComboBox->currentData().toDouble();
             mp_IU_D_Kzh = innerThicknessSpinBox->value();
@@ -582,6 +638,7 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
             mp_IU_D_l = iSpinBox->value();
             mp_IU_D_l2 = iSecondSpinBox->value();
             mp_IU_D_l3 = iThirdSpinBox->value();
+            calculateThickness_IU_IP(formLayout);
 
             m_reconfigureButton->setDisabled(false);
 
