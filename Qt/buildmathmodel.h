@@ -180,7 +180,7 @@ namespace BuildMathModel {
 
 	private:
 		static  SPtr<MbAssembly> CreatePneumocylinderAssembly(ConfigParams params, int configurationQuantity);
-		static  SPtr<MbAssembly> CreateTTOR(BuildParamsForHeatExchangerTTOR params, int configurationQuantity);
+		static  SPtr<MbAssembly> CreateTTOR(BuildParamsForHeatExchangerTTOR params, int configurationQuantity, bool hideStandartDetails);
 
 		static  SPtr<MbAssembly> CreateIP(ConfigParams_IP params);
 		static  SPtr<MbAssembly> CreateIU(ConfigParams_IU params);
@@ -223,17 +223,17 @@ namespace BuildMathModel {
 		static SPtr<MbSolid> ParametricModelCreator::WasherGostTTOR(double diam);
 
 		//IP details
-		static SPtr<MbSolid> ParametricModelCreator::CreateStoyka_IP(int Dv_Kzh, double L_Base, double s);
+		static SPtr<MbSolid> ParametricModelCreator::CreateStoyka_IP(double Dv_Kzh, double L_Base, double s);
 		static SPtr<MbSolid> ParametricModelCreator::CreateKrKameraEll_IP(ConfigParams_IP params);
-		static SPtr<MbSolid> ParametricModelCreator::CreateUnionKamera_IP(double L, int Dv_Kzh, double p, int DKr, double Dn, double Dy, double s);
-		static SPtr<MbSolid> ParametricModelCreator::CreateUnionKzh_IP(int Dv_Kzh, double L_Base, int s, double p, int DKr, double Dn, double Dy, int l2, int l3);
-		static SPtr<MbSolid> ParametricModelCreator::CreateOsnovaNePodResh_IP(int Dv_Kzh, double p, int DKr /*double D1, double S, double D4*/);
-		static SPtr<MbSolid> ParametricModelCreator::CreateOsnovaPeregorodka_IP(int Dv_Kzh, double p, int DKr /*double S1, double D3*/);
-		static SPtr<MbSolid> ParametricModelCreator::CreateOsnovaReshPod_IP(int Dv_Kzh, double p, int DKr);
-		static SPtr<MbSolid> ParametricModelCreator::CreateRingOn_IP(int Dv_Kzh, double p, int DKr);
-		static SPtr<MbSolid> ParametricModelCreator::CreateKrPlGol_IP(double p, int Dv_Kzh, int DKr);
-		static SPtr<MbSolid> ParametricModelCreator::CreatePipe_IP(int Dv_Kzh, double p, int DKr);
-		static SPtr<MbSolid> ParametricModelCreator::CreateUnionCover_IP(int Dy, double p, int id, int Dv_Kzh, int DKr);
+		static SPtr<MbSolid> ParametricModelCreator::CreateUnionKamera_IP(double Dv_Kzh, double p, double DKr, double Dn, double Dy, double s);
+		static SPtr<MbSolid> ParametricModelCreator::CreateUnionKzh_IP(double Dv_Kzh, double L_Base, double s, double p, double DKr, double Dn, double Dy, int l2, int l3);
+		static SPtr<MbSolid> ParametricModelCreator::CreateOsnovaNePodResh_IP(double Dv_Kzh, double p, double DKr /*double D1, double S, double D4*/);
+		static SPtr<MbSolid> ParametricModelCreator::CreateOsnovaPeregorodka_IP(double Dv_Kzh, double p, double DKr /*double S1, double D3*/);
+		static SPtr<MbSolid> ParametricModelCreator::CreateOsnovaReshPod_IP(double Dv_Kzh, double p, double DKr);
+		static SPtr<MbSolid> ParametricModelCreator::CreateRingOn_IP(double Dv_Kzh, double p, double DKr);
+		static SPtr<MbSolid> ParametricModelCreator::CreateKrPlGol_IP(double p, double Dv_Kzh, double DKr);
+		static SPtr<MbSolid> ParametricModelCreator::CreatePipe_IP(double Dv_Kzh, double p, double DKr);
+		static SPtr<MbSolid> ParametricModelCreator::CreateUnionCover_IP(int Dy, double p, int id, double Dv_Kzh, double DKr);
 
 		//IU details
 		static SPtr<MbSolid> ParametricModelCreator::CreateUnionKozhuh_IU(ConfigParams_IU params);
