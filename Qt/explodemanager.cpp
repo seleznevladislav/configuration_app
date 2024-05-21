@@ -275,7 +275,23 @@ void ExplodeManager::radiosTypeFromToggled(bool checked, int type)
         
         m_comboConfigure->setDisabled(isCheckedManualType);
         m_warmParams->setDisabled(!isCheckedManualType);
-        m_reconfigureButton->setDisabled(isCheckedManualType);
+        if (m_pExplodeWidget->m_pCurrentExchandger == 2) {
+            m_reconfigureButton->setDisabled(isCheckedManualType);
+        }
+    }
+    if (type == 2 && m_pExplodeWidget->m_pCurrentExchandger == 1) 
+    {
+        const int index = m_comboConfigure->currentIndex();
+        BuildParamsForHeatExchangerTTOR config = dataTTOR[index > 0 ? index : 0];
+
+        diametrTubeTTOR->setValue(config.ttDiam);
+        diametrKozhuxTTOR->setValue(config.ktDiam);
+        thicknessTubeTTOR->setValue(config.ttThickness);
+        thicknessKozhuxTTOR->setValue(config.ktThickness);
+    }
+    if (type == 1 && m_pExplodeWidget->m_pCurrentExchandger == 1) 
+    {
+        //clear Fields
     }
 }
 
@@ -389,13 +405,30 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
     {
     case 1:
     {
-        QLabel* steelLabel = new QLabel(u8"Марка металла аппарата:");
-        QLabel* pressureInnerLabel = new QLabel(u8"Рабочие давление в трубе:");
-        QLabel* pressureOuterLabel = new QLabel(u8"Рабочие давление в кожухе:");
+        m_reconfigureButton->setDisabled(false);
 
-        formLayout->addRow(steelLabel);
-        formLayout->addRow(pressureInnerLabel);
-        formLayout->addRow(pressureOuterLabel);
+        diametrTubeTTOR = new QDoubleSpinBox;
+        diametrTubeTTOR->setMaximum(1000);
+        QLabel* diametrTubeLabel = new QLabel(u8"Диаметр трубы d1, мм:");
+
+        diametrKozhuxTTOR = new QDoubleSpinBox;
+        diametrKozhuxTTOR = new QDoubleSpinBox;
+        diametrKozhuxTTOR->setMaximum(1000);
+        QLabel* diametrKozhuxLabel = new QLabel(u8"Диаметр кожуха d2, мм:");
+
+        thicknessTubeTTOR = new QDoubleSpinBox;
+        thicknessTubeTTOR->setMaximum(1000);
+        QLabel* thicknessTubeLabel = new QLabel(u8"Толщина стенки трубы dt1, мм:");
+
+        thicknessKozhuxTTOR = new QDoubleSpinBox;
+        thicknessKozhuxTTOR->setMaximum(1000);
+        QLabel* thicknessKozhuxLabel = new QLabel(u8"Толщина стенки кожуха dt2, мм:");
+
+        formLayout->addRow(diametrTubeLabel, diametrTubeTTOR);
+        formLayout->addRow(diametrKozhuxLabel, diametrKozhuxTTOR);
+        formLayout->addRow(thicknessTubeLabel, thicknessTubeTTOR);
+        formLayout->addRow(thicknessKozhuxLabel, thicknessKozhuxTTOR);
+
         break;
     }
     case 2:
@@ -1322,8 +1355,56 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
     }
 } 
 
+void ExplodeManager::onDrawingShowButtonClicked() {
+    m_PmodalDialog = new QDialog();
+
+    const int indexOfCurrentExchanger = m_pExplodeWidget->m_pCurrentExchandger;
+    const char* windowTittle = nullptr;
+    const char* iconPath = nullptr;
+
+    switch (indexOfCurrentExchanger) {
+    case 1:
+    {
+        windowTittle = u8"Чертёж теплообменного аппарата ТТОР";
+        iconPath = ":/res/draws/ttor.png";
+        break;
+    }case 2:
+    {
+        windowTittle = u8"Размеры теплообменника ТТРМ";
+        iconPath = ":/res/draws/ttrm.png";
+        break;
+    }case 3:
+    {
+        break;
+    }case 4:
+    {
+        break;
+    }
+    }
+    m_PmodalDialog->setWindowTitle(windowTittle);
+    m_PmodalDialog->setWindowIcon(QIcon(":/res/dimensions.png"));
+
+    QLabel* imageLabel = new QLabel;
+    QPixmap image(iconPath);
+    imageLabel->setPixmap(image);
+    imageLabel->setScaledContents(true); // Масштабировать изображение по размеру QLabel\
+
+    QRect screenGeometry = m_PmodalDialog->geometry();
+    int screenWidth = screenGeometry.width();
+    int screenHeight = screenGeometry.height();
+
+    imageLabel->setMaximumSize(screenWidth, screenHeight);
+
+    QVBoxLayout* modalLayout = new QVBoxLayout(m_PmodalDialog);
+    modalLayout->addWidget(imageLabel);
+    m_PmodalDialog->exec();
+}
+
 void ExplodeManager::onReconfigureButtonClicked() {
-    if (isCheckedManualType) {
+
+
+    const int indexOfCurrentExchanger = m_pExplodeWidget->m_pCurrentExchandger;
+    if (isCheckedManualType && indexOfCurrentExchanger ==2) {
         ConfigParams lengthParams = findClosestMatch(0, m_lengthSpinBox->value(), "LENGTH");
         manualTTRMParams = findClosestMatch(0, mp_dimCamera, "assortmentCamera");
 
@@ -1337,12 +1418,25 @@ void ExplodeManager::onReconfigureButtonClicked() {
         manualTTRMParams.lengthK = lengthParams.lengthK;
     }
 
+    if (isCheckedManualType && indexOfCurrentExchanger == 1) {
+        const int index = m_comboConfigure->currentIndex();
+        BuildParamsForHeatExchangerTTOR config = dataTTOR[index > 0 ? index : 0];
+        manualTTORParams = config;
+
+        manualTTORParams.ttDiam = diametrTubeTTOR->value();
+        manualTTORParams.ktDiam = diametrKozhuxTTOR->value();
+        manualTTORParams.ttThickness = thicknessTubeTTOR->value();
+        manualTTORParams.ktThickness = thicknessKozhuxTTOR->value();
+    }
+
     if (m_pExplodeWidget) {
         QVariant propertyValue = m_reconfigureButton->property("CommandsHeatExhanger");
         ExplodeWidget::Exhanchares cmd = static_cast<ExplodeWidget::Exhanchares>(propertyValue.toInt());
 
         m_pExplodeWidget->viewCommandsHeats(cmd);
     }
+
+
 }
 
 void ExplodeManager::onCalculationButtonClicked() {
@@ -1699,28 +1793,7 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
     sizeInfoButton->setToolTip(u8"Посмотреть размеры аппарата");
     m_vLayoutConfigureTab->addWidget(sizeInfoButton);
 
-    QDialog* modalDialog = new QDialog();
-
-    connect(sizeInfoButton, &QToolButton::clicked, [modalDialog]() {
-        modalDialog->setWindowTitle(u8"Размеры теплообменника ТТРМ");
-        modalDialog->setWindowIcon(QIcon(":/res/dimensions.png"));
-
-        QLabel* imageLabel = new QLabel;
-        QPixmap image(":/res/draws/ttrm.png");
-        imageLabel->setPixmap(image);
-        imageLabel->setScaledContents(true); // Масштабировать изображение по размеру QLabel
-
-        QRect screenGeometry = modalDialog->geometry();
-        int screenWidth = screenGeometry.width();
-        int screenHeight = screenGeometry.height();
-
-        imageLabel->setMaximumSize(screenWidth, screenHeight);
-
-        QVBoxLayout* modalLayout = new QVBoxLayout(modalDialog);
-        modalLayout->addWidget(imageLabel);
-
-        modalDialog->exec();
-    });
+    connect(sizeInfoButton, &QToolButton::clicked, this, &ExplodeManager::onDrawingShowButtonClicked);
 
     m_reconfigureButton = new QPushButton;
     m_reconfigureButton->setText(u8"Перестроить теплообменник");

@@ -509,7 +509,10 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
                 values.append(QString::fromStdString(config.name));
             }
 
-            BuildParamsForHeatExchangerTTOR config = m_pExplodeManager->dataTTOR[index > 0 ? index : 0];
+            BuildParamsForHeatExchangerTTOR config = m_pExplodeManager->isCheckedManualType
+                ? m_pExplodeManager->manualTTORParams
+                : m_pExplodeManager->dataTTOR[index > 0 ? index : 0];
+
             int configurationQuantity = m_pExplodeManager->m_quantityCombobox->currentIndex();
     
             m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(config, configurationQuantity);
