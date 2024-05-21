@@ -319,7 +319,7 @@ SceneSegment* SceneGenerator::CreateSceneSegment(SPtr<MbModel> pModel, SceneSegm
     }
     else
     {
-//        SimpleName name = pModel->GetModelName();
+        SimpleName name = pModel->GetModelName();
         pParent->SetObjectName(String(u8"ТТРМ"));
     }
 

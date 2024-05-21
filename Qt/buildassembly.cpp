@@ -1767,8 +1767,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     }
 #pragma endregion
 
-#pragma endregion
-
     SPtr<MbAssembly> assm(new MbAssembly(pair));
     {
 
@@ -3467,9 +3465,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
     assm->EvaluateConstraints();
 
-    /*assm->Rotate(axVert, M_PI/2);
-    assm->Rotate(ayVert, M_PI);*/
-
     string zero    = "0";
     string first   = "1";
     string second  = "2";
@@ -3553,14 +3548,8 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
         SPtr<MbSolid> Detail_012(Zarubincreate_012_curevedTubeBig(ttDiam, ttThickness, visotaOpori, t));
 
-        //Detail_012->Rotate(axVert, -M_PI / 2);
         Detail_012->Rotate(ayVert, M_PI);
         Detail_012->Move(MbVector3D(75, -825 + assemblyHeightTTOR,- 657.5));
-        //TOZO: if для ROTATE
-        //TOZO не забыть про болты на крышке
-        /*if () {
-
-        }*/
 
         for (int i = 0; i < configurationQuantity + 1; ++i)
         {

@@ -49,5 +49,6 @@
         <file>res/drawing/radius.png</file>
         <file>res/drawing/select_32.png</file>
         <file>res/arrow.png</file>
+        <file>res/draws/ttor.png</file>
     </qresource>
 </RCC>

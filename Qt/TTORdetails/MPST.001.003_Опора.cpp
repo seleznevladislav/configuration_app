@@ -2,9 +2,6 @@
 
 using namespace BuildMathModel;
 
-// TOZO: Необходимо избавиться от этой переменной thickness
-// TOZO: Необходима конфигурация опоры для 2 типа
-
 double thickness = -1;
 
 const double DEG_TO_RAD = M_PI / 180.0;
@@ -32,7 +29,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora(double dV, double 
     double distanceP = 450;
     double distancePoint = (width - distanceP) / 2;
 
-    if (dV == 800.0) {
+    if (dV >= 800.0) {
         depth = 250;
         high = 1070;
         width = 976;

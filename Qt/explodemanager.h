@@ -57,6 +57,7 @@ public:
     QVBoxLayout* m_vLayoutWarmParams = nullptr;
     bool isCheckedManualType = false;
     ConfigParams manualTTRMParams;
+    BuildParamsForHeatExchangerTTOR manualTTORParams;
 
     std::vector<ConfigParams> dataTTRM = {
        {u8"ТТРМ 25/57-6,3/1,6", 25, 3, 57, 4, 219, 8, 1500, 750, 2150, 32, 80, 415, 250, 230 },
@@ -243,6 +244,7 @@ private:
     ConfigParams findClosestMatch(int dimCamera, int param, const std::string& structName);
     void calculateThickness(QFormLayout* form);
     void onReconfigureButtonClicked();
+    void onDrawingShowButtonClicked();
     void onCalculationButtonClicked();
     QAction* createActionButton(const QString& fileName, QGroupBox* groupFilter, QHBoxLayout* fGroupLayout);
     QGroupBox* createExplodingGroupBox();
@@ -287,6 +289,14 @@ private:
     QComboBox* m_PmaterialCombobox;
     double m_PoutletTemp1;
     double m_PoutletTemp2;
+    QDialog* m_PmodalDialog;
+    /// <summary>
+    /// vars for parametrization Zarubin
+    /// </summary>
+    QDoubleSpinBox* diametrTubeTTOR = nullptr;
+    QDoubleSpinBox* diametrKozhuxTTOR = nullptr;
+    QDoubleSpinBox* thicknessTubeTTOR = nullptr;
+    QDoubleSpinBox* thicknessKozhuxTTOR = nullptr;
     /// <summary>
     /// vars tab management
     /// </summary>

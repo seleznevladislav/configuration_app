@@ -181,8 +181,9 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_007_FlanecKozhux(double ktDi
     else if (ktDiam <= 170) { //ktDiam = 159
         index = 1;
     }
-    else if (ktDiam <= 228) { //ktDiam = 219
+    else { //ktDiam = 219 if (ktDiam <= 228) 
         index = 2;
+        ktDiam = 228; //TOZO : Запараметризировать фланцы
     }
 
     //const double n = configurationZarubin007[index].n; // TOZO: Изменять номера грани в зависимости от кол-во отверстий
