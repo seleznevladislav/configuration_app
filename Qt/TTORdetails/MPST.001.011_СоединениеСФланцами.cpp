@@ -2,6 +2,8 @@
 
 using namespace BuildMathModel;
 
+// TOZO: Добавить обработчик на радиус фланцев
+
 SPtr<MbSolid> ParametricModelCreator::Zarubincreate_011_ConnectorWithFlanec(double ktDiam, double ktThickness, double t, double visotaOpori, double dU)
 {
     const double inner = ktDiam + 2 * ktThickness;
@@ -22,8 +24,8 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_011_ConnectorWithFlanec(doub
 
     MbSNameMaker filletNames(ct_FilletSolid, MbSNameMaker::i_SideNone, 0);
     SmoothValues params;
-    params.distance1 = 10;
-    params.distance2 = 20;
+    params.distance1 = 5;
+    params.distance2 = 5;
     params.form = st_Fillet;
     params.conic = 0;
     params.prolong = false;

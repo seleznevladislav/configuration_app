@@ -122,7 +122,7 @@ void CreateSketcherFlanecTrubadif(RPArray<MbContour>& _arrContours, double ttDia
     const double h2 = configurationZarubin[index].h2;
     const double RADIUSB = 4;
 
-    SArray<MbCartPoint> arrPnts(100);
+    SArray<MbCartPoint> arrPnts(20);
     arrPnts.Add(MbCartPoint(dTruba / 2, 40));
     arrPnts.Add(MbCartPoint(dTruba / 2, 0));
     arrPnts.Add(MbCartPoint(D5 / 2, 0));
@@ -137,9 +137,6 @@ void CreateSketcherFlanecTrubadif(RPArray<MbContour>& _arrContours, double ttDia
     arrPnts.Add(MbCartPoint((dTruba + ttThickness * 2 + 16) / 2, 18));//центр
     arrPnts.Add(MbCartPoint((dTruba + ttThickness * 2 + 16) / 2 + RADIUSB * cos(ANG1), 18 + RADIUSB * sin(ANG1)));
     arrPnts.Add(MbCartPoint(dTruba / 2 + ttThickness, 40));
-
-
-
 
     MbLineSegment* pLine0 = new MbLineSegment(arrPnts[0], arrPnts[1]);
     MbLineSegment* pLine1 = new MbLineSegment(arrPnts[1], arrPnts[2]);

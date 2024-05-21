@@ -28,9 +28,15 @@ std::vector<GOST_12815_80second> configurationZarubin007 = {
     //1     2    3    4   5     6    7   8     9    10 11 12 13  14
     {125,  235, 200, 178, 146, 166, 145, 167,  18,  8, 3, 4, 3,  16},
     {150,  260, 225, 202, 171, 191, 170, 192,  18,  8, 3, 4, 3,  16},
-    {200,  315, 280, 258, 229, 249, 228, 250,  18,  8, 3, 4, 3,  16},
+    {175,  290, 255, 232, 203, 223, 202, 224,  18,  8, 3, 4, 3,  16},
+    {200,  315, 280, 258, 229, 249, 228, 250,  18,  8, 4, 4, 4,  16},
+    {225,  340, 305, 282, 256, 276, 255, 277,  18,  8, 4, 4, 4,  16},
+    {250,  370, 335, 312, 283, 303, 282, 304,  18,  8, 4, 4, 4,  16},
+    {300,  435, 395, 365, 336, 356, 335, 357,  18,  8, 4, 4, 4,  16},
+    {350,  485, 445, 415, 386, 406, 385, 407,  18,  8, 5, 4, 4,  16},
+    {400,  535, 495, 465, 436, 456, 435, 457,  18,  8, 5, 4, 4,  16},
 };
-
+ 
 SolidSPtr HolyHole312(SolidSPtr* previus, int holes, double DiametrCircle, double radius) {
 
     // Именователь граней для построения тела с помощью булевой операции 
@@ -91,21 +97,8 @@ SolidSPtr HolyHole312(SolidSPtr* previus, int holes, double DiametrCircle, doubl
     return news;
 }
 
-void CreateSketcherFlanecKozhuhdif(RPArray<MbContour>& _arrContours, double ktDiam, double ktThickness)
+void CreateSketcherFlanecKozhuhdif(RPArray<MbContour>& _arrContours, double ktDiam, double ktThickness, int index)
 {
-
-    int index = 0;
-
-    if (ktDiam <= 145) { //ktDiam = 133
-        index = 0;
-    }
-    else if (ktDiam <= 170) { //ktDiam = 159
-        index = 1;
-    }
-    else if (ktDiam <= 228) { //ktDiam = 219
-        index = 2;
-    }
-
     double ANG1 = 180 * DEG_TO_RAD;
 
     const double dTruba = ktDiam;
@@ -118,7 +111,7 @@ void CreateSketcherFlanecKozhuhdif(RPArray<MbContour>& _arrContours, double ktDi
     const double h2 = configurationZarubin007[index].h2;
     const double RADIUSB = 4;
 
-    SArray<MbCartPoint> arrPnts(14);
+    SArray<MbCartPoint> arrPnts(20);
     arrPnts.Add(MbCartPoint(dTruba / 2, 40));
     arrPnts.Add(MbCartPoint(dTruba / 2, 0));
     arrPnts.Add(MbCartPoint(D5 / 2, 0));
@@ -129,10 +122,10 @@ void CreateSketcherFlanecKozhuhdif(RPArray<MbContour>& _arrContours, double ktDi
     arrPnts.Add(MbCartPoint((D2 + 2) / 2, h2));
     arrPnts.Add(MbCartPoint(D / 2, h2));
     arrPnts.Add(MbCartPoint(D / 2, 14));//
-    arrPnts.Add(MbCartPoint((dTruba + (ktThickness - 2) * 2 + 16) / 2, 14));//10
-    arrPnts.Add(MbCartPoint((dTruba + (ktThickness - 2) * 2 + 16) / 2, 18));//центр
-    arrPnts.Add(MbCartPoint((dTruba + (ktThickness - 2) * 2 + 16) / 2 + RADIUSB * cos(ANG1), 18 + RADIUSB * sin(ANG1)));
-    arrPnts.Add(MbCartPoint(dTruba / 2 + (ktThickness - 2), 40));
+    arrPnts.Add(MbCartPoint((dTruba + ktThickness * 2 + 16) / 2, 14));//10
+    arrPnts.Add(MbCartPoint((dTruba + ktThickness * 2 + 16) / 2, 18));//центр
+    arrPnts.Add(MbCartPoint((dTruba + ktThickness * 2 + 16) / 2 + RADIUSB * cos(ANG1), 18 + RADIUSB * sin(ANG1)));
+    arrPnts.Add(MbCartPoint(dTruba / 2 + ktThickness, 40));
 
     MbLineSegment* pLine0 = new MbLineSegment(arrPnts[0], arrPnts[1]);
     MbLineSegment* pLine1 = new MbLineSegment(arrPnts[1], arrPnts[2]);
@@ -172,18 +165,39 @@ void CreateSketcherFlanecKozhuhdif(RPArray<MbContour>& _arrContours, double ktDi
 
 SPtr<MbSolid> ParametricModelCreator::Zarubincreate_007_FlanecKozhux(double ktDiam, double ktThickness)
 {
+
+
     int index = 0;
 
-    // до размера d3
-    if (ktDiam <= 145) { //ktDiam = 133
+    if (ktDiam < 145) {
         index = 0;
     }
-    else if (ktDiam <= 170) { //ktDiam = 159
+    else if (ktDiam < 170) {
         index = 1;
     }
-    else { //ktDiam = 219 if (ktDiam <= 228) 
+    else if (ktDiam < 201) {
         index = 2;
-        ktDiam = 228; //TOZO : Запараметризировать фланцы
+    }
+    else if (ktDiam < 228) {
+        index = 3;
+    }
+    else if (ktDiam < 255) {
+        index = 4;
+    }
+    else if (ktDiam < 282) {
+        index = 5;
+    }
+    else if (ktDiam < 335) {
+        index = 6;
+    }
+    else if (ktDiam < 385) {
+        index = 7;
+    }
+    else if (ktDiam < 435) {
+        index = 8;
+    }
+    else {
+        index = -1; // TOZO: ????????
     }
 
     //const double n = configurationZarubin007[index].n; // TOZO: Изменять номера грани в зависимости от кол-во отверстий
@@ -195,7 +209,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_007_FlanecKozhux(double ktDi
 
     // Создание образующей для тела выдавливания
     RPArray<MbContour> arrContours;
-    CreateSketcherFlanecKozhuhdif(arrContours, ktDiam, ktThickness);
+    CreateSketcherFlanecKozhuhdif(arrContours, ktDiam, ktThickness, index);
 
     //Плоскость
     MbPlane* pPlaneXY = new MbPlane(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, 1, 0), MbCartPoint3D(0, 0, 1));
