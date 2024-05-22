@@ -180,7 +180,7 @@ namespace BuildMathModel {
 
 	private:
 		static  SPtr<MbAssembly> CreatePneumocylinderAssembly(ConfigParams params, int configurationQuantity);
-		static  SPtr<MbAssembly> CreateTTOR(BuildParamsForHeatExchangerTTOR params, int configurationQuantity, bool hideStandartDetails);
+		static  SPtr<MbAssembly> CreateTTOR(BuildParamsForHeatExchangerTTOR params, int configurationQuantity);
 
 		static  SPtr<MbAssembly> CreateIP(ConfigParams_IP params);
 		static  SPtr<MbAssembly> CreateIU(ConfigParams_IU params);

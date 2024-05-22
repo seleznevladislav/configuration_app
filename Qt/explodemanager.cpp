@@ -288,10 +288,17 @@ void ExplodeManager::radiosTypeFromToggled(bool checked, int type)
         diametrKozhuxTTOR->setValue(config.ktDiam);
         thicknessTubeTTOR->setValue(config.ttThickness);
         thicknessKozhuxTTOR->setValue(config.ktThickness);
+        distanceOporiTTOR->setValue(config.l0);
+        dlinaKameriTTOR->setValue(config.l1);
     }
     if (type == 1 && m_pExplodeWidget->m_pCurrentExchandger == 1) 
     {
-        //clear Fields
+        diametrTubeTTOR->setValue(0);
+        diametrKozhuxTTOR->setValue(0);
+        thicknessTubeTTOR->setValue(0);
+        thicknessKozhuxTTOR->setValue(0);
+        distanceOporiTTOR->setValue(0);
+        dlinaKameriTTOR->setValue(0);
     }
 }
 
@@ -407,27 +414,45 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
     {
         m_reconfigureButton->setDisabled(false);
 
+        turnOnStandartDetailsTTOR = new QCheckBox;
+        QLabel* turnOnStandartDetailsLabel = new QLabel(u8"Отобразить std:");
+
+        simpleModeStandartTTOR = new QCheckBox;
+        QLabel* simpleModeStandartLabel = new QLabel(u8"Упростить std:");
+        
         diametrTubeTTOR = new QDoubleSpinBox;
         diametrTubeTTOR->setMaximum(1000);
-        QLabel* diametrTubeLabel = new QLabel(u8"Диаметр трубы d1, мм:");
+        QLabel* diametrTubeLabel = new QLabel(u8"Диаметр трубы, d1 (мм):");
 
         diametrKozhuxTTOR = new QDoubleSpinBox;
         diametrKozhuxTTOR = new QDoubleSpinBox;
         diametrKozhuxTTOR->setMaximum(1000);
-        QLabel* diametrKozhuxLabel = new QLabel(u8"Диаметр кожуха d2, мм:");
+        QLabel* diametrKozhuxLabel = new QLabel(u8"Диаметр кожуха, d2 (мм):");
 
         thicknessTubeTTOR = new QDoubleSpinBox;
         thicknessTubeTTOR->setMaximum(1000);
-        QLabel* thicknessTubeLabel = new QLabel(u8"Толщина стенки трубы dt1, мм:");
+        QLabel* thicknessTubeLabel = new QLabel(u8"Толщина стенки трубы, dt1 (мм):");
 
         thicknessKozhuxTTOR = new QDoubleSpinBox;
         thicknessKozhuxTTOR->setMaximum(1000);
-        QLabel* thicknessKozhuxLabel = new QLabel(u8"Толщина стенки кожуха dt2, мм:");
+        QLabel* thicknessKozhuxLabel = new QLabel(u8"Толщина стенки кожуха, dt2 (мм):");
+        
+        distanceOporiTTOR = new QDoubleSpinBox;
+        distanceOporiTTOR->setMaximum(10000);
+        QLabel* distanceOporiLabel = new QLabel(u8"Растояние опоры, l0 (мм):");
+        
+        dlinaKameriTTOR = new QDoubleSpinBox;
+        dlinaKameriTTOR->setMaximum(10000);
+        QLabel* dlinaKameriLabel = new QLabel(u8"Длина камеры, l3 (мм):");
 
+        formLayout->addRow(turnOnStandartDetailsLabel, turnOnStandartDetailsTTOR);
+        formLayout->addRow(simpleModeStandartLabel, simpleModeStandartTTOR);
         formLayout->addRow(diametrTubeLabel, diametrTubeTTOR);
         formLayout->addRow(diametrKozhuxLabel, diametrKozhuxTTOR);
         formLayout->addRow(thicknessTubeLabel, thicknessTubeTTOR);
         formLayout->addRow(thicknessKozhuxLabel, thicknessKozhuxTTOR);
+        formLayout->addRow(distanceOporiLabel, distanceOporiTTOR);
+        formLayout->addRow(dlinaKameriLabel, dlinaKameriTTOR);
 
         break;
     }
@@ -1401,8 +1426,6 @@ void ExplodeManager::onDrawingShowButtonClicked() {
 }
 
 void ExplodeManager::onReconfigureButtonClicked() {
-
-
     const int indexOfCurrentExchanger = m_pExplodeWidget->m_pCurrentExchandger;
     if (isCheckedManualType && indexOfCurrentExchanger ==2) {
         ConfigParams lengthParams = findClosestMatch(0, m_lengthSpinBox->value(), "LENGTH");
@@ -1427,6 +1450,10 @@ void ExplodeManager::onReconfigureButtonClicked() {
         manualTTORParams.ktDiam = diametrKozhuxTTOR->value();
         manualTTORParams.ttThickness = thicknessTubeTTOR->value();
         manualTTORParams.ktThickness = thicknessKozhuxTTOR->value();
+        manualTTORParams.l0 = distanceOporiTTOR->value();
+        manualTTORParams.l3 = dlinaKameriTTOR->value();
+        manualTTORParams.turnOnStandart = turnOnStandartDetailsTTOR->checkState() == 2 ? true : false;
+        manualTTORParams.simpleMode = simpleModeStandartTTOR->checkState() == 2 ? true : false;
     }
 
     if (m_pExplodeWidget) {

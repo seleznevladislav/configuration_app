@@ -1042,7 +1042,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     return assm;
 }
 
-SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerTTOR params, int configurationQuantity, bool hideStandartDetails)
+SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerTTOR params, int configurationQuantity)
 {
 #pragma region PARAMS
     double ttDiam = params.ttDiam;
@@ -1060,6 +1060,8 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     double l2 = params.l2;
     double l3 = params.l3;
     double t = params.t;
+    double turnOnStandart = params.turnOnStandart;
+    double simpleMode = params.simpleMode;
 
     const double visotaOpori = H1*2;
     const double shirinaOpori = 200;
@@ -1423,7 +1425,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     SPtr<MbInstance> NutBoltM16_016;
 
 #pragma region GHOSTS_INSTANCE
-    if (hideStandartDetails) {
+    if (turnOnStandart) {
         BoltM8_001 = new MbInstance(*BoltM8, lcs);
         BoltM8_002 = new MbInstance(*BoltM8, lcs);
         BoltM8_003 = new MbInstance(*BoltM8, lcs);
@@ -2249,7 +2251,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
 #pragma region GHOST_Constraints
 
-        if (hideStandartDetails) {
+        if (turnOnStandart) {
         // Концентричность ШайбыM10 - Фланец специальный внешние
         {
 
@@ -3537,7 +3539,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
     assm->AddAttribute(AssemblyInfo);
     assm->Rotate(axVert, -M_PI / 2);
-    if (hideStandartDetails) {
+    if (turnOnStandart) {
         assm->Rotate(azVert, -M_PI / 2);
     }
 
