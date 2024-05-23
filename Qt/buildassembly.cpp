@@ -1042,7 +1042,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     return assm;
 }
 
-SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerTTOR params, int configurationQuantity, bool hideStandartDetails)
+SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerTTOR params, int configurationQuantity)
 {
 #pragma region PARAMS
     double ttDiam = params.ttDiam;
@@ -1060,6 +1060,9 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     double l2 = params.l2;
     double l3 = params.l3;
     double t = params.t;
+    double Lt = params.Lt;
+    bool turnOnStandart = params.turnOnStandart;
+    bool simpleMode = params.simpleMode;
 
     const double visotaOpori = H1*2;
     const double shirinaOpori = 200;
@@ -1075,7 +1078,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     MbAxis3D ayVert(MbVector3D(0, 1, 0));
     MbAxis3D azVert(MbVector3D(0, 0, 1));
 
-    SPtr<MbSolid> Detail_001(Zarubincreate_001_tubeTeploobmen(lK, ttDiam, ttThickness));
+    SPtr<MbSolid> Detail_001(Zarubincreate_001_tubeTeploobmen(Lt, ttDiam, ttThickness));
     Detail_001->SetColor(235, 172, 165);
     SPtr<MbSolid> Detail_002(Zarubincreate_002_tubeKozhux(lK, ktDiam, ktThickness));
     Detail_002->SetColor(165, 175, 235);
@@ -1092,6 +1095,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
     SPtr<MbSolid> Detail_008(Zarubincreate_008_FlanecSpecial(ttDiam, ttThickness));
     Detail_008->SetColor(83, 123, 151);
+
     SPtr<MbSolid> Detail_009(Zarubincreate_009_curevedTube(ttDiam, ttThickness, t));
     Detail_009->SetColor(71, 91, 71);
     SPtr<MbSolid> Detail_010(Zarubincreate_010_Connector(ktDiam, ktThickness, t, dU));
@@ -1099,16 +1103,16 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     SPtr<MbSolid> Detail_011(Zarubincreate_011_ConnectorWithFlanec(ktDiam, ktThickness, t, visotaOpori, dU));
 
     // Bolts
-    SPtr<MbSolid> BoltM8(BoltGostTTOR(12));
+    SPtr<MbSolid> BoltM8(BoltGostTTOR(12, simpleMode));
     BoltM8->SetColor(151, 148, 139);
 
-    SPtr<MbSolid> BoltM10(BoltGostTTOR(10));
+    SPtr<MbSolid> BoltM10(BoltGostTTOR(10, simpleMode));
     BoltM10->SetColor(151, 148, 139);
     
-    SPtr<MbSolid> BoltM12(BoltGostTTOR(12));
+    SPtr<MbSolid> BoltM12(BoltGostTTOR(12, simpleMode));
     BoltM12->SetColor(151, 148, 139);
 
-    SPtr<MbSolid> BoltM16(BoltGostTTOR(16));
+    SPtr<MbSolid> BoltM16(BoltGostTTOR(16, simpleMode));
     BoltM16->SetColor(151, 148, 139);
 
     // Washers
@@ -1423,7 +1427,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     SPtr<MbInstance> NutBoltM16_016;
 
 #pragma region GHOSTS_INSTANCE
-    if (hideStandartDetails) {
+    if (turnOnStandart) {
         BoltM8_001 = new MbInstance(*BoltM8, lcs);
         BoltM8_002 = new MbInstance(*BoltM8, lcs);
         BoltM8_003 = new MbInstance(*BoltM8, lcs);
@@ -2249,7 +2253,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
 #pragma region GHOST_Constraints
 
-        if (hideStandartDetails) {
+        if (turnOnStandart) {
         // Концентричность ШайбыM10 - Фланец специальный внешние
         {
 
@@ -3537,7 +3541,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
     assm->AddAttribute(AssemblyInfo);
     assm->Rotate(axVert, -M_PI / 2);
-    if (hideStandartDetails) {
+    if (turnOnStandart) {
         assm->Rotate(azVert, -M_PI / 2);
     }
 
