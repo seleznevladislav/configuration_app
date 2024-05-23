@@ -303,7 +303,9 @@ private:
     QDoubleSpinBox* distanceOporiTTOR = nullptr;
     QDoubleSpinBox* dlinaKameriTTOR = nullptr;
     QDoubleSpinBox* visotaOporyH1TTOR = nullptr;
+    QDoubleSpinBox* visotaOporyH2TTOR = nullptr;
     QDoubleSpinBox* distanceConnectorTTOR = nullptr;
+    QDoubleSpinBox* dUForFlanecTTOR = nullptr;
 
     QDoubleSpinBox* LengthTeplTubeTTOR = nullptr;
     QDoubleSpinBox* LengthKozhuxTubeTTOR = nullptr;

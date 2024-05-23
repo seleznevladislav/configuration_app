@@ -1095,6 +1095,9 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
     SPtr<MbSolid> Detail_008(Zarubincreate_008_FlanecSpecial(ttDiam, ttThickness));
     Detail_008->SetColor(83, 123, 151);
+    
+    SPtr<MbSolid> Detail_008ForDu(Zarubincreate_008_FlanecSpecial(dU, ktThickness+5));
+    Detail_008ForDu->SetColor(129, 50, 151);
 
     SPtr<MbSolid> Detail_009(Zarubincreate_009_curevedTube(ttDiam, ttThickness, t));
     Detail_009->SetColor(71, 91, 71);
@@ -1190,8 +1193,8 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     SPtr<MbInstance> Item_008_015(new MbInstance(*Detail_008, lcs));
     SPtr<MbInstance> Item_008_016(new MbInstance(*Detail_008, lcs));
 
-    SPtr<MbInstance> Item_008_017(new MbInstance(*Detail_008, lcs));
-    SPtr<MbInstance> Item_008_018(new MbInstance(*Detail_008, lcs));
+    SPtr<MbInstance> Item_008_017(new MbInstance(*Detail_008ForDu, lcs));
+    SPtr<MbInstance> Item_008_018(new MbInstance(*Detail_008ForDu, lcs));
 
     SPtr<MbInstance> Item_009_001(new MbInstance(*Detail_009, lcs));
     SPtr<MbInstance> Item_009_002(new MbInstance(*Detail_009, lcs));

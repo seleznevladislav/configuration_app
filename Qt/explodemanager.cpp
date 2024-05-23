@@ -294,6 +294,7 @@ void ExplodeManager::radiosTypeFromToggled(bool checked, int type)
         LengthTeplTubeTTOR->setValue(config.Lt);
         LengthKozhuxTubeTTOR->setValue(config.lK);
         distanceConnectorTTOR->setValue(config.l2);
+        dUForFlanecTTOR->setValue(config.dU);
     }
     if (type == 1 && m_pExplodeWidget->m_pCurrentExchandger == 1) 
     {
@@ -307,6 +308,7 @@ void ExplodeManager::radiosTypeFromToggled(bool checked, int type)
         LengthTeplTubeTTOR->setValue(0);
         LengthKozhuxTubeTTOR->setValue(0);
         distanceConnectorTTOR->setValue(0);
+        dUForFlanecTTOR->setValue(0);
     }
 }
 
@@ -465,9 +467,17 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
         dlinaKameriTTOR->setMaximum(10000);
         QLabel* dlinaKameriLabel = new QLabel(u8"Длина камеры, l3 (мм):"); 
         
+        dUForFlanecTTOR = new QDoubleSpinBox;
+        dUForFlanecTTOR->setMaximum(10000);
+        QLabel* dUForFlanecLabel = new QLabel(u8"Диаметр пропуска, dU (мм):");
+
         visotaOporyH1TTOR = new QDoubleSpinBox;
         visotaOporyH1TTOR->setMaximum(10000);
         QLabel* visotaOporyH1Label = new QLabel(u8"Высота опоры, H1*2 (мм):");
+        
+        visotaOporyH2TTOR = new QDoubleSpinBox;
+        visotaOporyH2TTOR->setMaximum(10000);
+        QLabel* visotaOporyH2Label = new QLabel(u8"Ширина опоры, H2*2 (мм):");
 
         // Creating vertical layouts for each pair of QLabel and QDoubleSpinBox
         QHBoxLayout* turnOnStandartDetailsLayout = new QHBoxLayout;
@@ -514,9 +524,17 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
         dlinaKameriLayout->addWidget(dlinaKameriLabel);
         dlinaKameriLayout->addWidget(dlinaKameriTTOR);
 
+        QVBoxLayout* dUForFlanecLayout = new QVBoxLayout;
+        dUForFlanecLayout->addWidget(dUForFlanecLabel);
+        dUForFlanecLayout->addWidget(dUForFlanecTTOR);
+        
         QVBoxLayout* visotaOporyH1Layout = new QVBoxLayout;
         visotaOporyH1Layout->addWidget(visotaOporyH1Label);
         visotaOporyH1Layout->addWidget(visotaOporyH1TTOR);
+
+        QVBoxLayout* visotaOporyH2Layout = new QVBoxLayout;
+        visotaOporyH2Layout->addWidget(visotaOporyH2Label);
+        visotaOporyH2Layout->addWidget(visotaOporyH2TTOR);
 
         // Creating horizontal layouts for grouping
         QHBoxLayout* checkBoxLayout = new QHBoxLayout;
@@ -550,9 +568,15 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
 
         QHBoxLayout* lastElementsLayout = new QHBoxLayout;
         lastElementsLayout->addLayout(dlinaKameriLayout);
-        lastElementsLayout->addLayout(visotaOporyH1Layout);
+        lastElementsLayout->addLayout(dUForFlanecLayout);
         lastElementsLayout->setContentsMargins(0, 5, 0, 0);
         lastElementsLayout->setSpacing(5);
+        
+        QHBoxLayout* lasLastElementsLayout = new QHBoxLayout;
+        lasLastElementsLayout->addLayout(visotaOporyH1Layout);
+        lasLastElementsLayout->addLayout(visotaOporyH2Layout);
+        lasLastElementsLayout->setContentsMargins(0, 5, 0, 0);
+        lasLastElementsLayout->setSpacing(5);
 
         // Adding horizontal layouts to the form layout
         formLayout->addRow(checkBoxLayout);
@@ -561,6 +585,7 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
         formLayout->addRow(lengthLayout);
         formLayout->addRow(distanceLayout);
         formLayout->addRow(lastElementsLayout);
+        formLayout->addRow(lasLastElementsLayout);
 
         break;
     }
@@ -1564,6 +1589,7 @@ void ExplodeManager::onReconfigureButtonClicked() {
         manualTTORParams.Lt = LengthTeplTubeTTOR->value();
         manualTTORParams.lK = LengthKozhuxTubeTTOR->value();
         manualTTORParams.l2 = distanceConnectorTTOR->value();
+        manualTTORParams.dU = dUForFlanecTTOR->value();
         manualTTORParams.turnOnStandart = turnOnStandartDetailsTTOR->checkState() == 2 ? true : false;
         manualTTORParams.simpleMode = simpleModeStandartTTOR->checkState() == 2 ? true : false;
     }
