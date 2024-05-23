@@ -1203,6 +1203,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     SPtr<MbInstance> Item_010_001(new MbInstance(*Detail_010, lcs));
     SPtr<MbInstance> Item_011_001(new MbInstance(*Detail_011, lcs));
 
+    const int amountDetailsConstantly = 43;
 
 #pragma region PUSH_BACK
     //Переменные для подсборки
@@ -1260,28 +1261,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
     pair.push_back(Item_010_001);
     pair.push_back(Item_011_001);
-
-    SPtr<MbInstance> BoltM8_001;
-    SPtr<MbInstance> BoltM8_002;
-    SPtr<MbInstance> BoltM8_003;
-    SPtr<MbInstance> BoltM8_004;
-
-    SPtr<MbInstance> BoltM10_001;
-    SPtr<MbInstance> BoltM10_002;
-    SPtr<MbInstance> BoltM10_003;
-    SPtr<MbInstance> BoltM10_004;
-    SPtr<MbInstance> BoltM10_005;
-    SPtr<MbInstance> BoltM10_006;
-    SPtr<MbInstance> BoltM10_007;
-    SPtr<MbInstance> BoltM10_008;
-    SPtr<MbInstance> BoltM10_009;
-    SPtr<MbInstance> BoltM10_010;
-    SPtr<MbInstance> BoltM10_011;
-    SPtr<MbInstance> BoltM10_012;
-    SPtr<MbInstance> BoltM10_013;
-    SPtr<MbInstance> BoltM10_014;
-    SPtr<MbInstance> BoltM10_015;
-    SPtr<MbInstance> BoltM10_016;
                                 
     SPtr<MbInstance> BoltM12_001;
     SPtr<MbInstance> BoltM12_002;
@@ -1316,28 +1295,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     SPtr<MbInstance> BoltM16_014;
     SPtr<MbInstance> BoltM16_015;
     SPtr<MbInstance> BoltM16_016;
-
-    SPtr<MbInstance> WasherM8_001;
-    SPtr<MbInstance> WasherM8_002;
-    SPtr<MbInstance> WasherM8_003;
-    SPtr<MbInstance> WasherM8_004;
-
-    SPtr<MbInstance> WasherM10_001;
-    SPtr<MbInstance> WasherM10_002;
-    SPtr<MbInstance> WasherM10_003;
-    SPtr<MbInstance> WasherM10_004;
-    SPtr<MbInstance> WasherM10_005;
-    SPtr<MbInstance> WasherM10_006;
-    SPtr<MbInstance> WasherM10_007;
-    SPtr<MbInstance> WasherM10_008;
-    SPtr<MbInstance> WasherM10_009;
-    SPtr<MbInstance> WasherM10_010;
-    SPtr<MbInstance> WasherM10_011;
-    SPtr<MbInstance> WasherM10_012;
-    SPtr<MbInstance> WasherM10_013;
-    SPtr<MbInstance> WasherM10_014;
-    SPtr<MbInstance> WasherM10_015;
-    SPtr<MbInstance> WasherM10_016;
                                   ;
     SPtr<MbInstance> WasherM12_001;
     SPtr<MbInstance> WasherM12_002;
@@ -1372,29 +1329,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     SPtr<MbInstance> WasherM16_014;
     SPtr<MbInstance> WasherM16_015;
     SPtr<MbInstance> WasherM16_016;
-                                  ;
-    SPtr<MbInstance> NutBoltM8_001;
-    SPtr<MbInstance> NutBoltM8_002;
-    SPtr<MbInstance> NutBoltM8_003;
-    SPtr<MbInstance> NutBoltM8_004;
 
-    SPtr<MbInstance> NutBoltM10_001;
-    SPtr<MbInstance> NutBoltM10_002;
-    SPtr<MbInstance> NutBoltM10_003;
-    SPtr<MbInstance> NutBoltM10_004;
-    SPtr<MbInstance> NutBoltM10_005;
-    SPtr<MbInstance> NutBoltM10_006;
-    SPtr<MbInstance> NutBoltM10_007;
-    SPtr<MbInstance> NutBoltM10_008;
-    SPtr<MbInstance> NutBoltM10_009;
-    SPtr<MbInstance> NutBoltM10_010;
-    SPtr<MbInstance> NutBoltM10_011;
-    SPtr<MbInstance> NutBoltM10_012;
-    SPtr<MbInstance> NutBoltM10_013;
-    SPtr<MbInstance> NutBoltM10_014;
-    SPtr<MbInstance> NutBoltM10_015;
-    SPtr<MbInstance> NutBoltM10_016;
-                                   ;
     SPtr<MbInstance> NutBoltM12_001;
     SPtr<MbInstance> NutBoltM12_002;
     SPtr<MbInstance> NutBoltM12_003;
@@ -1429,30 +1364,51 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     SPtr<MbInstance> NutBoltM16_015;
     SPtr<MbInstance> NutBoltM16_016;
 
+    std::array<SPtr<MbInstance>, 4> boltsM8;
+    
+    std::array<SPtr<MbInstance>, 4> WashersM8;
+
+    std::array<SPtr<MbInstance>, 4> NutBoltsM8;
+
+    std::array<SPtr<MbInstance>, 16> boltsM10;
+
+    std::array<SPtr<MbInstance>, 16> WashersM10;
+
+    std::array<SPtr<MbInstance>, 16> NutBoltsM10;
+
 #pragma region GHOSTS_INSTANCE
     if (turnOnStandart) {
-        BoltM8_001 = new MbInstance(*BoltM8, lcs);
-        BoltM8_002 = new MbInstance(*BoltM8, lcs);
-        BoltM8_003 = new MbInstance(*BoltM8, lcs);
-        BoltM8_004 = new MbInstance(*BoltM8, lcs);
 
-        BoltM10_001 = new MbInstance(*BoltM10, lcs);
-        BoltM10_002 = new MbInstance(*BoltM10, lcs);
-        BoltM10_003 = new MbInstance(*BoltM10, lcs);
-        BoltM10_004 = new MbInstance(*BoltM10, lcs);
-        BoltM10_005 = new MbInstance(*BoltM10, lcs);
-        BoltM10_006 = new MbInstance(*BoltM10, lcs);
-        BoltM10_007 = new MbInstance(*BoltM10, lcs);
-        BoltM10_008 = new MbInstance(*BoltM10, lcs);
-        BoltM10_009 = new MbInstance(*BoltM10, lcs);
-        BoltM10_010 = new MbInstance(*BoltM10, lcs);
-        BoltM10_011 = new MbInstance(*BoltM10, lcs);
-        BoltM10_012 = new MbInstance(*BoltM10, lcs);
-        BoltM10_013 = new MbInstance(*BoltM10, lcs);
-        BoltM10_014 = new MbInstance(*BoltM10, lcs);
-        BoltM10_015 = new MbInstance(*BoltM10, lcs);
-        BoltM10_016 = new MbInstance(*BoltM10, lcs);
-                    
+        for (size_t i = 0; i < boltsM8.size(); ++i) {
+            boltsM8[i] = new MbInstance(*BoltM8, lcs);
+            pair.push_back(boltsM8[i]);
+        }
+
+        for (size_t i = 0; i < WashersM8.size(); ++i) {
+            WashersM8[i] = new MbInstance(*WasherM8, lcs);
+            pair.push_back(WashersM8[i]);
+        }
+
+        for (size_t i = 0; i < NutBoltsM8.size(); ++i) {
+            NutBoltsM8[i] = new MbInstance(*NutBoltM8, lcs);
+            pair.push_back(NutBoltsM8[i]);
+        }
+
+        for (size_t i = 0; i < boltsM10.size(); ++i) {
+            boltsM10[i] = new MbInstance(*BoltM10, lcs);
+            pair.push_back(boltsM10[i]);
+        }
+
+        for (size_t i = 0; i < WashersM10.size(); ++i) {
+            WashersM10[i] = new MbInstance(*WasherM10, lcs);
+            pair.push_back(WashersM10[i]);
+        }
+
+        for (size_t i = 0; i < NutBoltsM10.size(); ++i) {
+            NutBoltsM10[i] = new MbInstance(*NutBoltM10, lcs);
+            pair.push_back(NutBoltsM10[i]);
+        }
+
         BoltM12_001 = new MbInstance(*BoltM12, lcs);
         BoltM12_002 = new MbInstance(*BoltM12, lcs);
         BoltM12_003 = new MbInstance(*BoltM12, lcs);
@@ -1486,28 +1442,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
         BoltM16_014 = new MbInstance(*BoltM16, lcs);
         BoltM16_015 = new MbInstance(*BoltM16, lcs);
         BoltM16_016 = new MbInstance(*BoltM16, lcs);
-
-        WasherM8_001 = new MbInstance(*WasherM8, lcs);
-        WasherM8_002 = new MbInstance(*WasherM8, lcs);
-        WasherM8_003 = new MbInstance(*WasherM8, lcs);
-        WasherM8_004 = new MbInstance(*WasherM8, lcs);
-
-        WasherM10_001 = new MbInstance(*WasherM10, lcs);
-        WasherM10_002 = new MbInstance(*WasherM10, lcs);
-        WasherM10_003 = new MbInstance(*WasherM10, lcs);
-        WasherM10_004 = new MbInstance(*WasherM10, lcs);
-        WasherM10_005 = new MbInstance(*WasherM10, lcs);
-        WasherM10_006 = new MbInstance(*WasherM10, lcs);
-        WasherM10_007 = new MbInstance(*WasherM10, lcs);
-        WasherM10_008 = new MbInstance(*WasherM10, lcs);
-        WasherM10_009 = new MbInstance(*WasherM10, lcs);
-        WasherM10_010 = new MbInstance(*WasherM10, lcs);
-        WasherM10_011 = new MbInstance(*WasherM10, lcs);
-        WasherM10_012 = new MbInstance(*WasherM10, lcs);
-        WasherM10_013 = new MbInstance(*WasherM10, lcs);
-        WasherM10_014 = new MbInstance(*WasherM10, lcs);
-        WasherM10_015 = new MbInstance(*WasherM10, lcs);
-        WasherM10_016 = new MbInstance(*WasherM10, lcs);
                       
         WasherM12_001 = new MbInstance(*WasherM12, lcs);
         WasherM12_002 = new MbInstance(*WasherM12, lcs);
@@ -1542,28 +1476,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
         WasherM16_014 = new MbInstance(*WasherM16, lcs);
         WasherM16_015 = new MbInstance(*WasherM16, lcs);
         WasherM16_016 = new MbInstance(*WasherM16, lcs);
-                      
-        NutBoltM8_001 = new MbInstance(*NutBoltM8, lcs);
-        NutBoltM8_002 = new MbInstance(*NutBoltM8, lcs);
-        NutBoltM8_003 = new MbInstance(*NutBoltM8, lcs);
-        NutBoltM8_004 = new MbInstance(*NutBoltM8, lcs);
-
-        NutBoltM10_001 = new MbInstance(*NutBoltM10, lcs);
-        NutBoltM10_002 = new MbInstance(*NutBoltM10, lcs);
-        NutBoltM10_003 = new MbInstance(*NutBoltM10, lcs);
-        NutBoltM10_004 = new MbInstance(*NutBoltM10, lcs);
-        NutBoltM10_005 = new MbInstance(*NutBoltM10, lcs);
-        NutBoltM10_006 = new MbInstance(*NutBoltM10, lcs);
-        NutBoltM10_007 = new MbInstance(*NutBoltM10, lcs);
-        NutBoltM10_008 = new MbInstance(*NutBoltM10, lcs);
-        NutBoltM10_009 = new MbInstance(*NutBoltM10, lcs);
-        NutBoltM10_010 = new MbInstance(*NutBoltM10, lcs);
-        NutBoltM10_011 = new MbInstance(*NutBoltM10, lcs);
-        NutBoltM10_012 = new MbInstance(*NutBoltM10, lcs);
-        NutBoltM10_013 = new MbInstance(*NutBoltM10, lcs);
-        NutBoltM10_014 = new MbInstance(*NutBoltM10, lcs);
-        NutBoltM10_015 = new MbInstance(*NutBoltM10, lcs);
-        NutBoltM10_016 = new MbInstance(*NutBoltM10, lcs);
                        
         NutBoltM12_001 = new MbInstance(*NutBoltM12, lcs);
         NutBoltM12_002 = new MbInstance(*NutBoltM12, lcs);
@@ -1598,74 +1510,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
         NutBoltM16_014 = new MbInstance(*NutBoltM16, lcs);
         NutBoltM16_015 = new MbInstance(*NutBoltM16, lcs);
         NutBoltM16_016 = new MbInstance(*NutBoltM16, lcs);
-
-        // Ghosts М8
-        pair.push_back(BoltM8_001);
-        pair.push_back(BoltM8_002);
-        pair.push_back(BoltM8_003);
-        pair.push_back(BoltM8_004);
-
-        pair.push_back(WasherM8_001);
-        pair.push_back(WasherM8_002);
-        pair.push_back(WasherM8_003);
-        pair.push_back(WasherM8_004);
-
-        pair.push_back(NutBoltM8_001);
-        pair.push_back(NutBoltM8_002);
-        pair.push_back(NutBoltM8_003);
-        pair.push_back(NutBoltM8_004);
-
-        // Ghosts M10
-        pair.push_back(BoltM10_001);
-        pair.push_back(BoltM10_002);
-        pair.push_back(BoltM10_003);
-        pair.push_back(BoltM10_004);
-        pair.push_back(BoltM10_005);
-        pair.push_back(BoltM10_006);
-        pair.push_back(BoltM10_007);
-        pair.push_back(BoltM10_008);
-        pair.push_back(BoltM10_009);
-        pair.push_back(BoltM10_010);
-        pair.push_back(BoltM10_011);
-        pair.push_back(BoltM10_012);
-        pair.push_back(BoltM10_013);
-        pair.push_back(BoltM10_014);
-        pair.push_back(BoltM10_015);
-        pair.push_back(BoltM10_016);
-
-        pair.push_back(WasherM10_001);
-        pair.push_back(WasherM10_002);
-        pair.push_back(WasherM10_003);
-        pair.push_back(WasherM10_004);
-        pair.push_back(WasherM10_005);
-        pair.push_back(WasherM10_006);
-        pair.push_back(WasherM10_007);
-        pair.push_back(WasherM10_008);
-        pair.push_back(WasherM10_009);
-        pair.push_back(WasherM10_010);
-        pair.push_back(WasherM10_011);
-        pair.push_back(WasherM10_012);
-        pair.push_back(WasherM10_013);
-        pair.push_back(WasherM10_014);
-        pair.push_back(WasherM10_015);
-        pair.push_back(WasherM10_016);
-
-        pair.push_back(NutBoltM10_001);
-        pair.push_back(NutBoltM10_002);
-        pair.push_back(NutBoltM10_003);
-        pair.push_back(NutBoltM10_004);
-        pair.push_back(NutBoltM10_005);
-        pair.push_back(NutBoltM10_006);
-        pair.push_back(NutBoltM10_007);
-        pair.push_back(NutBoltM10_008);
-        pair.push_back(NutBoltM10_009);
-        pair.push_back(NutBoltM10_010);
-        pair.push_back(NutBoltM10_011);
-        pair.push_back(NutBoltM10_012);
-        pair.push_back(NutBoltM10_013);
-        pair.push_back(NutBoltM10_014);
-        pair.push_back(NutBoltM10_015);
-        pair.push_back(NutBoltM10_016);
 
         // Ghosts M12
         pair.push_back(BoltM12_001);
@@ -2253,7 +2097,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
             assm->AddConstraint(GCM_CONCENTRIC, ConnectorsPlane1, ConnectorsPlane3);
             assm->AddConstraint(GCM_CONCENTRIC, ConnectorsPlane2, ConnectorsPlane4);
         }
-
 #pragma region GHOST_Constraints
 
         if (turnOnStandart) {
@@ -2265,10 +2108,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
             MtGeomArgument WasherFaceTest3(Detail_008->GetFace(7), Item_008_013);
             MtGeomArgument WasherFaceTest4(Detail_008->GetFace(0), Item_008_013);
 
-            MtGeomArgument WasherCircleTest1(WasherM10->GetFace(3), WasherM10_001);
-            MtGeomArgument WasherCircleTest2(WasherM10->GetFace(3), WasherM10_002);
-            MtGeomArgument WasherCircleTest3(WasherM10->GetFace(3), WasherM10_003);
-            MtGeomArgument WasherCircleTest4(WasherM10->GetFace(3), WasherM10_004);
+            MtGeomArgument WasherCircleTest1(WasherM10->GetFace(3), WashersM10[0]);
+            MtGeomArgument WasherCircleTest2(WasherM10->GetFace(3), WashersM10[1]);
+            MtGeomArgument WasherCircleTest3(WasherM10->GetFace(3), WashersM10[2]);
+            MtGeomArgument WasherCircleTest4(WasherM10->GetFace(3), WashersM10[3]);
 
             assm->AddConstraint(GCM_CONCENTRIC, WasherFaceTest1, WasherCircleTest1);
             assm->AddConstraint(GCM_CONCENTRIC, WasherFaceTest2, WasherCircleTest2);
@@ -2281,10 +2124,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
             MtGeomArgument WasherFaceTest3s(Detail_008->GetFace(7), Item_008_014);
             MtGeomArgument WasherFaceTest4s(Detail_008->GetFace(0), Item_008_014);
 
-            MtGeomArgument WasherCircleTest1s(WasherM10->GetFace(3), WasherM10_005);
-            MtGeomArgument WasherCircleTest2s(WasherM10->GetFace(3), WasherM10_006);
-            MtGeomArgument WasherCircleTest3s(WasherM10->GetFace(3), WasherM10_007);
-            MtGeomArgument WasherCircleTest4s(WasherM10->GetFace(3), WasherM10_008);
+            MtGeomArgument WasherCircleTest1s(WasherM10->GetFace(3), WashersM10[4]);
+            MtGeomArgument WasherCircleTest2s(WasherM10->GetFace(3), WashersM10[5]);
+            MtGeomArgument WasherCircleTest3s(WasherM10->GetFace(3), WashersM10[6]);
+            MtGeomArgument WasherCircleTest4s(WasherM10->GetFace(3), WashersM10[7]);
 
             assm->AddConstraint(GCM_CONCENTRIC, WasherFaceTest1s, WasherCircleTest1s);
             assm->AddConstraint(GCM_CONCENTRIC, WasherFaceTest2s, WasherCircleTest2s);
@@ -2297,10 +2140,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
             MtGeomArgument WasherFaceTest3f(Detail_008->GetFace(7), Item_008_015);
             MtGeomArgument WasherFaceTest4f(Detail_008->GetFace(0), Item_008_015);
 
-            MtGeomArgument WasherCircleTest1f(WasherM10->GetFace(3), WasherM10_009);
-            MtGeomArgument WasherCircleTest2f(WasherM10->GetFace(3), WasherM10_010);
-            MtGeomArgument WasherCircleTest3f(WasherM10->GetFace(3), WasherM10_011);
-            MtGeomArgument WasherCircleTest4f(WasherM10->GetFace(3), WasherM10_012);
+            MtGeomArgument WasherCircleTest1f(WasherM10->GetFace(3), WashersM10[8]);
+            MtGeomArgument WasherCircleTest2f(WasherM10->GetFace(3), WashersM10[9]);
+            MtGeomArgument WasherCircleTest3f(WasherM10->GetFace(3), WashersM10[10]);
+            MtGeomArgument WasherCircleTest4f(WasherM10->GetFace(3), WashersM10[11]);
 
             assm->AddConstraint(GCM_CONCENTRIC, WasherFaceTest1f, WasherCircleTest1f);
             assm->AddConstraint(GCM_CONCENTRIC, WasherFaceTest2f, WasherCircleTest2f);
@@ -2313,10 +2156,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
             MtGeomArgument WasherFaceTest3d(Detail_008->GetFace(7), Item_008_016);
             MtGeomArgument WasherFaceTest4d(Detail_008->GetFace(0), Item_008_016);
 
-            MtGeomArgument WasherCircleTest1d(WasherM10->GetFace(3), WasherM10_013);
-            MtGeomArgument WasherCircleTest2d(WasherM10->GetFace(3), WasherM10_014);
-            MtGeomArgument WasherCircleTest3d(WasherM10->GetFace(3), WasherM10_015);
-            MtGeomArgument WasherCircleTest4d(WasherM10->GetFace(3), WasherM10_016);
+            MtGeomArgument WasherCircleTest1d(WasherM10->GetFace(3), WashersM10[12]);
+            MtGeomArgument WasherCircleTest2d(WasherM10->GetFace(3), WashersM10[13]);
+            MtGeomArgument WasherCircleTest3d(WasherM10->GetFace(3), WashersM10[14]);
+            MtGeomArgument WasherCircleTest4d(WasherM10->GetFace(3), WashersM10[15]);
 
             assm->AddConstraint(GCM_CONCENTRIC, WasherFaceTest1d, WasherCircleTest1d);
             assm->AddConstraint(GCM_CONCENTRIC, WasherFaceTest2d, WasherCircleTest2d);
@@ -2327,10 +2170,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
         {
             MtGeomArgument WasherFaceTest1TT(Detail_008->GetFace(2), Item_008_013);
 
-            MtGeomArgument WasherCircleTest1TT(WasherM10->GetFace(2), WasherM10_001);
-            MtGeomArgument WasherCircleTest2TT(WasherM10->GetFace(2), WasherM10_002);
-            MtGeomArgument WasherCircleTest3TT(WasherM10->GetFace(2), WasherM10_003);
-            MtGeomArgument WasherCircleTest4TT(WasherM10->GetFace(2), WasherM10_004);
+            MtGeomArgument WasherCircleTest1TT(WasherM10->GetFace(2), WashersM10[0]);
+            MtGeomArgument WasherCircleTest2TT(WasherM10->GetFace(2), WashersM10[1]);
+            MtGeomArgument WasherCircleTest3TT(WasherM10->GetFace(2), WashersM10[2]);
+            MtGeomArgument WasherCircleTest4TT(WasherM10->GetFace(2), WashersM10[3]);
 
             assm->AddConstraint(GCM_COINCIDENT, WasherFaceTest1TT, WasherCircleTest1TT);
             assm->AddConstraint(GCM_COINCIDENT, WasherFaceTest1TT, WasherCircleTest2TT);
@@ -2340,10 +2183,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
             //
             MtGeomArgument WasherFaceTest1TTs(Detail_008->GetFace(2), Item_008_014);
 
-            MtGeomArgument WasherCircleTest1TTs(WasherM10->GetFace(2), WasherM10_005);
-            MtGeomArgument WasherCircleTest2TTs(WasherM10->GetFace(2), WasherM10_006);
-            MtGeomArgument WasherCircleTest3TTs(WasherM10->GetFace(2), WasherM10_007);
-            MtGeomArgument WasherCircleTest4TTs(WasherM10->GetFace(2), WasherM10_008);
+            MtGeomArgument WasherCircleTest1TTs(WasherM10->GetFace(2), WashersM10[4]);
+            MtGeomArgument WasherCircleTest2TTs(WasherM10->GetFace(2), WashersM10[5]);
+            MtGeomArgument WasherCircleTest3TTs(WasherM10->GetFace(2), WashersM10[6]);
+            MtGeomArgument WasherCircleTest4TTs(WasherM10->GetFace(2), WashersM10[7]);
 
             assm->AddConstraint(GCM_COINCIDENT, WasherFaceTest1TTs, WasherCircleTest1TTs);
             assm->AddConstraint(GCM_COINCIDENT, WasherFaceTest1TTs, WasherCircleTest2TTs);
@@ -2353,10 +2196,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
             //
             MtGeomArgument WasherFaceTest1TTf(Detail_008->GetFace(2), Item_008_015);
 
-            MtGeomArgument WasherCircleTest1TTf(WasherM10->GetFace(2), WasherM10_009);
-            MtGeomArgument WasherCircleTest2TTf(WasherM10->GetFace(2), WasherM10_010);
-            MtGeomArgument WasherCircleTest3TTf(WasherM10->GetFace(2), WasherM10_011);
-            MtGeomArgument WasherCircleTest4TTf(WasherM10->GetFace(2), WasherM10_012);
+            MtGeomArgument WasherCircleTest1TTf(WasherM10->GetFace(2), WashersM10[8]);
+            MtGeomArgument WasherCircleTest2TTf(WasherM10->GetFace(2), WashersM10[9]);
+            MtGeomArgument WasherCircleTest3TTf(WasherM10->GetFace(2), WashersM10[10]);
+            MtGeomArgument WasherCircleTest4TTf(WasherM10->GetFace(2), WashersM10[11]);
 
             assm->AddConstraint(GCM_COINCIDENT, WasherFaceTest1TTf, WasherCircleTest1TTf);
             assm->AddConstraint(GCM_COINCIDENT, WasherFaceTest1TTf, WasherCircleTest2TTf);
@@ -2366,10 +2209,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
             //
             MtGeomArgument WasherFaceTest1TTd(Detail_008->GetFace(2), Item_008_016);
 
-            MtGeomArgument WasherCircleTest1TTd(WasherM10->GetFace(2), WasherM10_013);
-            MtGeomArgument WasherCircleTest2TTd(WasherM10->GetFace(2), WasherM10_014);
-            MtGeomArgument WasherCircleTest3TTd(WasherM10->GetFace(2), WasherM10_015);
-            MtGeomArgument WasherCircleTest4TTd(WasherM10->GetFace(2), WasherM10_016);
+            MtGeomArgument WasherCircleTest1TTd(WasherM10->GetFace(2), WashersM10[12]);
+            MtGeomArgument WasherCircleTest2TTd(WasherM10->GetFace(2), WashersM10[13]);
+            MtGeomArgument WasherCircleTest3TTd(WasherM10->GetFace(2), WashersM10[14]);
+            MtGeomArgument WasherCircleTest4TTd(WasherM10->GetFace(2), WashersM10[15]);
 
             assm->AddConstraint(GCM_COINCIDENT, WasherFaceTest1TTd, WasherCircleTest1TTd);
             assm->AddConstraint(GCM_COINCIDENT, WasherFaceTest1TTd, WasherCircleTest2TTd);
@@ -2379,133 +2222,133 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
         // Концентричность Болты M10 - Фланец специальный внешние
         {
 
-            MtGeomArgument FaceTest1(WasherM10->GetFace(1), WasherM10_001);
-            MtGeomArgument FaceTest2(WasherM10->GetFace(1), WasherM10_002);
-            MtGeomArgument FaceTest3(WasherM10->GetFace(1), WasherM10_003);
-            MtGeomArgument FaceTest4(WasherM10->GetFace(1), WasherM10_004);
-
-            MtGeomArgument CircleTest1(BoltM10->GetFace(5), BoltM10_001);
-            MtGeomArgument CircleTest2(BoltM10->GetFace(5), BoltM10_002);
-            MtGeomArgument CircleTest3(BoltM10->GetFace(5), BoltM10_003);
-            MtGeomArgument CircleTest4(BoltM10->GetFace(5), BoltM10_004);
-
-            assm->AddConstraint(GCM_CONCENTRIC, FaceTest1, CircleTest1);
-            assm->AddConstraint(GCM_CONCENTRIC, FaceTest2, CircleTest2);
-            assm->AddConstraint(GCM_CONCENTRIC, FaceTest3, CircleTest3);
-            assm->AddConstraint(GCM_CONCENTRIC, FaceTest4, CircleTest4);
-
-            //
-            MtGeomArgument FaceTest1s(WasherM10->GetFace(1), WasherM10_005);
-            MtGeomArgument FaceTest2s(WasherM10->GetFace(1), WasherM10_006);
-            MtGeomArgument FaceTest3s(WasherM10->GetFace(1), WasherM10_007);
-            MtGeomArgument FaceTest4s(WasherM10->GetFace(1), WasherM10_008);
-
-            MtGeomArgument CircleTest1s(BoltM10->GetFace(5), BoltM10_005);
-            MtGeomArgument CircleTest2s(BoltM10->GetFace(5), BoltM10_006);
-            MtGeomArgument CircleTest3s(BoltM10->GetFace(5), BoltM10_007);
-            MtGeomArgument CircleTest4s(BoltM10->GetFace(5), BoltM10_008);
-
-            assm->AddConstraint(GCM_CONCENTRIC, FaceTest1s, CircleTest1s);
-            assm->AddConstraint(GCM_CONCENTRIC, FaceTest2s, CircleTest2s);
-            assm->AddConstraint(GCM_CONCENTRIC, FaceTest3s, CircleTest3s);
-            assm->AddConstraint(GCM_CONCENTRIC, FaceTest4s, CircleTest4s);
-
-            //
-            MtGeomArgument FaceTest1f(WasherM10->GetFace(1), WasherM10_009);
-            MtGeomArgument FaceTest2f(WasherM10->GetFace(1), WasherM10_010);
-            MtGeomArgument FaceTest3f(WasherM10->GetFace(1), WasherM10_011);
-            MtGeomArgument FaceTest4f(WasherM10->GetFace(1), WasherM10_012);
-
-            MtGeomArgument CircleTest1f(BoltM10->GetFace(5), BoltM10_009);
-            MtGeomArgument CircleTest2f(BoltM10->GetFace(5), BoltM10_010);
-            MtGeomArgument CircleTest3f(BoltM10->GetFace(5), BoltM10_011);
-            MtGeomArgument CircleTest4f(BoltM10->GetFace(5), BoltM10_012);
-
-            assm->AddConstraint(GCM_CONCENTRIC, FaceTest1f, CircleTest1f);
-            assm->AddConstraint(GCM_CONCENTRIC, FaceTest2f, CircleTest2f);
-            assm->AddConstraint(GCM_CONCENTRIC, FaceTest3f, CircleTest3f);
-            assm->AddConstraint(GCM_CONCENTRIC, FaceTest4f, CircleTest4f);
-
-            //
-            MtGeomArgument FaceTest1d(WasherM10->GetFace(1), WasherM10_013);
-            MtGeomArgument FaceTest2d(WasherM10->GetFace(1), WasherM10_014);
-            MtGeomArgument FaceTest3d(WasherM10->GetFace(1), WasherM10_015);
-            MtGeomArgument FaceTest4d(WasherM10->GetFace(1), WasherM10_016);
-
-            MtGeomArgument CircleTest1d(BoltM10->GetFace(5), BoltM10_013);
-            MtGeomArgument CircleTest2d(BoltM10->GetFace(5), BoltM10_014);
-            MtGeomArgument CircleTest3d(BoltM10->GetFace(5), BoltM10_015);
-            MtGeomArgument CircleTest4d(BoltM10->GetFace(5), BoltM10_016);
-
-            assm->AddConstraint(GCM_CONCENTRIC, FaceTest1d, CircleTest1d);
-            assm->AddConstraint(GCM_CONCENTRIC, FaceTest2d, CircleTest2d);
-            assm->AddConstraint(GCM_CONCENTRIC, FaceTest3d, CircleTest3d);
-            assm->AddConstraint(GCM_CONCENTRIC, FaceTest4d, CircleTest4d);
-        }
+           MtGeomArgument FaceTest1(WasherM10->GetFace(1), WashersM10[0]);
+           MtGeomArgument FaceTest2(WasherM10->GetFace(1), WashersM10[1]);
+           MtGeomArgument FaceTest3(WasherM10->GetFace(1), WashersM10[2]);
+           MtGeomArgument FaceTest4(WasherM10->GetFace(1), WashersM10[3]);
+           
+           MtGeomArgument CircleTest1(BoltM10->GetFace(5), boltsM10[0]);
+           MtGeomArgument CircleTest2(BoltM10->GetFace(5), boltsM10[1]);
+           MtGeomArgument CircleTest3(BoltM10->GetFace(5), boltsM10[2]);
+           MtGeomArgument CircleTest4(BoltM10->GetFace(5), boltsM10[3]);
+           
+           assm->AddConstraint(GCM_CONCENTRIC, FaceTest1, CircleTest1);
+           assm->AddConstraint(GCM_CONCENTRIC, FaceTest2, CircleTest2);
+           assm->AddConstraint(GCM_CONCENTRIC, FaceTest3, CircleTest3);
+           assm->AddConstraint(GCM_CONCENTRIC, FaceTest4, CircleTest4);
+           
+           //
+           MtGeomArgument FaceTest1s(WasherM10->GetFace(1), WashersM10[4]);
+           MtGeomArgument FaceTest2s(WasherM10->GetFace(1), WashersM10[5]);
+           MtGeomArgument FaceTest3s(WasherM10->GetFace(1), WashersM10[6]);
+           MtGeomArgument FaceTest4s(WasherM10->GetFace(1), WashersM10[7]);
+           
+           MtGeomArgument CircleTest1s(BoltM10->GetFace(5), boltsM10[4]);
+           MtGeomArgument CircleTest2s(BoltM10->GetFace(5), boltsM10[5]);
+           MtGeomArgument CircleTest3s(BoltM10->GetFace(5), boltsM10[6]);
+           MtGeomArgument CircleTest4s(BoltM10->GetFace(5), boltsM10[7]);
+           
+           assm->AddConstraint(GCM_CONCENTRIC, FaceTest1s, CircleTest1s);
+           assm->AddConstraint(GCM_CONCENTRIC, FaceTest2s, CircleTest2s);
+           assm->AddConstraint(GCM_CONCENTRIC, FaceTest3s, CircleTest3s);
+           assm->AddConstraint(GCM_CONCENTRIC, FaceTest4s, CircleTest4s);
+           
+           //
+           MtGeomArgument FaceTest1f(WasherM10->GetFace(1), WashersM10[8]);
+           MtGeomArgument FaceTest2f(WasherM10->GetFace(1), WashersM10[9]);
+           MtGeomArgument FaceTest3f(WasherM10->GetFace(1), WashersM10[10]);
+           MtGeomArgument FaceTest4f(WasherM10->GetFace(1), WashersM10[11]);
+           
+           MtGeomArgument CircleTest1f(BoltM10->GetFace(5), boltsM10[8]);
+           MtGeomArgument CircleTest2f(BoltM10->GetFace(5), boltsM10[9]);
+           MtGeomArgument CircleTest3f(BoltM10->GetFace(5), boltsM10[10]);
+           MtGeomArgument CircleTest4f(BoltM10->GetFace(5), boltsM10[11]);
+           
+           assm->AddConstraint(GCM_CONCENTRIC, FaceTest1f, CircleTest1f);
+           assm->AddConstraint(GCM_CONCENTRIC, FaceTest2f, CircleTest2f);
+           assm->AddConstraint(GCM_CONCENTRIC, FaceTest3f, CircleTest3f);
+           assm->AddConstraint(GCM_CONCENTRIC, FaceTest4f, CircleTest4f);
+           
+           //
+           MtGeomArgument FaceTest1d(WasherM10->GetFace(1), WashersM10[12]);
+           MtGeomArgument FaceTest2d(WasherM10->GetFace(1), WashersM10[13]);
+           MtGeomArgument FaceTest3d(WasherM10->GetFace(1), WashersM10[14]);
+           MtGeomArgument FaceTest4d(WasherM10->GetFace(1), WashersM10[15]);
+           
+           MtGeomArgument CircleTest1d(BoltM10->GetFace(5), boltsM10[12]);
+           MtGeomArgument CircleTest2d(BoltM10->GetFace(5), boltsM10[13]);
+           MtGeomArgument CircleTest3d(BoltM10->GetFace(5), boltsM10[14]);
+           MtGeomArgument CircleTest4d(BoltM10->GetFace(5), boltsM10[15]);
+           
+           assm->AddConstraint(GCM_CONCENTRIC, FaceTest1d, CircleTest1d);
+           assm->AddConstraint(GCM_CONCENTRIC, FaceTest2d, CircleTest2d);
+           assm->AddConstraint(GCM_CONCENTRIC, FaceTest3d, CircleTest3d);
+           assm->AddConstraint(GCM_CONCENTRIC, FaceTest4d, CircleTest4d);
+        }  
         // Совместимость Болты M10 - Фланец специальный внешние
-        {
-            MtGeomArgument FaceTest1TT(WasherM10->GetFace(0), WasherM10_001);
-            MtGeomArgument FaceTest2TT(WasherM10->GetFace(0), WasherM10_002);
-            MtGeomArgument FaceTest3TT(WasherM10->GetFace(0), WasherM10_003);
-            MtGeomArgument FaceTest4TT(WasherM10->GetFace(0), WasherM10_004);
-
-            MtGeomArgument CircleTest1TT(BoltM10->GetFace(6), BoltM10_001);
-            MtGeomArgument CircleTest2TT(BoltM10->GetFace(6), BoltM10_002);
-            MtGeomArgument CircleTest3TT(BoltM10->GetFace(6), BoltM10_003);
-            MtGeomArgument CircleTest4TT(BoltM10->GetFace(6), BoltM10_004);
-
-            assm->AddConstraint(GCM_COINCIDENT, FaceTest1TT, CircleTest1TT);
-            assm->AddConstraint(GCM_COINCIDENT, FaceTest2TT, CircleTest2TT);
-            assm->AddConstraint(GCM_COINCIDENT, FaceTest3TT, CircleTest3TT);
-            assm->AddConstraint(GCM_COINCIDENT, FaceTest4TT, CircleTest4TT);
-
-            //
-            MtGeomArgument FaceTest1TTs(WasherM10->GetFace(0), WasherM10_005);
-            MtGeomArgument FaceTest2TTs(WasherM10->GetFace(0), WasherM10_006);
-            MtGeomArgument FaceTest3TTs(WasherM10->GetFace(0), WasherM10_007);
-            MtGeomArgument FaceTest4TTs(WasherM10->GetFace(0), WasherM10_008);
-
-            MtGeomArgument CircleTest1TTs(BoltM10->GetFace(6), BoltM10_005);
-            MtGeomArgument CircleTest2TTs(BoltM10->GetFace(6), BoltM10_006);
-            MtGeomArgument CircleTest3TTs(BoltM10->GetFace(6), BoltM10_007);
-            MtGeomArgument CircleTest4TTs(BoltM10->GetFace(6), BoltM10_008);
-
-            assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTs, CircleTest1TTs);
-            assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTs, CircleTest2TTs);
-            assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTs, CircleTest3TTs);
-            assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTs, CircleTest4TTs);
-
-            //
-            MtGeomArgument FaceTest1TTf(WasherM10->GetFace(0), WasherM10_009);
-            MtGeomArgument FaceTest2TTf(WasherM10->GetFace(0), WasherM10_010);
-            MtGeomArgument FaceTest3TTf(WasherM10->GetFace(0), WasherM10_011);
-            MtGeomArgument FaceTest4TTf(WasherM10->GetFace(0), WasherM10_012);
-
-            MtGeomArgument CircleTest1TTf(BoltM10->GetFace(6), BoltM10_009);
-            MtGeomArgument CircleTest2TTf(BoltM10->GetFace(6), BoltM10_010);
-            MtGeomArgument CircleTest3TTf(BoltM10->GetFace(6), BoltM10_011);
-            MtGeomArgument CircleTest4TTf(BoltM10->GetFace(6), BoltM10_012);
-
-            assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTf, CircleTest1TTf);
-            assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTf, CircleTest2TTf);
-            assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTf, CircleTest3TTf);
-            assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTf, CircleTest4TTf);
-
-            //
-            MtGeomArgument FaceTest1TTd(WasherM10->GetFace(0), WasherM10_013);
-            MtGeomArgument FaceTest2TTd(WasherM10->GetFace(0), WasherM10_014);
-            MtGeomArgument FaceTest3TTd(WasherM10->GetFace(0), WasherM10_015);
-            MtGeomArgument FaceTest4TTd(WasherM10->GetFace(0), WasherM10_016);
-
-            MtGeomArgument CircleTest1TTd(BoltM10->GetFace(6), BoltM10_013);
-            MtGeomArgument CircleTest2TTd(BoltM10->GetFace(6), BoltM10_014);
-            MtGeomArgument CircleTest3TTd(BoltM10->GetFace(6), BoltM10_015);
-            MtGeomArgument CircleTest4TTd(BoltM10->GetFace(6), BoltM10_016);
-
-            assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTd, CircleTest1TTd);
-            assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTd, CircleTest2TTd);
-            assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTd, CircleTest3TTd);
-            assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTd, CircleTest4TTd);
+        {  
+           MtGeomArgument FaceTest1TT(WasherM10->GetFace(0), WashersM10[0]);
+           MtGeomArgument FaceTest2TT(WasherM10->GetFace(0), WashersM10[1]);
+           MtGeomArgument FaceTest3TT(WasherM10->GetFace(0), WashersM10[2]);
+           MtGeomArgument FaceTest4TT(WasherM10->GetFace(0), WashersM10[3]);
+           
+           MtGeomArgument CircleTest1TT(BoltM10->GetFace(6), boltsM10[0]);
+           MtGeomArgument CircleTest2TT(BoltM10->GetFace(6), boltsM10[1]);
+           MtGeomArgument CircleTest3TT(BoltM10->GetFace(6), boltsM10[2]);
+           MtGeomArgument CircleTest4TT(BoltM10->GetFace(6), boltsM10[3]);
+           
+           assm->AddConstraint(GCM_COINCIDENT, FaceTest1TT, CircleTest1TT);
+           assm->AddConstraint(GCM_COINCIDENT, FaceTest2TT, CircleTest2TT);
+           assm->AddConstraint(GCM_COINCIDENT, FaceTest3TT, CircleTest3TT);
+           assm->AddConstraint(GCM_COINCIDENT, FaceTest4TT, CircleTest4TT);
+           
+           //
+           MtGeomArgument FaceTest1TTs(WasherM10->GetFace(0), WashersM10[4]);
+           MtGeomArgument FaceTest2TTs(WasherM10->GetFace(0), WashersM10[5]);
+           MtGeomArgument FaceTest3TTs(WasherM10->GetFace(0), WashersM10[6]);
+           MtGeomArgument FaceTest4TTs(WasherM10->GetFace(0), WashersM10[7]);
+           
+           MtGeomArgument CircleTest1TTs(BoltM10->GetFace(6), boltsM10[4]);
+           MtGeomArgument CircleTest2TTs(BoltM10->GetFace(6), boltsM10[5]);
+           MtGeomArgument CircleTest3TTs(BoltM10->GetFace(6), boltsM10[6]);
+           MtGeomArgument CircleTest4TTs(BoltM10->GetFace(6), boltsM10[7]);
+           
+           assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTs, CircleTest1TTs);
+           assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTs, CircleTest2TTs);
+           assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTs, CircleTest3TTs);
+           assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTs, CircleTest4TTs);
+           
+           //
+           MtGeomArgument FaceTest1TTf(WasherM10->GetFace(0), WashersM10[8]);
+           MtGeomArgument FaceTest2TTf(WasherM10->GetFace(0), WashersM10[9]);
+           MtGeomArgument FaceTest3TTf(WasherM10->GetFace(0), WashersM10[10]);
+           MtGeomArgument FaceTest4TTf(WasherM10->GetFace(0), WashersM10[11]);
+           
+           MtGeomArgument CircleTest1TTf(BoltM10->GetFace(6), boltsM10[8]);
+           MtGeomArgument CircleTest2TTf(BoltM10->GetFace(6), boltsM10[9]);
+           MtGeomArgument CircleTest3TTf(BoltM10->GetFace(6), boltsM10[10]);
+           MtGeomArgument CircleTest4TTf(BoltM10->GetFace(6), boltsM10[11]);
+           
+           assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTf, CircleTest1TTf);
+           assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTf, CircleTest2TTf);
+           assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTf, CircleTest3TTf);
+           assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTf, CircleTest4TTf);
+           
+           //
+           MtGeomArgument FaceTest1TTd(WasherM10->GetFace(0), WashersM10[12]);
+           MtGeomArgument FaceTest2TTd(WasherM10->GetFace(0), WashersM10[13]);
+           MtGeomArgument FaceTest3TTd(WasherM10->GetFace(0), WashersM10[14]);
+           MtGeomArgument FaceTest4TTd(WasherM10->GetFace(0), WashersM10[15]);
+           
+           MtGeomArgument CircleTest1TTd(BoltM10->GetFace(6), boltsM10[12]);
+           MtGeomArgument CircleTest2TTd(BoltM10->GetFace(6), boltsM10[13]);
+           MtGeomArgument CircleTest3TTd(BoltM10->GetFace(6), boltsM10[14]);
+           MtGeomArgument CircleTest4TTd(BoltM10->GetFace(6), boltsM10[15]);
+           
+           assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTd, CircleTest1TTd);
+           assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTd, CircleTest2TTd);
+           assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTd, CircleTest3TTd);
+           assm->AddConstraint(GCM_COINCIDENT, FaceTest1TTd, CircleTest4TTd);
         }
         // Концентричность Гайка M10 - Фланец специальный внутренний
         {
@@ -2514,10 +2357,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
             MtGeomArgument setWasherFaceTest2(Detail_008->GetFace(5), Item_008_009);
             MtGeomArgument setWasherFaceTest3(Detail_008->GetFace(7), Item_008_009);
             MtGeomArgument setWasherFaceTest4(Detail_008->GetFace(0), Item_008_009);
-            MtGeomArgument setWasherCircleTest1(NutBoltM10->GetFace(2), NutBoltM10_001);
-            MtGeomArgument setWasherCircleTest2(NutBoltM10->GetFace(2), NutBoltM10_002);
-            MtGeomArgument setWasherCircleTest3(NutBoltM10->GetFace(2), NutBoltM10_003);
-            MtGeomArgument setWasherCircleTest4(NutBoltM10->GetFace(2), NutBoltM10_004);
+            MtGeomArgument setWasherCircleTest1(NutBoltM10->GetFace(2), NutBoltsM10[0]);
+            MtGeomArgument setWasherCircleTest2(NutBoltM10->GetFace(2), NutBoltsM10[1]);
+            MtGeomArgument setWasherCircleTest3(NutBoltM10->GetFace(2), NutBoltsM10[2]);
+            MtGeomArgument setWasherCircleTest4(NutBoltM10->GetFace(2), NutBoltsM10[3]);
 
             assm->AddConstraint(GCM_CONCENTRIC, setWasherFaceTest1, setWasherCircleTest1);
             assm->AddConstraint(GCM_CONCENTRIC, setWasherFaceTest2, setWasherCircleTest2);
@@ -2529,10 +2372,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
             MtGeomArgument setWasherFaceTest2s(Detail_008->GetFace(5), Item_008_010);
             MtGeomArgument setWasherFaceTest3s(Detail_008->GetFace(7), Item_008_010);
             MtGeomArgument setWasherFaceTest4s(Detail_008->GetFace(0), Item_008_010);
-            MtGeomArgument setWasherCircleTest1s(NutBoltM10->GetFace(2), NutBoltM10_005);
-            MtGeomArgument setWasherCircleTest2s(NutBoltM10->GetFace(2), NutBoltM10_006);
-            MtGeomArgument setWasherCircleTest3s(NutBoltM10->GetFace(2), NutBoltM10_007);
-            MtGeomArgument setWasherCircleTest4s(NutBoltM10->GetFace(2), NutBoltM10_008);
+            MtGeomArgument setWasherCircleTest1s(NutBoltM10->GetFace(2), NutBoltsM10[4]);
+            MtGeomArgument setWasherCircleTest2s(NutBoltM10->GetFace(2), NutBoltsM10[5]);
+            MtGeomArgument setWasherCircleTest3s(NutBoltM10->GetFace(2), NutBoltsM10[6]);
+            MtGeomArgument setWasherCircleTest4s(NutBoltM10->GetFace(2), NutBoltsM10[7]);
 
             assm->AddConstraint(GCM_CONCENTRIC, setWasherFaceTest1s, setWasherCircleTest1s);
             assm->AddConstraint(GCM_CONCENTRIC, setWasherFaceTest2s, setWasherCircleTest2s);
@@ -2544,10 +2387,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
             MtGeomArgument setWasherFaceTest2f(Detail_008->GetFace(5), Item_008_011);
             MtGeomArgument setWasherFaceTest3f(Detail_008->GetFace(7), Item_008_011);
             MtGeomArgument setWasherFaceTest4f(Detail_008->GetFace(0), Item_008_011);
-            MtGeomArgument setWasherCircleTest1f(NutBoltM10->GetFace(2), NutBoltM10_009);
-            MtGeomArgument setWasherCircleTest2f(NutBoltM10->GetFace(2), NutBoltM10_010);
-            MtGeomArgument setWasherCircleTest3f(NutBoltM10->GetFace(2), NutBoltM10_011);
-            MtGeomArgument setWasherCircleTest4f(NutBoltM10->GetFace(2), NutBoltM10_012);
+            MtGeomArgument setWasherCircleTest1f(NutBoltM10->GetFace(2), NutBoltsM10[8]);
+            MtGeomArgument setWasherCircleTest2f(NutBoltM10->GetFace(2), NutBoltsM10[9]);
+            MtGeomArgument setWasherCircleTest3f(NutBoltM10->GetFace(2), NutBoltsM10[10]);
+            MtGeomArgument setWasherCircleTest4f(NutBoltM10->GetFace(2), NutBoltsM10[11]);
 
             assm->AddConstraint(GCM_CONCENTRIC, setWasherFaceTest1f, setWasherCircleTest1f);
             assm->AddConstraint(GCM_CONCENTRIC, setWasherFaceTest2f, setWasherCircleTest2f);
@@ -2559,10 +2402,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
             MtGeomArgument setWasherFaceTest2d(Detail_008->GetFace(5), Item_008_012);
             MtGeomArgument setWasherFaceTest3d(Detail_008->GetFace(7), Item_008_012);
             MtGeomArgument setWasherFaceTest4d(Detail_008->GetFace(0), Item_008_012);
-            MtGeomArgument setWasherCircleTest1d(NutBoltM10->GetFace(2), NutBoltM10_013);
-            MtGeomArgument setWasherCircleTest2d(NutBoltM10->GetFace(2), NutBoltM10_014);
-            MtGeomArgument setWasherCircleTest3d(NutBoltM10->GetFace(2), NutBoltM10_015);
-            MtGeomArgument setWasherCircleTest4d(NutBoltM10->GetFace(2), NutBoltM10_016);
+            MtGeomArgument setWasherCircleTest1d(NutBoltM10->GetFace(2), NutBoltsM10[12]);
+            MtGeomArgument setWasherCircleTest2d(NutBoltM10->GetFace(2), NutBoltsM10[13]);
+            MtGeomArgument setWasherCircleTest3d(NutBoltM10->GetFace(2), NutBoltsM10[14]);
+            MtGeomArgument setWasherCircleTest4d(NutBoltM10->GetFace(2), NutBoltsM10[15]);
 
             assm->AddConstraint(GCM_CONCENTRIC, setWasherFaceTest1d, setWasherCircleTest1d);
             assm->AddConstraint(GCM_CONCENTRIC, setWasherFaceTest2d, setWasherCircleTest2d);
@@ -2572,10 +2415,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
         // Совместимость Гайка M10 - Фланец специальный внутренний
         {
             MtGeomArgument setWasherFaceTest1TT(Detail_008->GetFace(2), Item_008_009);
-            MtGeomArgument setWasherCircleTest1TT(NutBoltM10->GetFace(0), NutBoltM10_001);
-            MtGeomArgument setWasherCircleTest2TT(NutBoltM10->GetFace(0), NutBoltM10_002);
-            MtGeomArgument setWasherCircleTest3TT(NutBoltM10->GetFace(0), NutBoltM10_003);
-            MtGeomArgument setWasherCircleTest4TT(NutBoltM10->GetFace(0), NutBoltM10_004);
+            MtGeomArgument setWasherCircleTest1TT(NutBoltM10->GetFace(0), NutBoltsM10[0]);
+            MtGeomArgument setWasherCircleTest2TT(NutBoltM10->GetFace(0), NutBoltsM10[1]);
+            MtGeomArgument setWasherCircleTest3TT(NutBoltM10->GetFace(0), NutBoltsM10[2]);
+            MtGeomArgument setWasherCircleTest4TT(NutBoltM10->GetFace(0), NutBoltsM10[3]);
 
             assm->AddConstraint(GCM_COINCIDENT, setWasherFaceTest1TT, setWasherCircleTest1TT);
             assm->AddConstraint(GCM_COINCIDENT, setWasherFaceTest1TT, setWasherCircleTest2TT);
@@ -2584,10 +2427,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
             //
             MtGeomArgument setWasherFaceTest1TTs(Detail_008->GetFace(2), Item_008_010);
-            MtGeomArgument setWasherCircleTest1TTs(NutBoltM10->GetFace(0), NutBoltM10_005);
-            MtGeomArgument setWasherCircleTest2TTs(NutBoltM10->GetFace(0), NutBoltM10_006);
-            MtGeomArgument setWasherCircleTest3TTs(NutBoltM10->GetFace(0), NutBoltM10_007);
-            MtGeomArgument setWasherCircleTest4TTs(NutBoltM10->GetFace(0), NutBoltM10_008);
+            MtGeomArgument setWasherCircleTest1TTs(NutBoltM10->GetFace(0), NutBoltsM10[4]);
+            MtGeomArgument setWasherCircleTest2TTs(NutBoltM10->GetFace(0), NutBoltsM10[5]);
+            MtGeomArgument setWasherCircleTest3TTs(NutBoltM10->GetFace(0), NutBoltsM10[6]);
+            MtGeomArgument setWasherCircleTest4TTs(NutBoltM10->GetFace(0), NutBoltsM10[7]);
 
             assm->AddConstraint(GCM_COINCIDENT, setWasherFaceTest1TTs, setWasherCircleTest1TTs);
             assm->AddConstraint(GCM_COINCIDENT, setWasherFaceTest1TTs, setWasherCircleTest2TTs);
@@ -2596,10 +2439,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
             //
             MtGeomArgument setWasherFaceTest1TTf(Detail_008->GetFace(2), Item_008_011);
-            MtGeomArgument setWasherCircleTest1TTf(NutBoltM10->GetFace(0), NutBoltM10_009);
-            MtGeomArgument setWasherCircleTest2TTf(NutBoltM10->GetFace(0), NutBoltM10_010);
-            MtGeomArgument setWasherCircleTest3TTf(NutBoltM10->GetFace(0), NutBoltM10_011);
-            MtGeomArgument setWasherCircleTest4TTf(NutBoltM10->GetFace(0), NutBoltM10_012);
+            MtGeomArgument setWasherCircleTest1TTf(NutBoltM10->GetFace(0), NutBoltsM10[8]);
+            MtGeomArgument setWasherCircleTest2TTf(NutBoltM10->GetFace(0), NutBoltsM10[9]);
+            MtGeomArgument setWasherCircleTest3TTf(NutBoltM10->GetFace(0), NutBoltsM10[10]);
+            MtGeomArgument setWasherCircleTest4TTf(NutBoltM10->GetFace(0), NutBoltsM10[11]);
 
             assm->AddConstraint(GCM_COINCIDENT, setWasherFaceTest1TTf, setWasherCircleTest1TTf);
             assm->AddConstraint(GCM_COINCIDENT, setWasherFaceTest1TTf, setWasherCircleTest2TTf);
@@ -2608,10 +2451,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
             //
             MtGeomArgument setWasherFaceTest1TTd(Detail_008->GetFace(2), Item_008_012);
-            MtGeomArgument setWasherCircleTest1TTd(NutBoltM10->GetFace(0), NutBoltM10_013);
-            MtGeomArgument setWasherCircleTest2TTd(NutBoltM10->GetFace(0), NutBoltM10_014);
-            MtGeomArgument setWasherCircleTest3TTd(NutBoltM10->GetFace(0), NutBoltM10_015);
-            MtGeomArgument setWasherCircleTest4TTd(NutBoltM10->GetFace(0), NutBoltM10_016);
+            MtGeomArgument setWasherCircleTest1TTd(NutBoltM10->GetFace(0), NutBoltsM10[12]);
+            MtGeomArgument setWasherCircleTest2TTd(NutBoltM10->GetFace(0), NutBoltsM10[13]);
+            MtGeomArgument setWasherCircleTest3TTd(NutBoltM10->GetFace(0), NutBoltsM10[14]);
+            MtGeomArgument setWasherCircleTest4TTd(NutBoltM10->GetFace(0), NutBoltsM10[15]);
 
             assm->AddConstraint(GCM_COINCIDENT, setWasherFaceTest1TTd, setWasherCircleTest1TTd);
             assm->AddConstraint(GCM_COINCIDENT, setWasherFaceTest1TTd, setWasherCircleTest2TTd);
@@ -3373,10 +3216,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
             MtGeomArgument WasherFaceTest3(Detail_008->GetFace(7), Item_008_018);
             MtGeomArgument WasherFaceTest4(Detail_008->GetFace(0), Item_008_018);
 
-            MtGeomArgument WasherCircleTest1(WasherM8->GetFace(3), WasherM8_001);
-            MtGeomArgument WasherCircleTest2(WasherM8->GetFace(3), WasherM8_002);
-            MtGeomArgument WasherCircleTest3(WasherM8->GetFace(3), WasherM8_003);
-            MtGeomArgument WasherCircleTest4(WasherM8->GetFace(3), WasherM8_004);
+            MtGeomArgument WasherCircleTest1(WasherM8->GetFace(3), WashersM8[0]);
+            MtGeomArgument WasherCircleTest2(WasherM8->GetFace(3), WashersM8[1]);
+            MtGeomArgument WasherCircleTest3(WasherM8->GetFace(3), WashersM8[2]);
+            MtGeomArgument WasherCircleTest4(WasherM8->GetFace(3), WashersM8[3]);
 
             assm->AddConstraint(GCM_CONCENTRIC, WasherFaceTest1, WasherCircleTest1);
             assm->AddConstraint(GCM_CONCENTRIC, WasherFaceTest2, WasherCircleTest2);
@@ -3387,10 +3230,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
         {
             MtGeomArgument WasherFaceTest1TT(Detail_008->GetFace(2), Item_008_018);
 
-            MtGeomArgument WasherCircleTest1TT(WasherM8->GetFace(2), WasherM8_001);
-            MtGeomArgument WasherCircleTest2TT(WasherM8->GetFace(2), WasherM8_002);
-            MtGeomArgument WasherCircleTest3TT(WasherM8->GetFace(2), WasherM8_003);
-            MtGeomArgument WasherCircleTest4TT(WasherM8->GetFace(2), WasherM8_004);
+            MtGeomArgument WasherCircleTest1TT(WasherM8->GetFace(2), WashersM8[0]);
+            MtGeomArgument WasherCircleTest2TT(WasherM8->GetFace(2), WashersM8[1]);
+            MtGeomArgument WasherCircleTest3TT(WasherM8->GetFace(2), WashersM8[2]);
+            MtGeomArgument WasherCircleTest4TT(WasherM8->GetFace(2), WashersM8[3]);
 
             assm->AddConstraint(GCM_COINCIDENT, WasherFaceTest1TT, WasherCircleTest1TT);
             assm->AddConstraint(GCM_COINCIDENT, WasherFaceTest1TT, WasherCircleTest2TT);
@@ -3400,15 +3243,15 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
         // Концентричность Болты M8 - Фланец специальный внешние
         {
 
-            MtGeomArgument FaceTest1(WasherM8->GetFace(1), WasherM8_001);
-            MtGeomArgument FaceTest2(WasherM8->GetFace(1), WasherM8_002);
-            MtGeomArgument FaceTest3(WasherM8->GetFace(1), WasherM8_003);
-            MtGeomArgument FaceTest4(WasherM8->GetFace(1), WasherM8_004);
+            MtGeomArgument FaceTest1(WasherM8->GetFace(1), WashersM8[0]);
+            MtGeomArgument FaceTest2(WasherM8->GetFace(1), WashersM8[1]);
+            MtGeomArgument FaceTest3(WasherM8->GetFace(1), WashersM8[2]);
+            MtGeomArgument FaceTest4(WasherM8->GetFace(1), WashersM8[3]);
 
-            MtGeomArgument CircleTest1(BoltM8->GetFace(5), BoltM8_001);
-            MtGeomArgument CircleTest2(BoltM8->GetFace(5), BoltM8_002);
-            MtGeomArgument CircleTest3(BoltM8->GetFace(5), BoltM8_003);
-            MtGeomArgument CircleTest4(BoltM8->GetFace(5), BoltM8_004);
+            MtGeomArgument CircleTest1(BoltM8->GetFace(5), boltsM8[0]);
+            MtGeomArgument CircleTest2(BoltM8->GetFace(5), boltsM8[1]);
+            MtGeomArgument CircleTest3(BoltM8->GetFace(5), boltsM8[2]);
+            MtGeomArgument CircleTest4(BoltM8->GetFace(5), boltsM8[3]);
 
             assm->AddConstraint(GCM_CONCENTRIC, FaceTest1, CircleTest1);
             assm->AddConstraint(GCM_CONCENTRIC, FaceTest2, CircleTest2);
@@ -3417,15 +3260,15 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
         }
         // Совместимость Болты M8 - Фланец специальный внешние
         {
-            MtGeomArgument FaceTest1TT(WasherM8->GetFace(0), WasherM8_001);
-            MtGeomArgument FaceTest2TT(WasherM8->GetFace(0), WasherM8_002);
-            MtGeomArgument FaceTest3TT(WasherM8->GetFace(0), WasherM8_003);
-            MtGeomArgument FaceTest4TT(WasherM8->GetFace(0), WasherM8_004);
+            MtGeomArgument FaceTest1TT(WasherM8->GetFace(0), WashersM8[0]);
+            MtGeomArgument FaceTest2TT(WasherM8->GetFace(0), WashersM8[1]);
+            MtGeomArgument FaceTest3TT(WasherM8->GetFace(0), WashersM8[2]);
+            MtGeomArgument FaceTest4TT(WasherM8->GetFace(0), WashersM8[3]);
 
-            MtGeomArgument CircleTest1TT(BoltM8->GetFace(6), BoltM8_001);
-            MtGeomArgument CircleTest2TT(BoltM8->GetFace(6), BoltM8_002);
-            MtGeomArgument CircleTest3TT(BoltM8->GetFace(6), BoltM8_003);
-            MtGeomArgument CircleTest4TT(BoltM8->GetFace(6), BoltM8_004);
+            MtGeomArgument CircleTest1TT(BoltM8->GetFace(6), boltsM8[0]);
+            MtGeomArgument CircleTest2TT(BoltM8->GetFace(6), boltsM8[1]);
+            MtGeomArgument CircleTest3TT(BoltM8->GetFace(6), boltsM8[2]);
+            MtGeomArgument CircleTest4TT(BoltM8->GetFace(6), boltsM8[3]);
 
             assm->AddConstraint(GCM_COINCIDENT, FaceTest1TT, CircleTest1TT);
             assm->AddConstraint(GCM_COINCIDENT, FaceTest2TT, CircleTest2TT);
@@ -3439,10 +3282,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
             MtGeomArgument setWasherFaceTest2(Detail_008->GetFace(5), Item_008_017);
             MtGeomArgument setWasherFaceTest3(Detail_008->GetFace(7), Item_008_017);
             MtGeomArgument setWasherFaceTest4(Detail_008->GetFace(0), Item_008_017);
-            MtGeomArgument setWasherCircleTest1(NutBoltM8->GetFace(2), NutBoltM8_001);
-            MtGeomArgument setWasherCircleTest2(NutBoltM8->GetFace(2), NutBoltM8_002);
-            MtGeomArgument setWasherCircleTest3(NutBoltM8->GetFace(2), NutBoltM8_003);
-            MtGeomArgument setWasherCircleTest4(NutBoltM8->GetFace(2), NutBoltM8_004);
+            MtGeomArgument setWasherCircleTest1(NutBoltM8->GetFace(2), NutBoltsM8[0]);
+            MtGeomArgument setWasherCircleTest2(NutBoltM8->GetFace(2), NutBoltsM8[1]);
+            MtGeomArgument setWasherCircleTest3(NutBoltM8->GetFace(2), NutBoltsM8[2]);
+            MtGeomArgument setWasherCircleTest4(NutBoltM8->GetFace(2), NutBoltsM8[3]);
 
             assm->AddConstraint(GCM_CONCENTRIC, setWasherFaceTest1, setWasherCircleTest1);
             assm->AddConstraint(GCM_CONCENTRIC, setWasherFaceTest2, setWasherCircleTest2);
@@ -3452,10 +3295,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
         // Совместимость Гайка M8 - Фланец специальный внутренний
         {
             MtGeomArgument setWasherFaceTest1TT(Detail_008->GetFace(2), Item_008_017);
-            MtGeomArgument setWasherCircleTest1TT(NutBoltM8->GetFace(0), NutBoltM8_001);
-            MtGeomArgument setWasherCircleTest2TT(NutBoltM8->GetFace(0), NutBoltM8_002);
-            MtGeomArgument setWasherCircleTest3TT(NutBoltM8->GetFace(0), NutBoltM8_003);
-            MtGeomArgument setWasherCircleTest4TT(NutBoltM8->GetFace(0), NutBoltM8_004);
+            MtGeomArgument setWasherCircleTest1TT(NutBoltM8->GetFace(0), NutBoltsM8[0]);
+            MtGeomArgument setWasherCircleTest2TT(NutBoltM8->GetFace(0), NutBoltsM8[1]);
+            MtGeomArgument setWasherCircleTest3TT(NutBoltM8->GetFace(0), NutBoltsM8[2]);
+            MtGeomArgument setWasherCircleTest4TT(NutBoltM8->GetFace(0), NutBoltsM8[3]);
 
             assm->AddConstraint(GCM_COINCIDENT, setWasherFaceTest1TT, setWasherCircleTest1TT);
             assm->AddConstraint(GCM_COINCIDENT, setWasherFaceTest1TT, setWasherCircleTest2TT);
@@ -3464,8 +3307,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
         }
         }
 #pragma endregion
-
-
         SPtr<MbInstance> Item_008_017(new MbInstance(*Detail_008, lcs));
         SPtr<MbInstance> Item_008_018(new MbInstance(*Detail_008, lcs));
     }

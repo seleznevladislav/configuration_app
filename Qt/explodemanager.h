@@ -16,6 +16,10 @@
 #include <QMessageBox>
 #include <QCheckBox>
 
+#include <array>
+#include <memory>  // For std::shared_ptr
+#include <vector>
+
 using namespace BuildMathModel;
 
 class QVBoxLayout;
