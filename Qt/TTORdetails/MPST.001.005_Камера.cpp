@@ -252,7 +252,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_005_kamera(double ktDiam, do
     int index = 0;
     double Dcircle = 370.0 * 2;
 
-    if (l3 == 400) { 
+    if (l3 <= 400) { 
         index = 0;
     }
     else if (l3 > 400) {

@@ -1060,6 +1060,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     double l2 = params.l2;
     double l3 = params.l3;
     double t = params.t;
+    double Lt = params.Lt;
     bool turnOnStandart = params.turnOnStandart;
     bool simpleMode = params.simpleMode;
 
@@ -1077,7 +1078,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     MbAxis3D ayVert(MbVector3D(0, 1, 0));
     MbAxis3D azVert(MbVector3D(0, 0, 1));
 
-    SPtr<MbSolid> Detail_001(Zarubincreate_001_tubeTeploobmen(lK, ttDiam, ttThickness));
+    SPtr<MbSolid> Detail_001(Zarubincreate_001_tubeTeploobmen(Lt, ttDiam, ttThickness));
     Detail_001->SetColor(235, 172, 165);
     SPtr<MbSolid> Detail_002(Zarubincreate_002_tubeKozhux(lK, ktDiam, ktThickness));
     Detail_002->SetColor(165, 175, 235);
@@ -1094,6 +1095,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
     SPtr<MbSolid> Detail_008(Zarubincreate_008_FlanecSpecial(ttDiam, ttThickness));
     Detail_008->SetColor(83, 123, 151);
+
     SPtr<MbSolid> Detail_009(Zarubincreate_009_curevedTube(ttDiam, ttThickness, t));
     Detail_009->SetColor(71, 91, 71);
     SPtr<MbSolid> Detail_010(Zarubincreate_010_Connector(ktDiam, ktThickness, t, dU));

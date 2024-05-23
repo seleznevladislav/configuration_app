@@ -289,7 +289,11 @@ void ExplodeManager::radiosTypeFromToggled(bool checked, int type)
         thicknessTubeTTOR->setValue(config.ttThickness);
         thicknessKozhuxTTOR->setValue(config.ktThickness);
         distanceOporiTTOR->setValue(config.l0);
-        dlinaKameriTTOR->setValue(config.l1);
+        dlinaKameriTTOR->setValue(config.l3);
+        visotaOporyH1TTOR->setValue(config.H1);
+        LengthTeplTubeTTOR->setValue(config.Lt);
+        LengthKozhuxTubeTTOR->setValue(config.lK);
+        distanceConnectorTTOR->setValue(config.l2);
     }
     if (type == 1 && m_pExplodeWidget->m_pCurrentExchandger == 1) 
     {
@@ -299,6 +303,10 @@ void ExplodeManager::radiosTypeFromToggled(bool checked, int type)
         thicknessKozhuxTTOR->setValue(0);
         distanceOporiTTOR->setValue(0);
         dlinaKameriTTOR->setValue(0);
+        visotaOporyH1TTOR->setValue(0);
+        LengthTeplTubeTTOR->setValue(0);
+        LengthKozhuxTubeTTOR->setValue(0);
+        distanceConnectorTTOR->setValue(0);
     }
 }
 
@@ -436,14 +444,30 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
         thicknessKozhuxTTOR = new QDoubleSpinBox;
         thicknessKozhuxTTOR->setMaximum(1000);
         QLabel* thicknessKozhuxLabel = new QLabel(u8"Толщина стенки кожуха, dt2 (мм):");
-        
+
+        LengthTeplTubeTTOR = new QDoubleSpinBox;
+        LengthTeplTubeTTOR->setMaximum(10000);
+        QLabel* LengthTeplTubeLabel = new QLabel(u8"Длина теплообменной, Lt (мм):");
+
+        LengthKozhuxTubeTTOR = new QDoubleSpinBox;
+        LengthKozhuxTubeTTOR->setMaximum(10000);
+        QLabel* LengthKozhuxTubeLabel = new QLabel(u8"Длина кожухуха, Lk (мм):");
+
         distanceOporiTTOR = new QDoubleSpinBox;
         distanceOporiTTOR->setMaximum(10000);
         QLabel* distanceOporiLabel = new QLabel(u8"Растояние опоры, l0 (мм):");
         
+        distanceConnectorTTOR = new QDoubleSpinBox;
+        distanceConnectorTTOR->setMaximum(10000);
+        QLabel* distanceConnectorLabel = new QLabel(u8"Растояние соединения от опоры, l2 (мм):");
+        
         dlinaKameriTTOR = new QDoubleSpinBox;
         dlinaKameriTTOR->setMaximum(10000);
-        QLabel* dlinaKameriLabel = new QLabel(u8"Длина камеры, l3 (мм):");
+        QLabel* dlinaKameriLabel = new QLabel(u8"Длина камеры, l3 (мм):"); 
+        
+        visotaOporyH1TTOR = new QDoubleSpinBox;
+        visotaOporyH1TTOR->setMaximum(10000);
+        QLabel* visotaOporyH1Label = new QLabel(u8"Высота опоры, H1*2 (мм):");
 
         formLayout->addRow(turnOnStandartDetailsLabel, turnOnStandartDetailsTTOR);
         formLayout->addRow(simpleModeStandartLabel, simpleModeStandartTTOR);
@@ -451,8 +475,12 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
         formLayout->addRow(diametrKozhuxLabel, diametrKozhuxTTOR);
         formLayout->addRow(thicknessTubeLabel, thicknessTubeTTOR);
         formLayout->addRow(thicknessKozhuxLabel, thicknessKozhuxTTOR);
+        formLayout->addRow(LengthTeplTubeLabel, LengthTeplTubeTTOR);
+        formLayout->addRow(LengthKozhuxTubeLabel, LengthKozhuxTubeTTOR);
         formLayout->addRow(distanceOporiLabel, distanceOporiTTOR);
+        formLayout->addRow(distanceConnectorLabel, distanceConnectorTTOR);
         formLayout->addRow(dlinaKameriLabel, dlinaKameriTTOR);
+        formLayout->addRow(visotaOporyH1Label, visotaOporyH1TTOR);
 
         break;
     }
@@ -1452,6 +1480,10 @@ void ExplodeManager::onReconfigureButtonClicked() {
         manualTTORParams.ktThickness = thicknessKozhuxTTOR->value();
         manualTTORParams.l0 = distanceOporiTTOR->value();
         manualTTORParams.l3 = dlinaKameriTTOR->value();
+        manualTTORParams.H1 = visotaOporyH1TTOR->value();
+        manualTTORParams.Lt = LengthTeplTubeTTOR->value();
+        manualTTORParams.lK = LengthKozhuxTubeTTOR->value();
+        manualTTORParams.l2 = distanceConnectorTTOR->value();
         manualTTORParams.turnOnStandart = turnOnStandartDetailsTTOR->checkState() == 2 ? true : false;
         manualTTORParams.simpleMode = simpleModeStandartTTOR->checkState() == 2 ? true : false;
     }

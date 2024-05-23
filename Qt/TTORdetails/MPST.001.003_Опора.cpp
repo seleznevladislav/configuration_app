@@ -12,7 +12,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora(double dV, double 
 
     // Параметры стандартные, то есть при 600
     double depth = 200;
-    double high = 850;
+    double high = visotaOpori;
     double width = 750;
 
     double minsa = 300;
@@ -31,7 +31,6 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora(double dV, double 
 
     if (dV >= 800.0) {
         depth = 250;
-        high = 1070;
         width = 976;
 
         minsa = 400;
