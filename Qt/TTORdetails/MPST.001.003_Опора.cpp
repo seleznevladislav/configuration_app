@@ -8,8 +8,6 @@ const double DEG_TO_RAD = M_PI / 180.0;
 
 SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora(double dV, double ktDiam, double ktThickness, double t, double visotaOpori, double shirinaOpori)
 {
-    // В зависимости от диаметра камеры выбираются след параметры:
-
     // Параметры стандартные, то есть при 600
     double depth = 200;
     double high = visotaOpori;
@@ -48,7 +46,6 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora(double dV, double 
     }
 
     assemblyHeightTTOR = high; // Задаётся высота теплообменика, для дальнейшей организации элемента сборки в блок
-
 
     MbSNameMaker blockNames(1, MbSNameMaker::i_SideNone, 0);
 
@@ -98,7 +95,6 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora(double dV, double 
     flagsBool.InitBoolean(true);
     flagsBool.SetMergingFaces(true);
     flagsBool.SetMergingEdges(true);
-
 
     ::BooleanResult(pBlock, cm_Copy, innerLeftBlock, cm_Copy,
         MbBooleanOperationParams(bo_Difference, flagsBool, operBoolNames), pMergeLeftBlock);

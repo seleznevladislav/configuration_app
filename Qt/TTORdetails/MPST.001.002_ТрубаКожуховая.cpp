@@ -11,7 +11,6 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_002_tubeKozhux(double lK, do
     const double inner = ktDiam;
     const double outer = ktDiam + 2 * ktThickness;
 
-
     MbSNameMaker blockNames(1, MbSNameMaker::i_SideNone, 0);
 
     SolidSPtr outerPipe, bigRadiusCyl, smallRadiusCyl;
