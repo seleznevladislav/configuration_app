@@ -152,7 +152,7 @@ void CreateSketchForPath(RPArray<MbContour>& _arrContours, double d, double step
     _arrContours.push_back(pContour);
 }
 
-SPtr<MbSolid> ParametricModelCreator::BoltGostTTOR(double diam)
+SPtr<MbSolid> ParametricModelCreator::BoltGostTTOR(double diam, bool simpleModeOn)
 {
     int index = 0;
 
@@ -288,13 +288,11 @@ SPtr<MbSolid> ParametricModelCreator::BoltGostTTOR(double diam)
     contourNames.Add(&cNames1);
     MbSNameMaker splineNames(ct_CurveSweptSolid, MbSNameMaker::i_SideNone, 0);
 
-    MbResultType resko = ::EvolutionSolid(sweptDataRevSwift, *spiral, paramsREf, operName321s, contourNames, splineNames, pSolidTest);
-    pSolidTest->Move(MbVector3D(l - b, 0, 0));
 
     SolidSPtr Solid(pSolid1);
     SolidSPtr Solid1(pSolid);
     SolidSPtr Solid2(pSolid32);
-    SolidSPtr Solid3(pSolidTest);
+
 
     // Объединение
     SolidSPtr SolidRes1 = nullptr;
@@ -306,22 +304,36 @@ SPtr<MbSolid> ParametricModelCreator::BoltGostTTOR(double diam)
     MbBooleanOperationParams parametersUnion(bo_Union, true, operBoolNames);
     MbBooleanOperationParams parametersDif(bo_Difference, true, operBoolNames);
 
+
+
+
     ::BooleanResult(Solid, cm_Copy, Solid1, cm_Copy, parametersUnion, SolidRes1);
     ::BooleanResult(SolidRes1, cm_Copy, Solid2, cm_Copy, parametersDif, SolidRes2);
-    ::BooleanResult(SolidRes2, cm_Copy, Solid3, cm_Copy, parametersDif, SolidRes3);
 
+    int rebro = 4;
     // Скругление
+    if (!simpleModeOn) {
+        MbResultType resko = ::EvolutionSolid(sweptDataRevSwift, *spiral, paramsREf, operName321s, contourNames, splineNames, pSolidTest);
+        pSolidTest->Move(MbVector3D(l - b, 0, 0));
+
+        SolidSPtr Solid3(pSolidTest);
+        ::BooleanResult(SolidRes2, cm_Copy, Solid3, cm_Copy, parametersDif, SolidRes3);
+    }
+    else {
+        SolidRes3 = SolidRes2;
+        rebro = 23;
+    }
 
     RPArray<MbCurveEdge> allEdges;
     SolidRes3->GetEdges(allEdges);
 
     c3d::EdgesSPtrVector initCurves;
     initCurves.clear();
-    initCurves.emplace_back(allEdges[4]);
+    initCurves.emplace_back(allEdges[rebro]);
 
     FacesSPtrVector initBounds;
-
     SolidSPtr filletBody;
+
     ::FilletSolid(*(MbSolid*)SolidRes3, cm_Copy, MbShellFilletValues(initCurves, initBounds, params, filletNames), filletBody);
 
     return filletBody;

@@ -29,8 +29,8 @@ namespace BuildMathModel {
 		double l2;             // 14 - Расстояние между фланцем соединительным и опорой
 		double l3;             // 15 - Длина камеры
 		double t;              // 16 - Расстояние между трубами
-		double turnOnStandart; // 17 - Включить стд
-		double simpleMode;     // 18 - Упрощенный режим
+		bool turnOnStandart;   // 17 - Включить стд
+		bool simpleMode;       // 18 - Упрощенный режим
 	};
 	struct ConfigParams
 	{

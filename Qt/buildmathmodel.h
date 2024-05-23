@@ -218,7 +218,7 @@ namespace BuildMathModel {
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_012_curevedTubeBig(double ttDiam, double ttThickness, double visotaOpori, double t);
 
 		// GHOSTS TTOR
-		static SPtr<MbSolid> ParametricModelCreator::BoltGostTTOR(double diam);
+		static SPtr<MbSolid> ParametricModelCreator::BoltGostTTOR(double diam, bool simpleModeOn);
 		static SPtr<MbSolid> ParametricModelCreator::NutBoltGostTTOR(double diam);
 		static SPtr<MbSolid> ParametricModelCreator::WasherGostTTOR(double diam);
 

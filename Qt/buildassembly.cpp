@@ -1060,8 +1060,8 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     double l2 = params.l2;
     double l3 = params.l3;
     double t = params.t;
-    double turnOnStandart = params.turnOnStandart;
-    double simpleMode = params.simpleMode;
+    bool turnOnStandart = params.turnOnStandart;
+    bool simpleMode = params.simpleMode;
 
     const double visotaOpori = H1*2;
     const double shirinaOpori = 200;
@@ -1101,16 +1101,16 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     SPtr<MbSolid> Detail_011(Zarubincreate_011_ConnectorWithFlanec(ktDiam, ktThickness, t, visotaOpori, dU));
 
     // Bolts
-    SPtr<MbSolid> BoltM8(BoltGostTTOR(12));
+    SPtr<MbSolid> BoltM8(BoltGostTTOR(12, simpleMode));
     BoltM8->SetColor(151, 148, 139);
 
-    SPtr<MbSolid> BoltM10(BoltGostTTOR(10));
+    SPtr<MbSolid> BoltM10(BoltGostTTOR(10, simpleMode));
     BoltM10->SetColor(151, 148, 139);
     
-    SPtr<MbSolid> BoltM12(BoltGostTTOR(12));
+    SPtr<MbSolid> BoltM12(BoltGostTTOR(12, simpleMode));
     BoltM12->SetColor(151, 148, 139);
 
-    SPtr<MbSolid> BoltM16(BoltGostTTOR(16));
+    SPtr<MbSolid> BoltM16(BoltGostTTOR(16, simpleMode));
     BoltM16->SetColor(151, 148, 139);
 
     // Washers
