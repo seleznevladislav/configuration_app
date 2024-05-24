@@ -106,6 +106,29 @@ namespace BuildMathModel {
 		double Pr;			  // 7 - Теплоёмкость
 	};
 
+
+	struct data_fluidPrs_IU_IP {
+		std::string name;
+		double density;    //плотность в кг/м3
+		double viscosity;  //вязкость
+	};
+
+	/*
+	//IU/IP нагреваемая среда (в трубах)
+	struct data_fluidPrs_N {
+		std::string name;
+		double density;    //плотность
+		double viscosity;  //вязкость
+	};
+
+	
+	//IU/IP греющая среда (межтруб)
+	struct data_fluidPrs_G {
+		std::string name;
+		double density;    //плотность
+		double viscosity;  //вязкость
+	};*/
+
 	struct data_materialProperties {
 		std::string name;				// 0 - Наименование
 		double tMaterial;               // 1 - При какой температуре коэффициентр теплопроводности
