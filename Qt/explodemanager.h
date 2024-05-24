@@ -16,6 +16,10 @@
 #include <QMessageBox>
 #include <QCheckBox>
 
+#include <array>
+#include <memory>  // For std::shared_ptr
+#include <vector>
+
 using namespace BuildMathModel;
 
 class QVBoxLayout;
@@ -303,7 +307,9 @@ private:
     QDoubleSpinBox* distanceOporiTTOR = nullptr;
     QDoubleSpinBox* dlinaKameriTTOR = nullptr;
     QDoubleSpinBox* visotaOporyH1TTOR = nullptr;
+    QDoubleSpinBox* visotaOporyH2TTOR = nullptr;
     QDoubleSpinBox* distanceConnectorTTOR = nullptr;
+    QDoubleSpinBox* dUForFlanecTTOR = nullptr;
 
     QDoubleSpinBox* LengthTeplTubeTTOR = nullptr;
     QDoubleSpinBox* LengthKozhuxTubeTTOR = nullptr;

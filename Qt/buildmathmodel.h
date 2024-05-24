@@ -156,7 +156,6 @@
 #include <iostream>
 #include <unordered_map>
 
-
 using namespace c3d;
 using namespace std;
 

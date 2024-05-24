@@ -294,6 +294,7 @@ void ExplodeManager::radiosTypeFromToggled(bool checked, int type)
         LengthTeplTubeTTOR->setValue(config.Lt);
         LengthKozhuxTubeTTOR->setValue(config.lK);
         distanceConnectorTTOR->setValue(config.l2);
+        dUForFlanecTTOR->setValue(config.dU);
     }
     if (type == 1 && m_pExplodeWidget->m_pCurrentExchandger == 1) 
     {
@@ -307,6 +308,7 @@ void ExplodeManager::radiosTypeFromToggled(bool checked, int type)
         LengthTeplTubeTTOR->setValue(0);
         LengthKozhuxTubeTTOR->setValue(0);
         distanceConnectorTTOR->setValue(0);
+        dUForFlanecTTOR->setValue(0);
     }
 }
 
@@ -465,22 +467,125 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
         dlinaKameriTTOR->setMaximum(10000);
         QLabel* dlinaKameriLabel = new QLabel(u8"Длина камеры, l3 (мм):"); 
         
+        dUForFlanecTTOR = new QDoubleSpinBox;
+        dUForFlanecTTOR->setMaximum(10000);
+        QLabel* dUForFlanecLabel = new QLabel(u8"Диаметр пропуска, dU (мм):");
+
         visotaOporyH1TTOR = new QDoubleSpinBox;
         visotaOporyH1TTOR->setMaximum(10000);
         QLabel* visotaOporyH1Label = new QLabel(u8"Высота опоры, H1*2 (мм):");
+        
+        visotaOporyH2TTOR = new QDoubleSpinBox;
+        visotaOporyH2TTOR->setMaximum(10000);
+        QLabel* visotaOporyH2Label = new QLabel(u8"Ширина опоры, H2*2 (мм):");
 
-        formLayout->addRow(turnOnStandartDetailsLabel, turnOnStandartDetailsTTOR);
-        formLayout->addRow(simpleModeStandartLabel, simpleModeStandartTTOR);
-        formLayout->addRow(diametrTubeLabel, diametrTubeTTOR);
-        formLayout->addRow(diametrKozhuxLabel, diametrKozhuxTTOR);
-        formLayout->addRow(thicknessTubeLabel, thicknessTubeTTOR);
-        formLayout->addRow(thicknessKozhuxLabel, thicknessKozhuxTTOR);
-        formLayout->addRow(LengthTeplTubeLabel, LengthTeplTubeTTOR);
-        formLayout->addRow(LengthKozhuxTubeLabel, LengthKozhuxTubeTTOR);
-        formLayout->addRow(distanceOporiLabel, distanceOporiTTOR);
-        formLayout->addRow(distanceConnectorLabel, distanceConnectorTTOR);
-        formLayout->addRow(dlinaKameriLabel, dlinaKameriTTOR);
-        formLayout->addRow(visotaOporyH1Label, visotaOporyH1TTOR);
+        // Creating vertical layouts for each pair of QLabel and QDoubleSpinBox
+        QHBoxLayout* turnOnStandartDetailsLayout = new QHBoxLayout;
+        turnOnStandartDetailsLayout->addWidget(turnOnStandartDetailsLabel);
+        turnOnStandartDetailsLayout->addWidget(turnOnStandartDetailsTTOR);
+
+        QHBoxLayout* simpleModeStandartLayout = new QHBoxLayout;
+        simpleModeStandartLayout->addWidget(simpleModeStandartLabel);
+        simpleModeStandartLayout->addWidget(simpleModeStandartTTOR);
+
+        QVBoxLayout* diametrTubeLayout = new QVBoxLayout;
+        diametrTubeLayout->addWidget(diametrTubeLabel);
+        diametrTubeLayout->addWidget(diametrTubeTTOR);
+
+        QVBoxLayout* diametrKozhuxLayout = new QVBoxLayout;
+        diametrKozhuxLayout->addWidget(diametrKozhuxLabel);
+        diametrKozhuxLayout->addWidget(diametrKozhuxTTOR);
+
+        QVBoxLayout* thicknessTubeLayout = new QVBoxLayout;
+        thicknessTubeLayout->addWidget(thicknessTubeLabel);
+        thicknessTubeLayout->addWidget(thicknessTubeTTOR);
+
+        QVBoxLayout* thicknessKozhuxLayout = new QVBoxLayout;
+        thicknessKozhuxLayout->addWidget(thicknessKozhuxLabel);
+        thicknessKozhuxLayout->addWidget(thicknessKozhuxTTOR);
+
+        QVBoxLayout* LengthTeplTubeLayout = new QVBoxLayout;
+        LengthTeplTubeLayout->addWidget(LengthTeplTubeLabel);
+        LengthTeplTubeLayout->addWidget(LengthTeplTubeTTOR);
+
+        QVBoxLayout* LengthKozhuxTubeLayout = new QVBoxLayout;
+        LengthKozhuxTubeLayout->addWidget(LengthKozhuxTubeLabel);
+        LengthKozhuxTubeLayout->addWidget(LengthKozhuxTubeTTOR);
+
+        QVBoxLayout* distanceOporiLayout = new QVBoxLayout;
+        distanceOporiLayout->addWidget(distanceOporiLabel);
+        distanceOporiLayout->addWidget(distanceOporiTTOR);
+
+        QVBoxLayout* distanceConnectorLayout = new QVBoxLayout;
+        distanceConnectorLayout->addWidget(distanceConnectorLabel);
+        distanceConnectorLayout->addWidget(distanceConnectorTTOR);
+
+        QVBoxLayout* dlinaKameriLayout = new QVBoxLayout;
+        dlinaKameriLayout->addWidget(dlinaKameriLabel);
+        dlinaKameriLayout->addWidget(dlinaKameriTTOR);
+
+        QVBoxLayout* dUForFlanecLayout = new QVBoxLayout;
+        dUForFlanecLayout->addWidget(dUForFlanecLabel);
+        dUForFlanecLayout->addWidget(dUForFlanecTTOR);
+        
+        QVBoxLayout* visotaOporyH1Layout = new QVBoxLayout;
+        visotaOporyH1Layout->addWidget(visotaOporyH1Label);
+        visotaOporyH1Layout->addWidget(visotaOporyH1TTOR);
+
+        QVBoxLayout* visotaOporyH2Layout = new QVBoxLayout;
+        visotaOporyH2Layout->addWidget(visotaOporyH2Label);
+        visotaOporyH2Layout->addWidget(visotaOporyH2TTOR);
+
+        // Creating horizontal layouts for grouping
+        QHBoxLayout* checkBoxLayout = new QHBoxLayout;
+        checkBoxLayout->addLayout(turnOnStandartDetailsLayout);
+        checkBoxLayout->addLayout(simpleModeStandartLayout);
+        checkBoxLayout->setMargin(10);
+
+        QHBoxLayout* diameterLayout = new QHBoxLayout;
+        diameterLayout->addLayout(diametrTubeLayout);
+        diameterLayout->addLayout(diametrKozhuxLayout);
+        diameterLayout->setContentsMargins(0, 5, 0, 0);
+        diameterLayout->setSpacing(5);
+
+        QHBoxLayout* thicknessLayout = new QHBoxLayout;
+        thicknessLayout->addLayout(thicknessTubeLayout);
+        thicknessLayout->addLayout(thicknessKozhuxLayout);
+        thicknessLayout->setContentsMargins(0, 5, 0, 0);
+        thicknessLayout->setSpacing(5);
+
+        QHBoxLayout* lengthLayout = new QHBoxLayout;
+        lengthLayout->addLayout(LengthTeplTubeLayout);
+        lengthLayout->addLayout(LengthKozhuxTubeLayout);
+        lengthLayout->setContentsMargins(0, 5, 0, 0);
+        lengthLayout->setSpacing(5);
+
+        QHBoxLayout* distanceLayout = new QHBoxLayout;
+        distanceLayout->addLayout(distanceOporiLayout);
+        distanceLayout->addLayout(distanceConnectorLayout);
+        distanceLayout->setContentsMargins(0, 5, 0, 0);
+        distanceLayout->setSpacing(5);
+
+        QHBoxLayout* lastElementsLayout = new QHBoxLayout;
+        lastElementsLayout->addLayout(dlinaKameriLayout);
+        lastElementsLayout->addLayout(dUForFlanecLayout);
+        lastElementsLayout->setContentsMargins(0, 5, 0, 0);
+        lastElementsLayout->setSpacing(5);
+        
+        QHBoxLayout* lasLastElementsLayout = new QHBoxLayout;
+        lasLastElementsLayout->addLayout(visotaOporyH1Layout);
+        lasLastElementsLayout->addLayout(visotaOporyH2Layout);
+        lasLastElementsLayout->setContentsMargins(0, 5, 0, 0);
+        lasLastElementsLayout->setSpacing(5);
+
+        // Adding horizontal layouts to the form layout
+        formLayout->addRow(checkBoxLayout);
+        formLayout->addRow(diameterLayout);
+        formLayout->addRow(thicknessLayout);
+        formLayout->addRow(lengthLayout);
+        formLayout->addRow(distanceLayout);
+        formLayout->addRow(lastElementsLayout);
+        formLayout->addRow(lasLastElementsLayout);
 
         break;
     }
@@ -901,8 +1006,9 @@ void ExplodeManager::iterateHeatExchanger(double hotOutletTemp, double coldOutle
         hotOutletTemp = newHotOutletTemp;
         coldOutletTemp = newColdOutletTemp;
     }
-    m_PoutletTemp1 = hotOutletTemp;
-    m_PoutletTemp2 = coldOutletTemp;
+    // TOZO: Расчеты
+    m_PoutletTemp1 = hotOutletTemp - 0.001 * dataExchangerForTTORCalculation.kozhuxTube.L_length - dataExchangerForTTORCalculation.kozhuxTube.d1_diam*0.48;
+    m_PoutletTemp2 = coldOutletTemp + 0.004 * dataExchangerForTTORCalculation.teplTube.L_length + dataExchangerForTTORCalculation.teplTube.d1_diam * 0.48;
 }
 
 QWidget* ExplodeManager::createPairWidget(QWidget* widget1, QWidget* widget2)
@@ -934,6 +1040,7 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
         case 1: //ExplodeWidget::TTOR
         {
             m_vLayoutCalculationTabTTOR = new QVBoxLayout();
+            m_vLayoutCalculationTabTTOR->setSpacing(20);
 
             // Комбобоксы для выбора теплоносителей
             QHBoxLayout* comboTeplHLayout = new QHBoxLayout();
@@ -1015,11 +1122,11 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
             QVBoxLayout* resultV1Layout = new QVBoxLayout();
             QVBoxLayout* resultV2Layout = new QVBoxLayout();
 
-            resultV1Layout->addWidget(new QLabel(u8"Расчет 1:"));
+            resultV1Layout->addWidget(new QLabel(u8"Температура горячего теплоносителя на выходе:"));
             m_PrresultTemp1 = new QLineEdit();
             resultV1Layout->addWidget(m_PrresultTemp1);
 
-            resultV2Layout->addWidget(new QLabel(u8"Расчет 2:"));
+            resultV2Layout->addWidget(new QLabel(u8"Температура холодного теплоносителя на выходе"));
             m_PrresultTemp2 = new QLineEdit();
             resultV2Layout->addWidget(m_PrresultTemp2);
 
@@ -1484,6 +1591,7 @@ void ExplodeManager::onReconfigureButtonClicked() {
         manualTTORParams.Lt = LengthTeplTubeTTOR->value();
         manualTTORParams.lK = LengthKozhuxTubeTTOR->value();
         manualTTORParams.l2 = distanceConnectorTTOR->value();
+        manualTTORParams.dU = dUForFlanecTTOR->value();
         manualTTORParams.turnOnStandart = turnOnStandartDetailsTTOR->checkState() == 2 ? true : false;
         manualTTORParams.simpleMode = simpleModeStandartTTOR->checkState() == 2 ? true : false;
     }
