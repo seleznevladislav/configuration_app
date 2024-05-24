@@ -1006,8 +1006,9 @@ void ExplodeManager::iterateHeatExchanger(double hotOutletTemp, double coldOutle
         hotOutletTemp = newHotOutletTemp;
         coldOutletTemp = newColdOutletTemp;
     }
-    m_PoutletTemp1 = hotOutletTemp;
-    m_PoutletTemp2 = coldOutletTemp;
+    // TOZO: Расчеты
+    m_PoutletTemp1 = hotOutletTemp - 0.001 * dataExchangerForTTORCalculation.kozhuxTube.L_length - dataExchangerForTTORCalculation.kozhuxTube.d1_diam*0.48;
+    m_PoutletTemp2 = coldOutletTemp + 0.004 * dataExchangerForTTORCalculation.teplTube.L_length + dataExchangerForTTORCalculation.teplTube.d1_diam * 0.48;
 }
 
 QWidget* ExplodeManager::createPairWidget(QWidget* widget1, QWidget* widget2)
@@ -1039,6 +1040,7 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
         case 1: //ExplodeWidget::TTOR
         {
             m_vLayoutCalculationTabTTOR = new QVBoxLayout();
+            m_vLayoutCalculationTabTTOR->setSpacing(20);
 
             // Комбобоксы для выбора теплоносителей
             QHBoxLayout* comboTeplHLayout = new QHBoxLayout();
@@ -1120,11 +1122,11 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
             QVBoxLayout* resultV1Layout = new QVBoxLayout();
             QVBoxLayout* resultV2Layout = new QVBoxLayout();
 
-            resultV1Layout->addWidget(new QLabel(u8"Расчет 1:"));
+            resultV1Layout->addWidget(new QLabel(u8"Температура горячего теплоносителя на выходе:"));
             m_PrresultTemp1 = new QLineEdit();
             resultV1Layout->addWidget(m_PrresultTemp1);
 
-            resultV2Layout->addWidget(new QLabel(u8"Расчет 2:"));
+            resultV2Layout->addWidget(new QLabel(u8"Температура холодного теплоносителя на выходе"));
             m_PrresultTemp2 = new QLineEdit();
             resultV2Layout->addWidget(m_PrresultTemp2);
 
