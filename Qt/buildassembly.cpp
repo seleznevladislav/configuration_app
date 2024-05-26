@@ -3609,18 +3609,25 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIP(ConfigParams_IP params)
     SPtr<MbSolid> pKrPlGol(CreateKrPlGol_IP(params.p, params.Dv_Kzh, params.DKr));//Крышка плавающей головки
     SPtr<MbSolid> pPipe1(CreatePipe_IP(params.Dv_Kzh, params.p, params.DKr));//Труба
 
-    pKozhuh->SetColor(255, 204, 255);
-    pKamera->SetColor(255, 204, 255);
-    pKrKamera->SetColor(255, 204, 255);
-    pKrKamera1->SetColor(255, 204, 255);
-    pKrBig->SetColor(255, 204, 255);
-    pKrVtorayaSverhu->SetColor(255, 204, 255);
-    pKrTretyaSverhu->SetColor(255, 204, 255);
-    pKrFirstNis->SetColor(255, 204, 255);
-    pKrsamSmall->SetColor(255, 204, 255);
-    pKrNaSkose->SetColor(255, 204, 255);
-    pKrSboku->SetColor(255, 204, 255);
-    pStoika->SetColor(255, 204, 255);
+    pKozhuh->SetColor(229, 204, 255);
+    pKamera->SetColor(229, 204, 255);
+    pKrKameraEl->SetColor(229, 204, 255);
+    pKrKamera->SetColor(204, 229, 255);
+    pKrKamera1->SetColor(204, 229, 255);
+    pKrBig->SetColor(204, 229, 255);
+    pKrVtorayaSverhu->SetColor(204, 229, 255);
+    pKrTretyaSverhu->SetColor(204, 229, 255);
+    pKrFirstNis->SetColor(204, 229, 255);
+    pKrsamSmall->SetColor(204, 229, 255);
+    pKrNaSkose->SetColor(204, 229, 255);
+    pKrSboku->SetColor(204, 229, 255);
+    pReshNePod->SetColor(204, 229, 255);
+    pPeregorodka->SetColor(204, 229, 255);
+    pReshetkaPod->SetColor(204, 229, 255);
+    pRingPL->SetColor(153, 153, 255);
+    pKrPlGol->SetColor(153, 153, 255);
+    pPipe1->SetColor(229, 204, 255);
+    pStoika->SetColor(204, 153, 255);
 
     MbAxis3D axVert(MbVector3D(1, 0, 0));
     MbAxis3D ayVert(MbVector3D(0, 1, 0));
@@ -3999,7 +4006,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIP(ConfigParams_IP params)
     comp19->AddAttribute(PeregorodkaProductInfo);
     comp20->AddAttribute(MovablePipeGrateProductInfo);
     comp21->AddAttribute(RingProductInfo);
-    // comp22->AddAttribute(FloatingHeadCoverProductInfo);
+    comp22->AddAttribute(FloatingHeadCoverProductInfo);
     comp23->AddAttribute(PipesProductInfo);
 
     assm->AddAttribute(AssemblyInfo);
@@ -4022,7 +4029,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIU(ConfigParams_IU params)
     SPtr<MbSolid> pStoika(CreateStoyka(params.diam, (params.Length - 300) / 1.23, params.S)); //Cтойка
     SPtr<MbSolid> pReshetkaNEPod(CreateOsnovaNePodResh(params.p, params.diam, params.D_Kam));
     SPtr<MbSolid> pPeregorodka(CreatePeregorodka(params.p, params.diam, params.D_Kam));
-    //SPtr<MbSolid> pPipe(CreatePipe(params.p, params.diam, params.D_Kam));
+    SPtr<MbSolid> pPipe(CreatePipe(params.p, params.diam, params.D_Kam));
 
 
 
@@ -4038,7 +4045,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIU(ConfigParams_IU params)
     pKrNaSkose->SetColor(135, 206, 250);
     pKrSboku->SetColor(135, 206, 250);
     pStoika->SetColor(135, 206, 250);
-    // pPipe->SetColor(153, 153, 255);
+    pPipe->SetColor(153, 153, 255);
 
 
 
@@ -4081,7 +4088,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIU(ConfigParams_IU params)
     SPtr<MbInstance> comp18(new MbInstance(*pPeregorodka, lcs));
     SPtr<MbInstance> comp19(new MbInstance(*pPeregorodka, lcs));
     SPtr<MbInstance> comp20(new MbInstance(*pPeregorodka, lcs));
-    //SPtr<MbInstance> comp21(new MbInstance(*pPipe, lcs));
+    SPtr<MbInstance> comp21(new MbInstance(*pPipe, lcs));
 
 
 
@@ -4106,7 +4113,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIU(ConfigParams_IU params)
     pair.push_back(comp18);
     pair.push_back(comp19);
     pair.push_back(comp20);
-    //pair.push_back(comp21);
+    pair.push_back(comp21);
 
 
     SPtr<MbAssembly> assm(new MbAssembly(pair));
@@ -4312,40 +4319,45 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIU(ConfigParams_IU params)
 
 
         int face = 0;
-        switch ((int)params.diam) {
-        case 800:
-            face = 304;//152
-            break;
-        case 1000:
-            face = 450;//152
-            break;
-        case 1200:
-            face = 504;//252
-            break;
-        case 1400:
-            face = 704;//352
-            break;
-        case 1600:
-            face = 904;//452
-            break;
-        case 1800:
-            face = 1904;//952
-            break;
-        case 2000:
-            face = 2104;//1052
-            break;
+        double D_Kzh = params.diam;
+
+        if ((800 <= D_Kzh) && (D_Kzh < 1000)) {
+            face = 304;
         }
 
+        else if ((1000 <= D_Kzh) && (D_Kzh < 1200)) {
+            face = 450;
+        }
 
-        //MtGeomArgument facePerTube(pPeregorodka->GetFace(2), comp20);
-       //MtGeomArgument faceTubePer(pPipe->GetFace(face), comp21);
-       //assm->AddConstraint(GCM_PARALLEL, facePerTube, faceTubePer);
+        else if ((1200 <= D_Kzh) && (D_Kzh < 1400)) {
+            face = 504;
+        }
+
+        else if ((1400 <= D_Kzh) && (D_Kzh < 1600)) {
+            face = 704;
+        }
+
+        else if ((1600 <= D_Kzh) && (D_Kzh < 1800)) {
+            face = 904;
+        }
+
+        else if ((1800 <= D_Kzh) && (D_Kzh < 2000)) {
+            face = 1904;
+        }
+
+        else if (2000 <= D_Kzh) {
+            face = 2104;
+        }
+
+        MtGeomArgument facePerTube(pPeregorodka->GetFace(2), comp20);
+        MtGeomArgument faceTubePer(pPipe->GetFace(face), comp21);
+        assm->AddConstraint(GCM_PARALLEL, facePerTube, faceTubePer);
 
     }
 
     assm->EvaluateConstraints();
 
-    /*
+    
     string pKozhuhName = "0";
     string pKameraName = "1";
     string pKrKameraName = "2";
@@ -4360,7 +4372,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIU(ConfigParams_IU params)
     string pStoikaName_1 = "11";
     string pReshetkaNEPodName = "12";
     string pPeregorodkaName_1 = "13";
-    //string pPipeName = "14";
+    string pPipeName = "14";
 
     MbProductInfo pKozhuhInfo(false, pKozhuhName, pKozhuhName, pKozhuhName);
     MbProductInfo pKameraInfo(false, pKameraName, pKameraName, pKameraName);
@@ -4376,7 +4388,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIU(ConfigParams_IU params)
     MbProductInfo pStoikaInfo_1(false, pStoikaName_1, pStoikaName_1, pStoikaName_1);
     MbProductInfo pReshetkaNEPodInfo(false, pReshetkaNEPodName, pReshetkaNEPodName, pReshetkaNEPodName);
     MbProductInfo pPeregorodkaInfo_1(false, pPeregorodkaName_1, pPeregorodkaName_1, pPeregorodkaName_1);
-    //MbProductInfo pPipeInfo(false, pPipeName, pPipeName, pPipeName);
+    MbProductInfo pPipeInfo(false, pPipeName, pPipeName, pPipeName);
 
     MbProductInfo AssemblyInfo(false, "IU", "IU", "IU");
 
@@ -4399,9 +4411,9 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIU(ConfigParams_IU params)
     comp18->AddAttribute(pPeregorodkaInfo_1);
     comp19->AddAttribute(pPeregorodkaInfo_1);
     comp20->AddAttribute(pPeregorodkaInfo_1);
-    //comp21->AddAttribute(pPipeInfo);
+    comp21->AddAttribute(pPipeInfo);
     assm->AddAttribute(AssemblyInfo);
-    */
+    
 
     return assm;
 }

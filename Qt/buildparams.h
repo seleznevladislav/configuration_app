@@ -110,7 +110,8 @@ namespace BuildMathModel {
 	struct data_fluidPrs_IU_IP {
 		std::string name;
 		double density;    //плотность в кг/м3
-		double viscosity;  //вязкость
+		double viscosity;  //вязкость (м2/c)
+		double c;          //теплоемкость
 	};
 
 	/*

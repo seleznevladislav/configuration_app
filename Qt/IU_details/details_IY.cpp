@@ -891,7 +891,150 @@ static SPtr<MbSolid> CreateBaseCover(double Dy, double p) {
             break;
         }
     }
-
+     else if (p == 2.5) {
+     switch ((int)Dy) {
+     case 50:
+         b = 14;
+         d2 = 46;
+         D2 = 102;
+         D = 160;
+         d = 18;
+         D1 = 125;
+         h = 3;
+         h1 = 2;
+         break;
+     case 65:
+         b = 16;
+         d2 = 60;
+         D2 = 122;
+         D = 180;
+         d = 18;
+         D1 = 145;
+         h = 3;
+         h1 = 2;
+         break;
+     case 80:
+         b = 18;
+         d2 = 76;
+         D2 = 138;
+         D = 195;
+         d = 18;
+         D1 = 160;
+         h = 3;
+         h1 = 2;
+         break;
+     case 100:
+         b = 20;
+         d2 = 94;
+         D2 = 162;
+         D = 230;
+         d = 23;
+         D1 = 190;
+         h = 3;
+         h1 = 2;
+         break;
+     case 125:
+         b = 22;
+         d2 = 118;
+         D2 = 188;
+         D = 270;
+         d = 27;
+         D1 = 220;
+         h = 3;
+         h1 = 2;
+         break;
+     case 150:
+         b = 24;
+         d2 = 142;
+         D2 = 218;
+         D = 300;
+         d = 27;
+         D1 = 250;
+         h = 3;
+         h1 = 2;
+         break;
+     case 200:
+         b = 26;
+         d2 = 196;
+         D2 = 278;
+         D = 360;
+         d = 30;
+         D1 = 310;
+         h = 3;
+         h1 = 2;
+         break;
+     case 250:
+         b = 30;
+         d2 = 244;
+         D2 = 335;
+         D = 425;
+         d = 30;
+         D1 = 370;
+         h = 3;
+         h1 = 2;
+         break;
+     case 300:
+         b = 34;
+         d2 = 294;
+         D2 = 390;
+         D = 485;
+         d = 30;
+         D1 = 430;
+         h = 4;
+         h1 = 3;
+         break;
+     case 350:
+         b = 38;
+         d2 = 344;
+         D2 = 450;
+         D = 550;
+         d = 33;
+         D1 = 490;
+         h = 4;
+         h1 = 3;
+         break;
+     case 400:
+         b = 40;
+         d2 = 390;
+         D2 = 505;
+         D = 610;
+         d = 33;
+         D1 = 550;
+         h = 4;
+         h1 = 3;
+         break;
+     case 500:
+         b = 48;
+         d2 = 490;
+         D2 = 615;
+         D = 730;
+         d = 40;
+         D1 = 660;
+         h = 4;
+         h1 = 3;
+         break;
+     case 600:
+         b = 50;
+         d2 = 590;
+         D2 = 720;
+         D = 840;
+         d = 40;
+         D1 = 770;
+         h = 5;
+         h1 = 4;
+         break;
+     case 800:
+         b = 63;
+         d2 = 780;
+         D2 = 930;
+         D = 1075;
+         d = 46;
+         D1 = 990;
+         h = 5;
+         h1 = 4;
+         break;
+     }
+    }
 
 
     // Построение основы тела
@@ -1110,92 +1253,186 @@ SPtr<MbSolid> ParametricModelCreator::CreateUnionCover(double Dy, double p, int 
 
 
     // if (p == 1.6) {
-    switch ((int)Dy) {
-    case 50:
-        b = 14;
-        d = 18;
-        D1 = 125;
-        num = 4;
-        break;
-    case 65:
-        b = 14;
-        d = 18;
-        D1 = 145;
-        num = 4;
-        break;
-    case 80:
-        b = 14;
-        d = 18;
-        D1 = 160;
-        num = 4;
-        break;
-    case 100:
-        b = 16;
-        d = 18;
-        D1 = 180;
-        num = 8;
-        break;
-    case 125:
-        b = 16;
-        d = 18;
-        D1 = 210;
-        num = 8;
-        break;
-    case 150:
-        b = 18;
-        d = 23;
-        D1 = 240;
-        num = 8;
-        break;
-    case 200:
-        b = 20;
-        d = 23;
-        D1 = 295;
-        num = 8;
-        break;
-    case 250:
-        b = 24;
-        d = 23;
-        D1 = 355;
-        num = 12;
-        break;
-    case 300:
-        b = 28;
-        d = 27;
-        D1 = 410;
-        num = 12;
-        break;
-    case 350:
-        b = 32;
-        d = 27;
-        D1 = 470;
-        num = 12;
-        break;
-    case 400:
-        b = 34;
-        d = 30;
-        D1 = 525;
-        num = 12;
-        break;
-    case 500:
-        b = 40;
-        d = 33;
-        D1 = 650;
-        num = 20;
-        break;
-    case 600:
-        b = 45;
-        d = 40;
-        D1 = 770;
-        num = 20;
-        break;
-    case 800:
-        b = 52;
-        d = 40;
-        D1 = 950;
-        num = 24;
-        break;
+    if (p == 1.6) {
+        switch ((int)Dy) {
+        case 50:
+            b = 14;
+            d = 18;
+            D1 = 125;
+            num = 4;
+            break;
+        case 65:
+            b = 14;
+            d = 18;
+            D1 = 145;
+            num = 4;
+            break;
+        case 80:
+            b = 14;
+            d = 18;
+            D1 = 160;
+            num = 4;
+            break;
+        case 100:
+            b = 16;
+            d = 18;
+            D1 = 180;
+            num = 8;
+            break;
+        case 125:
+            b = 16;
+            d = 18;
+            D1 = 210;
+            num = 8;
+            break;
+        case 150:
+            b = 18;
+            d = 23;
+            D1 = 240;
+            num = 8;
+            break;
+        case 200:
+            b = 20;
+            d = 23;
+            D1 = 295;
+            num = 8;
+            break;
+        case 250:
+            b = 24;
+            d = 23;
+            D1 = 355;
+            num = 12;
+            break;
+        case 300:
+            b = 28;
+            d = 27;
+            D1 = 410;
+            num = 12;
+            break;
+        case 350:
+            b = 32;
+            d = 27;
+            D1 = 470;
+            num = 12;
+            break;
+        case 400:
+            b = 34;
+            d = 30;
+            D1 = 525;
+            num = 12;
+            break;
+        case 500:
+            b = 40;
+            d = 33;
+            D1 = 650;
+            num = 20;
+            break;
+        case 600:
+            b = 45;
+            d = 40;
+            D1 = 770;
+            num = 20;
+            break;
+        case 800:
+            b = 52;
+            d = 40;
+            D1 = 950;
+            num = 24;
+            break;
+        }
     }
+
+    else if (p == 2.5) {
+        switch ((int)Dy) {
+        case 50:
+            b = 14;
+            d = 18;
+            D1 = 125;
+            num = 4;
+            break;
+        case 65:
+            b = 16;
+            d = 18;
+            D1 = 145;
+            num = 4;
+            break;
+        case 80:
+            b = 18;
+            d = 18;
+            D1 = 160;
+            num = 4;
+            break;
+        case 100:
+            b = 20;
+            d = 23;
+            D1 = 190;
+            num = 8;
+            break;
+        case 125:
+            b = 22;
+            d = 27;
+            D1 = 220;
+            num = 8;
+            break;
+        case 150:
+            b = 24;
+            d = 27;
+            D1 = 250;
+            num = 8;
+            break;
+        case 200:
+            b = 26;
+            d = 27;
+            D1 = 310;
+            num = 8;
+            break;
+        case 250:
+            b = 30;
+            d = 30;
+            D1 = 370;
+            num = 12;
+            break;
+        case 300:
+            b = 34;
+            d = 30;
+            D1 = 410;
+            num = 12;
+            break;
+        case 350:
+            b = 38;
+            d = 33;
+            D1 = 490;
+            num = 12;
+            break;
+        case 400:
+            b = 40;
+            d = 33;
+            D1 = 550;
+            num = 12;
+            break;
+        case 500:
+            b = 48;
+            d = 40;
+            D1 = 660;
+            num = 20;
+            break;
+        case 600:
+            b = 50;
+            d = 40;
+            D1 = 770;
+            num = 20;
+            break;
+        case 800:
+            b = 63;
+            d = 46;
+            D1 = 990;
+            num = 24;
+            break;
+        }
+
+    }
+
+
     if ((id == 6) || (id == 7)) {
         num = 8;
         d = 23;

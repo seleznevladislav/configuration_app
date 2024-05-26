@@ -3819,26 +3819,30 @@ double  CylTicknessCalculation(testConfigParams params) {
 
 double HydraulicCalculation(testConfigParams params) {
 
-    double Re = ThermalCalculation_Re(params);
-    double w1 = params.w1;
-    double w2 = params.w2;
-    double po1 = params.po1;
-    double po2 = params.po2;
-    double L = params.L_Base;
-    double d = params.D, po = params.po, h = params.h;
+    double Re;
+    double w = params.w; //средняя скорость
+    double w1 = params.w1; // скорость на входе
+    double w2 = params.w2; // скорость на выходе
+    double po1 = params.po1; // плотность на входе
+    double po2 = params.po2; //плотность на выходе
+    double L = params.L; //суммарная длина трубок
+    double d = params.D, //внутренний диаметр трубок
+    double p = params.p; //плотность среды
+    po = params.po, //плотность атмосферного воздуха
+    h = params.h; //разница уровней входа и выхода теплоносителя в систему
 
     double Re = ThermalCalculation_Re(params);
-    double lambda = 1 / pow((1, 8 * log1p(Re) - 1.5), 2);
+    double lambda = 1 / pow((1, 8 * log1p(Re) - 1.5), 2); //коэффициент сопротивления трения (логарифм надо исправить!)
 
-    double Pt = lambda * L * pow(w1, 2) * po1 / 2 * d;
+    double Pt = lambda * L * pow(w, 2) * po1 / 2 * d; //потери на трение
 
-    double Pm = 5.5 * pow(w1, 2) * po1 / 2;
+    double Pm = 5.5 * pow(w, 2) * p / 2; //потери в местных сопротивлениях
 
-    double Py = po2 * w2 - po1 * w1;
+    double Py = po2 * w2 - po1 * w1; //потери при ускорении потока
 
-    double Pg = (po1 - po) * h;
+    double Pg = (po1 - po) * h; //перепад давления
 
-    double P = Pt + Pm + Py + Pg;
+    double P = Pt + Pm + Py + Pg; //полное давление
 
     return P;
 }
@@ -3893,15 +3897,18 @@ double ThermalCalculation_HeatCoefficient
 double ThermalCalculation_Re
 (testConfigParams params) {
 
-    double Dy = params.Dy, d = params.D;
-    double n = params.n, po1 = params.po1;
-    double Gr = params.Gr, w1 = params.w1;
+    double Dy = params.Dy,
+    d = params.D; //диаметр труб
+    double n = params.n, //количество труб
+    po1 = params.po1; //плотность теплоносителя
+    double Gr = params.Gr,  //расход  теплоносителя
+    v1 = params.v1; //вязкость среды
 
-    double Fd = M_PI * pow(Dy, 2) / 4;
-    double fm = (M_PI * pow(d, 2) * n) / 4;
-    double f1 = Fd - fm;
+    double Fd = M_PI * pow(Dy, 2) / 4; //площадь поперечного сечения корпуса
+    double fm = (M_PI * pow(d, 2) * n) / 4; //площадь, занятая трубами
+    double f1 = Fd - fm; //площадь межрубного пространства
 
-    double w_g = Gr / f1 * po1;
+    double w_g = Gr / f1 * po1; //скорость воды в межтрубном пространстве
     double Re = w_g * d / w1;
 
     return Re;
