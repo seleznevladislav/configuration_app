@@ -48,5 +48,7 @@
         <file>res/drawing/lineardim.png</file>
         <file>res/drawing/radius.png</file>
         <file>res/drawing/select_32.png</file>
+        <file>res/draws/ip.jpg</file>
+        <file>res/draws/iu.jpg</file>
     </qresource>
 </RCC>

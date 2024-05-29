@@ -293,6 +293,7 @@ private:
     void calculateThickness(QFormLayout* form);
     void calculateThickness_IU_IP(QFormLayout* form);
     void onReconfigureButtonClicked();
+    void onDrawingShowButtonClicked();
     void onCalculationButtonClicked();
     QAction* createActionButton(const QString& fileName, QGroupBox* groupFilter, QHBoxLayout* fGroupLayout);
     QGroupBox* createExplodingGroupBox();
@@ -320,6 +321,7 @@ private:
     QLabel* m_labelSelectAssembly        = nullptr;
     QDoubleSpinBox* m_lengthSpinBox      = nullptr;
     QToolButton* m_closestLengthButton     = nullptr;
+    QDialog* m_PmodalDialog;
     // <summary>
     /// vars for calculations TTOR
     /// </summary>

@@ -4319,8 +4319,8 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIU(ConfigParams_IU params)
 
 
         int face = 0;
-        double D_Kzh = params.diam;
-
+        double DKr = params.D_Kam;
+        /*
         if ((800 <= D_Kzh) && (D_Kzh < 1000)) {
             face = 304;
         }
@@ -4346,6 +4346,35 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIU(ConfigParams_IU params)
         }
 
         else if (2000 <= D_Kzh) {
+            face = 2104;
+        }*/
+
+        if ((500 <= DKr) && (DKr < 600)) {
+            face = 304;
+        }
+
+        else if ((600 <= DKr) && (DKr < 700)) {
+            face = 450;
+        }
+
+        else if ((700 <= DKr) && (DKr < 800)) {
+            face = 504;
+        }
+        else if ((800 <= DKr) && (DKr < 900)) {
+            face = 704;
+        }
+
+        else if ((900 <= DKr) && (DKr < 1000)) {
+            face = 904;
+        }
+
+        else if ((1000 <= DKr) && (DKr < 1100)) {
+            face = 1904;
+        }
+        else if ((1100 <= DKr) && (DKr < 1200)) {
+            face = 2104;
+        }
+        else if (1200 <= DKr) {
             face = 2104;
         }
 

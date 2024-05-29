@@ -555,7 +555,7 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
         pressureComboBox->addItem(u8"2.5", 2.5);
         //pressureComboBox->addItem(u8"1.6", 4);
         
-        QLabel* pressureSpinBoxLabel = new QLabel(u8"Давление P:");
+        QLabel* pressureSpinBoxLabel = new QLabel(u8"Давление P, МПа:");
 
         QDoubleSpinBox* tensionSpinBox = new QDoubleSpinBox;
         QLabel* tensionSpinBoxLabel = new QLabel(u8"Допускаемое напряжение стали, МПа");
@@ -570,12 +570,12 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
         QLabel* corrosionComboBoxLabel = new QLabel(u8"Поправка на коррозию, мм:");
 
         QDoubleSpinBox* innerThicknessSpinBox = new QDoubleSpinBox;
-        QLabel* innerThicknessSpinBoxLabel = new QLabel(u8"Диаметр кожуха D, мм:");
+        QLabel* innerThicknessSpinBoxLabel = new QLabel(u8"Диаметр кожуха Д_в, мм:");
         innerThicknessSpinBox->setRange(800, 2000);
         innerThicknessSpinBox->setValue(800);
 
         QDoubleSpinBox* cameraThicknessSpinBox = new QDoubleSpinBox;
-        QLabel* cameraThicknessSpinBoxLabel = new QLabel(u8"Диаметр камеры D, мм:");
+        QLabel* cameraThicknessSpinBoxLabel = new QLabel(u8"Диаметр камеры D_K, мм:");
         cameraThicknessSpinBox->setRange(500, 1100);
         cameraThicknessSpinBox->setValue(500);
 
@@ -1705,19 +1705,27 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
                
                 if (temp1_hot < temp1_cold)
                 {
-                    QString* text = new QString(u8"Температура теплоносителя в межтрубном пространстве на входе должна быть меньше, чем греющего на входе.");
+                    QString* text = new QString(u8"Температура теплоносителя в межтрубном пространстве на входе должна быть меньше, чем в трубах на входе.");
                     createWarning(text);
 
                     return;
                 }
 
-                // if (temp2_hot < temp2_cold)
-               //  {
-               //      QString* text = new QString(u8"Температура нагреваемого теплоносителя на выходе должна быть меньше, чем греющего на выходе.");
-               //      createWarning(text);
+                if (temp1_hot < temp2_hot)
+                {
+                    QString* text = new QString(u8"Температура теплоносителя в трубах на входе должна быть больше, чем на выходе.");
+                    createWarning(text);
 
-               //      return;
-               //  }
+                    return;
+                }
+
+                if (temp1_cold > temp2_cold)
+                {
+                    QString* text = new QString(u8"Температура теплоносителя в межтрубном пространстве на входе должна быть меньше, чем на выходе.");
+                    createWarning(text);
+
+                    return;
+                }
 
 
                 if (temp1_hot <= 0)
@@ -2206,24 +2214,23 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
 
                 if (temp1_hot < temp1_cold)
                 {
-                    QString* text = new QString(u8"Температура теплоносителя в межтрубном пространстве на входе должна быть меньше, чем греющего на входе.");
+                    QString* text = new QString(u8"Температура теплоносителя в межтрубном пространстве на входе должна быть меньше, чем в трубном на входе.");
                     createWarning(text);
 
                     return;
                 }
 
-                // if (temp2_hot < temp2_cold)
-               //  {
-               //      QString* text = new QString(u8"Температура нагреваемого теплоносителя на выходе должна быть меньше, чем греющего на выходе.");
-               //      createWarning(text);
-
-               //      return;
-               //  }
-
-
-                if (temp1_hot <= 0)
+                if (temp1_hot < temp2_hot)
                 {
-                    QString* text = new QString(u8"Температура теплоносителя в трубном пространстве на входе должна быть больше 0.");
+                    QString* text = new QString(u8"Температура теплоносителя в трубном пространстве на входе должна быть больше, чем на выходе.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (temp1_cold > temp2_cold)
+                {
+                    QString* text = new QString(u8"Температура теплоносителя в межтрубном пространстве на входе должна быть меньше, чем на выходе.");
                     createWarning(text);
 
                     return;
@@ -2848,6 +2855,55 @@ QGroupBox* ExplodeManager::createDimensionsGroupBox()
     return gr_WDimensionBox;
 }
 
+void ExplodeManager::onDrawingShowButtonClicked() {
+    m_PmodalDialog = new QDialog();
+
+    const int indexOfCurrentExchanger = m_pExplodeWidget->m_pCurrentExchandger;
+    const char* windowTittle = nullptr;
+    const char* iconPath = nullptr;
+
+    switch (indexOfCurrentExchanger) {
+    case 1:
+    {
+        windowTittle = u8"Чертёж теплообменного аппарата ТТОР";
+        iconPath = ":/res/draws/ttrm.png";
+        break;
+    }case 2:
+    {
+        windowTittle = u8"Размеры теплообменника ТТРМ";
+        iconPath = ":/res/draws/ttrm.png";
+        break;
+    }case 3:
+    {
+        windowTittle = u8"Размеры теплообменника IU";
+        iconPath = ":/res/draws/iu.jpg";
+        break;
+    }case 4:
+    {
+        windowTittle = u8"Размеры теплообменника IP";
+        iconPath = ":/res/draws/ip.jpg";
+        break;
+    }
+    }
+    m_PmodalDialog->setWindowTitle(windowTittle);
+    m_PmodalDialog->setWindowIcon(QIcon(":/res/dimensions.png"));
+
+    QLabel* imageLabel = new QLabel;
+    QPixmap image(iconPath);
+    imageLabel->setPixmap(image);
+    imageLabel->setScaledContents(true); // Масштабировать изображение по размеру QLabel\
+
+    QRect screenGeometry = m_PmodalDialog->geometry();
+    int screenWidth = screenGeometry.width() + 300;
+    int screenHeight = screenGeometry.height();
+
+    imageLabel->setMaximumSize(screenWidth, screenHeight);
+
+    QVBoxLayout* modalLayout = new QVBoxLayout(m_PmodalDialog);
+    modalLayout->addWidget(imageLabel);
+    m_PmodalDialog->exec();
+}
+
 QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightButton, const std::string& mainTabName)
 {
     m_pWidget = &widget;
@@ -2899,28 +2955,8 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
     sizeInfoButton->setToolTip(u8"Посмотреть размеры аппарата");
     m_vLayoutConfigureTab->addWidget(sizeInfoButton);
 
-    QDialog* modalDialog = new QDialog();
 
-    connect(sizeInfoButton, &QToolButton::clicked, [modalDialog]() {
-        modalDialog->setWindowTitle(u8"Размеры теплообменника ТТРМ");
-        modalDialog->setWindowIcon(QIcon(":/res/dimensions.png"));
-
-        QLabel* imageLabel = new QLabel;
-        QPixmap image(":/res/draws/ttrm.png");
-        imageLabel->setPixmap(image);
-        imageLabel->setScaledContents(true); // Масштабировать изображение по размеру QLabel
-
-        QRect screenGeometry = modalDialog->geometry();
-        int screenWidth = screenGeometry.width();
-        int screenHeight = screenGeometry.height();
-
-        imageLabel->setMaximumSize(screenWidth, screenHeight);
-
-        QVBoxLayout* modalLayout = new QVBoxLayout(modalDialog);
-        modalLayout->addWidget(imageLabel);
-
-        modalDialog->exec();
-    });
+    connect(sizeInfoButton, &QToolButton::clicked, this, &ExplodeManager::onDrawingShowButtonClicked);
 
     m_reconfigureButton = new QPushButton;
     m_reconfigureButton->setText(u8"Перестроить теплообменник");
