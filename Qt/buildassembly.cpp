@@ -1064,6 +1064,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     double Lt = params.Lt;
     bool turnOnStandart = params.turnOnStandart;
     bool simpleMode = params.simpleMode;
+    //debug
+    /*simpleMode = false;
+    turnOnStandart = true;
+    configurationQuantity = 3;*/
 
     const double visotaOpori = H1*2;
     double distanceRezhetka = 500; //l2 - 400
@@ -2200,7 +2204,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
             assm->AddConstraint(GCM_COINCIDENT, setWasherFaceTest1TTd, setWasherCircleTest3TTd);
             assm->AddConstraint(GCM_COINCIDENT, setWasherFaceTest1TTd, setWasherCircleTest4TTd);
         }
-        
         // Концентричность Гайка - Решетка теплообменных труб M12
         {
 
@@ -2754,10 +2757,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
             MtGeomArgument FaceTest3TT(WasherM16->GetFace(0), WashersM16[2]);
             MtGeomArgument FaceTest4TT(WasherM16->GetFace(0), WashersM16[3]);
                                                
-            MtGeomArgument CircleTest1TT(BoltM16->GetFace(indexBoltaPlsk), boltsM16[1]);
-            MtGeomArgument CircleTest2TT(BoltM16->GetFace(indexBoltaPlsk), boltsM16[2]);
-            MtGeomArgument CircleTest3TT(BoltM16->GetFace(indexBoltaPlsk), boltsM16[3]);
-            MtGeomArgument CircleTest4TT(BoltM16->GetFace(indexBoltaPlsk), boltsM16[4]);
+            MtGeomArgument CircleTest1TT(BoltM16->GetFace(indexBoltaPlsk), boltsM16[0]);
+            MtGeomArgument CircleTest2TT(BoltM16->GetFace(indexBoltaPlsk), boltsM16[1]);
+            MtGeomArgument CircleTest3TT(BoltM16->GetFace(indexBoltaPlsk), boltsM16[2]);
+            MtGeomArgument CircleTest4TT(BoltM16->GetFace(indexBoltaPlsk), boltsM16[3]);
 
             assm->AddConstraint(GCM_COINCIDENT, FaceTest1TT, CircleTest1TT);
             assm->AddConstraint(GCM_COINCIDENT, FaceTest2TT, CircleTest2TT);
@@ -3052,29 +3055,17 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
     assm->EvaluateConstraints();
 
-    string zero    = "0";
-    string first   = "1";
-    string second  = "2";
-    string third   = "3";
-    string forth   = "4";
-    string fifth   = "5";
-    string six     = "6";
-    string seven   = "7";
-    string eight   = "8";
-    string nine    = "9";
-    string ten     = "10";
-
-    MbProductInfo zeroProductInfo    (false, zero, zero, zero);
-    MbProductInfo firstProductInfo   (false, first, first, first);
-    MbProductInfo secondProductInfo  (false, second, second, second);
-    MbProductInfo thirdProductInfo   (false, third, third, third);
-    MbProductInfo forthProductInfo   (false, forth, forth, forth);
-    MbProductInfo fifthProductInfo   (false, fifth, fifth, fifth);
-    MbProductInfo sixProductInfo     (false, six, six, six);
-    MbProductInfo sevenProductInfo   (false, seven, seven, seven);
-    MbProductInfo eightProductInfo   (false, eight, eight, eight);
-    MbProductInfo nineProductInfo    (false, nine, nine, nine);
-    MbProductInfo tenProductInfo     (false, ten, ten, ten);
+    MbProductInfo zeroProductInfo    (false, "0", "0", "0");
+    MbProductInfo firstProductInfo   (false, "1", "1", "1");
+    MbProductInfo secondProductInfo  (false, "2", "2", "2");
+    MbProductInfo thirdProductInfo   (false, "3", "3", "3");
+    MbProductInfo forthProductInfo   (false, "4", "4", "4");
+    MbProductInfo fifthProductInfo   (false, "5", "5", "5");
+    MbProductInfo sixProductInfo     (false, "6", "6", "6");
+    MbProductInfo sevenProductInfo   (false, "7", "7", "7");
+    MbProductInfo eightProductInfo   (false, "8", "8", "8");
+    MbProductInfo nineProductInfo    (false, "9", "9", "9");
+    MbProductInfo tenProductInfo     (false, "10", "10", "10");
 
     MbProductInfo AssemblyInfo(false, "TTOR", "TTOR", "TTOR");
 
@@ -3136,7 +3127,20 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
         SPtr<MbSolid> Detail_012(Zarubincreate_012_curevedTubeBig(ttDiam, ttThickness, visotaOpori, t));
 
         Detail_012->Rotate(ayVert, M_PI);
-        Detail_012->Move(MbVector3D(75, -825 + assemblyHeightTTOR,- 657.5));
+        // Право лево
+        // ВВерх низ
+        // Вперед назад
+        if (!turnOnStandart) {
+            Detail_012->Move(MbVector3D(0, -850 + assemblyHeightTTOR, -480));
+        }
+
+        if (simpleMode && turnOnStandart) {
+            Detail_012->Move(MbVector3D(75, -825 + assemblyHeightTTOR,- 480));
+        }
+
+        if (!simpleMode && turnOnStandart) {
+            Detail_012->Move(MbVector3D(75, -825 + assemblyHeightTTOR, -480));
+        }
 
         for (int i = 0; i < configurationQuantity + 1; ++i)
         {
