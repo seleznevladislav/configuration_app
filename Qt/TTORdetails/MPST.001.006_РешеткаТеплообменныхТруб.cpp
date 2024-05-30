@@ -19,6 +19,37 @@ std::vector<palmParams> palmConfiguration = {
     {315, 228, 250, 280},
 };
 
+struct test1
+{
+    double Dy;    // 1   
+    double D;     // 2   
+    double D1;    // 3   
+    double D2;    // 4   
+    double D3;    // 5   
+    double D4;    // 6   
+    double D5;    // 7   
+    double D6;    // 8   
+    double d;     // 9  
+    double n;     // 10  
+    double h;     // 11  
+    double h1;    // 12  
+    double h2;    // 13  
+    double diam;  // 14  
+};
+
+std::vector<test1> test1Params = {
+    //1     2    3    4   5     6    7   8     9    10 11 12 13  14
+    {125,  235, 200, 178, 146, 166, 145, 167,  18,  8, 3, 4, 3,  16},
+    {150,  260, 225, 202, 171, 191, 170, 192,  18,  8, 3, 4, 3,  16},
+    {175,  290, 255, 232, 203, 223, 202, 224,  18,  8, 3, 4, 3,  16},
+    {200,  315, 280, 258, 229, 249, 228, 250,  18,  8, 4, 4, 4,  16},
+    {225,  340, 305, 282, 256, 276, 255, 277,  18,  8, 4, 4, 4,  16},
+    {250,  370, 335, 312, 283, 303, 282, 304,  18,  8, 4, 4, 4,  16},
+    {300,  435, 395, 365, 336, 356, 335, 357,  18,  8, 4, 4, 4,  16},
+    {350,  485, 445, 415, 386, 406, 385, 407,  18,  8, 5, 4, 4,  16},
+    {400,  535, 495, 465, 436, 456, 435, 457,  18,  8, 5, 4, 4,  16},
+};
+
 SolidSPtr HolyHole2(SolidSPtr* previus, int holes, double DiametrCircle, double radius) {
 
     // Именователь граней для построения тела с помощью булевой операции 
@@ -79,8 +110,42 @@ SolidSPtr HolyHole2(SolidSPtr* previus, int holes, double DiametrCircle, double 
     return news;
 }
 
-void CreateSketcherResetkaTruba(RPArray<MbContour>& _arrContours, int index, double ttDiam, double ttThickness)
+void CreateSketcherResetkaTruba(RPArray<MbContour>& _arrContours, int index, double ttDiam, double ttThickness, double ktDiam, double ktThickness)
 {
+    int index4 = 0;
+
+    if (ktDiam < 145) {
+        index4 = 0;
+    }
+    else if (ktDiam < 170) {
+        index4 = 1;
+    }
+    else if (ktDiam < 201) {
+        index4 = 2;
+    }
+    else if (ktDiam < 228) {
+        index4 = 3;
+    }
+    else if (ktDiam < 255) {
+        index4 = 4;
+    }
+    else if (ktDiam < 282) {
+        index4 = 5;
+    }
+    else if (ktDiam < 335) {
+        index4 = 6;
+    }
+    else if (ktDiam < 385) {
+        index4 = 7;
+    }
+    else if (ktDiam < 435) {
+        index4 = 8;
+    }
+    else {
+        index4 = -1; // TOZO: ????????
+    }
+
+    const double D = test1Params[index4].D;
 
     const double firstParam =  palmConfiguration[index].rOut;
     const double secondParam = palmConfiguration[index].PIn;
@@ -88,7 +153,7 @@ void CreateSketcherResetkaTruba(RPArray<MbContour>& _arrContours, int index, dou
 
     double ANG1 = 90 * DEG_TO_RAD;
     const double rIn = (ttDiam + ttThickness * 2) / 2;
-    const double rOut = firstParam / 2;
+    const double rOut = D / 2;
 
     const double PIn = secondParam / 2;
     const double POut = thirdParam / 2;
@@ -128,7 +193,7 @@ void CreateSketcherResetkaTruba(RPArray<MbContour>& _arrContours, int index, dou
     _arrContours.push_back(pContour);
 }
 
-SPtr<MbSolid> ParametricModelCreator::Zarubincreate_006_RezhetkaTeplTube(double ttDiam, double ttThickness)
+SPtr<MbSolid> ParametricModelCreator::Zarubincreate_006_RezhetkaTeplTube(double ttDiam, double ttThickness, double ktDiam, double ktThickness)
 {
 
     int index = 0;
@@ -150,7 +215,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_006_RezhetkaTeplTube(double 
 
     // Создание образующей для тела выдавливания
     RPArray<MbContour> arrContours;
-    CreateSketcherResetkaTruba(arrContours, index, ttDiam, ttThickness);
+    CreateSketcherResetkaTruba(arrContours, index, ttDiam, ttThickness, ktDiam, ktThickness);
 
     //Плоскость
     MbPlane* pPlaneXY = new MbPlane(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, 1, 0), MbCartPoint3D(0, 0, 1));

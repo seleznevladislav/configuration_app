@@ -291,6 +291,7 @@ void ExplodeManager::radiosTypeFromToggled(bool checked, int type)
         distanceOporiTTOR->setValue(config.l0);
         dlinaKameriTTOR->setValue(config.l3);
         visotaOporyH1TTOR->setValue(config.H1);
+        visotaOporyH2TTOR->setValue(config.widthFlanec);
         LengthTeplTubeTTOR->setValue(config.Lt);
         LengthKozhuxTubeTTOR->setValue(config.lK);
         distanceConnectorTTOR->setValue(config.l2);
@@ -305,6 +306,7 @@ void ExplodeManager::radiosTypeFromToggled(bool checked, int type)
         distanceOporiTTOR->setValue(0);
         dlinaKameriTTOR->setValue(0);
         visotaOporyH1TTOR->setValue(0);
+        visotaOporyH2TTOR->setValue(0);
         LengthTeplTubeTTOR->setValue(0);
         LengthKozhuxTubeTTOR->setValue(0);
         distanceConnectorTTOR->setValue(0);
@@ -425,10 +427,10 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
         m_reconfigureButton->setDisabled(false);
 
         turnOnStandartDetailsTTOR = new QCheckBox;
-        QLabel* turnOnStandartDetailsLabel = new QLabel(u8"Отобразить std:");
+        QLabel* turnOnStandartDetailsLabel = new QLabel(u8"Отобразить станд. изделия:");
 
         simpleModeStandartTTOR = new QCheckBox;
-        QLabel* simpleModeStandartLabel = new QLabel(u8"Упростить std:");
+        QLabel* simpleModeStandartLabel = new QLabel(u8"Упростить станд. изделия:");
         
         diametrTubeTTOR = new QDoubleSpinBox;
         diametrTubeTTOR->setMaximum(1000);
@@ -1588,6 +1590,7 @@ void ExplodeManager::onReconfigureButtonClicked() {
         manualTTORParams.l0 = distanceOporiTTOR->value();
         manualTTORParams.l3 = dlinaKameriTTOR->value();
         manualTTORParams.H1 = visotaOporyH1TTOR->value();
+        manualTTORParams.widthFlanec = visotaOporyH2TTOR->value();
         manualTTORParams.Lt = LengthTeplTubeTTOR->value();
         manualTTORParams.lK = LengthKozhuxTubeTTOR->value();
         manualTTORParams.l2 = distanceConnectorTTOR->value();
@@ -1727,17 +1730,22 @@ QGroupBox* ExplodeManager::createRenderingGroupBox()
 
     QActionGroup* actionGroupFilter = new QActionGroup(m_pExplodeWidget);
 
-    QAction* bodyFilterButton = createActionButton(":/res/renderMods/dimmedWireframe.png", gr_WRendering, fGroupLayout);
-    bodyFilterButton->setToolTip(QStringLiteral("1"));
-    bodyFilterButton->setChecked(true); // Set checked default true because you can select body from start
+    QAction* bodyFilterButton = createActionButton(":/res/renderMods/dimmedWireframe.png", gr_WRendering, 
+        fGroupLayout);
+    bodyFilterButton->setToolTip(QStringLiteral("Обычный"));
+    bodyFilterButton->setChecked(true);
 
     actionGroupFilter->addAction(bodyFilterButton);
-    actionGroupFilter->addAction(createActionButton(":/res/renderMods/shaded.png", gr_WRendering, fGroupLayout))->setToolTip(QStringLiteral("2"));
-    actionGroupFilter->addAction(createActionButton(":/res/renderMods/wirefrm.png", gr_WRendering, fGroupLayout))->setToolTip(QStringLiteral("3"));
-    actionGroupFilter->addAction(createActionButton(":/res/renderMods/hiddenremoved.png", gr_WRendering, fGroupLayout))->setToolTip(QStringLiteral("4"));
+    actionGroupFilter->addAction(createActionButton(":/res/renderMods/shaded.png", gr_WRendering, 
+        fGroupLayout))->setToolTip(QStringLiteral("Обычный ьез отображения граней"));
+    actionGroupFilter->addAction(createActionButton(":/res/renderMods/wirefrm.png", gr_WRendering, 
+        fGroupLayout))->setToolTip(QStringLiteral("Каркасный"));
+    actionGroupFilter->addAction(createActionButton(":/res/renderMods/hiddenremoved.png", gr_WRendering, 
+        fGroupLayout))->setToolTip(QStringLiteral("Чертежный"));
 
     m_pExplodeWidget->setGroupFilter(actionGroupFilter);
-    QObject::connect(actionGroupFilter, SIGNAL(triggered(QAction*)), m_pExplodeWidget, SLOT(slotRenderTriggered(QAction*)));
+    QObject::connect(actionGroupFilter, SIGNAL(triggered(QAction*)), m_pExplodeWidget, 
+        SLOT(slotRenderTriggered(QAction*)));
 
 
     return gr_WRendering;

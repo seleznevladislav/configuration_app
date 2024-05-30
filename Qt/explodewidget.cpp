@@ -449,6 +449,39 @@ void ExplodeWidget::viewCommands(Commands cmd)
 }
 
 
+bool checkValidityOfParametrsTTOR(BuildParamsForHeatExchangerTTOR params) {
+    bool isValid = true;
+
+    if (params.lK > params.Lt - 200) {
+        QMessageBox::critical(nullptr, "Ошибка построения", "Необходимо указать большую величину для длины теплообменных труб (Lt). Можно также уменьшить длину кожуха (Lk).");
+        isValid = false;
+    }
+
+    if (params.lK < params.L - 3000) {
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::warning(nullptr, "Предупреждение о перестроение", "Длина кожуха (lK) значительно меньше. Вы уверены, что хотите продолжить?",
+            QMessageBox::Yes | QMessageBox::No);
+        if (reply == QMessageBox::No) {
+            isValid = false;
+        }
+    }
+
+    if (params.ktDiam <= params.ttDiam - params.ttThickness * 2) {
+        QMessageBox::critical(nullptr, "Ошибка построения", "Диаметр кожуха (ktDiam) должен быть больше диаметра теплообменных труб (ttDiam).");
+        isValid = false;
+    }
+
+    if (params.dU >= params.ktDiam) {
+        QMessageBox::critical(nullptr, "Ошибка построения", "Диаметр отверстия (dU) должен быть больше диаметра кожуха (ktDiam).");
+        isValid = false;
+    }
+
+    QMessageBox::information(nullptr, "Успешно", "Сборка успешно построена.");
+
+    return isValid;
+} 
+
+
 //---------------------------------------------------------------------------------------
 //
 // ---
@@ -513,10 +546,14 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
                 ? m_pExplodeManager->manualTTORParams
                 : m_pExplodeManager->dataTTOR[index > 0 ? index : 0];
 
-            int configurationQuantity = m_pExplodeManager->m_quantityCombobox->currentIndex();
-    
-            m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(config, configurationQuantity);
-            openModel();
+            bool ContinueBuildAssemlyTTOR = checkValidityOfParametrsTTOR(config);
+
+            if (ContinueBuildAssemlyTTOR) {
+                int configurationQuantity = m_pExplodeManager->m_quantityCombobox->currentIndex();
+
+                m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(config, configurationQuantity);
+                openModel();
+            }
             break;
         }
         case ExplodeWidget::TTRM:
@@ -959,17 +996,20 @@ void ExplodeWidget::updateActionCheckFilter()
     for (auto it = lstActions.begin(); it != lstActions.end(); ++it)
     {
         QAction* action = (*it);
-        if (action->objectName() == QString("ID_:/res/filter24x24.png"))
+        if (action->objectName() == QString(
+            "ID_:/res/filter24x24.png"))
             action->setChecked(filer.CheckFlag(SubPrim));
-        //        else if (action->objectName() == QString("ID_:/res/filterseg24x24.png"))
-        //            action->setChecked(filer.checkFlag(SubSegment));
-        else if (action->objectName() == QString("ID_:/res/filterbody24x24.png"))
+        else if (action->objectName() == QString(
+            "ID_:/res/filterbody24x24.png"))
             action->setChecked(filer.CheckFlag(SubBody));
-        else if (action->objectName() == QString("ID_:/res/filterface24x24.png"))
+        else if (action->objectName() == QString(
+            "ID_:/res/filterface24x24.png"))
             action->setChecked(filer.CheckFlag(SubFace));
-        else if (action->objectName() == QString("ID_:/res/filteredge24x24.png"))
+        else if (action->objectName() == QString(
+            "ID_:/res/filteredge24x24.png"))
             action->setChecked(filer.CheckFlag(SubEdge));
-        else if (action->objectName() == QString("ID_:/res/filtervertex24x24.png"))
+        else if (action->objectName() == QString(
+            "ID_:/res/filtervertex24x24.png"))
             action->setChecked(filer.CheckFlag(SubVertex));
     }
 }
@@ -978,13 +1018,17 @@ void ExplodeWidget::updateActionCheckFilter()
 //// ---------------------------------------------------------------------------------
 void ExplodeWidget::slotRenderTriggered(QAction* action)
 {
-    if (action->objectName() == QString("ID_:/res/renderMods/dimmedWireframe.png")){
+    if (action->objectName() == QString(
+        "ID_:/res/renderMods/dimmedWireframe.png")){
         graphicsView()->SetRenderMode(RenderMode::rm_ShadedWithEdges);
-    }else if (action->objectName() == QString("ID_:/res/renderMods/shaded.png")) {
+    }else if (action->objectName() == QString(
+        "ID_:/res/renderMods/shaded.png")) {
         graphicsView()->SetRenderMode(RenderMode::rm_Shaded);
-    }else if (action->objectName() == QString("ID_:/res/renderMods/wirefrm.png")) {
+    }else if (action->objectName() == QString(
+        "ID_:/res/renderMods/wirefrm.png")) {
         graphicsView()->SetRenderMode(RenderMode::rm_Wireframe);
-    }else if (action->objectName() == QString("ID_:/res/renderMods/hiddenremoved.png")) {
+    }else if (action->objectName() == QString(
+        "ID_:/res/renderMods/hiddenremoved.png")) {
         graphicsView()->SetRenderMode(RenderMode::rm_HiddenLinesRemoved);
     }
     update();
@@ -1233,6 +1277,8 @@ void ExplodeWidget::loadModel()
     }
     createScene();
     fillGeometryList();
+
+    QMessageBox::information(nullptr, "Успешно", "Файл успешно импортирован в приложение");
 }
 
 
@@ -1259,6 +1305,11 @@ void ExplodeWidget::saveModel()
         if (readRes != cnv_Success)
             vsnWarning("Model write error");
         QApplication::restoreOverrideCursor();
+
+        QString fileExtension = QFileInfo(fileName).suffix();
+        QString successMessage = QString("Файл успешно экспортирован в формате .%1").arg(fileExtension);
+
+        QMessageBox::information(nullptr, "Успешно", successMessage);
     }
 }
 
