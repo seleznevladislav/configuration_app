@@ -476,8 +476,6 @@ bool checkValidityOfParametrsTTOR(BuildParamsForHeatExchangerTTOR params) {
         isValid = false;
     }
 
-    QMessageBox::information(nullptr, "Успешно", "Сборка успешно построена.");
-
     return isValid;
 } 
 
@@ -553,6 +551,8 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
 
                 m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(config, configurationQuantity);
                 openModel();
+
+                QMessageBox::information(nullptr, "Успешно", "Сборка успешно построена.");
             }
             break;
         }
