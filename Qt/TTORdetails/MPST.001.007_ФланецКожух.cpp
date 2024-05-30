@@ -165,8 +165,6 @@ void CreateSketcherFlanecKozhuhdif(RPArray<MbContour>& _arrContours, double ktDi
 
 SPtr<MbSolid> ParametricModelCreator::Zarubincreate_007_FlanecKozhux(double ktDiam, double ktThickness)
 {
-
-
     int index = 0;
 
     if (ktDiam < 145) {

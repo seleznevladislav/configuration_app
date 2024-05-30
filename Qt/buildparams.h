@@ -32,6 +32,7 @@ namespace BuildMathModel {
 		double Lt;             // 17 - ƒлина теплообменных труб (L-l3-t+40(длина фланца))
 		bool turnOnStandart;   // 18 - ¬ключить стд
 		bool simpleMode;       // 19 - ”прощенный режим
+		double widthFlanec;    // 20 - Ўирина опоры
 	};
 	struct ConfigParams
 	{
