@@ -1301,61 +1301,85 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
 
         for (size_t i = 0; i < boltsM8.size(); ++i) {
             boltsM8[i] = new MbInstance(*BoltM8, lcs);
+            MbProductInfo boltname(false, "14", "14", "14");
+            boltsM8[i]->AddAttribute(boltname);
             pair.push_back(boltsM8[i]);
         }
 
         for (size_t i = 0; i < WashersM8.size(); ++i) {
             WashersM8[i] = new MbInstance(*WasherM8, lcs);
+            MbProductInfo boltname(false, "15", "15", "15");
+            WashersM8[i]->AddAttribute(boltname);
             pair.push_back(WashersM8[i]);
         }
 
         for (size_t i = 0; i < NutBoltsM8.size(); ++i) {
             NutBoltsM8[i] = new MbInstance(*NutBoltM8, lcs);
+            MbProductInfo boltname(false, "16", "16", "16");
+            NutBoltsM8[i]->AddAttribute(boltname);
             pair.push_back(NutBoltsM8[i]);
         }
 
         for (size_t i = 0; i < boltsM10.size(); ++i) {
             boltsM10[i] = new MbInstance(*BoltM10, lcs);
+            MbProductInfo boltname(false, "17", "17", "17");
+            boltsM10[i]->AddAttribute(boltname);
             pair.push_back(boltsM10[i]);
         }
 
         for (size_t i = 0; i < WashersM10.size(); ++i) {
             WashersM10[i] = new MbInstance(*WasherM10, lcs);
+            MbProductInfo boltname(false, "18", "18", "18");
+            WashersM10[i]->AddAttribute(boltname);
             pair.push_back(WashersM10[i]);
         }
 
         for (size_t i = 0; i < NutBoltsM10.size(); ++i) {
             NutBoltsM10[i] = new MbInstance(*NutBoltM10, lcs);
+            MbProductInfo boltname(false, "19", "19", "19");
+            NutBoltsM10[i]->AddAttribute(boltname);
             pair.push_back(NutBoltsM10[i]);
         }
 
         for (size_t i = 0; i < boltsM12.size(); ++i) {
             boltsM12[i] = new MbInstance(*BoltM12, lcs);
+            MbProductInfo boltname(false, "20", "20", "20");
+            boltsM12[i]->AddAttribute(boltname);
             pair.push_back(boltsM12[i]);
         }
 
         for (size_t i = 0; i < WashersM12.size(); ++i) {
             WashersM12[i] = new MbInstance(*WasherM12, lcs);
+            MbProductInfo boltname(false, "21", "21", "21");
+            WashersM12[i]->AddAttribute(boltname);
             pair.push_back(WashersM12[i]);
         }
 
         for (size_t i = 0; i < NutBoltsM12.size(); ++i) {
             NutBoltsM12[i] = new MbInstance(*NutBoltM12, lcs);
+            MbProductInfo boltname(false, "22", "22", "22");
+            NutBoltsM12[i]->AddAttribute(boltname);
             pair.push_back(NutBoltsM12[i]);
         }
 
         for (size_t i = 0; i < boltsM16.size(); ++i) {
             boltsM16[i] = new MbInstance(*BoltM16, lcs);
+            MbProductInfo boltname(false, "23", "23", "23");
+            boltsM16[i]->AddAttribute(boltname);
             pair.push_back(boltsM16[i]);
         }
 
         for (size_t i = 0; i < WashersM16.size(); ++i) {
             WashersM16[i] = new MbInstance(*WasherM16, lcs);
+            MbProductInfo boltname(false, "24", "24", "24");
+            WashersM16[i]->AddAttribute(boltname);
             pair.push_back(WashersM16[i]);
         }
 
         for (size_t i = 0; i < NutBoltsM16.size(); ++i) {
             NutBoltsM16[i] = new MbInstance(*NutBoltM16, lcs);
+            MbProductInfo boltname(false, "25", "25", "25");
+            NutBoltsM16[i]->AddAttribute(boltname);
             pair.push_back(NutBoltsM16[i]);
         }
     }
@@ -3130,23 +3154,28 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
         // Право лево
         // ВВерх низ
         // Вперед назад
+        double prametrLength = Lt - 4825;
         if (!turnOnStandart) {
-            Detail_012->Move(MbVector3D(0, -850 + assemblyHeightTTOR, -480));
+            Detail_012->Move(MbVector3D(0, -850 + assemblyHeightTTOR, -480- prametrLength));
         }
 
         if (simpleMode && turnOnStandart) {
-            Detail_012->Move(MbVector3D(75, -825 + assemblyHeightTTOR,- 480));
+            Detail_012->Move(MbVector3D(75, -825 + assemblyHeightTTOR,- 480- prametrLength));
         }
 
         if (!simpleMode && turnOnStandart) {
-            Detail_012->Move(MbVector3D(75, -825 + assemblyHeightTTOR, -480));
+            Detail_012->Move(MbVector3D(75, -825 + assemblyHeightTTOR, -480- prametrLength));
         }
 
         for (int i = 0; i < configurationQuantity + 1; ++i)
         {
             SPtr<MbInstance> assmInstance(new MbInstance(*assm, lcs));
+            MbProductInfo boltname(false, "12", "12", "12");
+            assmInstance->AddAttribute(boltname);
 
             SPtr<MbInstance> Item_012_001(new MbInstance(*Detail_012, lcs));
+            MbProductInfo boltname12(false, "11", "11", "11");
+            Item_012_001->AddAttribute(boltname12);
 
             assmPairs.push_back(assmInstance);
 
@@ -3159,6 +3188,8 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
         }
 
         SPtr<MbAssembly> assmBlock(new MbAssembly(assmPairs));
+        MbProductInfo boltname123(false, "13", "13", "13");
+        assmBlock->AddAttribute(boltname123);
 
         return assmBlock;
     }

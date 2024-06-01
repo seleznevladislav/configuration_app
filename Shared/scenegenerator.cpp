@@ -320,7 +320,8 @@ SceneSegment* SceneGenerator::CreateSceneSegment(SPtr<MbModel> pModel, SceneSegm
     else
     {
         SimpleName name = pModel->GetModelName();
-        pParent->SetObjectName(String(u8"ТТРМ"));
+
+        pParent->SetObjectName(String(u8"Теплообменный аппарат"));
     }
 
     emit CreateSegment(pParent, nullptr);
