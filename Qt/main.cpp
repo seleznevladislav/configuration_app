@@ -170,10 +170,16 @@ int main(int argc, char** argv)
     ///////////////////////////////////////////////////////////////////////////
     // Toolbar left position
     ///////////////////////////////////////////////////////////////////////////
+    auto dummy1 = new QWidget();
+    dummy1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    auto dummy2 = new QWidget();
+    dummy2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     QToolBar* commandBar = new QToolBar();
+    commandBar->addWidget(dummy1);
     commandBar->setBaseSize(sizeIcons);
     ::createCommandActions(pOpenScene, commandBar, &mainWindow);
-    mainWindow.addToolBar(Qt::LeftToolBarArea, commandBar);
+    commandBar->addWidget(dummy2);
+    mainWindow.addToolBar(Qt::TopToolBarArea, commandBar);
 
     ///////////////////////////////////////////////////////////////////////////
     // Explode
