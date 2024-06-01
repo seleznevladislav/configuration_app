@@ -291,12 +291,12 @@ private:
     data_tubeProperties dataOfCurrentTubeKozhux;
     QComboBox* m_PhotFluidComboBox;
     QComboBox* m_PcoldFluidComboBox;
-    QLineEdit* m_PhotVelocity;
-    QLineEdit* m_PcoldVelocity;
-    QLineEdit* m_PhotInletTemp;
-    QLineEdit* m_PcoldInletTemp;
-    QLineEdit* m_PrresultTemp1;
-    QLineEdit* m_PrresultTemp2;
+    QDoubleSpinBox* m_PhotVelocity;
+    QDoubleSpinBox* m_PcoldVelocity;
+    QDoubleSpinBox* m_PhotInletTemp;
+    QDoubleSpinBox* m_PcoldInletTemp;
+    QDoubleSpinBox* m_PrresultTemp1;
+    QDoubleSpinBox* m_PrresultTemp2;
     QComboBox* m_PmaterialCombobox;
     double m_PoutletTemp1;
     double m_PoutletTemp2;
@@ -304,6 +304,24 @@ private:
     /// <summary>
     /// vars for parametrization Zarubin
     /// </summary>
+    QCheckBox* turnOnZagryaznenieTTOR = nullptr;
+    QDoubleSpinBox* m_PresultFieldZagryaznenieQ1 = nullptr;
+    QDoubleSpinBox* m_PresultFieldZagryaznenieQ2 = nullptr;
+    QDoubleSpinBox* m_PresultFieldZagryaznenieH1 = nullptr;
+    QDoubleSpinBox* m_PresultFieldZagryaznenieH2 = nullptr;
+    QLineEdit* m_ForGrresultTemp1;
+    QLineEdit* m_ForGrresultTemp2;
+
+    QLineEdit* m_ForFrresultTemp1;
+    QLineEdit* m_ForFrresultTemp2;
+
+    QLineEdit* m_ForArresultTemp1;
+    QLineEdit* m_ForArresultTemp2;
+
+    QLineEdit* m_ForQrresultTemp;
+    QLineEdit* m_ForKrresultTemp;
+    QLineEdit* m_ForRZrresultTemp;
+    ///
     QCheckBox* simpleModeStandartTTOR = nullptr;
     QCheckBox* turnOnStandartDetailsTTOR = nullptr;
     QDoubleSpinBox* diametrTubeTTOR = nullptr;

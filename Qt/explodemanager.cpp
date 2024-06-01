@@ -1042,12 +1042,14 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
         case 1: //ExplodeWidget::TTOR
         {
             m_vLayoutCalculationTabTTOR = new QVBoxLayout();
-            m_vLayoutCalculationTabTTOR->setSpacing(20);
+            m_vLayoutCalculationTabTTOR->setSpacing(15);
 
             // Комбобоксы для выбора теплоносителей
             QHBoxLayout* comboTeplHLayout = new QHBoxLayout();
             QVBoxLayout* comboTeplV1Layout = new QVBoxLayout();
+            comboTeplV1Layout->setSpacing(5);
             QVBoxLayout* comboTeplV2Layout = new QVBoxLayout();
+            comboTeplV2Layout->setSpacing(5);
 
             comboTeplV1Layout->addWidget(new QLabel(u8"Горячий теплоноситель:"));
             m_PhotFluidComboBox = new QComboBox();
@@ -1070,35 +1072,80 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
             // Поля для ввода температур
             QHBoxLayout* tempsHLayout = new QHBoxLayout();
             QVBoxLayout* tempsV1Layout = new QVBoxLayout();
+            tempsV1Layout->setSpacing(5);
             QVBoxLayout* tempsV2Layout = new QVBoxLayout();
+            tempsV2Layout->setSpacing(5);
 
-            tempsV1Layout->addWidget(new QLabel(u8"Температура горячей среды на входе (°C):"));
-            m_PhotInletTemp = new QLineEdit();
-            m_PhotInletTemp->setText(QString::number(200));
+            tempsV1Layout->addWidget(new QLabel(u8"Температура горячей \nсреды на входе (°C):"));
+            m_PhotInletTemp = new QDoubleSpinBox();
+            m_PhotInletTemp->setMaximum(1000);
+            m_PhotInletTemp->setValue(300);
             tempsV1Layout->addWidget(m_PhotInletTemp);
 
-            tempsV2Layout->addWidget(new QLabel(u8"Температура холодной среды на входе (°C):"));
-            m_PcoldInletTemp = new QLineEdit();
-            m_PcoldInletTemp->setText(QString::number(200));
+            tempsV2Layout->addWidget(new QLabel(u8"Температура холодной \nсреды на входе (°C):"));
+            m_PcoldInletTemp = new QDoubleSpinBox();
+            m_PcoldInletTemp->setMaximum(1000);
+            m_PcoldInletTemp->setValue(200);
             tempsV2Layout->addWidget(m_PcoldInletTemp);
 
             tempsHLayout->addLayout(tempsV1Layout);
             tempsHLayout->addLayout(tempsV2Layout);
             m_vLayoutCalculationTabTTOR->addLayout(tempsHLayout);
+            // Поля для ввода температур
+            QHBoxLayout* tempsVihodHLayout = new QHBoxLayout();
+            QVBoxLayout* tempsVihodV1Layout = new QVBoxLayout();
+            tempsVihodV1Layout->setSpacing(5);
+            QVBoxLayout* tempsVihodV2Layout = new QVBoxLayout();
+            tempsVihodV2Layout->setSpacing(5);
 
+            tempsVihodV1Layout->addWidget(new QLabel(u8"Температура горячего \nтеплоносителя на выходе (°C):"));
+            m_PrresultTemp1 = new QDoubleSpinBox();
+            m_PrresultTemp1->setMaximum(1000);
+            m_PrresultTemp1->setToolTip(u8"Необходимо указать одно из значений тепературы на выходе");
+            tempsVihodV1Layout->addWidget(m_PrresultTemp1);
+
+            tempsVihodV2Layout->addWidget(new QLabel(u8"Температура холодного \nтеплоносителя на выходе (°C):"));
+            m_PrresultTemp2 = new QDoubleSpinBox();
+            m_PrresultTemp2->setMaximum(1000);
+            m_PrresultTemp2->setToolTip(u8"Необходимо указать одно из значений тепературы на выходе");
+            tempsVihodV2Layout->addWidget(m_PrresultTemp2);
+            
+
+            auto valueChangedLambda = [this](double value) {
+                QDoubleSpinBox* senderSpinBox = qobject_cast<QDoubleSpinBox*>(sender());
+                if (!senderSpinBox) return;
+
+                if (senderSpinBox == m_PrresultTemp1) {
+                    m_PrresultTemp2->setDisabled(value > 0);
+                }
+                else if (senderSpinBox == m_PrresultTemp2) {
+                    m_PrresultTemp1->setDisabled(value > 0);
+                }
+                };
+
+            connect(m_PrresultTemp1, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, valueChangedLambda);
+            connect(m_PrresultTemp2, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, valueChangedLambda);
+
+
+            tempsVihodHLayout->addLayout(tempsVihodV1Layout);
+            tempsVihodHLayout->addLayout(tempsVihodV2Layout);
+            m_vLayoutCalculationTabTTOR->addLayout(tempsVihodHLayout);
+            
             // Поля для ввода скоростей
             QHBoxLayout* speedHLayout = new QHBoxLayout();
             QVBoxLayout* speedV1Layout = new QVBoxLayout();
+            speedV1Layout->setSpacing(5);
             QVBoxLayout* speedV2Layout = new QVBoxLayout();
+            speedV2Layout->setSpacing(5);
 
             speedV1Layout->addWidget(new QLabel(u8"Скорость горячей среды (м/с):"));
-            m_PhotVelocity = new QLineEdit();
-            m_PhotVelocity->setText(QString::number(3.2));
+            m_PhotVelocity = new QDoubleSpinBox();
+            m_PhotVelocity->setValue(3.2);
             speedV1Layout->addWidget(m_PhotVelocity);
 
             speedV2Layout->addWidget(new QLabel(u8"Скорость холодной среды (м/с):"));
-            m_PcoldVelocity = new QLineEdit();
-            m_PcoldVelocity->setText(QString::number(2.4));
+            m_PcoldVelocity = new QDoubleSpinBox();
+            m_PcoldVelocity->setValue(2.4);
             speedV2Layout->addWidget(m_PcoldVelocity);
 
             speedHLayout->addLayout(speedV1Layout);
@@ -1106,35 +1153,164 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
             m_vLayoutCalculationTabTTOR->addLayout(speedHLayout);
 
             // Комбобоксы для Выбора материала
-            m_vLayoutCalculationTabTTOR->addWidget(new QLabel(u8"Материал труб теплообменника:"));
+
+            QHBoxLayout* materialHLayout = new QHBoxLayout();
+            materialHLayout->addWidget(new QLabel(u8"Материал труб теплообменника:"));
             m_PmaterialCombobox = new QComboBox();
             for (const auto& fluid : materialProperties) {
                 m_PmaterialCombobox->addItem(QString::fromStdString(fluid.name));
             }
-            m_vLayoutCalculationTabTTOR->addWidget(m_PmaterialCombobox);
+            materialHLayout->addWidget(m_PmaterialCombobox);
+            m_vLayoutCalculationTabTTOR->addLayout(materialHLayout);
 
+            //  Загрязненеи среды
+            QHBoxLayout* q1ResultHLayout = new QHBoxLayout();
+            QHBoxLayout* h1ResultHLayout = new QHBoxLayout();
+            QHBoxLayout* tempsVihodHZagryaznenie = new QHBoxLayout();
+            QVBoxLayout* q1V1Layout = new QVBoxLayout();
+            q1V1Layout->setSpacing(5);
+            QVBoxLayout* q2V1Layout = new QVBoxLayout();
+            q2V1Layout->setSpacing(5);
+            QVBoxLayout* h1V1Layout = new QVBoxLayout();
+            h1V1Layout->setSpacing(5);
+            QVBoxLayout* h2V1Layout = new QVBoxLayout();
+            h2V1Layout->setSpacing(5);
+
+            turnOnZagryaznenieTTOR = new QCheckBox;
+            QLabel* turnOnZagryaznenieTTORLabel = new QLabel(u8"Учитывать загрязнение теплоносителя:");
+            tempsVihodHZagryaznenie->addWidget(turnOnZagryaznenieTTORLabel);
+            tempsVihodHZagryaznenie->addWidget(turnOnZagryaznenieTTOR);
+
+            q1V1Layout->addWidget(new QLabel(u8"Толщина отложения \nгорячего телоносителя (мм):"));
+            m_PresultFieldZagryaznenieQ1 = new QDoubleSpinBox();
+            m_PresultFieldZagryaznenieQ1->setDisabled(true);
+            q1V1Layout->addWidget(m_PresultFieldZagryaznenieQ1);
+
+            q2V1Layout->addWidget(new QLabel(u8"Толщина отложения \nхолодного телоносителя (мм):"));
+            m_PresultFieldZagryaznenieQ2 = new QDoubleSpinBox();
+            m_PresultFieldZagryaznenieQ2->setDisabled(true);
+            q2V1Layout->addWidget(m_PresultFieldZagryaznenieQ2);
+
+            h1V1Layout->addWidget(new QLabel(u8"Коэф. теплопроводности отложения \nгорячего телоносителя (Вт/(м*К)):"));
+            m_PresultFieldZagryaznenieH1 = new QDoubleSpinBox();
+            m_PresultFieldZagryaznenieH1->setDisabled(true);
+            m_PresultFieldZagryaznenieH1->setMaximum(1000);
+            h1V1Layout->addWidget(m_PresultFieldZagryaznenieH1);
+
+            h2V1Layout->addWidget(new QLabel(u8"Коэф. теплопроводности отложения \nхолодного телоносителя (Вт/(м*К)):"));
+            m_PresultFieldZagryaznenieH2 = new QDoubleSpinBox();
+            m_PresultFieldZagryaznenieH2->setDisabled(true);
+            m_PresultFieldZagryaznenieH2->setMaximum(1000);
+            h2V1Layout->addWidget(m_PresultFieldZagryaznenieH2);
+
+            m_vLayoutCalculationTabTTOR->addLayout(tempsVihodHZagryaznenie);
+            q1ResultHLayout->addLayout(q1V1Layout);
+            q1ResultHLayout->addLayout(q2V1Layout);
+            h1ResultHLayout->addLayout(h1V1Layout);
+            h1ResultHLayout->addLayout(h2V1Layout);
+            m_vLayoutCalculationTabTTOR->addLayout(q1ResultHLayout);
+            m_vLayoutCalculationTabTTOR->addLayout(h1ResultHLayout);
+            connect(turnOnZagryaznenieTTOR, &QCheckBox::toggled, [=](bool checked) {
+                m_PresultFieldZagryaznenieQ1->setEnabled(checked);
+                m_PresultFieldZagryaznenieQ2->setEnabled(checked);
+                m_PresultFieldZagryaznenieH1->setEnabled(checked);
+                m_PresultFieldZagryaznenieH2->setEnabled(checked);
+                });
+
+            // рАСЧЕТ КНОПКА
             m_CalculationButton = new QPushButton;
             m_CalculationButton->setText(u8"Рассчитать теплообменный аппарат");
 
             connect(m_CalculationButton, &QPushButton::clicked, this, &ExplodeManager::onCalculationButtonClicked);
             m_vLayoutCalculationTabTTOR->addWidget(m_CalculationButton);
 
-            // Поля для ввода скоростей
-            QHBoxLayout* resultHLayout = new QHBoxLayout();
-            QVBoxLayout* resultV1Layout = new QVBoxLayout();
-            QVBoxLayout* resultV2Layout = new QVBoxLayout();
+            // РЕЗАЛТЫ
+            // Q
+            QHBoxLayout* ForGResultHLayout = new QHBoxLayout();
+            QVBoxLayout* ForGq1V1Layout = new QVBoxLayout();
+            ForGq1V1Layout->setSpacing(5);
+            QVBoxLayout* ForGq2V1Layout = new QVBoxLayout();
+            ForGq2V1Layout->setSpacing(5);
 
-            resultV1Layout->addWidget(new QLabel(u8"Температура горячего теплоносителя на выходе:"));
-            m_PrresultTemp1 = new QLineEdit();
-            resultV1Layout->addWidget(m_PrresultTemp1);
+            ForGq1V1Layout->addWidget(new QLabel(u8"Расход горячего теплоносителя - G (°C):"));
+            m_ForGrresultTemp1 = new QLineEdit();
+            m_ForGrresultTemp1->setReadOnly(true);
+            ForGq1V1Layout->addWidget(m_ForGrresultTemp1);
 
-            resultV2Layout->addWidget(new QLabel(u8"Температура холодного теплоносителя на выходе"));
-            m_PrresultTemp2 = new QLineEdit();
-            resultV2Layout->addWidget(m_PrresultTemp2);
+            ForGq2V1Layout->addWidget(new QLabel(u8"Расход холодного теплоносителя - G (°C):"));
+            m_ForGrresultTemp2 = new QLineEdit();
+            m_ForGrresultTemp2->setReadOnly(true);
+            ForGq2V1Layout->addWidget(m_ForGrresultTemp2);
 
-            resultHLayout->addLayout(resultV1Layout);
-            resultHLayout->addLayout(resultV2Layout);
-            m_vLayoutCalculationTabTTOR->addLayout(resultHLayout);
+            ForGResultHLayout->addLayout(ForGq1V1Layout);
+            ForGResultHLayout->addLayout(ForGq2V1Layout);
+            m_vLayoutCalculationTabTTOR->addLayout(ForGResultHLayout);
+
+            // F
+            QHBoxLayout* ForFResultHLayout = new QHBoxLayout();
+            QVBoxLayout* ForFq1V1Layout = new QVBoxLayout();
+            ForFq1V1Layout->setSpacing(5);
+            QVBoxLayout* ForFq2V1Layout = new QVBoxLayout();
+            ForFq2V1Layout->setSpacing(5);
+
+            ForFq1V1Layout->addWidget(new QLabel(u8"Площадь поперечного сечения - F1 (м²):"));
+            m_ForFrresultTemp1 = new QLineEdit();
+            m_ForFrresultTemp1->setReadOnly(true);
+            ForFq1V1Layout->addWidget(m_ForFrresultTemp1);
+
+            ForFq2V1Layout->addWidget(new QLabel(u8"Площадь поперечного сечения - F2 (м²):"));
+            m_ForFrresultTemp2 = new QLineEdit();
+            m_ForFrresultTemp2->setReadOnly(true);
+            ForFq2V1Layout->addWidget(m_ForFrresultTemp2);
+
+            ForFResultHLayout->addLayout(ForFq1V1Layout);
+            ForFResultHLayout->addLayout(ForFq2V1Layout);
+            m_vLayoutCalculationTabTTOR->addLayout(ForFResultHLayout);
+            
+            // A
+            QHBoxLayout* ForAResultHLayout = new QHBoxLayout();
+            QVBoxLayout* ForAq1V1Layout = new QVBoxLayout();
+            ForAq1V1Layout->setSpacing(5);
+            QVBoxLayout* ForAq2V1Layout = new QVBoxLayout();
+            ForAq2V1Layout->setSpacing(5);
+
+            ForAq1V1Layout->addWidget(new QLabel(u8"Коэф. теплопередачи - а1 (Вт/(м²*К)):"));
+            m_ForArresultTemp1 = new QLineEdit();
+            m_ForArresultTemp1->setReadOnly(true);
+            ForAq1V1Layout->addWidget(m_ForArresultTemp1);
+
+            ForAq2V1Layout->addWidget(new QLabel(u8"Коэф. теплопередачи - а2 (Вт/(м²*К)):"));
+            m_ForArresultTemp2 = new QLineEdit();
+            m_ForArresultTemp2->setReadOnly(true);
+            ForAq2V1Layout->addWidget(m_ForArresultTemp2);
+
+            ForAResultHLayout->addLayout(ForAq1V1Layout);
+            ForAResultHLayout->addLayout(ForAq2V1Layout);
+            m_vLayoutCalculationTabTTOR->addLayout(ForAResultHLayout);
+
+            //Q
+            QHBoxLayout* ForQResultHLayout = new QHBoxLayout();
+            ForQResultHLayout->addWidget(new QLabel(u8"Тепловая мощность - Q (Вт):"));
+            m_ForQrresultTemp = new QLineEdit();
+            m_ForQrresultTemp->setReadOnly(true);
+            ForQResultHLayout->addWidget(m_ForQrresultTemp);
+            m_vLayoutCalculationTabTTOR->addLayout(ForQResultHLayout);
+
+            //K
+            QHBoxLayout* ForKResultHLayout = new QHBoxLayout();
+            ForKResultHLayout->addWidget(new QLabel(u8"Коэф. теплопередачи теплообменника - K (Вт/(м²*К)):"));
+            m_ForKrresultTemp = new QLineEdit();
+            m_ForKrresultTemp->setReadOnly(true);
+            ForKResultHLayout->addWidget(m_ForKrresultTemp);
+            m_vLayoutCalculationTabTTOR->addLayout(ForKResultHLayout);
+
+            //Rзаг
+            QHBoxLayout* ForRZResultHLayout = new QHBoxLayout();
+            ForRZResultHLayout->addWidget(new QLabel(u8"Термическое сопротивление загрязнения - Rзаг (м²*К/Вт):"));
+            m_ForRZrresultTemp = new QLineEdit();
+            m_ForRZrresultTemp->setReadOnly(true);
+            ForRZResultHLayout->addWidget(m_ForRZrresultTemp);
+            m_vLayoutCalculationTabTTOR->addLayout(ForRZResultHLayout);
 
             m_calculationTab->setLayout(m_vLayoutCalculationTabTTOR);
 
@@ -1610,10 +1786,6 @@ void ExplodeManager::onReconfigureButtonClicked() {
 }
 
 void ExplodeManager::onCalculationButtonClicked() {
-    QWindow* test = new QWindow();
-    test->setTitle(QStringLiteral("Рассчитал"));
-    test->show();
-
     double hotInletTemp = m_PhotInletTemp->text().toDouble();
     double coldInletTemp = m_PcoldInletTemp->text().toDouble();
 
@@ -1631,8 +1803,12 @@ void ExplodeManager::onCalculationButtonClicked() {
 
     iterateHeatExchanger(hotInletTemp, coldInletTemp);
 
-    m_PrresultTemp1->setText(QString::number(m_PoutletTemp1));
-    m_PrresultTemp2->setText(QString::number(m_PoutletTemp2));
+    m_PrresultTemp1->setValue(m_PoutletTemp1);
+    m_PrresultTemp2->setValue(m_PoutletTemp2);
+
+    QMessageBox::warning(nullptr, u8"Неверные значения температуры", u8"Расчет не может быть выполнен. Пожалуйста укажите правильные значения температуры теплоносителей");
+    QMessageBox::information(nullptr, u8"Успешно", u8"Расчеты выполнены правильно.");
+
 }
 
 QAction* ExplodeManager::createActionButton(const QString& fileName, QGroupBox* groupFilter, QHBoxLayout* fGroupLayout)
