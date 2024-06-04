@@ -93,20 +93,8 @@ SolidSPtr HolyHole412(SolidSPtr* previus, int holes, double DiametrCircle, doubl
     return news;
 }
 
-void CreateSketcherFlanecTrubadif(RPArray<MbContour>& _arrContours, double ttDiam, double ttThickness)
+void CreateSketcherFlanecTrubadif(RPArray<MbContour>& _arrContours, double ttDiam, double ttThickness, int index)
 {
-    int index = 0;
-
-    // до размера d3
-     if (ttDiam <= 100) { //ttDiam = 89
-        index = 0;
-    }else if (ttDiam <= 116) { //ttDiam = 108
-        index = 1;
-    }else if (ttDiam <= 145) { //ttDiam = 133
-        index = 2;
-    }else if (ttDiam <= 170) { //ttDiam = 159
-        index = 3;
-    }
 
     // const double Dy = configurationZarubin[index].Dy;
 
@@ -181,16 +169,16 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_008_FlanecSpecial(double ttD
     int index = 0;
 
     // до размера d3
-    if (ttDiam <= 100) { //ttDiam = 89
+    if (ttDiam < 100) { //ttDiam = 89
         index = 0;
     }
-    else if (ttDiam <= 116) { //ttDiam = 108
+    else if (ttDiam < 116) { //ttDiam = 108
         index = 1;
     }
-    else if (ttDiam <= 145) { //ttDiam = 133
+    else if (ttDiam < 145) { //ttDiam = 133
         index = 2;
     }
-    else if (ttDiam <= 170) { //ttDiam = 159
+    else if (ttDiam < 170) { //ttDiam = 159
         index = 3;
     }
 
@@ -203,7 +191,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_008_FlanecSpecial(double ttD
 
     // Создание образующей для тела выдавливания
     RPArray<MbContour> arrContours;
-    CreateSketcherFlanecTrubadif(arrContours, ttDiam, ttThickness);
+    CreateSketcherFlanecTrubadif(arrContours, ttDiam, ttThickness, index);
 
     //Плоскость
     MbPlane* pPlaneXY = new MbPlane(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, 1, 0), MbCartPoint3D(0, 0, 1));
