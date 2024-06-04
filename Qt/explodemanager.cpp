@@ -865,154 +865,6 @@ QMessageBox* ExplodeManager::createWarning(QString* warningText)
     return msgBox;
 }
 
-// Расчет вязкости viscosity
-double calculateHeatTransferCoefficient(double hotVelocity, double coldVelocity, double diameter, double p, double c, double laymbda, double thicknessWall, double lambda_wall) {
-    // Helper lambda for calculating Pr
-    auto calcPr = [](double cp, double lambda) {
-        // Assume average dynamic viscosity for typical fluids (in Pa·s)
-        double avgViscosity = 0.001; // среднее значение вязкости
-        return (cp * avgViscosity) / lambda;
-        };
-
-    // Helper lambda for calculating Nu
-    auto calcNu = [](double Re, double Pr) {
-        if (Re < 2300) {
-            return 3.66; // for laminar flow
-        }
-        else {
-            return 0.023 * std::pow(Re, 0.8) * std::pow(Pr, 0.4); // for turbulent flow
-        }
-        };
-
-    // Calculate Re and Pr for hot fluid
-    double Re_hot = (p * hotVelocity * diameter) / 0.001; // используя среднее значение вязкости
-    double Pr_hot = calcPr(c, laymbda);
-
-    // Calculate Nu for hot fluid
-    double Nu_hot = calcNu(Re_hot, Pr_hot);
-
-    // Calculate heat transfer coefficient for hot fluid
-    double h_hot = (Nu_hot * laymbda) / diameter;
-
-    // Calculate Re and Pr for cold fluid
-    double Re_cold = (p * coldVelocity * diameter) / 0.001; // используя среднее значение вязкости
-    double Pr_cold = calcPr(c, laymbda);
-
-    // Calculate Nu for cold fluid
-    double Nu_cold = calcNu(Re_cold, Pr_cold);
-
-    // Calculate heat transfer coefficient for cold fluid
-    double h_cold = (Nu_cold * laymbda) / diameter;
-
-    double heatTransferCoefficient = 1.0 / ((1.0 / h_hot) + (thicknessWall / lambda_wall) + (1.0 / h_cold));
-    return heatTransferCoefficient;
-}
-
-// Константы и пороги
-//const double epsilon = 0.01; // Порог для сходимости
-const double epsilon = 0.001; // Порог для сходимости
-const int maxIterations = 100; // Максимальное количество итераций
-
-double calculateMassFlowRate(double density, double area, double velocity) {
-    return density * area * velocity;
-}
-
-double calculateLogMeanTempDifference(double deltaTMax, double deltaTMin) {
-    if (deltaTMax == deltaTMin) return deltaTMax;
-    return (deltaTMax - deltaTMin) / std::log(deltaTMax / deltaTMin);
-}
-
-double getCorrectionFactor(double P, double R) {
-    return 0.8;
-}
-
-void ExplodeManager::iterateHeatExchanger(double hotOutletTemp, double coldOutletTemp) {
-
-    int amountsOftube;
-    switch (m_quantityCombobox->currentIndex()) {
-    case 0:
-        amountsOftube = 4;
-        break;
-    case 1:
-        amountsOftube = 8;
-        break;
-    case 2:
-        amountsOftube = 12;
-        break;
-    case 3:
-        amountsOftube = 14;
-        break;
-    default:
-        amountsOftube = 0;
-        break;
-    }
-
-    // Calculate the cross-sectional areas
-    const double tubeCrossSectionTeploobmen = amountsOftube * M_PI * std::pow(dataExchangerForTTORCalculation.teplTube.d1_diam / 2.0, 2);
-    const double tubeCrossSectionKozhux = amountsOftube * (M_PI * std::pow(dataExchangerForTTORCalculation.kozhuxTube.d1_diam / 2.0, 2) -
-        M_PI * std::pow(dataExchangerForTTORCalculation.teplTube.d2_diam / 2.0, 2));
-
-    // Calculate the surface areas
-    const double areaHot = tubeCrossSectionTeploobmen * dataExchangerForTTORCalculation.teplTube.L_length;
-    const double areaCold = tubeCrossSectionKozhux * dataExchangerForTTORCalculation.teplTube.L_length;
-
-    data_fluidProperties selectedFluidHot = dataExchangerForTTORCalculation.hotFluid = fluidsProperties[m_PhotFluidComboBox->currentIndex()];
-    data_fluidProperties selectedFluidCold = dataExchangerForTTORCalculation.coldFluid = fluidsProperties[m_PcoldFluidComboBox->currentIndex()];
-    data_materialProperties selectedMaterial = materialProperties[m_PmaterialCombobox->currentIndex()];
-
-    double U_heatTransferCoef;	// Вязкость (Если есть, иначе расчет)
-
-    double speedFluidHot = m_PhotVelocity->text().toDouble();
-    double speedFluidCold = m_PcoldVelocity->text().toDouble();
-
-    double hotInletTemp = m_PhotInletTemp->text().toDouble();
-    double coldInletTemp = m_PcoldInletTemp->text().toDouble();
-
-    if (selectedFluidHot.u_viscocity == 0) {
-        selectedFluidHot.u_viscocity = calculateHeatTransferCoefficient(speedFluidHot, speedFluidCold, dataExchangerForTTORCalculation.teplTube.d1_diam,
-            selectedFluidHot.p, selectedFluidHot.c, selectedFluidHot.laymbda, (dataExchangerForTTORCalculation.teplTube.d2_diam - dataExchangerForTTORCalculation.teplTube.d1_diam) / 2, selectedMaterial.laymbdaMateral);
-    }
-    if (selectedFluidCold.u_viscocity == 0) {
-        selectedFluidCold.u_viscocity = calculateHeatTransferCoefficient(speedFluidHot, speedFluidCold, dataExchangerForTTORCalculation.teplTube.d1_diam,
-            selectedFluidCold.p, selectedFluidCold.c, selectedFluidCold.laymbda, (dataExchangerForTTORCalculation.teplTube.d2_diam - dataExchangerForTTORCalculation.teplTube.d1_diam) / 2, selectedMaterial.laymbdaMateral);
-    }
-
-    double G1 = calculateMassFlowRate(selectedFluidHot.p, areaHot, speedFluidHot);
-    double G2 = calculateMassFlowRate(selectedFluidCold.p, areaCold, speedFluidCold);
-
-    for (int iteration = 0; iteration < maxIterations; ++iteration) {
-        double deltaTMax = hotInletTemp - coldOutletTemp;
-        double deltaTMin = hotOutletTemp - coldInletTemp;
-
-        double logMeanTempDiff = calculateLogMeanTempDifference(deltaTMax, deltaTMin);
-
-        double P = (coldOutletTemp - coldInletTemp) / (hotInletTemp - coldOutletTemp);
-        double R = (hotInletTemp - hotOutletTemp) / (coldOutletTemp - coldInletTemp);
-
-        double correctionFactor = getCorrectionFactor(P, R);
-        double avgTempDiff = logMeanTempDiff * correctionFactor;
-
-        double Q1 = selectedFluidHot.u_viscocity * avgTempDiff * areaHot;
-        double Q2 = selectedFluidCold.u_viscocity * avgTempDiff * areaCold;
-
-        double newHotOutletTemp = hotInletTemp - Q1 / (G1 * selectedFluidHot.c);
-        double newColdOutletTemp = coldInletTemp + Q2 / (G2 * selectedFluidHot.c);
-
-        if (std::abs(newHotOutletTemp - hotOutletTemp) < epsilon &&
-            std::abs(newColdOutletTemp - coldOutletTemp) < epsilon) {
-            hotOutletTemp = newHotOutletTemp;
-            coldOutletTemp = newColdOutletTemp;
-            break;
-        }
-
-        hotOutletTemp = newHotOutletTemp;
-        coldOutletTemp = newColdOutletTemp;
-    }
-    // TOZO: Расчеты
-    m_PoutletTemp1 = hotOutletTemp - 0.001 * dataExchangerForTTORCalculation.kozhuxTube.L_length - dataExchangerForTTORCalculation.kozhuxTube.d1_diam*0.48;
-    m_PoutletTemp2 = coldOutletTemp + 0.004 * dataExchangerForTTORCalculation.teplTube.L_length + dataExchangerForTTORCalculation.teplTube.d1_diam * 0.48;
-}
-
 QWidget* ExplodeManager::createPairWidget(QWidget* widget1, QWidget* widget2)
 {
     QWidget* widgetContainer = new QWidget;
@@ -1076,13 +928,13 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
             QVBoxLayout* tempsV2Layout = new QVBoxLayout();
             tempsV2Layout->setSpacing(5);
 
-            tempsV1Layout->addWidget(new QLabel(u8"Температура горячей \nсреды на входе (°C):"));
+            tempsV1Layout->addWidget(new QLabel(u8"Температура горячей \nсреды на входе - t₁\" (°C):"));
             m_PhotInletTemp = new QDoubleSpinBox();
             m_PhotInletTemp->setMaximum(1000);
             m_PhotInletTemp->setValue(300);
             tempsV1Layout->addWidget(m_PhotInletTemp);
 
-            tempsV2Layout->addWidget(new QLabel(u8"Температура холодной \nсреды на входе (°C):"));
+            tempsV2Layout->addWidget(new QLabel(u8"Температура холодной \nсреды на входе - t₂\" (°C):"));
             m_PcoldInletTemp = new QDoubleSpinBox();
             m_PcoldInletTemp->setMaximum(1000);
             m_PcoldInletTemp->setValue(200);
@@ -1098,13 +950,13 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
             QVBoxLayout* tempsVihodV2Layout = new QVBoxLayout();
             tempsVihodV2Layout->setSpacing(5);
 
-            tempsVihodV1Layout->addWidget(new QLabel(u8"Температура горячего \nтеплоносителя на выходе (°C):"));
+            tempsVihodV1Layout->addWidget(new QLabel(u8"Температура горячего \nтеплоносителя на выходе - t₁\" (°C):"));
             m_PrresultTemp1 = new QDoubleSpinBox();
             m_PrresultTemp1->setMaximum(1000);
             m_PrresultTemp1->setToolTip(u8"Необходимо указать одно из значений тепературы на выходе");
             tempsVihodV1Layout->addWidget(m_PrresultTemp1);
 
-            tempsVihodV2Layout->addWidget(new QLabel(u8"Температура холодного \nтеплоносителя на выходе (°C):"));
+            tempsVihodV2Layout->addWidget(new QLabel(u8"Температура холодного \nтеплоносителя на выходе - t₂\" (°C):"));
             m_PrresultTemp2 = new QDoubleSpinBox();
             m_PrresultTemp2->setMaximum(1000);
             m_PrresultTemp2->setToolTip(u8"Необходимо указать одно из значений тепературы на выходе");
@@ -1138,12 +990,12 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
             QVBoxLayout* speedV2Layout = new QVBoxLayout();
             speedV2Layout->setSpacing(5);
 
-            speedV1Layout->addWidget(new QLabel(u8"Скорость горячей среды (м/с):"));
+            speedV1Layout->addWidget(new QLabel(u8"Скорость горячей среды - w₁ (м/с):"));
             m_PhotVelocity = new QDoubleSpinBox();
             m_PhotVelocity->setValue(3.2);
             speedV1Layout->addWidget(m_PhotVelocity);
 
-            speedV2Layout->addWidget(new QLabel(u8"Скорость холодной среды (м/с):"));
+            speedV2Layout->addWidget(new QLabel(u8"Скорость холодной среды - w₂ (м/с):"));
             m_PcoldVelocity = new QDoubleSpinBox();
             m_PcoldVelocity->setValue(2.4);
             speedV2Layout->addWidget(m_PcoldVelocity);
@@ -1163,7 +1015,7 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
             materialHLayout->addWidget(m_PmaterialCombobox);
             m_vLayoutCalculationTabTTOR->addLayout(materialHLayout);
 
-            //  Загрязненеи среды
+            //  Загрязненная среда
             QHBoxLayout* q1ResultHLayout = new QHBoxLayout();
             QHBoxLayout* h1ResultHLayout = new QHBoxLayout();
             QHBoxLayout* tempsVihodHZagryaznenie = new QHBoxLayout();
@@ -1217,14 +1069,35 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
                 m_PresultFieldZagryaznenieH2->setEnabled(checked);
                 });
 
-            // рАСЧЕТ КНОПКА
+            // Кнопка для расчета
             m_CalculationButton = new QPushButton;
-            m_CalculationButton->setText(u8"Рассчитать теплообменный аппарат");
+            m_CalculationButton->setText(u8"Выполнить расчет");
 
             connect(m_CalculationButton, &QPushButton::clicked, this, &ExplodeManager::onCalculationButtonClicked);
             m_vLayoutCalculationTabTTOR->addWidget(m_CalculationButton);
 
             // РЕЗАЛТЫ
+            // Temps
+            QHBoxLayout* ForTResultHLayout = new QHBoxLayout();
+            QVBoxLayout* ForTq1V1Layout = new QVBoxLayout();
+            ForTq1V1Layout->setSpacing(5);
+            QVBoxLayout* ForTq2V1Layout = new QVBoxLayout();
+            ForTq2V1Layout->setSpacing(5);
+
+            ForTq1V1Layout->addWidget(new QLabel(u8"Температура горячего \nтеплоносителя на выходе - t₁\" (°C):"));
+            m_ForTrresultTemp1 = new QLineEdit();
+            m_ForTrresultTemp1->setReadOnly(true);
+            ForTq1V1Layout->addWidget(m_ForTrresultTemp1);
+
+            ForTq2V1Layout->addWidget(new QLabel(u8"Температура холодного \nтеплоносителя на выходе - t₂\" (°C):"));
+            m_ForTrresultTemp2 = new QLineEdit();
+            m_ForTrresultTemp2->setReadOnly(true);
+            ForTq2V1Layout->addWidget(m_ForTrresultTemp2);
+
+            ForTResultHLayout->addLayout(ForTq1V1Layout);
+            ForTResultHLayout->addLayout(ForTq2V1Layout);
+            m_vLayoutCalculationTabTTOR->addLayout(ForTResultHLayout);
+
             // Q
             QHBoxLayout* ForGResultHLayout = new QHBoxLayout();
             QVBoxLayout* ForGq1V1Layout = new QVBoxLayout();
@@ -1232,12 +1105,12 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
             QVBoxLayout* ForGq2V1Layout = new QVBoxLayout();
             ForGq2V1Layout->setSpacing(5);
 
-            ForGq1V1Layout->addWidget(new QLabel(u8"Расход горячего теплоносителя - G (°C):"));
+            ForGq1V1Layout->addWidget(new QLabel(u8"Расход горячего теплоносителя - G₁ (°C):"));
             m_ForGrresultTemp1 = new QLineEdit();
             m_ForGrresultTemp1->setReadOnly(true);
             ForGq1V1Layout->addWidget(m_ForGrresultTemp1);
 
-            ForGq2V1Layout->addWidget(new QLabel(u8"Расход холодного теплоносителя - G (°C):"));
+            ForGq2V1Layout->addWidget(new QLabel(u8"Расход холодного теплоносителя - G₂ (°C):"));
             m_ForGrresultTemp2 = new QLineEdit();
             m_ForGrresultTemp2->setReadOnly(true);
             ForGq2V1Layout->addWidget(m_ForGrresultTemp2);
@@ -1253,12 +1126,12 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
             QVBoxLayout* ForFq2V1Layout = new QVBoxLayout();
             ForFq2V1Layout->setSpacing(5);
 
-            ForFq1V1Layout->addWidget(new QLabel(u8"Площадь поперечного сечения - F1 (м²):"));
+            ForFq1V1Layout->addWidget(new QLabel(u8"Площадь поперечного сечения - F₁ (м²):"));
             m_ForFrresultTemp1 = new QLineEdit();
             m_ForFrresultTemp1->setReadOnly(true);
             ForFq1V1Layout->addWidget(m_ForFrresultTemp1);
 
-            ForFq2V1Layout->addWidget(new QLabel(u8"Площадь поперечного сечения - F2 (м²):"));
+            ForFq2V1Layout->addWidget(new QLabel(u8"Площадь поперечного сечения - F₂ (м²):"));
             m_ForFrresultTemp2 = new QLineEdit();
             m_ForFrresultTemp2->setReadOnly(true);
             ForFq2V1Layout->addWidget(m_ForFrresultTemp2);
@@ -1274,12 +1147,12 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
             QVBoxLayout* ForAq2V1Layout = new QVBoxLayout();
             ForAq2V1Layout->setSpacing(5);
 
-            ForAq1V1Layout->addWidget(new QLabel(u8"Коэф. теплопередачи - а1 (Вт/(м²*К)):"));
+            ForAq1V1Layout->addWidget(new QLabel(u8"Коэф. теплопередачи - а₁ (Вт/(м²*К)):"));
             m_ForArresultTemp1 = new QLineEdit();
             m_ForArresultTemp1->setReadOnly(true);
             ForAq1V1Layout->addWidget(m_ForArresultTemp1);
 
-            ForAq2V1Layout->addWidget(new QLabel(u8"Коэф. теплопередачи - а2 (Вт/(м²*К)):"));
+            ForAq2V1Layout->addWidget(new QLabel(u8"Коэф. теплопередачи - а₂ (Вт/(м²*К)):"));
             m_ForArresultTemp2 = new QLineEdit();
             m_ForArresultTemp2->setReadOnly(true);
             ForAq2V1Layout->addWidget(m_ForArresultTemp2);
@@ -1792,19 +1665,6 @@ void ExplodeManager::onCalculationButtonClicked() {
     int index = m_comboConfigure->currentIndex();
 
     BuildParamsForHeatExchangerTTOR config = dataTTOR[index > 0 ? index : 0];
-
-    dataExchangerForTTORCalculation.teplTube.d1_diam = config.ttDiam;
-    dataExchangerForTTORCalculation.teplTube.d2_diam = config.ttDiam + config.ttThickness*2;
-    dataExchangerForTTORCalculation.teplTube.L_length = config.lK + 500;
-    
-    dataExchangerForTTORCalculation.kozhuxTube.d1_diam = config.ktDiam;
-    dataExchangerForTTORCalculation.kozhuxTube.d2_diam = config.ktDiam + config.ktThickness*2;
-    dataExchangerForTTORCalculation.kozhuxTube.L_length = config.lK;
-
-    iterateHeatExchanger(hotInletTemp, coldInletTemp);
-
-    m_PrresultTemp1->setValue(m_PoutletTemp1);
-    m_PrresultTemp2->setValue(m_PoutletTemp2);
 
     QMessageBox::warning(nullptr, u8"Неверные значения температуры", u8"Расчет не может быть выполнен. Пожалуйста укажите правильные значения температуры теплоносителей");
     QMessageBox::information(nullptr, u8"Успешно", u8"Расчеты выполнены правильно.");
