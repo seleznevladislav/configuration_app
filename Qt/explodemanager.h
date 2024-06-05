@@ -143,6 +143,7 @@ public:
     //  double Pr;	          // 6 - Коэффициент кинематической взякости (Есть не у всех, если что высчитывается, если 0 ) (Па/с)
 
     std::vector<data_fluidProperties> fluidsProperties = {
+        /// 0                       1      2        3      4     5      6     7
         {u8"Ацетон",                813 , 2.114, 0.174, 0.395, 0.455, 2100, 4.3},
         {u8"Бензин",                900 , 1.800, 0.145, 0, 0.88, 1400, 4.4},
         {u8"Вода дистиллированная", 1000, 4.187, 0.550, 0, 0, 4200, 7},
@@ -233,6 +234,11 @@ private:
     void onReconfigureButtonClicked();
     void onDrawingShowButtonClicked();
     void onCalculationButtonClicked();
+    double calculateDirtyEnviroment(double dVN, double dNar);
+    double calculateKParamTTOR(double dvn, double dcp, double dnar, double Rzag, double a1, double a2);
+    double calculateAParamTTOR(double d, bool isCold, double G);
+    double calculateGParamTTOR(double F, bool isCold);
+    double calculateFParamTTOR(double d, double dnar, double index);
     QAction* createActionButton(const QString& fileName, QGroupBox* groupFilter, QHBoxLayout* fGroupLayout);
     QGroupBox* createExplodingGroupBox();
     QGroupBox* createFilterGroupBox();

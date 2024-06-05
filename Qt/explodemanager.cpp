@@ -1658,6 +1658,95 @@ void ExplodeManager::onReconfigureButtonClicked() {
 
 }
 
+double ExplodeManager::calculateDirtyEnviroment(double dVN, double dNar) {
+    double q1 = m_PresultFieldZagryaznenieQ1->value();
+    double q2 = m_PresultFieldZagryaznenieQ2->value();
+    double h1 = m_PresultFieldZagryaznenieH1->value();
+    double h2 = m_PresultFieldZagryaznenieH2->value();
+
+    return (q1 / h1) * (dNar / dVN) + (q2 / h2);
+}
+
+double ExplodeManager::calculateKParamTTOR(double dvn, double dcp, double dnar, double Rzag, double a1, double a2) {
+    int index = m_PmaterialCombobox->currentIndex();
+    data_materialProperties material = materialProperties[index];
+
+    double calc1 = 1/(a1 * dvn);
+    double calc2 = 1/(2 * material.laymbdaMateral);
+    double calc3 = log(dnar/ dvn);
+    double calc4 = 1/(a2* dnar);
+
+    double calc5 = calc1 + calc2 * calc3 + calc4;
+
+    double finalCalc = dcp * calc5 + Rzag;
+
+    return 1/finalCalc;
+}
+
+double ExplodeManager::calculateAParamTTOR(double d, bool isCold, double G) {
+    int index;
+    if (isCold) {
+        index = m_PcoldFluidComboBox->currentIndex();;
+    }
+    else {
+        index = m_PhotFluidComboBox->currentIndex();;
+    }
+
+    data_fluidProperties veshestvo = fluidsProperties[index];
+    double u = veshestvo.u_viscocity || 0.3;
+    double uw = veshestvo.viscocity || 0.4;
+
+    double firstCalc = veshestvo.laymbda / d;
+    double secondCalc = pow(0.8, G * d / u);
+    double thirdCalc = pow(1.4, u / uw);
+
+    double finalCalc = 0.023 * firstCalc * secondCalc * thirdCalc;
+        
+    return finalCalc;
+}
+
+double ExplodeManager::calculateFParamTTOR(double d, double dnar, double index) {
+    int n = 4;
+    if (index > 0) {
+        if (index == 1) {
+            n = 8;
+        }if (index == 2) {
+            n = 12;
+        }if (index == 3) {
+            n = 16;
+        }
+    }
+
+    double result;
+
+    if (dnar) {
+        result = (M_PI * pow(2, dnar) / 4) - M_PI * pow(2, d) * n / 4;
+    }
+    else {
+        result = M_PI * pow(2, d) * n / 4;
+    }
+
+    return result;
+}
+
+double ExplodeManager::calculateGParamTTOR(double F, bool isCold) {
+    int index;
+    double w;
+    if (isCold) {
+        index = m_PcoldFluidComboBox->currentIndex();
+        w = m_PhotVelocity->value();
+    }
+    else {
+        index = m_PhotFluidComboBox->currentIndex();
+        w = m_PcoldVelocity->value();
+    }
+
+    data_fluidProperties veshestvo = fluidsProperties[index];
+    double p = veshestvo.p;
+
+    return F * p * w;
+}
+
 void ExplodeManager::onCalculationButtonClicked() {
     double hotInletTemp = m_PhotInletTemp->text().toDouble();
     double coldInletTemp = m_PcoldInletTemp->text().toDouble();
@@ -1666,9 +1755,72 @@ void ExplodeManager::onCalculationButtonClicked() {
 
     BuildParamsForHeatExchangerTTOR config = dataTTOR[index > 0 ? index : 0];
 
-    QMessageBox::warning(nullptr, u8"Неверные значения температуры", u8"Расчет не может быть выполнен. Пожалуйста укажите правильные значения температуры теплоносителей");
-    QMessageBox::information(nullptr, u8"Успешно", u8"Расчеты выполнены правильно.");
+   // check form надо TOZO
 
+    double Rzag = 0;
+    double Q = 0;
+
+    if (turnOnZagryaznenieTTOR->isChecked()) {
+        Rzag = calculateDirtyEnviroment(config.ttDiam, config.ttDiam + 2 * config.ttThickness);
+    }
+
+    double Ftt = calculateFParamTTOR(config.ttDiam, 0, index);
+    double Fkt = calculateFParamTTOR(config.ttDiam + 2 * config.ttThickness, config.ktDiam, index);
+
+    double G1 = calculateGParamTTOR(Ftt, false);
+    double G2 = calculateGParamTTOR(Fkt, true);
+
+    double a1 = calculateAParamTTOR(config.ttDiam, false, G1);
+    double a2 = calculateAParamTTOR(config.ktDiam, true, G2);
+    double K = calculateKParamTTOR(config.ttDiam, config.ttDiam + 2 * config.ttThickness, config.ktDiam, Rzag, a1, a2);
+
+    double valueHotField = m_PrresultTemp1->value();
+    double valueColdField = m_PrresultTemp2->value();
+    double t1;
+    double t2;
+    bool isCold = false;
+
+    if (valueHotField) {
+        t1 = valueHotField;
+        t2 = m_PhotInletTemp->value() - valueHotField;          
+    }
+    if (valueColdField) {
+        t2 = valueColdField;
+        t1 = m_PcoldInletTemp->value() - valueColdField;
+        isCold = true;
+    }
+
+    if (isCold) {
+        int indexW = m_PcoldFluidComboBox->currentIndex();
+        data_fluidProperties veshestvo = fluidsProperties[index];
+        double c = veshestvo.c;
+        Q = c * G1 * t1;
+    }
+    else {
+        int indexW = m_PhotFluidComboBox->currentIndex();
+        data_fluidProperties veshestvo = fluidsProperties[index];
+        double c = veshestvo.c;
+        Q = c * G2 * (valueHotField - m_PhotInletTemp->value() );
+    }
+
+    data_fluidProperties veshestvo = fluidsProperties[index];
+    double p = veshestvo.p;
+
+    m_ForTrresultTemp1->setText(QString::number(t1));
+    m_ForTrresultTemp2->setText(QString::number(t2));
+    m_ForGrresultTemp1->setText(QString::number(G1));
+    m_ForGrresultTemp2->setText(QString::number(G2));
+    m_ForFrresultTemp1->setText(QString::number(Ftt));
+    m_ForFrresultTemp2->setText(QString::number(Fkt));
+    m_ForArresultTemp1->setText(QString::number(a1));
+    m_ForArresultTemp2->setText(QString::number(a2));
+
+    m_ForQrresultTemp->setText(QString::number(Q));
+    m_ForKrresultTemp->setText(QString::number(K));
+    m_ForRZrresultTemp->setText(QString::number(Rzag));
+
+    // QMessageBox::warning(nullptr, u8"Неверные значения температуры", u8"Расчет не может быть выполнен. Пожалуйста укажите правильные значения температуры теплоносителей");
+    // QMessageBox::information(nullptr, u8"Успешно", u8"Расчеты выполнены правильно.");
 }
 
 QAction* ExplodeManager::createActionButton(const QString& fileName, QGroupBox* groupFilter, QHBoxLayout* fGroupLayout)
