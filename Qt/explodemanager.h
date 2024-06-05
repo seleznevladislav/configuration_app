@@ -17,7 +17,7 @@
 #include <QCheckBox>
 
 #include <array>
-#include <memory>  // For std::shared_ptr
+#include <memory>
 #include <vector>
 
 using namespace BuildMathModel;
@@ -34,10 +34,6 @@ class ExplodeWidget;
 
 VSN_USE_NAMESPACE
 
-///////////////////////////////////////////////////////////////////////////////
-//
-//
-///////////////////////////////////////////////////////////////////////////////
 class ExplodeManager : public QObject
 {
     Q_OBJECT
@@ -102,18 +98,12 @@ public:
        {u8"ТТОР 89/133-1,6/1,6",  89,  5, 133, 5, 4500, 5410, 600, 80,  860,  425, 3000, 500, 730,  400, 255, 4825, false, false, 750},
        {u8"ТТОР 89/133-4,0/1,6",  89,  5, 133, 5, 4500, 5420, 600, 80,  860,  425, 3000, 550, 730,  400, 255, 4835, false, false, 750},
        {u8"ТТОР 89/133-4,0/4,0",  89,  5, 133, 6, 4500, 5420, 600, 80,  860,  425, 3000, 560, 730,  400, 255, 4835, false, false, 750},
-       {u8"ТТОР 89/159-1,6/1,6",  89,  5, 159, 5, 4500, 5410, 600, 80,  860,  425, 3000, 500, 730,  400, 255, 4825, false, false, 750},//error 4 = 159
-       {u8"ТТОР 89/159-4,0/1,6",  89,  5, 159, 5, 4500, 5420, 600, 80,  860,  425, 3000, 550, 730,  400, 255, 4835, false, false, 750},//error 4 = 159
-       {u8"ТТОР 89/159-4,0/4,0",  89,  5, 159, 6, 4500, 5420, 600, 80,  860,  425, 3000, 560, 730,  400, 255, 4835, false, false, 750},//error 4 = 159
-       {u8"ТТОР 108/159-1,6/1,6", 108,  5, 159, 5, 4500, 5410, 600, 80,  860,  425, 3000, 500, 730,  400, 255, 4825, false, false, 750},//error 4 = 159
-       {u8"ТТОР 108/159-4,0/1,6", 108,  5, 159, 5, 4500, 5420, 600, 80,  860,  425, 3000, 550, 730,  400, 255, 4835, false, false, 750},//error 4 = 159
-       {u8"ТТОР 108/159-4,0/4,0", 108,  5, 159, 6, 4500, 5420, 600, 80,  860,  425, 3000, 560, 730,  400, 255, 4835, false, false, 750},//error 4 = 159
-       //{u8"ТТОР 89/159-1,6/1,6",  89,  5, 159, 5, 4500, 5470, 600, 100, 860,  425, 3000, 560, 730,  400, 255, 4885, false, false, 750},//error 4 = 159
-       //{u8"ТТОР 89/159-4,0/1,6",  89,  5, 159, 5, 4500, 5480, 600, 100, 860,  425, 3000, 620, 730,  400, 255, 4895, false, false, 750},//error 4 = 159
-       //{u8"ТТОР 89/159-4,0/4,0",  89,  5, 159, 6, 4500, 5480, 600, 100, 860,  425, 3000, 620, 730,  400, 255, 4895, false, false, 750},//error 4 = 159
-       //{u8"ТТОР 108/159-1,6/1,6", 108, 5, 159, 5, 4500, 5480, 600, 100, 860,  425, 3000, 600, 730,  400, 255, 4895, false, false, 750},//error 4 = 159
-       //{u8"ТТОР 108/159-4,0/1,6", 108, 6, 159, 5, 4500, 5515, 600, 100, 860,  425, 3000, 640, 730,  400, 255, 4930, false, false, 750},//error 4 = 159
-       //{u8"ТТОР 108/159-4,0/4,0", 108, 6, 159, 6, 4500, 5515, 600, 100, 860,  425, 3000, 660, 730,  400, 255, 4930, false, false, 750},//error 4 = 159
+       {u8"ТТОР 89/159-1,6/1,6",  89,  5, 159, 5, 4500, 5470, 600,  100,  860,  425, 3000, 560, 730,  400, 255, 4885, false, false, 750},
+       {u8"ТТОР 89/159-4,0/1,6",  89,  5, 159, 5, 4500, 5480, 600,  100,  860,  425, 3000, 620, 730,  400, 255, 4895, false, false, 750},
+       {u8"ТТОР 89/159-4,0/4,0",  89,  5, 159, 6, 4500, 5480, 600,  100,  860,  425, 3000, 620, 730,  400, 255, 4895, false, false, 750},
+       {u8"ТТОР 108/159-1,6/1,6", 108,  5, 159, 5, 4500, 5480, 600, 100,  860,  425, 3000, 600, 730,  400, 255, 4895, false, false, 750},
+       {u8"ТТОР 108/159-4,0/1,6", 108,  5, 159, 5, 4500, 5515, 600, 100,  860,  425, 3000, 640, 730,  400, 255, 4930, false, false, 750},
+       {u8"ТТОР 108/159-4,0/4,0", 108,  5, 159, 6, 4500, 5515, 600, 100,  860,  425, 3000, 660, 730,  400, 255, 4930, false, false, 750},
        /////////////////////////////////////////////////////////////////////////////////////////////////////, //, false, false/ , 750
        {u8"ТТОР 133/219-1,6/1,6", 133, 5, 219, 7, 6000, 7250, 800, 125, 1080, 535, 3000, 680, 1550, 550, 320, 6420, false, false, 976},
        {u8"ТТОР 133/219-4,0/1,6", 133, 6, 219, 7, 6000, 7260, 800, 125, 1080, 535, 3000, 740, 1490, 550, 320, 6430, false, false, 976},
@@ -153,6 +143,7 @@ public:
     //  double Pr;	          // 6 - Коэффициент кинематической взякости (Есть не у всех, если что высчитывается, если 0 ) (Па/с)
 
     std::vector<data_fluidProperties> fluidsProperties = {
+        /// 0                       1      2        3      4     5      6     7
         {u8"Ацетон",                813 , 2.114, 0.174, 0.395, 0.455, 2100, 4.3},
         {u8"Бензин",                900 , 1.800, 0.145, 0, 0.88, 1400, 4.4},
         {u8"Вода дистиллированная", 1000, 4.187, 0.550, 0, 0, 4200, 7},
@@ -179,20 +170,6 @@ public:
         {u8"Цинк (99,993%)",                200, 104.7},
         {u8"Вольфрам",                      200, 140.7},
         {u8"Золото (99,999%)",              200, 308.2},
-    };
-
-    // Струтктура для параметров телообменника при расчетах
-    struct HeatExchanger {
-        data_fluidProperties hotFluid; // Свойства горячего теплоносителя
-        data_fluidProperties coldFluid; // Свойства холодного теплоносителя
-        data_tubeProperties teplTube; // Геометрические параметры теплообменника
-        data_tubeProperties kozhuxTube; // Геометрические параметры теплообменника
-        double hotInletTemp; // Температура горячего теплоносителя на входе, °C
-        double coldInletTemp; // Температура холодного теплоносителя на входе, °C
-        double hotVelocity; // Скорость горячего теплоносителя, м/с
-        double coldVelocity; // Скорость холодного теплоносителя, м/с
-        double heatTransferCoefficient; // Коэффициент теплопередачи, Вт/(м²·°C) (k - расчитывается жестко)
-        double S_add;				// Доп площадь, тут можно камеру учитывать
     };
 
     std::vector<std::vector<double>> fluidDensity = {
@@ -257,6 +234,11 @@ private:
     void onReconfigureButtonClicked();
     void onDrawingShowButtonClicked();
     void onCalculationButtonClicked();
+    double calculateDirtyEnviroment(double dVN, double dNar);
+    double calculateKParamTTOR(double dvn, double dcp, double dnar, double Rzag, double a1, double a2);
+    double calculateAParamTTOR(double d, bool isCold, double G);
+    double calculateGParamTTOR(double F, bool isCold);
+    double calculateFParamTTOR(double d, double dnar, double index);
     QAction* createActionButton(const QString& fileName, QGroupBox* groupFilter, QHBoxLayout* fGroupLayout);
     QGroupBox* createExplodingGroupBox();
     QGroupBox* createFilterGroupBox();
@@ -286,17 +268,16 @@ private:
     // <summary>
     /// vars for calculations TTOR
     /// </summary>
-    HeatExchanger dataExchangerForTTORCalculation;
     data_tubeProperties dataOfCurrentTubeTepl;
     data_tubeProperties dataOfCurrentTubeKozhux;
     QComboBox* m_PhotFluidComboBox;
     QComboBox* m_PcoldFluidComboBox;
-    QLineEdit* m_PhotVelocity;
-    QLineEdit* m_PcoldVelocity;
-    QLineEdit* m_PhotInletTemp;
-    QLineEdit* m_PcoldInletTemp;
-    QLineEdit* m_PrresultTemp1;
-    QLineEdit* m_PrresultTemp2;
+    QDoubleSpinBox* m_PhotVelocity;
+    QDoubleSpinBox* m_PcoldVelocity;
+    QDoubleSpinBox* m_PhotInletTemp;
+    QDoubleSpinBox* m_PcoldInletTemp;
+    QDoubleSpinBox* m_PrresultTemp1;
+    QDoubleSpinBox* m_PrresultTemp2;
     QComboBox* m_PmaterialCombobox;
     double m_PoutletTemp1;
     double m_PoutletTemp2;
@@ -304,6 +285,28 @@ private:
     /// <summary>
     /// vars for parametrization Zarubin
     /// </summary>
+    QCheckBox* turnOnZagryaznenieTTOR = nullptr;
+    QDoubleSpinBox* m_PresultFieldZagryaznenieQ1 = nullptr;
+    QDoubleSpinBox* m_PresultFieldZagryaznenieQ2 = nullptr;
+    QDoubleSpinBox* m_PresultFieldZagryaznenieH1 = nullptr;
+    QDoubleSpinBox* m_PresultFieldZagryaznenieH2 = nullptr;
+
+    QLineEdit* m_ForTrresultTemp1;
+    QLineEdit* m_ForTrresultTemp2;
+
+    QLineEdit* m_ForGrresultTemp1;
+    QLineEdit* m_ForGrresultTemp2;
+
+    QLineEdit* m_ForFrresultTemp1;
+    QLineEdit* m_ForFrresultTemp2;
+
+    QLineEdit* m_ForArresultTemp1;
+    QLineEdit* m_ForArresultTemp2;
+
+    QLineEdit* m_ForQrresultTemp;
+    QLineEdit* m_ForKrresultTemp;
+    QLineEdit* m_ForRZrresultTemp;
+    ///
     QCheckBox* simpleModeStandartTTOR = nullptr;
     QCheckBox* turnOnStandartDetailsTTOR = nullptr;
     QDoubleSpinBox* diametrTubeTTOR = nullptr;
