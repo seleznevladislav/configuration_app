@@ -233,7 +233,7 @@ private:
     void calculateThickness(QFormLayout* form);
     void onReconfigureButtonClicked();
     void onDrawingShowButtonClicked();
-    void onCalculationButtonClicked();
+    bool onCalculationButtonClicked();
     double calculateDirtyEnviroment(double dVN, double dNar);
     double calculateKParamTTOR(double dvn, double dcp, double dnar, double Rzag, double a1, double a2);
     double calculateAParamTTOR(double d, bool isCold, double G);

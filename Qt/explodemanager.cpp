@@ -1697,8 +1697,8 @@ double ExplodeManager::calculateAParamTTOR(double d, bool isCold, double G) {
     double uw = veshestvo.viscocity || 0.4;
 
     double firstCalc = veshestvo.laymbda / d;
-    double secondCalc = pow(0.8, G * d / u);
-    double thirdCalc = pow(1.4, u / uw);
+    double secondCalc = pow( G * d / u, 0.8);
+    double thirdCalc = pow(u / uw, 1.4 );
 
     double finalCalc = 0.023 * firstCalc * secondCalc * thirdCalc;
         
@@ -1720,10 +1720,10 @@ double ExplodeManager::calculateFParamTTOR(double d, double dnar, double index) 
     double result;
 
     if (dnar) {
-        result = (M_PI * pow(2, dnar) / 4) - M_PI * pow(2, d) * n / 4;
+        result = (M_PI * pow(dnar, 2) * n / 4) - M_PI * pow(d, 2) * n / 4;
     }
     else {
-        result = M_PI * pow(2, d) * n / 4;
+        result = M_PI * pow(d, 2) * n / 4;
     }
 
     return result;
@@ -1747,7 +1747,7 @@ double ExplodeManager::calculateGParamTTOR(double F, bool isCold) {
     return F * p * w;
 }
 
-void ExplodeManager::onCalculationButtonClicked() {
+bool ExplodeManager::onCalculationButtonClicked() {
     double hotInletTemp = m_PhotInletTemp->text().toDouble();
     double coldInletTemp = m_PcoldInletTemp->text().toDouble();
 
@@ -1780,27 +1780,46 @@ void ExplodeManager::onCalculationButtonClicked() {
     double t2;
     bool isCold = false;
 
-    if (valueHotField) {
-        t1 = valueHotField;
-        t2 = m_PhotInletTemp->value() - valueHotField;          
+    int indexW;
+
+    if (hotInletTemp == 0 && coldInletTemp == 0) {
+        QMessageBox::warning(nullptr, u8"Пустые значения температуры", u8"Заполните значения температуры на входе");
+
+        return false;
     }
-    if (valueColdField) {
-        t2 = valueColdField;
-        t1 = m_PcoldInletTemp->value() - valueColdField;
-        isCold = true;
+    if (valueHotField == 0 && valueColdField == 0) {
+        QMessageBox::warning(nullptr, u8"Пустые значения температуры", u8"Заполните значения температуры на выходе");
+
+        return false;
+    }
+    if (m_PcoldVelocity->value() == 0 && m_PhotVelocity->value() == 0) {
+        QMessageBox::warning(nullptr, u8"Пустые значения скорости", u8"Заполните значения скорости теплоносителей");
+
+        return false;
     }
 
-    if (isCold) {
-        int indexW = m_PcoldFluidComboBox->currentIndex();
+    if (valueHotField) {
+        indexW = m_PhotFluidComboBox->currentIndex();
         data_fluidProperties veshestvo = fluidsProperties[index];
         double c = veshestvo.c;
-        Q = c * G1 * t1;
+
+        Q = c * G1 * ( m_PhotInletTemp->value() - valueHotField);
+
+        t1 = valueHotField;       
+
+        t2 = Q / G2 / c + m_PcoldInletTemp->value();
+
     }
-    else {
-        int indexW = m_PhotFluidComboBox->currentIndex();
+    if (valueColdField) {
+        indexW = m_PcoldFluidComboBox->currentIndex();
         data_fluidProperties veshestvo = fluidsProperties[index];
         double c = veshestvo.c;
-        Q = c * G2 * (valueHotField - m_PhotInletTemp->value() );
+
+        Q = c * G2 * ( m_PcoldInletTemp->value() - valueColdField);
+
+        t2 = valueColdField;
+
+        t1 = Q / G1 / c + m_PhotInletTemp->value();
     }
 
     data_fluidProperties veshestvo = fluidsProperties[index];
@@ -1808,17 +1827,18 @@ void ExplodeManager::onCalculationButtonClicked() {
 
     m_ForTrresultTemp1->setText(QString::number(t1));
     m_ForTrresultTemp2->setText(QString::number(t2));
-    m_ForGrresultTemp1->setText(QString::number(G1));
-    m_ForGrresultTemp2->setText(QString::number(G2));
+    m_ForGrresultTemp1->setText(QString::number(G1, 'f', 1));
+    m_ForGrresultTemp2->setText(QString::number(G2, 'f', 1));
     m_ForFrresultTemp1->setText(QString::number(Ftt));
     m_ForFrresultTemp2->setText(QString::number(Fkt));
     m_ForArresultTemp1->setText(QString::number(a1));
     m_ForArresultTemp2->setText(QString::number(a2));
 
-    m_ForQrresultTemp->setText(QString::number(Q));
+    m_ForQrresultTemp->setText(QString::number(Q, 'f', 1));
     m_ForKrresultTemp->setText(QString::number(K));
     m_ForRZrresultTemp->setText(QString::number(Rzag));
 
+    return true;
     // QMessageBox::warning(nullptr, u8"Неверные значения температуры", u8"Расчет не может быть выполнен. Пожалуйста укажите правильные значения температуры теплоносителей");
     // QMessageBox::information(nullptr, u8"Успешно", u8"Расчеты выполнены правильно.");
 }
