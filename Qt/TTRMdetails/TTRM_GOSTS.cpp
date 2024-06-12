@@ -532,6 +532,36 @@ void createScrew55(RPArray<MbContour>& _arrContours)
     _arrContours.push_back(pContour);
 }
 
+void createCover(RPArray<MbContour>& _arrContours)
+{
+    SArray<MbCartPoint> arrPnts(6);
+
+    arrPnts.Add(MbCartPoint(0, 0));
+    arrPnts.Add(MbCartPoint(0, 30));
+    arrPnts.Add(MbCartPoint(10, 30));
+    arrPnts.Add(MbCartPoint(10, 26));
+    arrPnts.Add(MbCartPoint(6, 26));
+    arrPnts.Add(MbCartPoint(6, 0));
+
+    MbLineSegment* pLine1 = new MbLineSegment(arrPnts[0], arrPnts[1]);
+    MbLineSegment* pLine2 = new MbLineSegment(arrPnts[1], arrPnts[2]);
+    MbLineSegment* pLine3 = new MbLineSegment(arrPnts[2], arrPnts[3]);
+    MbLineSegment* pLine4 = new MbLineSegment(arrPnts[3], arrPnts[4]);
+    MbLineSegment* pLine5 = new MbLineSegment(arrPnts[4], arrPnts[5]);
+    MbLineSegment* pLine6 = new MbLineSegment(arrPnts[5], arrPnts[0]);
+
+    MbContour* pContour = new MbContour();
+
+    pContour->AddSegment(pLine1);
+    pContour->AddSegment(pLine2);
+    pContour->AddSegment(pLine3);
+    pContour->AddSegment(pLine4);
+    pContour->AddSegment(pLine5);
+    pContour->AddSegment(pLine6);
+
+    _arrContours.push_back(pContour);
+}
+
 SPtr<MbSolid> ParametricModelCreator::buildScrew55()
 {
     // Локальная СК (по умолчанию совпадает с мировой СК)
@@ -591,4 +621,38 @@ SPtr<MbSolid> ParametricModelCreator::buildScrew55()
         MbBooleanOperationParams(bo_Intersect, flagsBool, operBoolNames), mergeSolid);
 
     return mergeSolid;
+}
+
+SPtr<MbSolid> ParametricModelCreator::buildCover()
+{
+    // Локальная СК (по умолчанию совпадает с мировой СК)
+    MbPlacement3D pl;
+
+    // Создание образующей для тела выдавливания
+    RPArray<MbContour> arrContours;
+    createCover(arrContours);
+
+    //Плоскость
+    MbPlane* pPlaneYZ = new MbPlane(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, 1, 0), MbCartPoint3D(0, 0, 1));
+    MbSweptData sweptData(*pPlaneYZ, arrContours);
+
+    //Угол Вращения
+    RevolutionValues revParms(360 * DEG_TO_RAD, 0, 0);
+
+    // Именователи для операции построения тела вращения и для контуров образующей
+    MbSNameMaker operNames(1, MbSNameMaker::i_SideNone, 0);
+    PArray<MbSNameMaker> cNames(0, 1, false);
+
+    // Ось вращения для построения тела:
+    MbAxis3D axis(pl.GetAxisZ());
+
+    // Вызов функции-утилиты для построения твердого тела вращения
+    MbSolid* pSolid;
+
+    ::RevolutionSolid(sweptData, axis, revParms, operNames, cNames, pSolid);
+
+
+    SolidSPtr resultSolid(pSolid);
+
+    return resultSolid;
 }

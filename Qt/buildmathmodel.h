@@ -202,6 +202,7 @@ namespace BuildMathModel {
 		static SPtr<MbSolid> ParametricModelCreator::buildFlangeScrew35();
 		static SPtr<MbSolid> ParametricModelCreator::buildWasher10();
 		static SPtr<MbSolid> ParametricModelCreator::buildScrew55();
+		static SPtr<MbSolid> ParametricModelCreator::buildCover();
 
 		// TTOR details
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_001_tubeTeploobmen(double Lk, double ttDiam, double ttThickness);
