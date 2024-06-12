@@ -189,11 +189,12 @@ namespace BuildMathModel {
 		static SPtr<MbSolid> ParametricModelCreator::createInnerPipe_001(double ttDiam, double ttThickness, double length);
         static SPtr<MbSolid> ParametricModelCreator::createOuterPipe_002(int lengthK, double assortmentOuterTubes, double thicknessOuterTubes);
         static SPtr<MbSolid> ParametricModelCreator::createSupport_003(double assortmentCamera, double assortmentOuterTubes, double t);
-        static SPtr<MbSolid> ParametricModelCreator::createOuterPipesGrid_004(double length2, double diametrY, double thickness, double t, double assortmentInnerTubes, double assortmentCamera, double thicknessCamera);
+        static SPtr<MbSolid> ParametricModelCreator::createOuterPipesGrid_004(double length2, double diametrY, double thickness, double t, double assortmentInnerTubes, double assortmentCamera, double thicknessCamera, double assemblyHeight);
         static SPtr<MbSolid> ParametricModelCreator::createCup_005(double t, double assortmentOuterTubes, double assortmentCamera);
 		static SPtr<MbSolid> ParametricModelCreator::createInnerPipesGrid_006(double length3, double assortmentCamera, double thicknessCamera);
 		static SPtr<MbSolid> ParametricModelCreator::createCurvedPipe_007(double ttDiam, double ttThickness, double t);
 		static SPtr<MbSolid> ParametricModelCreator::createPipeHolder_010(double holderLength, double assortmentInnerTubes);
+		static SPtr<MbSolid> ParametricModelCreator::createBigCurvedPipe_011(double ttDiam, double ttThickness, double assemblyHeight, double t);
 
 		// TTRM GOST
 		static SPtr<MbSolid> ParametricModelCreator::buildFlangeE(double diametrY);

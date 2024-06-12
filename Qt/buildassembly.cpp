@@ -33,8 +33,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
 
     SPtr<MbSolid> capSolid(createCup_005(t, assortmentOuterTubes, assortmentCamera));
     capSolid->SetColor(132, 169, 140);
-    SPtr<MbSolid> headExhangerGridSolid(createOuterPipesGrid_004(length2, diametrY, thicknessInnerTubes, t, assortmentInnerTubes, assortmentCamera, thicknessCamera));
-    headExhangerGridSolid->SetColor(202, 210, 197);
     SPtr<MbSolid> headExhangerGridSecondSolid(createInnerPipesGrid_006(length3, assortmentCamera, thicknessCamera));
     headExhangerGridSecondSolid->SetColor(202, 210, 197);
     SPtr<MbSolid> outerPipeSolid(createOuterPipe_002(lengthK, assortmentOuterTubes, thicknessOuterTubes));
@@ -43,10 +41,16 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     innerPipeSolid->SetColor(132, 169, 140);
     SPtr<MbSolid> supportSolid(createSupport_003(assortmentCamera, assortmentOuterTubes, t));
     supportSolid->SetColor(82, 121, 111);
+    SPtr<MbSolid> headExhangerGridSolid(createOuterPipesGrid_004(length2, diametrY, thicknessInnerTubes, t, assortmentInnerTubes, assortmentCamera, thicknessCamera, assemblyHeight));
+    headExhangerGridSolid->SetColor(202, 210, 197);
     SPtr<MbSolid> curvedPipeSolid(createCurvedPipe_007(assortmentInnerTubes, thicknessInnerTubes, t));
     curvedPipeSolid->SetColor(132, 169, 140);
     SPtr<MbSolid> pipeHolderShort(createPipeHolder_010(20, assortmentInnerTubes));
     pipeHolderShort->SetColor(53, 79, 82);
+    SPtr<MbSolid> pipeHolderLong(createPipeHolder_010(30, assortmentInnerTubes));
+    pipeHolderLong->SetColor(53, 79, 82);
+    SPtr<MbSolid> curvedBigPipe(createBigCurvedPipe_011(assortmentInnerTubes, thicknessInnerTubes, assemblyHeight, t));
+    curvedBigPipe->Move(MbVector3D(t, (assemblyHeight / 2) - t / 2 + t, lengthBetweenInnerPipesAndGrid));
 
     // GOST
     SPtr<MbSolid> flangeE(buildFlangeE(diametrY));
@@ -92,6 +96,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     SPtr<MbInstance> pipeHolderShortItem2(new MbInstance(*pipeHolderShort, lcs));
     SPtr<MbInstance> pipeHolderShortItem3(new MbInstance(*pipeHolderShort, lcs));
     SPtr<MbInstance> pipeHolderShortItem4(new MbInstance(*pipeHolderShort, lcs));
+
+    // Держатель длинный
+    SPtr<MbInstance> pipeHolderLongItem(new MbInstance(*pipeHolderLong, lcs));
+    SPtr<MbInstance> pipeHolderLongItem2(new MbInstance(*pipeHolderLong, lcs));
 
     //GOST
     SPtr<MbInstance> flangeEItem(new MbInstance(*flangeE, lcs));
@@ -155,8 +163,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     SPtr<MbInstance> screw55Item14(new MbInstance(*screw55, lcs));
     SPtr<MbInstance> screw55Item15(new MbInstance(*screw55, lcs));
     SPtr<MbInstance> screw55Item16(new MbInstance(*screw55, lcs));
-
-
+    
     std::vector<SPtr<MbItem>> pair;
     //Переменные для подсборки
     pair.push_back(capItem);
@@ -187,6 +194,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     pair.push_back(pipeHolderShortItem3);
     pair.push_back(pipeHolderShortItem4);
 
+    // holders
+    pair.push_back(pipeHolderLongItem);
+    pair.push_back(pipeHolderLongItem2);
+  
     pair.push_back(supportItem);
     supportItem->SetColor(0, 0, 200);
     pair.push_back(supportItem2);
@@ -275,6 +286,9 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     screw35Item6->Rotate(ayyVert, M_PI / 2);
     screw35Item7->Rotate(ayyVert, M_PI / 2);
     screw35Item8->Rotate(ayyVert, M_PI / 2);
+
+    curvedBigPipe->Rotate(ayyVert, M_PI);
+    curvedBigPipe->Rotate(axxVert, M_PI);
 
     headExhangerGridSecondItem->Rotate(axxVert, M_PI);
 
@@ -477,39 +491,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
 
         assm->AddConstraint(GCM_COINCIDENT, GeometryArgCurvedPipeCoinc11, GeometryArgCurvedPipeCoinc12);
         assm->AddConstraint(GCM_CONCENTRIC, GeometryArgCurvedPipeConc11, GeometryArgCurvedPipeConc12);
-
-        // Pipe holders
-        MtGeomArgument GeometryArgPipeHolderCoinc(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
-        MtGeomArgument GeometryArgPipeHolderCoinc2(pipeHolderShort->GetFace(0), pipeHolderShortItem);
-        MtGeomArgument GeometryArgPipeHolderConc(innerPipeSolid->GetFace(3), innerPipeItem);
-        MtGeomArgument GeometryArgPipeHolderConc2(pipeHolderShort->GetFace(10), pipeHolderShortItem);
-
-        assm->AddConstraint(GCM_COINCIDENT, GeometryArgPipeHolderCoinc, GeometryArgPipeHolderCoinc2);
-        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgPipeHolderConc, GeometryArgPipeHolderConc2);
-
-        MtGeomArgument GeometryArgPipeHolderCoinc3(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
-        MtGeomArgument GeometryArgPipeHolderCoinc4(pipeHolderShort->GetFace(0), pipeHolderShortItem2);
-        MtGeomArgument GeometryArgPipeHolderConc3(innerPipeSolid->GetFace(3), innerPipeItem2);
-        MtGeomArgument GeometryArgPipeHolderConc4(pipeHolderShort->GetFace(10), pipeHolderShortItem2);
-
-        assm->AddConstraint(GCM_COINCIDENT, GeometryArgPipeHolderCoinc3, GeometryArgPipeHolderCoinc4);
-        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgPipeHolderConc3, GeometryArgPipeHolderConc4);
-
-        MtGeomArgument GeometryArgPipeHolderCoinc5(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
-        MtGeomArgument GeometryArgPipeHolderCoinc6(pipeHolderShort->GetFace(0), pipeHolderShortItem3);
-        MtGeomArgument GeometryArgPipeHolderConc5(innerPipeSolid->GetFace(3), innerPipeItem3);
-        MtGeomArgument GeometryArgPipeHolderConc6(pipeHolderShort->GetFace(10), pipeHolderShortItem3);
-
-        assm->AddConstraint(GCM_COINCIDENT, GeometryArgPipeHolderCoinc5, GeometryArgPipeHolderCoinc6);
-        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgPipeHolderConc5, GeometryArgPipeHolderConc6);
-
-        MtGeomArgument GeometryArgPipeHolderCoinc7(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
-        MtGeomArgument GeometryArgPipeHolderCoinc8(pipeHolderShort->GetFace(0), pipeHolderShortItem4);
-        MtGeomArgument GeometryArgPipeHolderConc7(innerPipeSolid->GetFace(3), innerPipeItem4);
-        MtGeomArgument GeometryArgPipeHolderConc8(pipeHolderShort->GetFace(10), pipeHolderShortItem4);
-
-        assm->AddConstraint(GCM_COINCIDENT, GeometryArgPipeHolderCoinc7, GeometryArgPipeHolderCoinc8);
-        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgPipeHolderConc7, GeometryArgPipeHolderConc8);
 
         // GOST
         // Flange E
@@ -951,6 +932,79 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
 
         assm->AddConstraint(GCM_CONCENTRIC, GeometryArgsWasherConc31, GeometryArgsWasherConc32);
         assm->AddConstraint(GCM_DISTANCE, GeometryArgsWasherDist31, GeometryArgsWasherDist32, MtParVariant(ArgLengthWasher));
+
+    /*    MtGeomArgument GeometryArgCurvedBigPipeCoinc(curvedBigPipe->GetFace(0), curvedBigPipeItem);
+        MtGeomArgument GeometryArgCurvedBigPipeCoinc2(innerPipeSolid->GetFace(0), innerPipeItem4);
+        MtGeomArgument GeometryArgCurvedBigPipeConc(curvedBigPipe->GetFace(3), curvedBigPipeItem);
+        MtGeomArgument GeometryArgCurvedBigPipeConc2(innerPipeSolid->GetFace(2), innerPipeItem4);
+
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgCurvedBigPipeCoinc, GeometryArgCurvedBigPipeCoinc2);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgCurvedBigPipeConc, GeometryArgCurvedBigPipeConc2);*/
+
+        // Pipe holders
+        MtGeomArgument GeometryArgPipeHolderCoinc(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
+        MtGeomArgument GeometryArgPipeHolderCoinc2(pipeHolderShort->GetFace(0), pipeHolderShortItem);
+        MtGeomArgument GeometryArgPipeHolderConc(innerPipeSolid->GetFace(3), innerPipeItem);
+        MtGeomArgument GeometryArgPipeHolderConc2(pipeHolderShort->GetFace(10), pipeHolderShortItem);
+
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgPipeHolderCoinc, GeometryArgPipeHolderCoinc2);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgPipeHolderConc, GeometryArgPipeHolderConc2);
+
+        MtGeomArgument GeometryArgPipeHolderCoinc3(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
+        MtGeomArgument GeometryArgPipeHolderCoinc4(pipeHolderShort->GetFace(0), pipeHolderShortItem2);
+        MtGeomArgument GeometryArgPipeHolderConc3(innerPipeSolid->GetFace(3), innerPipeItem2);
+        MtGeomArgument GeometryArgPipeHolderConc4(pipeHolderShort->GetFace(10), pipeHolderShortItem2);
+
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgPipeHolderCoinc3, GeometryArgPipeHolderCoinc4);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgPipeHolderConc3, GeometryArgPipeHolderConc4);
+
+        MtGeomArgument GeometryArgPipeHolderCoinc5(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
+        MtGeomArgument GeometryArgPipeHolderCoinc6(pipeHolderShort->GetFace(0), pipeHolderShortItem3);
+        MtGeomArgument GeometryArgPipeHolderConc5(innerPipeSolid->GetFace(3), innerPipeItem3);
+        MtGeomArgument GeometryArgPipeHolderConc6(pipeHolderShort->GetFace(10), pipeHolderShortItem3);
+
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgPipeHolderCoinc5, GeometryArgPipeHolderCoinc6);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgPipeHolderConc5, GeometryArgPipeHolderConc6);
+
+        MtGeomArgument GeometryArgPipeHolderCoinc7(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
+        MtGeomArgument GeometryArgPipeHolderCoinc8(pipeHolderShort->GetFace(0), pipeHolderShortItem4);
+        MtGeomArgument GeometryArgPipeHolderConc7(innerPipeSolid->GetFace(3), innerPipeItem4);
+        MtGeomArgument GeometryArgPipeHolderConc8(pipeHolderShort->GetFace(10), pipeHolderShortItem4);
+
+        assm->AddConstraint(GCM_COINCIDENT, GeometryArgPipeHolderCoinc7, GeometryArgPipeHolderCoinc8);
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgPipeHolderConc7, GeometryArgPipeHolderConc8);
+
+        MtGeomArgument GeometryArgPipeHolderDistance(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
+        MtGeomArgument GeometryArgPipeHolderDistance2(pipeHolderLong->GetFace(0), pipeHolderLongItem);
+        MtGeomArgument GeometryArgPipeHolderConc9(innerPipeSolid->GetFace(3), innerPipeItem);
+        MtGeomArgument GeometryArgPipeHolderConc10(pipeHolderLong->GetFace(10), pipeHolderLongItem);
+
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgPipeHolderDistance, GeometryArgPipeHolderDistance2, MtParVariant(lengthBetweenInnerPipesAndGrid - 10));
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgPipeHolderConc9, GeometryArgPipeHolderConc10);
+
+       /* MtGeomArgument GeometryArgPipeHolderDistance3(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
+        MtGeomArgument GeometryArgPipeHolderDistance4(pipeHolderLong->GetFace(0), pipeHolderLongItem2);
+        MtGeomArgument GeometryArgPipeHolderConc11(innerPipeSolid->GetFace(3), innerPipeItem2);
+        MtGeomArgument GeometryArgPipeHolderConc12(pipeHolderLong->GetFace(10), pipeHolderLongItem2);
+
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgPipeHolderDistance3, GeometryArgPipeHolderDistance4, MtParVariant(lengthBetweenInnerPipesAndGrid - 10));
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgPipeHolderConc11, GeometryArgPipeHolderConc12);*/
+
+        MtGeomArgument GeometryArgPipeHolderDistance5(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
+        MtGeomArgument GeometryArgPipeHolderDistance6(pipeHolderLong->GetFace(0), pipeHolderLongItem2);
+        MtGeomArgument GeometryArgPipeHolderConc13(innerPipeSolid->GetFace(3), innerPipeItem3);
+        MtGeomArgument GeometryArgPipeHolderConc14(pipeHolderLong->GetFace(10), pipeHolderLongItem2);
+
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgPipeHolderDistance5, GeometryArgPipeHolderDistance6, MtParVariant(lengthBetweenInnerPipesAndGrid - 10));
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgPipeHolderConc13, GeometryArgPipeHolderConc14);
+
+        /* MtGeomArgument GeometryArgPipeHolderDistance7(headExhangerGridSolid->GetFace(37), headExhangerGridItem);
+        MtGeomArgument GeometryArgPipeHolderDistance8(pipeHolderLong->GetFace(0), pipeHolderLongItem4);
+        MtGeomArgument GeometryArgPipeHolderConc15(innerPipeSolid->GetFace(3), innerPipeItem4);
+        MtGeomArgument GeometryArgPipeHolderConc16(pipeHolderLong->GetFace(10), pipeHolderLongItem4);
+
+        assm->AddConstraint(GCM_DISTANCE, GeometryArgPipeHolderDistance7, GeometryArgPipeHolderDistance8, MtParVariant(lengthBetweenInnerPipesAndGrid - 10));
+        assm->AddConstraint(GCM_CONCENTRIC, GeometryArgPipeHolderConc15, GeometryArgPipeHolderConc16);*/
     }
 
     assm->EvaluateConstraints();
@@ -1093,12 +1147,30 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
         for (int i = 0; i < configurationQuantity + 1; ++i)
         {
             SPtr<MbInstance> assmInstance(new MbInstance(*assm, lcs));
+            SPtr<MbInstance> curvedBigPipeItem(new MbInstance(*curvedBigPipe, lcs));
+            SPtr<MbInstance> pipeHolderLongItem3(new MbInstance(*pipeHolderLong, lcs));
+            SPtr<MbInstance> pipeHolderLongItem4(new MbInstance(*pipeHolderLong, lcs));
+            
+            pipeHolderLongItem3->Move(MbVector3D(-t, assemblyHeight - t, lengthBetweenInnerPipesAndGrid));
+            pipeHolderLongItem4->Move(MbVector3D(-t, 0, lengthBetweenInnerPipesAndGrid - 10));
+           
 
             assmPairs.push_back(assmInstance);
-
+            
+            
             if (i >= 1)
             {
-                assmInstance->Move(MbVector3D(0, assemblyHeight * i, 0));
+                assmInstance->Move(MbVector3D(-6.5, assemblyHeight * i, 0));
+
+                assmPairs.push_back(pipeHolderLongItem3);
+                assmPairs.push_back(pipeHolderLongItem4);
+                pipeHolderLongItem3->Move(MbVector3D(0, assemblyHeight * i - assemblyHeight, 0));
+                pipeHolderLongItem4->Move(MbVector3D(0, assemblyHeight * i - assemblyHeight, 0));
+                
+
+                assmPairs.push_back(curvedBigPipeItem);
+                curvedBigPipeItem->Move(MbVector3D(0, assemblyHeight * i, 0));
+               
             }
         }
 
