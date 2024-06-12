@@ -42,7 +42,9 @@ static void _selectSegment(SelectionManagerPtr ptrSelectManager, SceneSegment* p
     }
 }
 
-static void fillSegmentList(ExplodeTreeView* pTreeWidget, SceneSegment* pSegment, SceneSegment* pPrentSegment)
+static void fillSegmentList(ExplodeTreeView* pTreeWidget, 
+    SceneSegment* pSegment,
+    SceneSegment* pPrentSegment)
 {
     pTreeWidget->slotAppendItem(pSegment, pPrentSegment);
     auto listItem = pSegment->GetChildSegments();
@@ -559,7 +561,10 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
         case ExplodeWidget::TTRM:
         {
             int index = m_pExplodeManager->m_comboConfigure->currentIndex();
-            m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::TTRM));
+
+            m_pExplodeManager->m_reconfigureButton->setProperty(
+                "CommandsHeatExhanger", 
+                QVariant((int)ExplodeWidget::TTRM));
 
             for (const auto& config : m_pExplodeManager->dataTTRM) {
                 values.append(QString::fromStdString(config.name));
@@ -571,8 +576,11 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
 
             int configurationQuantity = m_pExplodeManager->m_quantityCombobox->currentIndex();
 
-            m_pModel = ParametricModelCreator::CreatePneymocylinderModelTTRM(config, configurationQuantity);
+            m_pModel = 
+                ParametricModelCreator::CreatePneymocylinderModelTTRM(config, configurationQuantity);
+
             openModel();
+
             break;
         }
         case ExplodeWidget::IP: 

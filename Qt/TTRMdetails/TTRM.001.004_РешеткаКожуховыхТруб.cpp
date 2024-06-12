@@ -158,6 +158,13 @@ SPtr<MbSolid> ParametricModelCreator::createOuterPipesGrid_004(double length2, d
     createYZWall(arrContours1, length2, assortmentCamera, thicknessCamera);
 
     MbSweptData sweptDataInnerCyl(*pPlaneYZ, arrContours1);
+    MbSolid* pInner;
+
+    ::RevolutionSolid(sweptDataInnerCyl, axis, revParms, operNames, cNames, pInner);
+
+    SolidSPtr pInnerSolid(pInner), pDifferentSolid;
+    ::BooleanResult(pMergeSolid, cm_Copy, pInnerSolid, cm_Copy, 
+        MbBooleanOperationParams(bo_Difference, false, operBoolNames), pDifferentSolid);
 
     MbVector3D dirX(1, 0, 0);
     MbVector3D dirY(0, 1, 0);
@@ -165,15 +172,6 @@ SPtr<MbSolid> ParametricModelCreator::createOuterPipesGrid_004(double length2, d
 
     MbSolid* pWallYZ;
     MbSolid* pWallXZ;
-
-    MbSolid* pInner;
-
-    ::RevolutionSolid(sweptDataInnerCyl, axis, revParms, operNames, cNames, pInner);
-
-    SolidSPtr pInnerSolid(pInner), pDifferentSolid;
-
-    // Первое вырезание
-    ::BooleanResult(pMergeSolid, cm_Copy, pInnerSolid, cm_Copy, MbBooleanOperationParams(bo_Difference, false, operBoolNames), pDifferentSolid);
 
     // Главная стенка YZ
     ::ExtrusionSolid(sweptDataInnerCyl, dirX, NULL, NULL, false, ExtrusionValues(0, 10), operNames, cNames, pWallYZ);

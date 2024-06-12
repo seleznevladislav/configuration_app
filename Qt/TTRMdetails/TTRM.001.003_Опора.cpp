@@ -97,7 +97,10 @@ SPtr<MbSolid> ParametricModelCreator::createSupport_003(double assortmentCamera,
 
     innerCylPnts.push_back(MbCartPoint3D(currentValues[2] / 2, -(currentValues[0] / 2), 0));
     innerCylPnts.push_back(MbCartPoint3D(currentValues[2] / 2, -(currentValues[0] / 2), currentValues[1] / 2 - 5));
-    innerCylPnts.push_back(MbCartPoint3D(currentValues[2] / 2 + (assortmentCamera - 8) / 2, -(currentValues[0] / 2), currentValues[1] / 2 - 5));
+    innerCylPnts.push_back(MbCartPoint3D(
+        currentValues[2] / 2 + (assortmentCamera - 8) / 2,  // кооридината на оси X
+        -(currentValues[0] / 2),                            // кооридината на оси Y
+        currentValues[1] / 2 - 5));                         // кооридината на оси Z
 
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, innerCylPnts, blockNames), pInnerCyl);
 

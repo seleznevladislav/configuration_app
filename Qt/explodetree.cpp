@@ -50,7 +50,20 @@ TreeObjectItem::TreeObjectItem(SceneSegment* pObject, int currentExhangerType)
         }
         case 2:
         {
-            detailNames = { u8"Теплообменная труба", u8"Труба кожуховая", u8"Камера распределительная", u8"Камера поворотная", u8"Опора", u8"Решетка кожуховых труб", u8"Фланец Тип E ГОСТ 33259-2015 Исполнение 1", u8"Фланец Тип F ГОСТ 33259-2015 Исполнение 1" };
+            detailNames = { 
+                u8"Теплообменная труба", 
+                u8"Труба кожуховая", 
+                u8"Камера распределительная", 
+                u8"Камера поворотная", 
+                u8"Опора", 
+                u8"Решетка кожуховых труб", 
+                u8"Фланец Тип E ГОСТ 33259-2015 Исполнение 1", 
+                u8"Фланец Тип F ГОСТ 33259-2015 Исполнение 1", 
+                u8"Гайка шестигранная низкая ГОСТ 15522-70 Исполнение 1", 
+                u8"Болт с шестигранной головкой ГОСТ 15589-70 Исполнение 3", 
+                u8"Винт установочный ГОСТ 1477-93", 
+                u8"Гайка установочная"
+            };
 
             break;
         }
@@ -138,7 +151,8 @@ ExplodeTreeView::ExplodeTreeView(ExplodeWidget* pExplodeWidget, QWidget* parent)
     setSelectionMode(QAbstractItemView::SingleSelection);
 
     setAutoFillBackground(false);
-    connect(this, SIGNAL(itemSelectionChanged()), this, SLOT(slotTreeSelectionChanged()), Qt::DirectConnection);
+    connect(this, SIGNAL(itemSelectionChanged()), this,
+        SLOT(slotTreeSelectionChanged()), Qt::DirectConnection);
 }
 
 //---------------------------------------------------------------------------

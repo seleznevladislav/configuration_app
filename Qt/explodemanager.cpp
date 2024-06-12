@@ -389,7 +389,10 @@ void ExplodeManager::calculateThickness(QFormLayout* form) {
     mp_dimCamera = cameraValues.first;
     int cameraHeight = cameraValues.second;
 
-    int thicknessOuter = ceil((pressureOuter * mp_dimOuterTube) / (2 * 0.9 * steelMark - pressureOuter) + 2.5);
+    int thicknessOuter = ceil(
+        (pressureOuter * mp_dimOuterTube) / 
+        (2 * 0.9 * steelMark - pressureOuter) + 2.5);
+
     mp_thicknessOuterResult = max(thicknessOuter, 4);
 
     ConfigParams foundElement = findClosestMatch(mp_dimCamera, mp_thicknessOuterResult, "thicknessOuterTubes");
@@ -398,7 +401,11 @@ void ExplodeManager::calculateThickness(QFormLayout* form) {
     mp_thicknessInnerResult = max(thicknessInner, 4);
 
     const int R = pow(mp_dimCamera, 2) / (4 * cameraHeight);
-    int thicknessCamera = ceil((pressureOuter * R) / (2 * steelMark * 0.9 - 0.5 * pressureOuter) + 2.5);
+
+    int thicknessCamera = ceil(
+        (pressureOuter * R) / 
+        (2 * steelMark * 0.9 - 0.5 * pressureOuter) + 2.5);
+
     mp_thicknessCameraResult = max(thicknessCamera, 4);
 
     QLineEdit* innerTubesLineEdit = qobject_cast<QLineEdit*>(form->itemAt(12)->widget());
@@ -777,7 +784,10 @@ QComboBox* ExplodeManager::createCombobox(QVBoxLayout* vLayout)
     return combo;
 }
 
-QPushButton* ExplodeManager::createButton(const ExplodeDispatcher::ControlParameterType param, QHBoxLayout* hLayout, const char* text, const char* tip)
+QPushButton* ExplodeManager::createButton(const ExplodeDispatcher::ControlParameterType param,
+    QHBoxLayout* hLayout, 
+    const char* text, 
+    const char* tip)
 {
     QPushButton* button = new QPushButton(m_pWidget);
     button->setProperty("ControlParameterType", QVariant((int)param));
@@ -1406,7 +1416,8 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
 
                 if (temPower < 0)
                 {
-                    QString* text = new QString(u8"Отрицательная тепловая мощность! \n Температура нагреваемого теплоносителя меньше чем на входе.");
+                    QString* text = 
+                        new QString(u8"Отрицательная тепловая мощность! \n Температура нагреваемого теплоносителя меньше чем на входе.");
                     createWarning(text);
 
                     return;
@@ -1507,7 +1518,13 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
                 PrCEdit->setText(QString::number(coldPr));
 
                 double NusseltHotIndex = 0.021 * pow(reinoldsH, 0.8) * pow(hotPr, 0.43) * pow((hotPr / hotPr), 0.25);
-                double NusseltColdIndex = 0.017 * pow(reinoldsC, 0.8) * pow(coldPr, 0.43) * pow((coldPr / coldPr), 0.25) * pow(((d2) / D1), 0.18);
+                double NusseltColdIndex = 
+                    0.017 * 
+                    pow(reinoldsC, 0.8) * 
+                    pow(coldPr, 0.43) * 
+                    pow((coldPr / coldPr), 0.25) * 
+                    pow(((d2) / D1), 0.18);
+
                 NuHEdit->setText(QString::number(NusseltHotIndex));
                 NuCEdit->setText(QString::number(NusseltColdIndex));
 

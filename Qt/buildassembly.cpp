@@ -58,7 +58,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     SPtr<MbSolid> pipeScrewWasher(buildWasher10());
     pipeScrewWasher->SetColor(53, 79, 82);
     SPtr<MbSolid> screw55(buildScrew55());
-    pipeScrewWasher->SetColor(53, 79, 82);
+    screw55->SetColor(53, 79, 82);
 
 
     // Крышки
@@ -955,15 +955,19 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
 
     assm->EvaluateConstraints();
 
-    string casingPipeName = "1";
     string headExchangePipeId = "0";
+    string casingPipeName = "1";
+    string roundPipeName = "1";
     string distributionChamberName = "2";
     string rotatableChamberName = "3";
     string supportName = "4";
     string capName = "5";
-    string roundPipeName = "1";
     string flangeEName = "6";
     string flangeFName = "7";
+    string washerName = "8";
+    string screw55Name = "9";
+    string screw35Name = "10";
+    string holderName = "11";
 
     MbProductInfo casingPipeInfo(false, casingPipeName, casingPipeName, casingPipeName);
     MbProductInfo headExchangePipeInfo(false, headExchangePipeId, headExchangePipeId, headExchangePipeId);
@@ -974,6 +978,10 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     MbProductInfo roundedPipeInfo(false, roundPipeName, roundPipeName, roundPipeName);
     MbProductInfo flangeEInfo(false, flangeEName, flangeEName, flangeEName);
     MbProductInfo flangeFInfo(false, flangeFName, flangeFName, flangeFName);
+    MbProductInfo washerInfo(false, washerName, washerName, washerName);
+    MbProductInfo screw55Info(false, screw55Name, screw55Name, screw55Name);
+    MbProductInfo screw35Info(false, screw35Name, screw35Name, screw35Name);
+    MbProductInfo holderInfo(false, holderName, holderName, holderName);
 
     MbProductInfo TTRMInfo(false, "TTRM", "TTRM", "TTRM");
 
@@ -1010,11 +1018,71 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
 
     flangeE->AddAttribute(flangeEInfo);
     flangeEItem->AddAttribute(flangeEInfo);
-    flangeEItem->AddAttribute(flangeEInfo);
+    flangeEItem2->AddAttribute(flangeEInfo);
    
     flangeF->AddAttribute(flangeFInfo);
     flangeFItem->AddAttribute(flangeFInfo);
-    flangeFItem->AddAttribute(flangeFInfo);
+    flangeFItem2->AddAttribute(flangeFInfo);
+
+    pipeScrewWasher->AddAttribute(washerInfo);
+    pipeScrewWasherItem->AddAttribute(washerInfo);
+    pipeScrewWasherItem2->AddAttribute(washerInfo);
+    pipeScrewWasherItem3->AddAttribute(washerInfo);
+    pipeScrewWasherItem4->AddAttribute(washerInfo);
+    pipeScrewWasherItem5->AddAttribute(washerInfo);
+    pipeScrewWasherItem6->AddAttribute(washerInfo);
+    pipeScrewWasherItem7->AddAttribute(washerInfo);
+    pipeScrewWasherItem8->AddAttribute(washerInfo);
+    pipeScrewWasherItem9->AddAttribute(washerInfo);
+    pipeScrewWasherItem10->AddAttribute(washerInfo);
+    pipeScrewWasherItem11->AddAttribute(washerInfo);
+    pipeScrewWasherItem12->AddAttribute(washerInfo);
+    pipeScrewWasherItem13->AddAttribute(washerInfo);
+    pipeScrewWasherItem14->AddAttribute(washerInfo);
+    pipeScrewWasherItem15->AddAttribute(washerInfo);
+    pipeScrewWasherItem16->AddAttribute(washerInfo);
+    pipeScrewWasherItem17->AddAttribute(washerInfo);
+    pipeScrewWasherItem18->AddAttribute(washerInfo);
+    pipeScrewWasherItem19->AddAttribute(washerInfo);
+    pipeScrewWasherItem20->AddAttribute(washerInfo);
+    pipeScrewWasherItem21->AddAttribute(washerInfo);
+    pipeScrewWasherItem22->AddAttribute(washerInfo);
+    pipeScrewWasherItem23->AddAttribute(washerInfo);
+    pipeScrewWasherItem24->AddAttribute(washerInfo);
+
+    screw55->AddAttribute(screw55Info);
+    screw55Item->AddAttribute(screw55Info);
+    screw55Item2->AddAttribute(screw55Info);
+    screw55Item3->AddAttribute(screw55Info);
+    screw55Item4->AddAttribute(screw55Info);
+    screw55Item5->AddAttribute(screw55Info);
+    screw55Item6->AddAttribute(screw55Info);
+    screw55Item7->AddAttribute(screw55Info);
+    screw55Item8->AddAttribute(screw55Info);
+    screw55Item9->AddAttribute(screw55Info);
+    screw55Item10->AddAttribute(screw55Info);
+    screw55Item11->AddAttribute(screw55Info);
+    screw55Item12->AddAttribute(screw55Info);
+    screw55Item13->AddAttribute(screw55Info);
+    screw55Item14->AddAttribute(screw55Info);
+    screw55Item15->AddAttribute(screw55Info);
+    screw55Item16->AddAttribute(screw55Info);
+
+    screw35->AddAttribute(screw35Info);
+    screw35Item->AddAttribute(screw35Info);
+    screw35Item2->AddAttribute(screw35Info);
+    screw35Item3->AddAttribute(screw35Info);
+    screw35Item4->AddAttribute(screw35Info);
+    screw35Item5->AddAttribute(screw35Info);
+    screw35Item6->AddAttribute(screw35Info);
+    screw35Item7->AddAttribute(screw35Info);
+    screw35Item8->AddAttribute(screw35Info);
+
+    pipeHolderShort->AddAttribute(holderInfo);
+    pipeHolderShortItem->AddAttribute(holderInfo);
+    pipeHolderShortItem2->AddAttribute(holderInfo);
+    pipeHolderShortItem3->AddAttribute(holderInfo);
+    pipeHolderShortItem4->AddAttribute(holderInfo);
 
     assm->AddAttribute(TTRMInfo);
 
@@ -4026,8 +4094,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIU(ConfigParams_IU params)
         assm->AddConstraint(GCM_PARALLEL, facePerTube, faceTubePer);
 
     }
-
-
 
     assm->EvaluateConstraints();
 
