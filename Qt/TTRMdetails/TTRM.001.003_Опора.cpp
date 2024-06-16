@@ -156,7 +156,7 @@ SPtr<MbSolid> ParametricModelCreator::createSupport_003(double assortmentCamera,
 
     smallCylPnts4.push_back(MbCartPoint3D(currentValues[2] / 2 - t / 2, -(currentValues[0] / 2 + t / 2), 0));
     smallCylPnts4.push_back(MbCartPoint3D(currentValues[2] / 2 - t / 2, -(currentValues[0] / 2 + t / 2), currentValues[1] / 2 + 5));
-    smallCylPnts4.push_back(MbCartPoint3D(currentValues[2] / 2 - t / 2 + 57 / 2, -(currentValues[0] / 2 + t / 2), currentValues[1] / 2 + 5));
+    smallCylPnts4.push_back(MbCartPoint3D(currentValues[2] / 2 - t / 2 + assortmentOuterTubes / 2, -(currentValues[0] / 2 + t / 2), currentValues[1] / 2 + 5));
 
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, smallCylPnts4, blockNames), pSmallCyl4);
 

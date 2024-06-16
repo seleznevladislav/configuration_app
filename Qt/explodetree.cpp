@@ -64,7 +64,8 @@ TreeObjectItem::TreeObjectItem(SceneSegment* pObject, int currentExhangerType)
                 u8"Винт установочный ГОСТ 1477-93", 
                 u8"Гайка установочная",
                 u8"Теплообменная система",
-                u8"ТТРМ"
+                u8"ТТРМ",
+                u8"Болт дренажный",
             };
 
             break;

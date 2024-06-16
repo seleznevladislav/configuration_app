@@ -350,7 +350,7 @@ ConfigParams ExplodeManager::findClosestMatch(int dimCamera, int param, const st
     filteredElements = dimCamera == 0 ? dataTTRM : filteredElements;
 
     unordered_map<string, function<int(const ConfigParams&)>> paramAccess = {
-        {"LENGTH", [](const ConfigParams& e) { return e.LENGTH; }},
+        {"lengthK", [](const ConfigParams& e) { return e.lengthK; }},
         {"thicknessOuterTubes", [](const ConfigParams& e) { return e.thicknessOuterTubes; }},
         {"assortmentCamera", [](const ConfigParams& e) { return e.assortmentCamera; }},
     };
@@ -683,9 +683,9 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
 
         m_lengthSpinBox = new QDoubleSpinBox;
         m_lengthSpinBox->setDisabled(true);
-        m_lengthSpinBox->setRange(2150, 7040);
+        m_lengthSpinBox->setRange(1500, 6000);
         m_lengthSpinBox->setSingleStep(50);
-        m_lengthSpinBox->setValue(2150);
+        m_lengthSpinBox->setValue(1500);
 
         QLabel* lengthSpinBoxLabel = new QLabel(u8"Длина L, мм:");
 
@@ -710,9 +710,9 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
             });
 
         connect(m_closestLengthButton, &QToolButton::clicked, [=]() {
-            ConfigParams foundElement = findClosestMatch(mp_dimCamera, m_lengthSpinBox->value(), "LENGTH");
+            ConfigParams foundElement = findClosestMatch(mp_dimCamera, m_lengthSpinBox->value(), "lengthK");
 
-            m_lengthSpinBox->setValue(foundElement.LENGTH);
+            m_lengthSpinBox->setValue(foundElement.lengthK);
             });
 
         break;
@@ -1429,6 +1429,15 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
                     ? manualTTRMParams
                     : dataTTRM[technicalIndex > 0 ? technicalIndex : 0];
 
+               if (params.assortmentInnerTubes < 0)
+                {
+                    QString* text =
+                        new QString(u8"Нажмите на кнопку \"Перестроить теплообменник\" для корректного выполнения расчётов!");
+                    createWarning(text);
+
+                    return;
+                }
+
                 double hViscocity;
                 double сViscocity;
 
@@ -1614,17 +1623,19 @@ void ExplodeManager::onDrawingShowButtonClicked() {
 void ExplodeManager::onReconfigureButtonClicked() {
     const int indexOfCurrentExchanger = m_pExplodeWidget->m_pCurrentExchandger;
     if (isCheckedManualType && indexOfCurrentExchanger ==2) {
-        ConfigParams lengthParams = findClosestMatch(0, m_lengthSpinBox->value(), "LENGTH");
+        ConfigParams lengthParams = findClosestMatch(0, m_lengthSpinBox->value(), "lengthK");
         manualTTRMParams = findClosestMatch(0, mp_dimCamera, "assortmentCamera");
+
+        const int lengthDifference = m_lengthSpinBox->value() - lengthParams.lengthK;
 
         manualTTRMParams.thicknessInnerTubes = mp_thicknessInnerResult;
         manualTTRMParams.thicknessOuterTubes = mp_thicknessOuterResult;      
-        manualTTRMParams.LENGTH = m_lengthSpinBox->value();
-        manualTTRMParams.length0 = lengthParams.length0;
+        manualTTRMParams.LENGTH = lengthParams.LENGTH + lengthDifference;
+        manualTTRMParams.length0 = lengthParams.length0 + lengthDifference;
         manualTTRMParams.length1 = lengthParams.length1;
         manualTTRMParams.length2 = lengthParams.length2;
         manualTTRMParams.length3 = lengthParams.length3;
-        manualTTRMParams.lengthK = lengthParams.lengthK;
+        manualTTRMParams.lengthK = m_lengthSpinBox->value();
     }
 
     if (isCheckedManualType && indexOfCurrentExchanger == 1) {

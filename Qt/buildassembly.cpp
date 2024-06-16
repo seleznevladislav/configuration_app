@@ -1029,6 +1029,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     string screw35Name = "10";
     string holderName = "11";
     string ttrmAssembly = "13";
+    string coverName = "14";
 
     MbProductInfo casingPipeInfo(false, casingPipeName, casingPipeName, casingPipeName);
     MbProductInfo headExchangePipeInfo(false, headExchangePipeId, headExchangePipeId, headExchangePipeId);
@@ -1043,6 +1044,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     MbProductInfo screw55Info(false, screw55Name, screw55Name, screw55Name);
     MbProductInfo screw35Info(false, screw35Name, screw35Name, screw35Name);
     MbProductInfo holderInfo(false, holderName, holderName, holderName);
+    MbProductInfo coverInfo(false, coverName, coverName, coverName);
 
     MbProductInfo TTRMInfo(true, ttrmAssembly, ttrmAssembly, ttrmAssembly);
 
@@ -1151,7 +1153,17 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
     pipeHolderLongItem->AddAttribute(holderInfo);
     pipeHolderLongItem2->AddAttribute(holderInfo);
 
+    cover->AddAttribute(coverInfo);
+    coverItem->AddAttribute(coverInfo);
+    coverItem2->AddAttribute(coverInfo);
+
     assm->AddAttribute(TTRMInfo);
+
+    std::map<int, int> shiftMap;
+   
+    shiftMap[219] = -6.5;
+    shiftMap[273] = -8;
+    shiftMap[325] = -9.5;
 
     if (configurationQuantity > 0)
     {
@@ -1178,16 +1190,16 @@ SPtr<MbAssembly> ParametricModelCreator::CreatePneumocylinderAssembly(ConfigPara
             
             if (i >= 1)
             {
-                assmInstance->Move(MbVector3D(-6.5 * i, assemblyHeight * i, 0));
+                assmInstance->Move(MbVector3D(shiftMap[assortmentCamera] * i, assemblyHeight * i, 0));
 
                 assmPairs.push_back(pipeHolderLongItem3);
                 assmPairs.push_back(pipeHolderLongItem4);
-                pipeHolderLongItem3->Move(MbVector3D(0, assemblyHeight * i - assemblyHeight, 0));
-                pipeHolderLongItem4->Move(MbVector3D(0, assemblyHeight * i - assemblyHeight, 0));
+                pipeHolderLongItem3->Move(MbVector3D(shiftMap[assortmentCamera] * i - shiftMap[assortmentCamera], assemblyHeight * i - assemblyHeight, 0));
+                pipeHolderLongItem4->Move(MbVector3D(shiftMap[assortmentCamera] * i - shiftMap[assortmentCamera], assemblyHeight * i - assemblyHeight, 0));
                 
 
                 assmPairs.push_back(curvedBigPipeItem);
-                curvedBigPipeItem->Move(MbVector3D(0, assemblyHeight * i, 0));
+                curvedBigPipeItem->Move(MbVector3D(shiftMap[assortmentCamera] * i - shiftMap[assortmentCamera], assemblyHeight * i, 0));
                
             }
         }
