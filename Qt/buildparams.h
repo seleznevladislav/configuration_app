@@ -87,13 +87,23 @@ namespace BuildMathModel {
 		double l = 350;
 		double l2 = 1750;
 		double l3 = 6390;
-		//float CylS;
-		//float EllS;
-		//float PerS;
-
-		//float napr;
-		//float C;
 	};
+
+	/*
+	
+	struct ConfigParams_IU
+	{
+		std::string name;
+		double p;      //давление
+		double diam;   //внутренний диаметр кожуха
+		double Length; //длина кожуха
+		double D_Kam;  //внутренний диаметр камеры
+		double Kam_L;  //длина камеры
+		double S;      //толщина обечайки
+		double l;      //расстояния от эл днища до фланцев
+		double l2;
+		double l3;
+	};*/
 
 	struct data_fluidProperties {
 		std::string name;     // 0 - Наименование

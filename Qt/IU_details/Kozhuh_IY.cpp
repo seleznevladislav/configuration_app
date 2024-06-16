@@ -1847,7 +1847,7 @@ SPtr<MbSolid> ParametricModelCreator::CreateUnionKozhuh_IU(ConfigParams_IU param
     const double L = params.Length;
     const double DKr = params.D_Kam;
 
-    double l5;
+    double l5 = 320.;
 
     if ((500 <= DKr) && (DKr < 600)) {
         l5 = 320.;
@@ -1874,38 +1874,38 @@ SPtr<MbSolid> ParametricModelCreator::CreateUnionKozhuh_IU(ConfigParams_IU param
         l5 = 610.;
     }
 
-
     double pol_Kam = l5 - params.D_Kam / 4;
-
-    double L_Kzh = L - pol_Kam; //здесь еще должен быть минус 2 * длина присоед фланца
-
+    double L_Kzh = L - pol_Kam;
     double L_Loft = (L - pol_Kam) / 5.23;
     double L_Base = (L - pol_Kam) / 1.23;
 
-    //double L_Loft = (L - 300) / 5.23;
-    //double L_Base = (L - 300) / 1.23;
-
     MbPlacement3D pl;
     MbSNameMaker operNames(1, MbSNameMaker::i_SideNone, 0);
+    //Создание обечайки
     SolidSPtr Kozhuh = CreateKzhBase(D_Kzh, L_Base, s);
-    SolidSPtr Loft = CreateLoft(D_Kzh, DKr, L_Loft, s);//L_Base/4.15 было 1255
-    //5395 - координата где заканчивается кожух
+    //Лофт
+    SolidSPtr Loft = CreateLoft(D_Kzh, DKr, L_Loft, s);
     Loft->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(L_Base, 0, 0)));
     SolidSPtr pSptrKzh, pSptrKzhEl;
+    //Объединение кожуха и лофта
     BooleanResult(Kozhuh, cm_Copy, Loft, cm_Copy,
         MbBooleanOperationParams(bo_Union, true, operNames), pSptrKzh);
+    //Создание эллиптического днища
     SolidSPtr ElDno = CreateEllipticDno(D_Kzh, s);
     BooleanResult(pSptrKzh, cm_Copy, ElDno, cm_Copy,
         MbBooleanOperationParams(bo_Union, true, operNames), pSptrKzhEl);
-    SolidSPtr pSptrTr = CreateKzhWithTr(pSptrKzhEl, D_Kzh, L_Base, params.p, DKr, s, params.l, params.l2, params.l3);
-    SolidSPtr pKzhWithOtv = CreateHoleKzh(pSptrTr, D_Kzh, L_Base, DKr, s, params.l, params.l2, params.l3);
-    //создание фланца на лофте, который соединяется с камерой
+    //Создание фланцев
+    SolidSPtr pSptrTr = CreateKzhWithTr(pSptrKzhEl, D_Kzh, L_Base, params.p, DKr, s, 
+        params.l, params.l2, params.l3);
+    //Создани отверстий в фланцах
+    SolidSPtr pKzhWithOtv = CreateHoleKzh(pSptrTr, D_Kzh, L_Base, DKr, s, params.l, 
+        params.l2, params.l3);
+    //Создание фланца на лофте, который соединяется с камерой
     SolidSPtr pSptrFlanecOnLoft = CreateTrubaOnKzh(13, D_Kzh, params.p, DKr, s);
-
-
     MbAxis3D axisZ(pl.GetAxisZ());
     pSptrFlanecOnLoft->Rotate(axisZ, 270 * DEG_TO_RAD);
-    pSptrFlanecOnLoft->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(L_Base + L_Loft, -(D_Kzh_V - D_Kam_V) / 2., 0)));
+    pSptrFlanecOnLoft->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(L_Base + 
+        L_Loft, -(D_Kzh_V - D_Kam_V) / 2., 0)));
     SolidSPtr pSptrSolid;
     BooleanResult(pKzhWithOtv, cm_Copy, pSptrFlanecOnLoft, cm_Copy,
         MbBooleanOperationParams(bo_Union, true, operNames), pSptrSolid);
@@ -1916,7 +1916,7 @@ SPtr<MbSolid> ParametricModelCreator::CreateUnionKozhuh_IU(ConfigParams_IU param
 static SPtr<MbSolid> CreatePeregorodkaForKamera(double D, double L, SolidSPtr kamera) {
     MbPlane* pPlaneZY = new MbPlane(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, 0, 1), MbCartPoint3D(0, 1, 0));
     pPlaneZY->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(L, 0, 0)));//86 это H у присоединительного фланца
-
+    
     MbCartPoint p1P(D / 2, 0);
     MbCartPoint p2P(D / 2, 12);//12 это толщина перегородки
     MbCartPoint p3P(-D / 2, 12);

@@ -3927,25 +3927,25 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIP(ConfigParams_IP params)
 
 
         int face = 0;
-        if (800 <= params.Dv_Kzh < 1000) {
+        if ((500 <= params.DKr) && (params.DKr < 600)) {
             face = 200;
         }
-        else if (1000 <= params.Dv_Kzh < 1200) {
+        else if ((600 <= params.DKr) && (params.DKr < 700)) {
             face = 109;
         }
-        else if (1200 <= params.Dv_Kzh < 1400) {
+        else if ((700 <= params.DKr) && (params.DKr < 800)) {
             face = 252;
         }
-        else if (1400 <= params.Dv_Kzh < 1600) {
+        else if ((800 <= params.DKr) && (params.DKr < 900)) {
             face = 352;
         }
-        else if (1600 <= params.Dv_Kzh < 1800) {
+        else if ((900 <= params.DKr) && (params.DKr < 1000)) {
             face = 452;
         }
-        else if (1800 <= params.Dv_Kzh < 2000) {
+        else if ((1000 <= params.DKr) && (params.DKr < 1100)) {
             face = 952;
         }
-        else if (2000 <= params.Dv_Kzh) {
+        else if (1100 <= params.DKr) {
             face = 1052;
         }
 
@@ -4047,6 +4047,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIU(ConfigParams_IU params)
     pStoika->SetColor(135, 206, 250);
     pPipe->SetColor(153, 153, 255);
 
+    pPeregorodka->SetColor(82, 165, 251);
 
 
 

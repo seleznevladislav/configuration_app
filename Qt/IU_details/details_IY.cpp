@@ -39,6 +39,7 @@ static SPtr<MbSolid> Create_U_Pipe(double p, double D_Kzh, double D_Kr) {
         bigD = 1188;
     }
 
+    
 
     //bigD = bigD - 2;
     double x;
@@ -152,11 +153,8 @@ SPtr<MbSolid> ParametricModelCreator::CreatePipe(double p, double D_Kzh, double 
                 MbArc* Circle = new MbArc(MbCartPoint(x, y), d_v / 2);
                 ptrContours->push_back(new MbContour(*Circle, true));
 
-
                 MbArc* Circle1 = new MbArc(MbCartPoint(x, y), d / 2);
                 ptrContours->push_back(new MbContour(*Circle1, true));
-
-
 
                 MbArc* Circle2 = new MbArc(MbCartPoint(x, -y), d_v / 2);
                 MbContour* ptrContour2 = new MbContour();
@@ -218,7 +216,7 @@ static SPtr<MbSolid> CreateOtvVPeregorodka(SPtr<MbSolid> OsnovaPereg, double D_K
         bigD = 788;
     }
     else if ((900 <= D_Kr) && (D_Kr < 1000)) {
-        bigD = 888; //755
+        bigD = 888;
     }
     else if ((1000 <= D_Kr) && (D_Kr < 1100)) {
         bigD = 988;
@@ -232,13 +230,12 @@ static SPtr<MbSolid> CreateOtvVPeregorodka(SPtr<MbSolid> OsnovaPereg, double D_K
 
     double x;
     double y;
-    int t;
+    int t = 26;
+    
+    
     double d = 20.6;
-
-
-    t = 26; //рассто€ние между окружност€ми
-    double shag = sqrt(2) * t;
-    int n = floor(bigD / shag); //  ол-во отверстий на 0 р€ду - тот, что в середине
+    double shag = sqrt(2) * t; //шаг
+    int n = floor(bigD / shag); //  ол-во отверстий на 0 р€ду
     float h = bigD / 2;
 
     for (int j = 1; j < n; j++)
@@ -296,9 +293,7 @@ static SPtr<MbSolid> CreateMirror(SPtr<MbSolid> SolidForMirror, double degr, MbA
 
 //—оздание перегородки дл€ труб
 SPtr<MbSolid> ParametricModelCreator::CreatePeregorodka(double p, double D_Kzh, double D_Kr) {
-
-    double S1;
-    double D3;
+    double S1, D3;
     double dop = 12 * 2;
 
     if ((500 <= D_Kr) && (D_Kr < 600)) {
@@ -368,12 +363,12 @@ SPtr<MbSolid> ParametricModelCreator::CreatePeregorodka(double p, double D_Kzh, 
 
 
 //—оздание неподвижной решетки
-SPtr<MbSolid> ParametricModelCreator::CreateOsnovaNePodResh(double p, double D_Kzh, double D_Kr) {
-
+SPtr<MbSolid> ParametricModelCreator::CreateOsnovaNePodResh(double p, 
+    double D_Kzh, double D_Kr) 
+{
     double S;
     double D1;
     double D4;
-    //добавить зависимость от давлени€
 
     if ((500 <= D_Kr) && (D_Kr < 600)) {
         S = 50;
