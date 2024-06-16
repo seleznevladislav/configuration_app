@@ -1895,16 +1895,16 @@ SPtr<MbSolid> ParametricModelCreator::CreateUnionKozhuh_IU(ConfigParams_IU param
     BooleanResult(pSptrKzh, cm_Copy, ElDno, cm_Copy,
         MbBooleanOperationParams(bo_Union, true, operNames), pSptrKzhEl);
     //Создание фланцев
-    SolidSPtr pSptrTr = CreateKzhWithTr(pSptrKzhEl, D_Kzh, L_Base, params.p, DKr, s, 
+    SolidSPtr pSptrTr = CreateKzhWithTr(pSptrKzhEl, D_Kzh, L_Base, params.p, DKr, s,
         params.l, params.l2, params.l3);
     //Создани отверстий в фланцах
-    SolidSPtr pKzhWithOtv = CreateHoleKzh(pSptrTr, D_Kzh, L_Base, DKr, s, params.l, 
+    SolidSPtr pKzhWithOtv = CreateHoleKzh(pSptrTr, D_Kzh, L_Base, DKr, s, params.l,
         params.l2, params.l3);
     //Создание фланца на лофте, который соединяется с камерой
     SolidSPtr pSptrFlanecOnLoft = CreateTrubaOnKzh(13, D_Kzh, params.p, DKr, s);
     MbAxis3D axisZ(pl.GetAxisZ());
     pSptrFlanecOnLoft->Rotate(axisZ, 270 * DEG_TO_RAD);
-    pSptrFlanecOnLoft->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(L_Base + 
+    pSptrFlanecOnLoft->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(L_Base +
         L_Loft, -(D_Kzh_V - D_Kam_V) / 2., 0)));
     SolidSPtr pSptrSolid;
     BooleanResult(pKzhWithOtv, cm_Copy, pSptrFlanecOnLoft, cm_Copy,
@@ -1916,7 +1916,7 @@ SPtr<MbSolid> ParametricModelCreator::CreateUnionKozhuh_IU(ConfigParams_IU param
 static SPtr<MbSolid> CreatePeregorodkaForKamera(double D, double L, SolidSPtr kamera) {
     MbPlane* pPlaneZY = new MbPlane(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, 0, 1), MbCartPoint3D(0, 1, 0));
     pPlaneZY->Move(MbVector3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(L, 0, 0)));//86 это H у присоединительного фланца
-    
+
     MbCartPoint p1P(D / 2, 0);
     MbCartPoint p2P(D / 2, 12);//12 это толщина перегородки
     MbCartPoint p3P(-D / 2, 12);

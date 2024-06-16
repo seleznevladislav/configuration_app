@@ -156,7 +156,6 @@
 #include <iostream>
 #include <unordered_map>
 
-
 using namespace c3d;
 using namespace std;
 
@@ -180,7 +179,7 @@ namespace BuildMathModel {
 
 	private:
 		static  SPtr<MbAssembly> CreatePneumocylinderAssembly(ConfigParams params, int configurationQuantity);
-		static  SPtr<MbAssembly> CreateTTOR(BuildParamsForHeatExchangerTTOR params, int configurationQuantity, bool hideStandartDetails);
+		static  SPtr<MbAssembly> CreateTTOR(BuildParamsForHeatExchangerTTOR params, int configurationQuantity);
 
 		static  SPtr<MbAssembly> CreateIP(ConfigParams_IP params);
 		static  SPtr<MbAssembly> CreateIU(ConfigParams_IU params);
@@ -190,11 +189,12 @@ namespace BuildMathModel {
 		static SPtr<MbSolid> ParametricModelCreator::createInnerPipe_001(double ttDiam, double ttThickness, double length);
         static SPtr<MbSolid> ParametricModelCreator::createOuterPipe_002(int lengthK, double assortmentOuterTubes, double thicknessOuterTubes);
         static SPtr<MbSolid> ParametricModelCreator::createSupport_003(double assortmentCamera, double assortmentOuterTubes, double t);
-        static SPtr<MbSolid> ParametricModelCreator::createOuterPipesGrid_004(double length2, double diametrY, double thickness, double t, double assortmentInnerTubes, double assortmentCamera, double thicknessCamera);
+        static SPtr<MbSolid> ParametricModelCreator::createOuterPipesGrid_004(double length2, double diametrY, double thickness, double t, double assortmentInnerTubes, double assortmentCamera, double thicknessCamera, double assemblyHeight);
         static SPtr<MbSolid> ParametricModelCreator::createCup_005(double t, double assortmentOuterTubes, double assortmentCamera);
 		static SPtr<MbSolid> ParametricModelCreator::createInnerPipesGrid_006(double length3, double assortmentCamera, double thicknessCamera);
 		static SPtr<MbSolid> ParametricModelCreator::createCurvedPipe_007(double ttDiam, double ttThickness, double t);
 		static SPtr<MbSolid> ParametricModelCreator::createPipeHolder_010(double holderLength, double assortmentInnerTubes);
+		static SPtr<MbSolid> ParametricModelCreator::createBigCurvedPipe_011(double ttDiam, double ttThickness, double assemblyHeight, double t);
 
 		// TTRM GOST
 		static SPtr<MbSolid> ParametricModelCreator::buildFlangeE(double diametrY);
@@ -202,6 +202,7 @@ namespace BuildMathModel {
 		static SPtr<MbSolid> ParametricModelCreator::buildFlangeScrew35();
 		static SPtr<MbSolid> ParametricModelCreator::buildWasher10();
 		static SPtr<MbSolid> ParametricModelCreator::buildScrew55();
+		static SPtr<MbSolid> ParametricModelCreator::buildCover();
 
 		// TTOR details
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_001_tubeTeploobmen(double Lk, double ttDiam, double ttThickness);
@@ -209,7 +210,7 @@ namespace BuildMathModel {
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora(double dV, double ktDiam, double ktThickness, double t, double visotaOpori, double shirinaOpori);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_004_reshetkaKozhux(double ktDiam, double ktThickness, double t);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_005_kamera(double ktDiam, double ktThickness, double l3);
-		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_006_RezhetkaTeplTube(double ttDiam, double ttThickness);
+		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_006_RezhetkaTeplTube(double ttDiam, double ttThickness, double ktDiam, double ktThickness);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_007_FlanecKozhux(double ktDiam, double ktThickness);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_008_FlanecSpecial(double ttDiam, double ttThickness);
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_009_curevedTube(double ttDiam, double ttThickness, double t);
@@ -218,7 +219,7 @@ namespace BuildMathModel {
 		static SPtr<MbSolid> ParametricModelCreator::Zarubincreate_012_curevedTubeBig(double ttDiam, double ttThickness, double visotaOpori, double t);
 
 		// GHOSTS TTOR
-		static SPtr<MbSolid> ParametricModelCreator::BoltGostTTOR(double diam);
+		static SPtr<MbSolid> ParametricModelCreator::BoltGostTTOR(double diam, bool simpleModeOn);
 		static SPtr<MbSolid> ParametricModelCreator::NutBoltGostTTOR(double diam);
 		static SPtr<MbSolid> ParametricModelCreator::WasherGostTTOR(double diam);
 

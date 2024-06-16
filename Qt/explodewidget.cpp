@@ -42,7 +42,9 @@ static void _selectSegment(SelectionManagerPtr ptrSelectManager, SceneSegment* p
     }
 }
 
-static void fillSegmentList(ExplodeTreeView* pTreeWidget, SceneSegment* pSegment, SceneSegment* pPrentSegment)
+static void fillSegmentList(ExplodeTreeView* pTreeWidget, 
+    SceneSegment* pSegment,
+    SceneSegment* pPrentSegment)
 {
     pTreeWidget->slotAppendItem(pSegment, pPrentSegment);
     auto listItem = pSegment->GetChildSegments();
@@ -359,14 +361,11 @@ void ExplodeWidget::viewCommands(Commands cmd)
     case ExplodeWidget::Open:
     {
         viewCommands(ExplodeWidget::Select);
-        createSceneZarubin();
-        // loadModel();
         break;
     }
     case ExplodeWidget::Save:
     {
         viewCommands(ExplodeWidget::Select);
-        // saveModel();
         break;
     }
     case ExplodeWidget::Select:
@@ -443,23 +442,6 @@ void ExplodeWidget::viewCommands(Commands cmd)
             camera->Orbit(M_PI / 180, 0);
             viewport()->RefreshScreen();
         }
-        //TOZO: Решить поворот
-        //Point3DF cameraPosition = camera->GetPosition();
-        //const int x = cameraPosition.x;
-        //const int y = cameraPosition.y;
-        //const int z = cameraPosition.z;
-
-        //for (int i = 0; i < 360; ++i) {
-        //    Sleep(1);
-
-        //    float angle = i * M_PI / 180;
-
-        //    // float newX = z * cos(angle) - x * sin(angle);
-        //    // float newY = z * sin(angle) + x * cos(angle);
-
-        //    camera->SetPosition(Point3DF(newX, newY, 0)); // Set the new camera position
-        //    viewport()->RefreshScreen();
-        //}
     }
     default:
         break;
@@ -467,6 +449,37 @@ void ExplodeWidget::viewCommands(Commands cmd)
     slotUpdateCommands();
     update();
 }
+
+
+bool checkValidityOfParametrsTTOR(BuildParamsForHeatExchangerTTOR params) {
+    bool isValid = true;
+
+    if (params.lK > params.Lt - 200) {
+        QMessageBox::critical(nullptr, "Ошибка построения", "Необходимо указать большую величину для длины теплообменных труб (Lt). Можно также уменьшить длину кожуха (Lk).");
+        isValid = false;
+    }
+
+    if (params.lK < params.L - 3000) {
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::warning(nullptr, "Предупреждение о перестроение", "Длина кожуха (lK) значительно меньше. Вы уверены, что хотите продолжить?",
+            QMessageBox::Yes | QMessageBox::No);
+        if (reply == QMessageBox::No) {
+            isValid = false;
+        }
+    }
+
+    if (params.ktDiam <= params.ttDiam - params.ttThickness * 2) {
+        QMessageBox::critical(nullptr, "Ошибка построения", "Диаметр кожуха (ktDiam) должен быть больше диаметра теплообменных труб (ttDiam).");
+        isValid = false;
+    }
+
+    if (params.dU >= params.ktDiam) {
+        QMessageBox::critical(nullptr, "Ошибка построения", "Диаметр отверстия (dU) должен быть больше диаметра кожуха (ktDiam).");
+        isValid = false;
+    }
+
+    return isValid;
+} 
 
 
 //---------------------------------------------------------------------------------------
@@ -529,17 +542,29 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
                 values.append(QString::fromStdString(config.name));
             }
 
-            BuildParamsForHeatExchangerTTOR config = m_pExplodeManager->dataTTOR[index > 0 ? index : 0];
-            int configurationQuantity = m_pExplodeManager->m_quantityCombobox->currentIndex();
-    
-            m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(config, configurationQuantity);
-            openModel();
+            BuildParamsForHeatExchangerTTOR config = m_pExplodeManager->isCheckedManualType
+                ? m_pExplodeManager->manualTTORParams
+                : m_pExplodeManager->dataTTOR[index > 0 ? index : 0];
+
+            bool ContinueBuildAssemlyTTOR = checkValidityOfParametrsTTOR(config);
+
+            if (ContinueBuildAssemlyTTOR) {
+                int configurationQuantity = m_pExplodeManager->m_quantityCombobox->currentIndex();
+
+                m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(config, configurationQuantity);
+                openModel();
+
+                QMessageBox::information(nullptr, "Успешно", "Сборка успешно построена.");
+            }
             break;
         }
         case ExplodeWidget::TTRM:
         {
             int index = m_pExplodeManager->m_comboConfigure->currentIndex();
-            m_pExplodeManager->m_reconfigureButton->setProperty("CommandsHeatExhanger", QVariant((int)ExplodeWidget::TTRM));
+
+            m_pExplodeManager->m_reconfigureButton->setProperty(
+                "CommandsHeatExhanger", 
+                QVariant((int)ExplodeWidget::TTRM));
 
             for (const auto& config : m_pExplodeManager->dataTTRM) {
                 values.append(QString::fromStdString(config.name));
@@ -551,8 +576,11 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
 
             int configurationQuantity = m_pExplodeManager->m_quantityCombobox->currentIndex();
 
-            m_pModel = ParametricModelCreator::CreatePneymocylinderModelTTRM(config, configurationQuantity);
+            m_pModel = 
+                ParametricModelCreator::CreatePneymocylinderModelTTRM(config, configurationQuantity);
+
             openModel();
+
             break;
         }
         case ExplodeWidget::IP: 
@@ -802,32 +830,12 @@ void ExplodeWidget::createScene()
     m_pSceneGenerator->StartBuildGeometry();
 }
 
-void ExplodeWidget::createSceneZarubin()
-{
-    //m_pModel.reset();
-    //m_pTreeWidget->clear();
-    //sceneContent()->Clear();
-
-    //// TOZO: Завести переменную для определения сборки и добавить кнопки в main toolbar left srea
-    //// TOZO: Не работает дерево, хз почему
-    //m_pModel = ParametricModelCreator::CreatePneymocylinderModelZarubin(BuildParamsForHeatExchangerTTOR());
-
-    //SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
-    //Q_ASSERT(pTopSegment != nullptr);
-    //ProgressBuild* pProgressBuild = m_pSceneGenerator->CreateProgressBuild();
-    //Object::Connect(pProgressBuild, &ProgressBuild::BuildAllCompleted, this, &ExplodeWidget::slotFinishBuildRep);
-    //m_pSegmModel = m_pSceneGenerator->CreateSceneSegment(m_pModel, pTopSegment, false);
-    //m_pSceneGenerator->StartBuildGeometry();
-}
-
 void ExplodeWidget::createSceneIP()
 {
     m_pModel.reset();
     m_pTreeWidget->clear();
     sceneContent()->Clear();
 
-    // TOZO: Завести переменную для определения сборки и добавить кнопки в main toolbar left srea
-    // TOZO: Не работает дерево, хз почему
     m_pModel = ParametricModelCreator::CreatePneymocylinderModelFukina(ConfigParams_IP());
 
     SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
@@ -844,8 +852,6 @@ void ExplodeWidget::createSceneIU()
     m_pTreeWidget->clear();
     sceneContent()->Clear();
 
-    // TOZO: Завести переменную для определения сборки и добавить кнопки в main toolbar left srea
-    // TOZO: Не работает дерево, хз почему
     m_pModel = ParametricModelCreator::CreatePneymocylinderModelVasinkina(ConfigParams_IU());
 
     SceneSegment* pTopSegment = sceneContent()->GetRootSegment();
@@ -1004,17 +1010,20 @@ void ExplodeWidget::updateActionCheckFilter()
     for (auto it = lstActions.begin(); it != lstActions.end(); ++it)
     {
         QAction* action = (*it);
-        if (action->objectName() == QString("ID_:/res/filter24x24.png"))
+        if (action->objectName() == QString(
+            "ID_:/res/filter24x24.png"))
             action->setChecked(filer.CheckFlag(SubPrim));
-        //        else if (action->objectName() == QString("ID_:/res/filterseg24x24.png"))
-        //            action->setChecked(filer.checkFlag(SubSegment));
-        else if (action->objectName() == QString("ID_:/res/filterbody24x24.png"))
+        else if (action->objectName() == QString(
+            "ID_:/res/filterbody24x24.png"))
             action->setChecked(filer.CheckFlag(SubBody));
-        else if (action->objectName() == QString("ID_:/res/filterface24x24.png"))
+        else if (action->objectName() == QString(
+            "ID_:/res/filterface24x24.png"))
             action->setChecked(filer.CheckFlag(SubFace));
-        else if (action->objectName() == QString("ID_:/res/filteredge24x24.png"))
+        else if (action->objectName() == QString(
+            "ID_:/res/filteredge24x24.png"))
             action->setChecked(filer.CheckFlag(SubEdge));
-        else if (action->objectName() == QString("ID_:/res/filtervertex24x24.png"))
+        else if (action->objectName() == QString(
+            "ID_:/res/filtervertex24x24.png"))
             action->setChecked(filer.CheckFlag(SubVertex));
     }
 }
@@ -1023,13 +1032,17 @@ void ExplodeWidget::updateActionCheckFilter()
 //// ---------------------------------------------------------------------------------
 void ExplodeWidget::slotRenderTriggered(QAction* action)
 {
-    if (action->objectName() == QString("ID_:/res/renderMods/dimmedWireframe.png")){
+    if (action->objectName() == QString(
+        "ID_:/res/renderMods/dimmedWireframe.png")){
         graphicsView()->SetRenderMode(RenderMode::rm_ShadedWithEdges);
-    }else if (action->objectName() == QString("ID_:/res/renderMods/shaded.png")) {
+    }else if (action->objectName() == QString(
+        "ID_:/res/renderMods/shaded.png")) {
         graphicsView()->SetRenderMode(RenderMode::rm_Shaded);
-    }else if (action->objectName() == QString("ID_:/res/renderMods/wirefrm.png")) {
+    }else if (action->objectName() == QString(
+        "ID_:/res/renderMods/wirefrm.png")) {
         graphicsView()->SetRenderMode(RenderMode::rm_Wireframe);
-    }else if (action->objectName() == QString("ID_:/res/renderMods/hiddenremoved.png")) {
+    }else if (action->objectName() == QString(
+        "ID_:/res/renderMods/hiddenremoved.png")) {
         graphicsView()->SetRenderMode(RenderMode::rm_HiddenLinesRemoved);
     }
     update();
@@ -1278,6 +1291,8 @@ void ExplodeWidget::loadModel()
     }
     createScene();
     fillGeometryList();
+
+    QMessageBox::information(nullptr, "Успешно", "Файл успешно импортирован в приложение");
 }
 
 
@@ -1304,6 +1319,11 @@ void ExplodeWidget::saveModel()
         if (readRes != cnv_Success)
             vsnWarning("Model write error");
         QApplication::restoreOverrideCursor();
+
+        QString fileExtension = QFileInfo(fileName).suffix();
+        QString successMessage = QString("Файл успешно экспортирован в формате .%1").arg(fileExtension);
+
+        QMessageBox::information(nullptr, "Успешно", successMessage);
     }
 }
 

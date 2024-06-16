@@ -228,7 +228,6 @@ private:
     virtual void initializeGL();
     void loadFiles(const QStringList& files);
     void createScene();
-    void createSceneZarubin();
     void createSceneIP();
     void createSceneIU();
     void fillGeometryList();

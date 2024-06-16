@@ -98,7 +98,7 @@ void createXZWall(RPArray<MbContour>& _arrContours, double length2, double assor
     _arrContours.push_back(pContour);
 }
 
-SPtr<MbSolid> ParametricModelCreator::createOuterPipesGrid_004(double length2, double diametrY, double thickness, double t, double assortmentInnerTubes, double assortmentCamera, double thicknessCamera)
+SPtr<MbSolid> ParametricModelCreator::createOuterPipesGrid_004(double length2, double diametrY, double thickness, double t, double assortmentInnerTubes, double assortmentCamera, double thicknessCamera, double assemblyHeight)
 {
     const double DEG_TO_RAD = M_PI / 180.0;
 
@@ -133,9 +133,9 @@ SPtr<MbSolid> ParametricModelCreator::createOuterPipesGrid_004(double length2, d
     SolidSPtr pCylSolid;
     SpacePointsVector cylPnts;
 
-    cylPnts.push_back(MbCartPoint3D(-50, -183, 127));
-    cylPnts.push_back(MbCartPoint3D(-50, 183, 127));
-    cylPnts.push_back(MbCartPoint3D(-50, -183, 127 + diametrY / 2));
+    cylPnts.push_back(MbCartPoint3D(-50, -(assemblyHeight / 2 - 2), 127));
+    cylPnts.push_back(MbCartPoint3D(-50, assemblyHeight / 2 - 2, 127));
+    cylPnts.push_back(MbCartPoint3D(-50, -(assemblyHeight / 2 - 2), 127 + diametrY / 2));
 
     // Построение трубы
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, cylPnts, namesElSolid), pCylSolid);
@@ -158,6 +158,13 @@ SPtr<MbSolid> ParametricModelCreator::createOuterPipesGrid_004(double length2, d
     createYZWall(arrContours1, length2, assortmentCamera, thicknessCamera);
 
     MbSweptData sweptDataInnerCyl(*pPlaneYZ, arrContours1);
+    MbSolid* pInner;
+
+    ::RevolutionSolid(sweptDataInnerCyl, axis, revParms, operNames, cNames, pInner);
+
+    SolidSPtr pInnerSolid(pInner), pDifferentSolid;
+    ::BooleanResult(pMergeSolid, cm_Copy, pInnerSolid, cm_Copy, 
+        MbBooleanOperationParams(bo_Difference, false, operBoolNames), pDifferentSolid);
 
     MbVector3D dirX(1, 0, 0);
     MbVector3D dirY(0, 1, 0);
@@ -165,15 +172,6 @@ SPtr<MbSolid> ParametricModelCreator::createOuterPipesGrid_004(double length2, d
 
     MbSolid* pWallYZ;
     MbSolid* pWallXZ;
-
-    MbSolid* pInner;
-
-    ::RevolutionSolid(sweptDataInnerCyl, axis, revParms, operNames, cNames, pInner);
-
-    SolidSPtr pInnerSolid(pInner), pDifferentSolid;
-
-    // Первое вырезание
-    ::BooleanResult(pMergeSolid, cm_Copy, pInnerSolid, cm_Copy, MbBooleanOperationParams(bo_Difference, false, operBoolNames), pDifferentSolid);
 
     // Главная стенка YZ
     ::ExtrusionSolid(sweptDataInnerCyl, dirX, NULL, NULL, false, ExtrusionValues(0, 10), operNames, cNames, pWallYZ);
@@ -235,11 +233,11 @@ SPtr<MbSolid> ParametricModelCreator::createOuterPipesGrid_004(double length2, d
     SpacePointsVector extractCylPnts2;
 
     extractCylPnts.push_back(MbCartPoint3D(-50, 50, 127));
-    extractCylPnts.push_back(MbCartPoint3D(-50, 183, 127));
+    extractCylPnts.push_back(MbCartPoint3D(-50, assemblyHeight / 2 - 2, 127));
     extractCylPnts.push_back(MbCartPoint3D(-50, 50, 127 + (diametrY / 2 - thickness)));
 
     extractCylPnts2.push_back(MbCartPoint3D(-50, -50, 127));
-    extractCylPnts2.push_back(MbCartPoint3D(-50, -183, 127));
+    extractCylPnts2.push_back(MbCartPoint3D(-50, -(assemblyHeight / 2 - 2), 127));
     extractCylPnts2.push_back(MbCartPoint3D(-50, -50, 127 + (diametrY / 2 - thickness)));
 
     // Построение трубы

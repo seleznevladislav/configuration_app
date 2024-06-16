@@ -4,11 +4,9 @@ using namespace BuildMathModel;
 
 const double DEG_TO_RAD = M_PI / 180.0;
 
-SPtr<MbSolid> ParametricModelCreator::Zarubincreate_001_tubeTeploobmen(double Lk, double ttDiam, double ttThickness)
+SPtr<MbSolid> ParametricModelCreator::Zarubincreate_001_tubeTeploobmen(double Lt, double ttDiam, double ttThickness)
 {
     //Теплообменная
-    //TOZO: Вычислить нормальную длинутруб теплообменных (было 5000)
-    const double length = Lk+500;
     const double inner = ttDiam;
     const double outer = ttDiam + 2 * ttThickness;
 
@@ -19,7 +17,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_001_tubeTeploobmen(double Lk
     SpacePointsVector bigRadiusCylPnts;
 
     bigRadiusCylPnts.push_back(MbCartPoint3D(0, 0, 0));
-    bigRadiusCylPnts.push_back(MbCartPoint3D(0, 0, length));
+    bigRadiusCylPnts.push_back(MbCartPoint3D(0, 0, Lt));
     bigRadiusCylPnts.push_back(MbCartPoint3D(outer / 2, 0, 0));
 
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, bigRadiusCylPnts, blockNames), bigRadiusCyl);
@@ -27,7 +25,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_001_tubeTeploobmen(double Lk
     SpacePointsVector smallRadiusCylPnts;
 
     smallRadiusCylPnts.push_back(MbCartPoint3D(0, 0, 0));
-    smallRadiusCylPnts.push_back(MbCartPoint3D(0, 0, length));
+    smallRadiusCylPnts.push_back(MbCartPoint3D(0, 0, Lt));
     smallRadiusCylPnts.push_back(MbCartPoint3D(inner / 2, 0, 0));
 
     ::ElementarySolid(MbElementarySolidParams(et_Cylinder, smallRadiusCylPnts, blockNames), smallRadiusCyl);

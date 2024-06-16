@@ -2,21 +2,16 @@
 
 using namespace BuildMathModel;
 
-// TOZO: Необходимо избавиться от этой переменной thickness
-// TOZO: Необходима конфигурация опоры для 2 типа
-
 double thickness = -1;
 
 const double DEG_TO_RAD = M_PI / 180.0;
 
 SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora(double dV, double ktDiam, double ktThickness, double t, double visotaOpori, double shirinaOpori)
 {
-    // В зависимости от диаметра камеры выбираются след параметры:
-
     // Параметры стандартные, то есть при 600
     double depth = 200;
-    double high = 850;
-    double width = 750;
+    double high = visotaOpori;
+    double width = shirinaOpori;
 
     double minsa = 300;
 
@@ -32,10 +27,8 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora(double dV, double 
     double distanceP = 450;
     double distancePoint = (width - distanceP) / 2;
 
-    if (dV == 800.0) {
+    if (dV >= 800.0) {
         depth = 250;
-        high = 1070;
-        width = 976;
 
         minsa = 400;
 
@@ -52,7 +45,6 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora(double dV, double 
     }
 
     assemblyHeightTTOR = high; // Задаётся высота теплообменика, для дальнейшей организации элемента сборки в блок
-
 
     MbSNameMaker blockNames(1, MbSNameMaker::i_SideNone, 0);
 
@@ -102,7 +94,6 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_003_opora(double dV, double 
     flagsBool.InitBoolean(true);
     flagsBool.SetMergingFaces(true);
     flagsBool.SetMergingEdges(true);
-
 
     ::BooleanResult(pBlock, cm_Copy, innerLeftBlock, cm_Copy,
         MbBooleanOperationParams(bo_Difference, flagsBool, operBoolNames), pMergeLeftBlock);

@@ -130,7 +130,6 @@ void CreateSketcherResetka(RPArray<MbContour>& _arrContours, double ktDiam)
 
 SPtr<MbSolid> ParametricModelCreator::Zarubincreate_004_reshetkaKozhux(double ktDiam, double ktThickness, double t)
 {
-
     int index = 0;
 
     if (ktDiam < 219) { //ktDiam = 133
@@ -151,7 +150,6 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_004_reshetkaKozhux(double kt
 
     const double depth = Hb;
     const double radiusMal = (ktDiam + 2 * ktThickness) / 2;
-    // const double radiusMal = 143 / 2;
 
     MbSNameMaker blockNames(1, MbSNameMaker::i_SideNone, 0);
     MbSNameMaker operBoolNames(ct_BooleanSolid, MbSNameMaker::i_SideNone);

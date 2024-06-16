@@ -13,8 +13,7 @@ namespace BuildMathModel {
 
 	struct BuildParamsForHeatExchangerTTOR
 	{
-		std::string name;
-
+		std::string name;      // 1  - Наименование
 		double ttDiam;         // 2  - Диаметр теплообменных труб
 		double ttThickness;    // 3  - Толщина теплообменных труб
 		double ktDiam;         // 4  - Диаметр кожуховых труб
@@ -30,6 +29,10 @@ namespace BuildMathModel {
 		double l2;             // 14 - Расстояние между фланцем соединительным и опорой
 		double l3;             // 15 - Длина камеры
 		double t;              // 16 - Расстояние между трубами
+		double Lt;             // 17 - Длина теплообменных труб (L-l3-t+40(длина фланца))
+		bool turnOnStandart;   // 18 - Включить стд
+		bool simpleMode;       // 19 - Упрощенный режим
+		double widthFlanec;    // 20 - Ширина опоры
 	};
 	struct ConfigParams
 	{
@@ -89,22 +92,6 @@ namespace BuildMathModel {
 		double l3 = 6390;
 	};
 
-	/*
-	
-	struct ConfigParams_IU
-	{
-		std::string name;
-		double p;      //давление
-		double diam;   //внутренний диаметр кожуха
-		double Length; //длина кожуха
-		double D_Kam;  //внутренний диаметр камеры
-		double Kam_L;  //длина камеры
-		double S;      //толщина обечайки
-		double l;      //расстояния от эл днища до фланцев
-		double l2;
-		double l3;
-	};*/
-
 	struct data_fluidProperties {
 		std::string name;     // 0 - Наименование
 		double p;             // 1 - Плотность
@@ -116,30 +103,6 @@ namespace BuildMathModel {
 		double Pr;			  // 7 - Теплоёмкость
 	};
 
-
-	struct data_fluidPrs_IU_IP {
-		std::string name;
-		double density;    //плотность в кг/м3
-		double viscosity;  //вязкость (м2/c)
-		double c;          //теплоемкость
-	};
-
-	/*
-	//IU/IP нагреваемая среда (в трубах)
-	struct data_fluidPrs_N {
-		std::string name;
-		double density;    //плотность
-		double viscosity;  //вязкость
-	};
-
-	
-	//IU/IP греющая среда (межтруб)
-	struct data_fluidPrs_G {
-		std::string name;
-		double density;    //плотность
-		double viscosity;  //вязкость
-	};*/
-
 	struct data_materialProperties {
 		std::string name;				// 0 - Наименование
 		double tMaterial;               // 1 - При какой температуре коэффициентр теплопроводности
@@ -150,5 +113,12 @@ namespace BuildMathModel {
 		double d1_diam;				// 0 - Диаметр трубы внутри
 		double d2_diam;				// 1 - Диаметр трубы снаружи
 		double L_length;			// 4 - Длина трубы
+	};
+
+	struct data_fluidPrs_IU_IP {
+		std::string name;
+		double density;    //плотность в кг/м3
+		double viscosity;  //вязкость (м2/c)
+		double c;          //теплоемкость
 	};
 }

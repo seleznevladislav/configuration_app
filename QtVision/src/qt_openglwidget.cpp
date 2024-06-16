@@ -711,7 +711,7 @@ GraphicsViewPtr QtOpenGLSceneWidget::ptrGraphicsView() const
     return d.m_pGraphicsView;
 }
 
-// \ru Вернуть указатель на GraphicsView
+// \ru Вернуть указатель на сцену
 GraphicsView* QtOpenGLSceneWidget::graphicsView() const
 {
     VSN_D(const QtOpenGLSceneWidget);

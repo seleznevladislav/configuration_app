@@ -18,9 +18,9 @@ void CreateSketchIzgibBigf(RPArray<MbContour>& _arrContours, double ttDiam, doub
     _arrContours.push_back(new MbContour(*pCircleInt, true));
 }
 
-SPtr<MbSolid> ParametricModelCreator::Zarubincreate_012_curevedTubeBig(double ttDiam, double ttThickness, double visotaOpori, double t)
+SPtr<MbSolid> ParametricModelCreator::Zarubincreate_012_curevedTubeBig(double ttDiam, double ttThickness, double assemblyHeight, double t)
 {
-    double length = visotaOpori/2 - t/2; //half
+    double length = assemblyHeight / 2 - t / 2; // Половина высоты
     double radius = t/4;
 
     MbPlacement3D* plLine = new MbPlacement3D(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, 0, 1), MbCartPoint3D(0, 1, 0));

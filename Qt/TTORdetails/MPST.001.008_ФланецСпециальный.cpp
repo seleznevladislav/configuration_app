@@ -93,20 +93,8 @@ SolidSPtr HolyHole412(SolidSPtr* previus, int holes, double DiametrCircle, doubl
     return news;
 }
 
-void CreateSketcherFlanecTrubadif(RPArray<MbContour>& _arrContours, double ttDiam, double ttThickness)
+void CreateSketcherFlanecTrubadif(RPArray<MbContour>& _arrContours, double ttDiam, double ttThickness, int index)
 {
-    int index = 0;
-
-    // до размера d3
-     if (ttDiam <= 100) { //ttDiam = 89
-        index = 0;
-    }else if (ttDiam <= 116) { //ttDiam = 108
-        index = 1;
-    }else if (ttDiam <= 145) { //ttDiam = 133
-        index = 2;
-    }else if (ttDiam <= 170) { //ttDiam = 159
-        index = 3;
-    }
 
     // const double Dy = configurationZarubin[index].Dy;
 
@@ -122,7 +110,7 @@ void CreateSketcherFlanecTrubadif(RPArray<MbContour>& _arrContours, double ttDia
     const double h2 = configurationZarubin[index].h2;
     const double RADIUSB = 4;
 
-    SArray<MbCartPoint> arrPnts(100);
+    SArray<MbCartPoint> arrPnts(20);
     arrPnts.Add(MbCartPoint(dTruba / 2, 40));
     arrPnts.Add(MbCartPoint(dTruba / 2, 0));
     arrPnts.Add(MbCartPoint(D5 / 2, 0));
@@ -137,9 +125,6 @@ void CreateSketcherFlanecTrubadif(RPArray<MbContour>& _arrContours, double ttDia
     arrPnts.Add(MbCartPoint((dTruba + ttThickness * 2 + 16) / 2, 18));//центр
     arrPnts.Add(MbCartPoint((dTruba + ttThickness * 2 + 16) / 2 + RADIUSB * cos(ANG1), 18 + RADIUSB * sin(ANG1)));
     arrPnts.Add(MbCartPoint(dTruba / 2 + ttThickness, 40));
-
-
-
 
     MbLineSegment* pLine0 = new MbLineSegment(arrPnts[0], arrPnts[1]);
     MbLineSegment* pLine1 = new MbLineSegment(arrPnts[1], arrPnts[2]);
@@ -184,16 +169,16 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_008_FlanecSpecial(double ttD
     int index = 0;
 
     // до размера d3
-    if (ttDiam <= 100) { //ttDiam = 89
+    if (ttDiam < 100) { //ttDiam = 89
         index = 0;
     }
-    else if (ttDiam <= 116) { //ttDiam = 108
+    else if (ttDiam < 116) { //ttDiam = 108
         index = 1;
     }
-    else if (ttDiam <= 145) { //ttDiam = 133
+    else if (ttDiam < 145) { //ttDiam = 133
         index = 2;
     }
-    else if (ttDiam <= 170) { //ttDiam = 159
+    else if (ttDiam < 170) { //ttDiam = 159
         index = 3;
     }
 
@@ -206,7 +191,7 @@ SPtr<MbSolid> ParametricModelCreator::Zarubincreate_008_FlanecSpecial(double ttD
 
     // Создание образующей для тела выдавливания
     RPArray<MbContour> arrContours;
-    CreateSketcherFlanecTrubadif(arrContours, ttDiam, ttThickness);
+    CreateSketcherFlanecTrubadif(arrContours, ttDiam, ttThickness, index);
 
     //Плоскость
     MbPlane* pPlaneXY = new MbPlane(MbCartPoint3D(0, 0, 0), MbCartPoint3D(0, 1, 0), MbCartPoint3D(0, 0, 1));
