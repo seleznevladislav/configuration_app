@@ -271,6 +271,7 @@ void ExplodeManager::radiosTypeFromToggled(bool checked, int type)
 {
     if (checked)
     {
+        /*
         isCheckedManualType = type == 2 && (m_pExplodeWidget->m_pCurrentExchandger == 1 || m_pExplodeWidget->m_pCurrentExchandger == 2);
         
         m_comboConfigure->setDisabled(isCheckedManualType);
@@ -278,6 +279,16 @@ void ExplodeManager::radiosTypeFromToggled(bool checked, int type)
         if (m_pExplodeWidget->m_pCurrentExchandger == 2) {
             m_reconfigureButton->setDisabled(isCheckedManualType);
         }
+        */
+
+        isCheckedManualType = type == 2;
+
+        m_comboConfigure->setDisabled(isCheckedManualType);
+        m_warmParams->setDisabled(!isCheckedManualType);
+        if (m_pExplodeWidget->m_pCurrentExchandger != 1) {
+            m_reconfigureButton->setDisabled(isCheckedManualType);
+        }
+     
     }
     if (type == 2 && m_pExplodeWidget->m_pCurrentExchandger == 1) 
     {
@@ -420,6 +431,38 @@ void ExplodeManager::calculateThickness(QFormLayout* form) {
     m_lengthSpinBox->setDisabled(false);
     m_closestLengthButton->setDisabled(false);
     m_reconfigureButton->setDisabled(false);
+}
+
+void ExplodeManager::calculateThickness_IU_IP(QFormLayout* form) {
+    QComboBox* pressureComboBox =
+        qobject_cast<QComboBox*>(form->itemAt(1)->widget());
+    QDoubleSpinBox* innerThicknessSpinBox =
+        qobject_cast<QDoubleSpinBox*>(form->itemAt(3)->widget());
+    QDoubleSpinBox* tensionSpinBox =
+        qobject_cast<QDoubleSpinBox*>(form->itemAt(13)->widget());
+    QComboBox* corrosionComboBox =
+        qobject_cast<QComboBox*>(form->itemAt(15)->widget());
+
+
+    float pressure = pressureComboBox->currentData().toFloat();//давление
+    float Dy = innerThicknessSpinBox->value();//диаметр обечайки
+    float tension = tensionSpinBox->value();//допускаемое напряжение
+    int corrosion = corrosionComboBox->currentData().toInt();//поправка на коррозию
+
+    float h = Dy / 4;//высота выпуклой части днища
+    float d0 = 200;//диаметр отверстия на элл днище
+    float z = 1 - d0 / Dy;//коэффициент неукрепленного отверстия
+
+    mp_IU_s = ceil(pressure * Dy / (2 * 0.9 * tension - pressure) + corrosion);
+    mp_IU_s_ell = ceil(pressure * Dy / (4 * z * tension - pressure) + Dy / (2 * h) + corrosion);
+
+    QLineEdit* thicknessInnerKzh =
+        qobject_cast<QLineEdit*>(form->itemAt(19)->widget());
+    thicknessInnerKzh->setText(QString::number(mp_IU_s));
+
+    QLineEdit* thicknessElliptic =
+        qobject_cast<QLineEdit*>(form->itemAt(21)->widget());
+    thicknessElliptic->setText(QString::number(mp_IU_s_ell));
 }
 
 QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExchanger, QVBoxLayout* layout)
@@ -712,41 +755,67 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
         connect(m_closestLengthButton, &QToolButton::clicked, [=]() {
             ConfigParams foundElement = findClosestMatch(mp_dimCamera, m_lengthSpinBox->value(), "lengthK");
 
-            m_lengthSpinBox->setValue(foundElement.lengthK);
+            m_lengthSpinBox->setValue(foundElement.LENGTH);
             });
 
         break;
     }
     case 3:
     {
-        QDoubleSpinBox* pressureSpinBox = new QDoubleSpinBox;
-        //pressureSpinBox->setRange(2050, 7040); Можно задать диапозон вводимых значений
-        //pressureSpinBox->setSingleStep(50); Можжно задать шаг увелечения/уменьшения
-        //pressureSpinBox->setValue(2050); Инициализация числом
+        QComboBox* pressureComboBox = new QComboBox;
+        pressureComboBox->addItem(u8"1.6", 1.6);
+        pressureComboBox->addItem(u8"2.5", 2.5);
+        //pressureComboBox->addItem(u8"1.6", 4);
 
-        QLabel* pressureSpinBoxLabel = new QLabel(u8"Давление P:");
+        QLabel* pressureSpinBoxLabel = new QLabel(u8"Давление P, МПа:");
+
+        QDoubleSpinBox* tensionSpinBox = new QDoubleSpinBox;
+        QLabel* tensionSpinBoxLabel = new QLabel(u8"Допускаемое напряжение стали, МПа");
+        tensionSpinBox->setRange(50, 1000);//временно
+
+        QComboBox* corrosionComboBox = new QComboBox;
+        corrosionComboBox->addItem(u8"1", 1);
+        corrosionComboBox->addItem(u8"2", 2);
+        corrosionComboBox->addItem(u8"3", 3);
+        corrosionComboBox->addItem(u8"4", 4);
+        corrosionComboBox->addItem(u8"5", 5);
+        QLabel* corrosionComboBoxLabel = new QLabel(u8"Поправка на коррозию, мм:");
 
         QDoubleSpinBox* innerThicknessSpinBox = new QDoubleSpinBox;
-        QLabel* innerThicknessSpinBoxLabel = new QLabel(u8"Диаметр кожуха D, мм:");
+        QLabel* innerThicknessSpinBoxLabel = new QLabel(u8"Диаметр кожуха Д_в, мм:");
+        innerThicknessSpinBox->setRange(800, 2000);
+        innerThicknessSpinBox->setValue(800);
 
         QDoubleSpinBox* cameraThicknessSpinBox = new QDoubleSpinBox;
-        QLabel* cameraThicknessSpinBoxLabel = new QLabel(u8"Диаметр камеры D, мм:");
+        QLabel* cameraThicknessSpinBoxLabel = new QLabel(u8"Диаметр камеры D_K, мм:");
+        cameraThicknessSpinBox->setRange(500, 1100);
+        cameraThicknessSpinBox->setValue(500);
 
         QDoubleSpinBox* iSpinBox = new QDoubleSpinBox;
-        QLabel* iSpinBoxLabel = new QLabel(u8"I0");
+        QLabel* iSpinBoxLabel = new QLabel(u8"l (max: 600), мм");
+        iSpinBox->setRange(350, 600);
+        iSpinBox->setValue(350);
 
         QDoubleSpinBox* iSecondSpinBox = new QDoubleSpinBox;
-        QLabel* iSecondSpinBoxLabel = new QLabel(u8"I2");
+        QLabel* iSecondSpinBoxLabel = new QLabel(u8"l2 (max: 2000), мм");
+        iSecondSpinBox->setRange(1750, 2000);
+        iSecondSpinBox->setValue(1750);
 
         QDoubleSpinBox* iThirdSpinBox = new QDoubleSpinBox;
-        QLabel* iThirdSpinBoxLabel = new QLabel(u8"I3");
+        QLabel* iThirdSpinBoxLabel = new QLabel(u8"l3 (max: 6500), мм");
+        iThirdSpinBox->setRange(6390, 6500);
+        iThirdSpinBox->setValue(6390);
 
-        formLayout->addRow(pressureSpinBoxLabel, pressureSpinBox);
+
+
+        formLayout->addRow(pressureSpinBoxLabel, pressureComboBox);
         formLayout->addRow(innerThicknessSpinBoxLabel, innerThicknessSpinBox);
         formLayout->addRow(cameraThicknessSpinBoxLabel, cameraThicknessSpinBox);
         formLayout->addRow(iSpinBoxLabel, iSpinBox);
         formLayout->addRow(iSecondSpinBoxLabel, iSecondSpinBox);
         formLayout->addRow(iThirdSpinBoxLabel, iThirdSpinBox);
+        formLayout->addRow(tensionSpinBoxLabel, tensionSpinBox);
+        formLayout->addRow(corrosionComboBoxLabel, corrosionComboBox);
 
         QFrame* line = new QFrame;
         line->setFrameShape(QFrame::HLine);
@@ -754,18 +823,142 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
         line->setContentsMargins(0, 10, 0, 10);
         formLayout->addRow(line);
 
+        layout->addLayout(formLayout);
+
+
+        QPushButton* calculateThicknessButton = new QPushButton;
+        calculateThicknessButton->setText(u8"Расчитать толщину стенок");
+        calculateThicknessButton->setIcon(QIcon(":/res/calculate.png"));
+        calculateThicknessButton->setContentsMargins(0, 5, 0, 5);
+
+        formLayout->addRow(calculateThicknessButton);
+
+
+        QLineEdit* thicknessInnerKzh = new QLineEdit;
+        thicknessInnerKzh->setReadOnly(true);
+        QLabel* thicknessInnerKzhLabel = new QLabel(u8"Толщина стенок кожуха, мм:");
+
+        QLineEdit* thicknessElliptic = new QLineEdit;
+        thicknessElliptic->setReadOnly(true);
+        QLabel* thicknessEllipticLabel = new QLabel(u8"Толщина эллиптического днища, мм:");
+
+        formLayout->addRow(thicknessInnerKzhLabel, thicknessInnerKzh);
+        formLayout->addRow(thicknessEllipticLabel, thicknessElliptic);
+
+
+        connect(calculateThicknessButton, &QPushButton::clicked, [=]() {
+            mp_IU_p = pressureComboBox->currentData().toDouble();
+            mp_IU_D_Kzh = innerThicknessSpinBox->value();
+            mp_IU_D_Kam = cameraThicknessSpinBox->value();
+            mp_IU_D_l = iSpinBox->value();
+            mp_IU_D_l2 = iSecondSpinBox->value();
+            mp_IU_D_l3 = iThirdSpinBox->value();
+
+            if (checkValidate()) {
+                calculateThickness_IU_IP(formLayout);
+                m_reconfigureButton->setDisabled(false);
+            }
+
+        });
         break;
     }
     case 4:
     {
-        QDoubleSpinBox* pressureSpinBox = new QDoubleSpinBox;
-        //pressureSpinBox->setRange(2050, 7040); Можно задать диапозон вводимых значений
-        //pressureSpinBox->setSingleStep(50); Можжно задать шаг увелечения/уменьшения
-        //pressureSpinBox->setValue(2050); Инициализация числом
+        QComboBox* pressureComboBox = new QComboBox;
+        pressureComboBox->addItem(u8"1.6", 1.6);
+        pressureComboBox->addItem(u8"2.5", 2.5);
+        //pressureComboBox->addItem(u8"1.6", 4);
 
-        QLabel* pressureSpinBoxLabel = new QLabel(u8"Давление P:");
+        QLabel* pressureSpinBoxLabel = new QLabel(u8"Давление P, МПа:");
 
-        formLayout->addRow(pressureSpinBoxLabel, pressureSpinBox);
+        QDoubleSpinBox* tensionSpinBox = new QDoubleSpinBox;
+        QLabel* tensionSpinBoxLabel = new QLabel(u8"Допускаемое напряжение стали, МПа");
+        tensionSpinBox->setRange(50, 1000);//временно
+
+        QComboBox* corrosionComboBox = new QComboBox;
+        corrosionComboBox->addItem(u8"1", 1);
+        corrosionComboBox->addItem(u8"2", 2);
+        corrosionComboBox->addItem(u8"3", 3);
+        corrosionComboBox->addItem(u8"4", 4);
+        corrosionComboBox->addItem(u8"5", 5);
+        QLabel* corrosionComboBoxLabel = new QLabel(u8"Поправка на коррозию, мм:");
+
+        QDoubleSpinBox* innerThicknessSpinBox = new QDoubleSpinBox;
+        QLabel* innerThicknessSpinBoxLabel = new QLabel(u8"Диаметр кожуха Dv, мм:");
+        innerThicknessSpinBox->setRange(800, 2000);
+        innerThicknessSpinBox->setValue(800);
+
+        QDoubleSpinBox* cameraThicknessSpinBox = new QDoubleSpinBox;
+        QLabel* cameraThicknessSpinBoxLabel = new QLabel(u8"Диаметр камеры D, мм:");
+        cameraThicknessSpinBox->setRange(500, 1100);
+        cameraThicknessSpinBox->setValue(500);
+
+        QDoubleSpinBox* iSpinBox = new QDoubleSpinBox;
+        QLabel* iSpinBoxLabel = new QLabel(u8"I (max: 600), мм");
+        iSpinBox->setRange(350, 600);
+        iSpinBox->setValue(350);
+
+        QDoubleSpinBox* iSecondSpinBox = new QDoubleSpinBox;
+        QLabel* iSecondSpinBoxLabel = new QLabel(u8"I2 (max: 2000), мм");
+        iSecondSpinBox->setRange(1750, 2000);
+        iSecondSpinBox->setValue(1750);
+
+        QDoubleSpinBox* iThirdSpinBox = new QDoubleSpinBox;
+        QLabel* iThirdSpinBoxLabel = new QLabel(u8"I3 (max: 6500), мм");
+        iThirdSpinBox->setRange(6390, 6500);
+        iThirdSpinBox->setValue(6390);
+
+        formLayout->addRow(pressureSpinBoxLabel, pressureComboBox);
+        formLayout->addRow(innerThicknessSpinBoxLabel, innerThicknessSpinBox);
+        formLayout->addRow(cameraThicknessSpinBoxLabel, cameraThicknessSpinBox);
+        formLayout->addRow(iSpinBoxLabel, iSpinBox);
+        formLayout->addRow(iSecondSpinBoxLabel, iSecondSpinBox);
+        formLayout->addRow(iThirdSpinBoxLabel, iThirdSpinBox);
+        formLayout->addRow(tensionSpinBoxLabel, tensionSpinBox);
+        formLayout->addRow(corrosionComboBoxLabel, corrosionComboBox);
+
+        QFrame* line = new QFrame;
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Sunken);
+        line->setContentsMargins(0, 10, 0, 10);
+        formLayout->addRow(line);
+
+        layout->addLayout(formLayout);
+
+
+        QPushButton* calculateThicknessButton = new QPushButton;
+        calculateThicknessButton->setText(u8"Расчитать толщину стенок");
+        calculateThicknessButton->setIcon(QIcon(":/res/calculate.png"));
+        calculateThicknessButton->setContentsMargins(0, 5, 0, 5);
+
+        formLayout->addRow(calculateThicknessButton);
+
+        QLineEdit* thicknessInnerKzh = new QLineEdit;
+        thicknessInnerKzh->setReadOnly(true);
+        QLabel* thicknessInnerKzhLabel = new QLabel(u8"Толщина стенок кожуха, мм:");
+
+        QLineEdit* thicknessElliptic = new QLineEdit;
+        thicknessElliptic->setReadOnly(true);
+        QLabel* thicknessEllipticLabel = new QLabel(u8"Толщина эллиптического днища, мм:");
+
+        formLayout->addRow(thicknessInnerKzhLabel, thicknessInnerKzh);
+        formLayout->addRow(thicknessEllipticLabel, thicknessElliptic);
+
+        connect(calculateThicknessButton, &QPushButton::clicked, [=]() {
+
+            mp_IP_p = pressureComboBox->currentData().toDouble();
+            mp_IP_D_Kzh = innerThicknessSpinBox->value();
+            mp_IP_D_Kam = cameraThicknessSpinBox->value();
+            mp_IP_D_l = iSpinBox->value();
+            mp_IP_D_l2 = iSecondSpinBox->value();
+            mp_IP_D_l3 = iThirdSpinBox->value();
+
+            if (checkValidate()) {
+                calculateThickness_IU_IP(formLayout);
+                m_reconfigureButton->setDisabled(false);
+            }
+
+        });
 
         break;
     }
@@ -1428,8 +1621,8 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
                 const ConfigParams params = isCheckedManualType
                     ? manualTTRMParams
                     : dataTTRM[technicalIndex > 0 ? technicalIndex : 0];
-
-               if (params.assortmentInnerTubes < 0)
+                
+                if (params.assortmentInnerTubes < 0)
                 {
                     QString* text =
                         new QString(u8"Нажмите на кнопку \"Перестроить теплообменник\" для корректного выполнения расчётов!");
@@ -1555,25 +1748,1058 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
             m_calculationTab->setLayout(formLayout);
             break;
         }
-        case 3: //ExplodeWidget::IP
-        {
-            m_vLayoutCalculationTabIP = new QVBoxLayout();
-
-            m_calculationTab->setLayout(m_vLayoutCalculationTabIP);
-            break;
-        }
-        case 4: //ExplodeWidget::IU
+        case 3: //ExplodeWidget::IU
         {
 
             m_vLayoutCalculationTabIU = new QVBoxLayout();
 
-            m_calculationTab->setLayout(m_vLayoutCalculationTabIU);
+            QFormLayout* formLayout = new QFormLayout;
+
+            QLabel* headInfoLabel = new QLabel(u8"");
+            QLabel* headHLabel = new QLabel(u8"Трубное пространство");
+            QLabel* headCLabel = new QLabel(u8"Межтрубное пространство");
+            QWidget* infoContainer = createPairWidget(headHLabel, headCLabel);
+
+            QLabel* typeLabel = new QLabel(u8"Тип:");
+            QComboBox* hotFluidComboBox = new QComboBox();
+            hotFluidComboBox->addItem(u8"Вода");
+            hotFluidComboBox->addItem(u8"Ацетон");
+            hotFluidComboBox->addItem(u8"Бензин");
+            hotFluidComboBox->addItem(u8"Спирт этиловый");
+            hotFluidComboBox->addItem(u8"Нефтяное масло");
+
+            QComboBox* coldFluidComboBox = new QComboBox();
+            coldFluidComboBox->addItem(u8"Аммиак");
+            coldFluidComboBox->addItem(u8"Пропан");
+            coldFluidComboBox->addItem(u8"Пропеллен");
+            coldFluidComboBox->addItem(u8"Азот");
+            coldFluidComboBox->addItem(u8"Диоксид углерода");
+
+            QWidget* typeContainer = createPairWidget(hotFluidComboBox, coldFluidComboBox);
+            // для гидравлического 
+            QLabel* densityEntranceLabel = new QLabel(u8"Плотность среды на входе, кг/м\xB3:");
+            QDoubleSpinBox* densityEntranceHotSpinBox = new QDoubleSpinBox;
+            densityEntranceHotSpinBox->setRange(500, 2000);
+            densityEntranceHotSpinBox->setSingleStep(0.1);
+            QDoubleSpinBox* densityEntranceColdSpinBox = new QDoubleSpinBox;
+            densityEntranceColdSpinBox->setSingleStep(0.1);
+            densityEntranceColdSpinBox->setRange(0, 10);
+            QWidget* densityEntranceContainer = createPairWidget(densityEntranceHotSpinBox, densityEntranceColdSpinBox);
+
+
+            QLabel* densityExitLabel = new QLabel(u8"Плотность среды на выходе, кг/м\xB3:");
+            QDoubleSpinBox* densityExitHotSpinBox = new QDoubleSpinBox;
+            densityExitHotSpinBox->setRange(500, 2000);
+            densityExitHotSpinBox->setSingleStep(0.1);
+            QDoubleSpinBox* densityExitColdSpinBox = new QDoubleSpinBox;
+            densityExitColdSpinBox->setRange(0, 10);
+            densityExitColdSpinBox->setSingleStep(0.1);
+            QWidget* densityExitContainer = createPairWidget(densityExitHotSpinBox, densityExitColdSpinBox);
+
+            QLabel* speedEntranceLabel = new QLabel(u8"Скорость среды на входе (max: 7), м/с");
+            QDoubleSpinBox* speedEntranceHotSpinBox = new QDoubleSpinBox;
+            speedEntranceHotSpinBox->setSingleStep(0.1);
+            speedEntranceHotSpinBox->setRange(0, 7);
+            QDoubleSpinBox* speedEntranceColdSpinBox = new QDoubleSpinBox;
+            speedEntranceColdSpinBox->setSingleStep(0.1);
+            speedEntranceColdSpinBox->setRange(0, 7);
+            QWidget* speedEntranceContainer = createPairWidget(speedEntranceHotSpinBox, speedEntranceColdSpinBox);
+
+            QLabel* speedExitLabel = new QLabel(u8"Скорость среды на выходе (max: 10), м/с");
+            QDoubleSpinBox* speedExitHotSpinBox = new QDoubleSpinBox;
+            speedExitHotSpinBox->setSingleStep(0.1);
+            speedExitHotSpinBox->setRange(0, 10);
+            QDoubleSpinBox* speedExitColdSpinBox = new QDoubleSpinBox;
+            speedExitColdSpinBox->setSingleStep(0.1);
+            speedExitColdSpinBox->setRange(0, 10);
+            QWidget* speedExitContainer = createPairWidget(speedExitHotSpinBox, speedExitColdSpinBox);
+
+            // для теплового ! 
+            QLabel* temperatureEntranceLabel = new QLabel(u8"Температура среды на входе, ⁰С");
+            QDoubleSpinBox* temperatureEntranceHotSpinBox = new QDoubleSpinBox;
+            temperatureEntranceHotSpinBox->setRange(0, 150);
+            temperatureEntranceHotSpinBox->setSingleStep(0.1);
+            QDoubleSpinBox* temperatureEntranceColdSpinBox = new QDoubleSpinBox;
+            temperatureEntranceColdSpinBox->setRange(0, 150);
+            temperatureEntranceHotSpinBox->setSingleStep(0.1);
+            QWidget* temperatureEntranceContainer = createPairWidget(temperatureEntranceHotSpinBox, temperatureEntranceColdSpinBox);
+
+            QLabel* temperatureExitLabel = new QLabel(u8"Температура среды на выходе,⁰С");
+            QDoubleSpinBox* temperatureExitHotSpinBox = new QDoubleSpinBox;
+            temperatureExitHotSpinBox->setRange(0, 150);
+            temperatureExitHotSpinBox->setSingleStep(0.1);
+            QDoubleSpinBox* temperatureExitColdSpinBox = new QDoubleSpinBox;
+            temperatureExitColdSpinBox->setSingleStep(0.1);
+            temperatureExitColdSpinBox->setRange(0, 150);
+            QWidget* temperatureExitContainer = createPairWidget(temperatureExitHotSpinBox, temperatureExitColdSpinBox);
+
+            QLabel* consumptionColdLabel = new QLabel(u8"Массовый расход нагреваемого теплоносителя (max: 10), кг/с");
+            QDoubleSpinBox* consumptionColdSpinBox = new QDoubleSpinBox;
+            consumptionColdSpinBox->setSingleStep(0.1);
+            consumptionColdSpinBox->setRange(2, 10);
+
+            densityEntranceHotSpinBox->setValue(870.);
+            densityEntranceColdSpinBox->setValue(0.99);
+            densityExitHotSpinBox->setValue(899.);
+            densityExitColdSpinBox->setValue(0.87);
+            speedEntranceHotSpinBox->setValue(6);
+            speedEntranceColdSpinBox->setValue(4);
+            speedExitHotSpinBox->setValue(7);
+            speedExitColdSpinBox->setValue(5);
+            temperatureEntranceHotSpinBox->setValue(120);
+            temperatureEntranceColdSpinBox->setValue(50);
+            temperatureExitHotSpinBox->setValue(60);
+            temperatureExitColdSpinBox->setValue(70);
+            consumptionColdSpinBox->setValue(3);
+
+
+            QPushButton* calculationButton = new QPushButton(u8"Выполнить расчёт");
+
+            QLabel* reinoldsLabel = new QLabel(u8"Число Рейнольдса, Re:");
+            QLineEdit* reinoldsHEdit = new QLineEdit;
+            reinoldsHEdit->setReadOnly(true);
+            QLineEdit* reinoldsCEdit = new QLineEdit;
+            reinoldsCEdit->setReadOnly(true);
+            QWidget* reinoldsContainer = createPairWidget(reinoldsHEdit, reinoldsCEdit);
+
+            QLabel* squareSectionLabel = new QLabel(u8"Площадь поперечного сечения корпуса, м\xB2:");
+            QLineEdit* squareSectionEdit = new QLineEdit;
+            squareSectionEdit->setReadOnly(true);
+
+            QLabel* squareInterTubeLabel = new QLabel(u8"Площадь межтрубного пространства, м\xB2:");
+            QLineEdit* squareInterTubeEdit = new QLineEdit;
+            squareInterTubeEdit->setReadOnly(true);
+
+            QLabel* speedInterTubeLabel = new QLabel(u8"Скорость воды в межтрубном пространстве, м/c:");
+            QLineEdit* speedInterTubeEdit = new QLineEdit;
+            speedInterTubeEdit->setReadOnly(true);
+
+            QLabel* resistanceCoefficientLabel = new QLabel(u8"Коэффициент сопротивления трения, λ:");
+            QLineEdit* resistanceCoefficientHotEdit = new QLineEdit;
+            resistanceCoefficientHotEdit->setReadOnly(true);
+            QLineEdit* resistanceCoefficientColdEdit = new QLineEdit;
+            resistanceCoefficientColdEdit->setReadOnly(true);
+            QWidget* resistanceCoefficientContainer = createPairWidget(resistanceCoefficientHotEdit, resistanceCoefficientColdEdit);
+
+            QLabel* frictionPressureLabel = new QLabel(u8"Потери давления на трение, ∆Pтр:");
+            QLineEdit* frictionPressureHotEdit = new QLineEdit;
+            frictionPressureHotEdit->setReadOnly(true);
+            QLineEdit* frictionPressureColdEdit = new QLineEdit;
+            frictionPressureColdEdit->setReadOnly(true);
+            QWidget* frictionPressureContainer = createPairWidget(frictionPressureHotEdit, frictionPressureColdEdit);
+
+            QLabel* localResistancePressureLabel = new QLabel(u8"Потери давления в местных сопротивлениях, ∆Pм:");
+            QLineEdit* localResistanceHotEdit = new QLineEdit;
+            localResistanceHotEdit->setReadOnly(true);
+            QLineEdit* localResistanceColdEdit = new QLineEdit;
+            localResistanceColdEdit->setReadOnly(true);
+            QWidget* localResistancePressureContainer = createPairWidget(localResistanceHotEdit, localResistanceColdEdit);
+
+            QLabel* accelerationFlowPressureLabel = new QLabel(u8"Потери при ускорении потока, ∆Pу:");
+            QLineEdit* accelerationFlowHotEdit = new QLineEdit;
+            accelerationFlowHotEdit->setReadOnly(true);
+            QLineEdit* accelerationFlowColdEdit = new QLineEdit;
+            accelerationFlowColdEdit->setReadOnly(true);
+            QWidget* accelerationFlowPressureContainer = createPairWidget(accelerationFlowHotEdit, accelerationFlowColdEdit);
+
+            QLabel* pressureDropLabel = new QLabel(u8"Перепад давления, ∆Pг:");
+            QLineEdit* pressureDropHotEdit = new QLineEdit;
+            pressureDropHotEdit->setReadOnly(true);
+            QLineEdit* pressureDropColdEdit = new QLineEdit;
+            pressureDropColdEdit->setReadOnly(true);
+            QWidget* pressureDropContainer = createPairWidget(pressureDropHotEdit, pressureDropColdEdit);
+
+            QLabel* fullPressureLabel = new QLabel(u8"Полное давления, ∆P:");
+            QLineEdit* fullPressureHotEdit = new QLineEdit;
+            fullPressureHotEdit->setReadOnly(true);
+            QLineEdit* fullPressureColdEdit = new QLineEdit;
+            fullPressureColdEdit->setReadOnly(true);
+            QWidget* fullPressureContainer = createPairWidget(fullPressureHotEdit, fullPressureColdEdit);
+
+            QLabel* averageTemperatureLabel = new QLabel(u8"Средняя температура, ⁰С:");
+            QLineEdit* averageTemperatureHotEdit = new QLineEdit;
+            averageTemperatureHotEdit->setReadOnly(true);
+            QLineEdit* averageTemperatureColdEdit = new QLineEdit;
+            averageTemperatureColdEdit->setReadOnly(true);
+            QWidget* averageTemperatureContainer = createPairWidget(averageTemperatureHotEdit, averageTemperatureColdEdit);
+
+            QLabel* heatLabel = new QLabel(u8"Количество теплоты, Дж:");
+            QLineEdit* heatEdit = new QLineEdit;
+            heatEdit->setReadOnly(true);
+
+            QLabel* consumptionHotLabel = new QLabel(u8"Массовый расход греющего теплоносителя, кг/с:");
+            QLineEdit* consumptionHotEdit = new QLineEdit;
+            consumptionHotEdit->setReadOnly(true);
+
+
+            formLayout->addRow(headInfoLabel, infoContainer);
+            formLayout->addRow(typeLabel, typeContainer);
+            formLayout->addRow(densityEntranceLabel, densityEntranceContainer);
+            formLayout->addRow(densityExitLabel, densityExitContainer);
+            formLayout->addRow(speedEntranceLabel, speedEntranceContainer);
+            formLayout->addRow(speedExitLabel, speedExitContainer);
+            formLayout->addRow(temperatureEntranceLabel, temperatureEntranceContainer);
+            formLayout->addRow(temperatureExitLabel, temperatureExitContainer);
+            formLayout->addRow(consumptionColdLabel, consumptionColdSpinBox);
+            formLayout->addRow(calculationButton);
+            formLayout->addRow(reinoldsLabel, reinoldsContainer);
+            formLayout->addRow(squareSectionLabel, squareSectionEdit);
+            formLayout->addRow(squareInterTubeLabel, squareInterTubeEdit);
+            formLayout->addRow(speedInterTubeLabel, speedInterTubeEdit);
+            formLayout->addRow(resistanceCoefficientLabel, resistanceCoefficientContainer);
+            formLayout->addRow(frictionPressureLabel, frictionPressureContainer);
+            formLayout->addRow(localResistancePressureLabel, localResistancePressureContainer);
+            formLayout->addRow(accelerationFlowPressureLabel, accelerationFlowPressureContainer);
+            formLayout->addRow(pressureDropLabel, pressureDropContainer);
+            formLayout->addRow(fullPressureLabel, fullPressureContainer);
+            formLayout->addRow(averageTemperatureLabel, averageTemperatureContainer);
+            formLayout->addRow(heatLabel, heatEdit);
+            formLayout->addRow(consumptionHotLabel, consumptionHotEdit);
+
+
+            connect(calculationButton, &QPushButton::clicked, [=]() {
+                //индексы сред
+                const int hotFluidIndex = hotFluidComboBox->currentIndex();
+                const int coldFluidIndex = coldFluidComboBox->currentIndex() + 5;     //чтобы в одной структуре хранить
+
+                double temp1_hot = temperatureEntranceHotSpinBox->value();//температура на входе
+                double temp2_hot = temperatureExitHotSpinBox->value();//температура на выходе
+                double temp1_cold = temperatureEntranceColdSpinBox->value();//температура на входе
+                double temp2_cold = temperatureExitColdSpinBox->value();//температура на выходе
+
+
+                if (temp1_hot < temp1_cold)
+                {
+                    QString* text = new QString(u8"Температура теплоносителя в межтрубном пространстве на входе должна быть меньше, чем в трубах на входе.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (temp1_hot < temp2_hot)
+                {
+                    QString* text = new QString(u8"Температура теплоносителя в трубах на входе должна быть больше, чем на выходе.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (temp1_cold > temp2_cold)
+                {
+                    QString* text = new QString(u8"Температура теплоносителя в межтрубном пространстве на входе должна быть меньше, чем на выходе.");
+                    createWarning(text);
+
+                    return;
+                }
+
+
+                if (temp1_hot <= 0)
+                {
+                    QString* text = new QString(u8"Температура теплоносителя в трубном пространстве на входе должна быть больше 0.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                //средняя температура
+                double temp_hot_av = (temp1_hot + temp2_hot) / 2;
+                double temp_cold_av = (temp1_cold + temp2_cold) / 2;
+                //индекс температуры
+                int temp_hot_index = round(temp_hot_av / 10);
+                int temp_cold_index = round(temp_cold_av / 10);
+
+                //определение какую структура использовать: типовую или пользовательскую
+                const int technicalIndex = m_comboConfigure->currentIndex();
+                const ConfigParams_IU params = isCheckedManualType
+                    ? manualIUParams
+                    : dataIU[technicalIndex > 0 ? technicalIndex : 0];
+
+                int n;//количество труб
+                double delta_h_hot;//разница уровней входа и выхода теплоносителя в систему
+                if ((500 <= params.D_Kam) && (params.D_Kam < 600)) {
+                    n = 208;
+                    delta_h_hot = 884. / 1000;//в метрах
+                }
+                else if ((600 <= params.D_Kam) && (params.D_Kam < 700)) {
+                    n = 310;
+                    delta_h_hot = 984. / 1000;//м
+                }
+                else if ((700 <= params.D_Kam) && (params.D_Kam < 800)) {
+                    n = 452;
+                    delta_h_hot = 1088. / 1000;
+                }
+                else if ((800 <= params.D_Kam) && (params.D_Kam < 900)) {
+                    n = 590;
+                    delta_h_hot = 1188. / 1000;
+                }
+                else if ((900 <= params.D_Kam) && (params.D_Kam < 1000)) {
+                    n = 778;
+                    delta_h_hot = 1332. / 1000;
+                }
+                else  if ((1000 <= params.D_Kam) && (params.D_Kam < 1100)) {
+                    n = 980;
+                    delta_h_hot = 1392. / 1000;
+                }
+                else if ((1100 <= params.D_Kam) && (params.D_Kam < 1200)) {
+                    n = 1210;
+                    delta_h_hot = 1492. / 1000;
+                }
+                else if (1200 <= params.D_Kam) {
+                    n = 1466;
+                    delta_h_hot = 1694. / 1000;
+                }
+
+                //считаем число рейнольдса
+                double d = 20. / 1000.; //диаметр труб в метрах
+                double density_hot = fluidDensity_IU_IP[hotFluidIndex][temp_hot_index];//плотность в кг/м3
+                double density_cold = fluidDensity_IU_IP[coldFluidIndex][temp_cold_index];//плотность в кг/м3
+                double capacity_hot = fluidsProperties_IU_IP[hotFluidIndex].c; //теплоемкость греющей среды
+                double capacity_cold = fluidsProperties_IU_IP[coldFluidIndex].c;//теплоемколсть нагреваемой среды
+
+                double Gr_cold = consumptionColdSpinBox->value(); //расход теплоносителя в кг/c
+
+                float N = 0.97; //коэффициент потери теплоты в окр.среду
+
+                double Q = (Gr_cold * capacity_cold * (temp2_cold - temp1_cold)) / 1000;
+                double Gr_hot = Q * 1000 / (capacity_hot * (temp1_hot - temp2_hot) * N); //расход теплоносителя, будет считаться
+                double viscosity_hot = fluidViscocity_IU_IP[hotFluidIndex][temp_hot_index] * pow(10, -6); // вязкость
+                double viscosity_cold = fluidViscocity_IU_IP[coldFluidIndex][temp_cold_index] * pow(10, -6); // вязкость
+
+                //площадь поперечного сечения корпуса
+                double Fd = M_PI * pow(params.diam / 1000., 2) / 4;
+                //площадь, занятая трубами
+                double fm = M_PI * pow(d, 2) * n / 4;
+                //площадь межтрубного пространства
+                double f1 = Fd - fm;
+
+                //скорость среды в межтрубном пространстве
+                double w_cold = Gr_cold / (f1 * density_cold);
+                //эквивалентный диаметр межтр пространства
+                double d_e_cold = 4. * f1 / (M_PI * (params.diam / 1000. + n * d));
+                //число Рейнольдса в межтрубном пространстве
+                double Re_cold = w_cold * d_e_cold / viscosity_cold;
+                //скорость воды в трубном пространстве
+                double w_hot = Gr_hot / (fm * density_hot);
+                //число Рейнольдса в трубном пространстве
+                double Re_hot = w_hot * d / viscosity_hot;
+
+
+
+                double v1_hot = speedEntranceHotSpinBox->value(); // скорость на входе
+                double v2_hot = speedExitHotSpinBox->value(); // скорость на выходе
+                double v1_cold = speedEntranceColdSpinBox->value(); // скорость на входе
+                double v2_cold = speedExitColdSpinBox->value(); // скорость на выходе
+                double density1_hot = densityEntranceHotSpinBox->value(); // плотность на входе 
+                double density2_hot = densityExitHotSpinBox->value(); //плотность на выходе
+                double density1_cold = densityEntranceColdSpinBox->value(); // плотность на входе 
+                double density2_cold = densityExitColdSpinBox->value(); //плотность на выходе
+
+                if (v2_hot < v1_hot)
+                {
+                    QString* text = new QString(u8"Скорость теплоносителя в трубном пространстве на выходе должна быть больше, чем на входе.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (v2_cold < v1_cold)
+                {
+                    QString* text = new QString(u8"Скорость теплоносителя в межтрубном пространстве на выходе должна быть больше, чем на входе.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (density1_hot > density2_hot)
+                {
+                    QString* text = new QString(u8"Плотность теплоносителя в трубном пространстве на входе должна быть меньше, чем на выходе.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (density1_cold < density2_cold)
+                {
+                    QString* text = new QString(u8"Плотность теплоносителя в межтрубном пространстве на входе должна быть больше, чем на выходе.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (v2_hot <= 0)
+                {
+                    QString* text = new QString(u8"Скорость теплоносителя в трубном пространстве на выходе должна быть больше 0.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (v1_hot <= 0)
+                {
+                    QString* text = new QString(u8"Скорость теплоносителя в трубном пространстве на входе должна быть больше 0.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (v2_cold <= 0)
+                {
+                    QString* text = new QString(u8"Скорость теплоносителя в межтрубном пространстве на выходе должна быть больше 0.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (v1_cold <= 0)
+                {
+                    QString* text = new QString(u8"Скорость теплоносителя в межтрубном пространстве на входе должна быть больше 0.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (density1_cold <= 0)
+                {
+                    QString* text = new QString(u8"Плотность теплоносителя в межтрубном пространстве на входе должна быть больше 0.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (density2_cold <= 0)
+                {
+                    QString* text = new QString(u8"Плотность теплоносителя в межтрубном пространстве на выходе должна быть больше 0.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (density1_hot <= 0)
+                {
+                    QString* text = new QString(u8"Плотность теплоносителя  в трубном пространстве на входе должна быть больше 0.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (density2_hot <= 0)
+                {
+                    QString* text = new QString(u8"Плотность теплоносителя в трубном пространстве на выходе должна быть больше 0.");
+                    createWarning(text);
+
+                    return;
+                }
+
+
+
+
+                double v_sr_hot = (v1_hot + v2_hot) / 2; //средняя скорость 
+                double v_sr_cold = (v1_cold + v2_cold) / 2; //средняя скорость 
+
+
+
+
+                //double Re_hot = v_sr_hot * d / viscosity_hot;
+
+                double L = 6000. / 1000. * n; //суммарная длина трубок
+                //double d_v = ; //внутренний диаметр трубок
+                double density_atm = 1.2754; //плотность атмосферного воздуха
+                 //разница уровней входа и выхода теплоносителя в систему
+                double delta_h_cold = (380 + params.diam) / 1000; //разница уровней входа и выхода теплоносителя в систему, 380 - сумма высот фланцев
+                double lambda_cold = 1 / pow((1.8 * log(Re_cold) - 1.5), 2); //коэффициент сопротивления трения (логарифм надо исправить!)
+
+                double e = 3.5;//коэффициент местного сопротивления
+
+                double Pt_cold = lambda_cold * L * pow(v_sr_cold, 2) * density1_cold / (2 * d_e_cold); //потери на трение d->d_v
+                double Pm_cold = e * pow(v_sr_cold, 2) * density_cold / 2; //потери в местных сопротивлениях
+                double Py_cold = (density2_cold * v2_cold - density1_cold * v1_cold); //потери при ускорении потока
+                double Pg_cold = (density1_cold - density_atm) * -delta_h_cold; //перепад давления
+                double P_cold = Pt_cold + Pm_cold + Py_cold + Pg_cold; //полное давление
+
+
+                //коэффициент сопротивления трения
+                double lambda_hot = 1 / pow((1.8 * log(Re_hot) - 1.5), 2);
+                //потери на трение
+                double Pt_hot = (lambda_hot * L * pow(v_sr_hot, 2) * density1_hot /
+                    (2 * (params.diam / 1000))) / pow(10, 6);
+                //потери в местных сопротивлениях
+                double Pm_hot = (5.5 * pow(v_sr_hot, 2) * density_hot / 2) / pow(10, 6);
+                //потери при ускорении потока
+                double Py_hot = (density2_hot * v2_hot - density1_hot * v1_hot) / pow(10, 6);
+                //перепад давления
+                double Pg_hot = ((density1_hot - density_atm) * delta_h_hot) / pow(10, 6);
+                //полное давление
+                double P_hot = Pt_hot + Pm_hot + Py_hot + Pg_hot;
+
+
+                reinoldsHEdit->setText(QString::number(Re_hot));
+                reinoldsCEdit->setText(QString::number(Re_cold));
+                squareSectionEdit->setText(QString::number(Fd) + u8" м\xB2");//Площадь поперечного сечения корпуса
+                squareInterTubeEdit->setText(QString::number(f1) + u8" м\xB2");//Площадь межтрубного пространства
+                speedInterTubeEdit->setText(QString::number(w_cold) + u8" м/c");//Скорость воды в межтрубном пространстве
+                resistanceCoefficientHotEdit->setText(QString::number(lambda_hot) + u8" ");//Коэффициент сопротивления трения
+                resistanceCoefficientColdEdit->setText(QString::number(lambda_cold) + u8" ");
+                frictionPressureHotEdit->setText(QString::number(Pt_hot) + u8" МПа");//Потери давления на трение
+                frictionPressureColdEdit->setText(QString::number(Pt_cold) + u8" Па");//
+                localResistanceHotEdit->setText(QString::number(Pm_hot) + u8" МПа");//Потери давления в местных сопротивлениях
+                localResistanceColdEdit->setText(QString::number(Pm_cold) + u8" Па");
+                accelerationFlowHotEdit->setText(QString::number(Py_hot) + u8" МПа");//Потери при ускорении потока
+                accelerationFlowColdEdit->setText(QString::number(Py_cold) + u8" Па");
+                pressureDropHotEdit->setText(QString::number(Pg_hot) + u8" МПа");//Перепад давления
+                pressureDropColdEdit->setText(QString::number(Pg_cold) + u8" Па");
+                fullPressureHotEdit->setText(QString::number(P_hot) + u8" МПа");//Полное давления
+                fullPressureColdEdit->setText(QString::number(P_cold) + u8" Па");
+                averageTemperatureHotEdit->setText(QString::number(temp_hot_av) + u8" °C");//Средняя температура
+                averageTemperatureColdEdit->setText(QString::number(temp_cold_av) + u8" °C");
+                heatEdit->setText(QString::number(Q) + u8" кДж");//количество теплоты
+                consumptionHotEdit->setText(QString::number(Gr_hot) + u8" кг/с"); //Массовый расход греющего теплоносителя
+            }
+            );
+
+
+
+            m_calculationTab->setLayout(formLayout);
+
+            break;
+        }
+        case 4: //ExplodeWidget::IP
+        {
+            m_vLayoutCalculationTabIU = new QVBoxLayout();
+
+            QFormLayout* formLayout = new QFormLayout;
+
+            QLabel* headInfoLabel = new QLabel(u8"");
+            QLabel* headHLabel = new QLabel(u8"Трубное пространство");
+            QLabel* headCLabel = new QLabel(u8"Межтрубное пространство");
+            QWidget* infoContainer = createPairWidget(headHLabel, headCLabel);
+
+            QLabel* typeLabel = new QLabel(u8"Тип:");
+            QComboBox* hotFluidComboBox = new QComboBox();
+            hotFluidComboBox->addItem(u8"Вода");
+            hotFluidComboBox->addItem(u8"Ацетон");
+            hotFluidComboBox->addItem(u8"Бензин");
+            hotFluidComboBox->addItem(u8"Спирт этиловый");
+            hotFluidComboBox->addItem(u8"Нефтяное масло");
+
+            QComboBox* coldFluidComboBox = new QComboBox();
+            coldFluidComboBox->addItem(u8"Аммиак");
+            coldFluidComboBox->addItem(u8"Пропан");
+            coldFluidComboBox->addItem(u8"Пропеллен");
+            coldFluidComboBox->addItem(u8"Азот");
+            coldFluidComboBox->addItem(u8"Диоксид углерода");
+
+            QWidget* typeContainer = createPairWidget(hotFluidComboBox, coldFluidComboBox);
+            // для гидравлического 
+            QLabel* densityEntranceLabel = new QLabel(u8"Плотность среды на входе, кг/м3");
+            QDoubleSpinBox* densityEntranceHotSpinBox = new QDoubleSpinBox;
+            densityEntranceHotSpinBox->setRange(500, 2000);
+            densityEntranceHotSpinBox->setSingleStep(0.1);
+            QDoubleSpinBox* densityEntranceColdSpinBox = new QDoubleSpinBox;
+            densityEntranceColdSpinBox->setSingleStep(0.1);
+            densityEntranceColdSpinBox->setRange(0, 10);
+            QWidget* densityEntranceContainer = createPairWidget(densityEntranceHotSpinBox, densityEntranceColdSpinBox);
+
+
+            QLabel* densityExitLabel = new QLabel(u8"Плотность среды на выходе, кг/м3");
+            QDoubleSpinBox* densityExitHotSpinBox = new QDoubleSpinBox;
+            densityExitHotSpinBox->setRange(500, 2000);
+            densityExitHotSpinBox->setSingleStep(0.1);
+            QDoubleSpinBox* densityExitColdSpinBox = new QDoubleSpinBox;
+            densityExitColdSpinBox->setRange(0, 10);
+            densityExitColdSpinBox->setSingleStep(0.1);
+            QWidget* densityExitContainer = createPairWidget(densityExitHotSpinBox, densityExitColdSpinBox);
+
+            QLabel* speedEntranceLabel = new QLabel(u8"Скорость среды на входе (max: 7), м/с");
+            QDoubleSpinBox* speedEntranceHotSpinBox = new QDoubleSpinBox;
+            speedEntranceHotSpinBox->setSingleStep(0.1);
+            speedEntranceHotSpinBox->setRange(0, 7);
+            QDoubleSpinBox* speedEntranceColdSpinBox = new QDoubleSpinBox;
+            speedEntranceColdSpinBox->setSingleStep(0.1);
+            speedEntranceColdSpinBox->setRange(0, 7);
+            QWidget* speedEntranceContainer = createPairWidget(speedEntranceHotSpinBox, speedEntranceColdSpinBox);
+
+            QLabel* speedExitLabel = new QLabel(u8"Скорость среды на выходе (max: 10), м/с");
+            QDoubleSpinBox* speedExitHotSpinBox = new QDoubleSpinBox;
+            speedExitHotSpinBox->setSingleStep(0.1);
+            speedExitHotSpinBox->setRange(0, 10);
+            QDoubleSpinBox* speedExitColdSpinBox = new QDoubleSpinBox;
+            speedExitColdSpinBox->setSingleStep(0.1);
+            speedExitColdSpinBox->setRange(0, 10);
+            QWidget* speedExitContainer = createPairWidget(speedExitHotSpinBox, speedExitColdSpinBox);
+
+            // для теплового ! 
+            QLabel* temperatureEntranceLabel = new QLabel(u8"Температура среды на входе, ⁰С");
+            QDoubleSpinBox* temperatureEntranceHotSpinBox = new QDoubleSpinBox;
+            temperatureEntranceHotSpinBox->setRange(0, 150);
+            temperatureEntranceHotSpinBox->setSingleStep(0.1);
+            QDoubleSpinBox* temperatureEntranceColdSpinBox = new QDoubleSpinBox;
+            temperatureEntranceColdSpinBox->setRange(0, 150);
+            temperatureEntranceHotSpinBox->setSingleStep(0.1);
+            QWidget* temperatureEntranceContainer = createPairWidget(temperatureEntranceHotSpinBox, temperatureEntranceColdSpinBox);
+
+            QLabel* temperatureExitLabel = new QLabel(u8"Температура среды на выходе,⁰С");
+            QDoubleSpinBox* temperatureExitHotSpinBox = new QDoubleSpinBox;
+            temperatureExitHotSpinBox->setRange(0, 150);
+            temperatureExitHotSpinBox->setSingleStep(0.1);
+            QDoubleSpinBox* temperatureExitColdSpinBox = new QDoubleSpinBox;
+            temperatureExitColdSpinBox->setSingleStep(0.1);
+            temperatureExitColdSpinBox->setRange(0, 150);
+            QWidget* temperatureExitContainer = createPairWidget(temperatureExitHotSpinBox, temperatureExitColdSpinBox);
+
+            QLabel* consumptionColdLabel = new QLabel(u8"Массовый расход нагреваемого теплоносителя (max: 10), кг/с");
+            QDoubleSpinBox* consumptionColdSpinBox = new QDoubleSpinBox;
+            consumptionColdSpinBox->setSingleStep(0.1);
+            consumptionColdSpinBox->setRange(2, 10);
+
+            densityEntranceHotSpinBox->setValue(870.);
+            densityEntranceColdSpinBox->setValue(0.99);
+            densityExitHotSpinBox->setValue(899.);
+            densityExitColdSpinBox->setValue(0.87);
+            speedEntranceHotSpinBox->setValue(6);
+            speedEntranceColdSpinBox->setValue(4);
+            speedExitHotSpinBox->setValue(7);
+            speedExitColdSpinBox->setValue(5);
+            temperatureEntranceHotSpinBox->setValue(120);
+            temperatureEntranceColdSpinBox->setValue(50);
+            temperatureExitHotSpinBox->setValue(60);
+            temperatureExitColdSpinBox->setValue(70);
+            consumptionColdSpinBox->setValue(3);
+
+
+            QPushButton* calculationButton = new QPushButton(u8"Выполнить расчёт");
+
+            QLabel* reinoldsLabel = new QLabel(u8"Число Рейнольдса, Re:");
+            QLineEdit* reinoldsHEdit = new QLineEdit;
+            reinoldsHEdit->setReadOnly(true);
+            QLineEdit* reinoldsCEdit = new QLineEdit;
+            reinoldsCEdit->setReadOnly(true);
+            QWidget* reinoldsContainer = createPairWidget(reinoldsHEdit, reinoldsCEdit);
+
+            QLabel* squareSectionLabel = new QLabel(u8"Площадь поперечного сечения корпуса,  м\xB2:");
+            QLineEdit* squareSectionEdit = new QLineEdit;
+            squareSectionEdit->setReadOnly(true);
+
+            QLabel* squareInterTubeLabel = new QLabel(u8"Площадь межтрубного пространства,  м\xB2:");
+            QLineEdit* squareInterTubeEdit = new QLineEdit;
+            squareInterTubeEdit->setReadOnly(true);
+
+
+
+
+            QLabel* speedInterTubeLabel = new QLabel(u8"Скорость воды в межтрубном пространстве, м/c:");
+            QLineEdit* speedInterTubeEdit = new QLineEdit;
+            speedInterTubeEdit->setReadOnly(true);
+
+
+            QLabel* resistanceCoefficientLabel = new QLabel(u8"Коэффициент сопротивления трения, λ:");
+            QLineEdit* resistanceCoefficientHotEdit = new QLineEdit;
+            resistanceCoefficientHotEdit->setReadOnly(true);
+            QLineEdit* resistanceCoefficientColdEdit = new QLineEdit;
+            resistanceCoefficientColdEdit->setReadOnly(true);
+            QWidget* resistanceCoefficientContainer = createPairWidget(resistanceCoefficientHotEdit, resistanceCoefficientColdEdit);
+
+            QLabel* frictionPressureLabel = new QLabel(u8"Потери давления на трение, ∆Pтр:");
+            QLineEdit* frictionPressureHotEdit = new QLineEdit;
+            frictionPressureHotEdit->setReadOnly(true);
+            QLineEdit* frictionPressureColdEdit = new QLineEdit;
+            frictionPressureColdEdit->setReadOnly(true);
+            QWidget* frictionPressureContainer = createPairWidget(frictionPressureHotEdit, frictionPressureColdEdit);
+
+            QLabel* localResistancePressureLabel = new QLabel(u8"Потери давления в местных сопротивлениях, ∆Pм:");
+            QLineEdit* localResistanceHotEdit = new QLineEdit;
+            localResistanceHotEdit->setReadOnly(true);
+            QLineEdit* localResistanceColdEdit = new QLineEdit;
+            localResistanceColdEdit->setReadOnly(true);
+            QWidget* localResistancePressureContainer = createPairWidget(localResistanceHotEdit, localResistanceColdEdit);
+
+            QLabel* accelerationFlowPressureLabel = new QLabel(u8"Потери при ускорении потока, ∆Pу:");
+            QLineEdit* accelerationFlowHotEdit = new QLineEdit;
+            accelerationFlowHotEdit->setReadOnly(true);
+            QLineEdit* accelerationFlowColdEdit = new QLineEdit;
+            accelerationFlowColdEdit->setReadOnly(true);
+            QWidget* accelerationFlowPressureContainer = createPairWidget(accelerationFlowHotEdit, accelerationFlowColdEdit);
+
+            QLabel* pressureDropLabel = new QLabel(u8"Перепад давления, ∆Pг:");
+            QLineEdit* pressureDropHotEdit = new QLineEdit;
+            pressureDropHotEdit->setReadOnly(true);
+            QLineEdit* pressureDropColdEdit = new QLineEdit;
+            pressureDropColdEdit->setReadOnly(true);
+            QWidget* pressureDropContainer = createPairWidget(pressureDropHotEdit, pressureDropColdEdit);
+
+            QLabel* fullPressureLabel = new QLabel(u8"Полные потери давления, ∆P:");
+            QLineEdit* fullPressureHotEdit = new QLineEdit;
+            fullPressureHotEdit->setReadOnly(true);
+            QLineEdit* fullPressureColdEdit = new QLineEdit;
+            fullPressureColdEdit->setReadOnly(true);
+            QWidget* fullPressureContainer = createPairWidget(fullPressureHotEdit, fullPressureColdEdit);
+
+            QLabel* averageTemperatureLabel = new QLabel(u8"Средняя температура, ⁰С:");
+            QLineEdit* averageTemperatureHotEdit = new QLineEdit;
+            averageTemperatureHotEdit->setReadOnly(true);
+            QLineEdit* averageTemperatureColdEdit = new QLineEdit;
+            averageTemperatureColdEdit->setReadOnly(true);
+            QWidget* averageTemperatureContainer = createPairWidget(averageTemperatureHotEdit, averageTemperatureColdEdit);
+
+            QLabel* heatLabel = new QLabel(u8"Количество теплоты, кДж:");
+            QLineEdit* heatEdit = new QLineEdit;
+            heatEdit->setReadOnly(true);
+
+            QLabel* consumptionHotLabel = new QLabel(u8"Массовый расход греющего теплоносителя, кг/с:");
+            QLineEdit* consumptionHotEdit = new QLineEdit;
+            consumptionHotEdit->setReadOnly(true);
+
+
+            formLayout->addRow(headInfoLabel, infoContainer);
+            formLayout->addRow(typeLabel, typeContainer);
+            formLayout->addRow(densityEntranceLabel, densityEntranceContainer);
+            formLayout->addRow(densityExitLabel, densityExitContainer);
+            formLayout->addRow(speedEntranceLabel, speedEntranceContainer);
+            formLayout->addRow(speedExitLabel, speedExitContainer);
+
+            formLayout->addRow(temperatureEntranceLabel, temperatureEntranceContainer);
+            formLayout->addRow(temperatureExitLabel, temperatureExitContainer);
+            formLayout->addRow(consumptionColdLabel, consumptionColdSpinBox);
+
+            formLayout->addRow(calculationButton);
+
+            formLayout->addRow(reinoldsLabel, reinoldsContainer);
+            formLayout->addRow(squareSectionLabel, squareSectionEdit);
+            formLayout->addRow(squareInterTubeLabel, squareInterTubeEdit);
+            formLayout->addRow(speedInterTubeLabel, speedInterTubeEdit);
+            formLayout->addRow(resistanceCoefficientLabel, resistanceCoefficientContainer);
+            formLayout->addRow(frictionPressureLabel, frictionPressureContainer);
+            formLayout->addRow(localResistancePressureLabel, localResistancePressureContainer);
+            formLayout->addRow(accelerationFlowPressureLabel, accelerationFlowPressureContainer);
+            formLayout->addRow(pressureDropLabel, pressureDropContainer);
+            formLayout->addRow(fullPressureLabel, fullPressureContainer);
+            formLayout->addRow(averageTemperatureLabel, averageTemperatureContainer);
+            formLayout->addRow(heatLabel, heatEdit);
+            formLayout->addRow(consumptionHotLabel, consumptionHotEdit);
+
+
+            connect(calculationButton, &QPushButton::clicked, [=]() {
+
+                //индексы сред
+                const int hotFluidIndex = hotFluidComboBox->currentIndex();
+                const int coldFluidIndex = coldFluidComboBox->currentIndex() + 5;//чтобы в одной структуре хранить
+
+                double temp1_hot = temperatureEntranceHotSpinBox->value();//температура на входе
+                double temp2_hot = temperatureExitHotSpinBox->value();//температура на выходе
+                double temp1_cold = temperatureEntranceColdSpinBox->value();//температура на входе
+                double temp2_cold = temperatureExitColdSpinBox->value();//температура на выходе
+
+                if (temp1_hot < temp1_cold)
+                {
+                    QString* text = new QString(u8"Температура теплоносителя в межтрубном пространстве на входе должна быть меньше, чем в трубном на входе.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (temp1_hot < temp2_hot)
+                {
+                    QString* text = new QString(u8"Температура теплоносителя в трубном пространстве на входе должна быть больше, чем на выходе.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (temp1_cold > temp2_cold)
+                {
+                    QString* text = new QString(u8"Температура теплоносителя в межтрубном пространстве на входе должна быть меньше, чем на выходе.");
+                    createWarning(text);
+
+                    return;
+                }
+                // if (temp2_hot < temp2_cold)
+               //  {
+               //      QString* text = new QString(u8"Температура нагреваемого теплоносителя на выходе должна быть меньше, чем греющего на выходе.");
+               //      createWarning(text);
+
+               //      return;
+               //  }
+
+
+                if (temp1_hot <= 0)
+                {
+                    QString* text = new QString(u8"Температура теплоносителя в трубном пространстве на входе должна быть больше 0.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                double temp_hot_av = (temp1_hot + temp2_hot) / 2; //средняя температура
+                double temp_cold_av = (temp1_cold + temp2_cold) / 2;
+                int temp_hot_index = round(temp_hot_av / 10);
+                int temp_cold_index = round(temp_cold_av / 10);
+
+                //тепловой
+                double capacity_hot = fluidsProperties_IU_IP[hotFluidIndex].c; //теплоемкость греющей среды
+                double capacity_cold = fluidsProperties_IU_IP[coldFluidIndex].c;//теплоемколсть нагреваемой среды
+                float N = 0.97; //коэффициент потери теплоты в окр.среду
+                double Gr_cold = consumptionColdSpinBox->value(); //расход теплоносителя в кг/c
+
+
+
+                double t_g_sr = (temp1_hot + temp2_hot) / 2;
+                double t_n_sr = (temp1_cold + temp2_cold) / 2;
+                double Q = (Gr_cold * capacity_cold * (temp2_cold - temp1_cold)) / 1000;
+                double Gr_hot = Q * 1000 / (capacity_hot * (temp1_hot - temp2_hot) * N);
+
+                //определение какую структура использовать: типовую или пользовательскую
+                const int technicalIndex = m_comboConfigure->currentIndex();
+                const ConfigParams_IP params = isCheckedManualType
+                    ? manualIPParams
+                    : dataIP[technicalIndex > 0 ? technicalIndex : 0];
+
+                double n;//количество труб
+                double delta_h_hot;//разница уровней входа и выхода теплоносителя в систему
+                if ((500 <= params.DKr) && (params.DKr < 600)) {
+                    n = 208.;
+                    delta_h_hot = 884. / 1000;//в метрах
+                }
+                else if ((600 <= params.DKr) && (params.DKr < 700)) {
+                    n = 310.;
+                    delta_h_hot = 984. / 1000;//м
+                }
+                else if ((700 <= params.DKr) && (params.DKr < 800)) {
+                    n = 452.;
+                    delta_h_hot = 1088. / 1000;
+                }
+                else if ((800 <= params.DKr) && (params.DKr < 900)) {
+                    n = 590.;
+                    delta_h_hot = 1188. / 1000;
+                }
+                else if ((900 <= params.DKr) && (params.DKr < 1000)) {
+                    n = 778.;
+                    delta_h_hot = 1332. / 1000;
+                }
+                else  if ((1000 <= params.DKr) && (params.DKr < 1100)) {
+                    n = 980.;
+                    delta_h_hot = 1392. / 1000;
+                }
+                else if ((1100 <= params.DKr) && (params.DKr < 1200)) {
+                    n = 1210.;
+                    delta_h_hot = 1492. / 1000;
+                }
+                else if (1200 <= params.DKr) {
+                    n = 1466.;
+                    delta_h_hot = 1694. / 1000;
+                }
+
+
+                //считаем число рейнольдса
+                double d = 20. / 1000.; //диаметр труб в метрах
+                double density_hot = fluidDensity_IU_IP[hotFluidIndex][temp_hot_index];//плотность в кг/м3
+                double density_cold = fluidDensity_IU_IP[coldFluidIndex][temp_cold_index];//плотность в кг/м3
+                //////////////////////посчитать из теплового
+
+                double viscosity_hot = fluidViscocity_IU_IP[hotFluidIndex][temp_hot_index] * pow(10, -6); // вязкость
+                double viscosity_cold = fluidViscocity_IU_IP[coldFluidIndex][temp_cold_index] * pow(10, -6); // вязкость
+
+                double Fd = M_PI * pow(params.Dv_Kzh / 1000., 2) / 4; //площадь поперечного сечения корпуса
+                double fm = (M_PI * pow(d, 2) * n) / 4; //площадь, занятая трубами
+                double f1 = Fd - fm; //площадь межрубного пространства
+
+                double w_cold = Gr_cold / (f1 * density_cold); //скорость среды в межтрубном пространстве
+                double d_e = 4. * f1 / (M_PI * (params.Dv_Kzh / 1000. + n * d));
+                double Re_cold = w_cold * d_e / viscosity_cold;//число Рейнольдса в межтрубном пространстве
+
+                double w_hot = Gr_hot / (fm * density_hot); //скорость воды в трубном пространстве
+               // double w_hot =
+
+                double v1_hot = speedEntranceHotSpinBox->value(); // скорость на входе
+                double v2_hot = speedExitHotSpinBox->value(); // скорость на выходе
+                double v1_cold = speedEntranceColdSpinBox->value(); // скорость на входе
+                double v2_cold = speedExitColdSpinBox->value(); // скорость на выходе
+                double density1_hot = densityEntranceHotSpinBox->value(); // плотность на входе 
+                double density2_hot = densityExitHotSpinBox->value(); //плотность на выходе
+                double density1_cold = densityEntranceColdSpinBox->value(); // плотность на входе 
+                double density2_cold = densityExitColdSpinBox->value(); //плотность на выходе
+                double v_sr_hot = (v1_hot + v2_hot) / 2; //средняя скорость 
+                double v_sr_cold = (v1_cold + v2_cold) / 2; //средняя скорость 
+
+                if (v2_hot < v1_hot)
+                {
+                    QString* text = new QString(u8"Скорость теплоносителя в трубном пространстве на выходе должна быть больше, чем на входе.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (v2_cold < v1_cold)
+                {
+                    QString* text = new QString(u8"Скорость теплоносителя в межтрубном пространстве на выходе должна быть больше, чем на входе.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (density1_hot > density2_hot)
+                {
+                    QString* text = new QString(u8"Плотность теплоносителя в трубном пространстве на входе должна быть меньше, чем на выходе.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (density1_cold < density2_cold)
+                {
+                    QString* text = new QString(u8"Плотность теплоносителя в межтрубном пространстве на входе должна быть больше, чем на выходе.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (v2_hot <= 0)
+                {
+                    QString* text = new QString(u8"Скорость теплоносителя в трубном пространстве на выходе должна быть больше 0.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (v1_hot <= 0)
+                {
+                    QString* text = new QString(u8"Скорость теплоносителя в трубном пространстве на входе должна быть больше 0.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (v2_cold <= 0)
+                {
+                    QString* text = new QString(u8"Скорость теплоносителя в межтрубном пространстве на выходе должна быть больше 0.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (v1_cold <= 0)
+                {
+                    QString* text = new QString(u8"Скорость теплоносителя в межтрубном пространстве на входе должна быть больше 0.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (density1_cold <= 0)
+                {
+                    QString* text = new QString(u8"Плотность теплоносителя в межтрубном пространстве на входе должна быть больше 0.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (density2_cold <= 0)
+                {
+                    QString* text = new QString(u8"Плотность теплоносителя в межтрубном пространстве на выходе должна быть больше 0.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (density1_hot <= 0)
+                {
+                    QString* text = new QString(u8"Плотность теплоносителя  в трубном пространстве на входе должна быть больше 0.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                if (density2_hot <= 0)
+                {
+                    QString* text = new QString(u8"Плотность теплоносителя в трубном пространстве на выходе должна быть больше 0.");
+                    createWarning(text);
+
+                    return;
+                }
+
+                double Re_hot = w_hot * d / viscosity_hot;
+
+                double L = 6000. / 1000. * n; //суммарная длина трубок
+                //double d_v = ; //внутренний диаметр трубок
+                double density_atm = 1.2754; //плотность атмосферного воздуха
+                //разница уровней входа и выхода теплоносителя в систему
+                double delta_h_cold = (380 + params.Dv_Kzh) / 1000; //разница уровней входа и выхода теплоносителя в систему, 380 - сумма высот фланцев
+                double lambda_cold = 1 / pow((1.8 * log(Re_cold) - 1.5), 2); //коэффициент сопротивления трения
+
+                double e = 5.5;//коэффициент местного сопротивления
+
+                double Pt_cold = lambda_cold * L * pow(v_sr_cold, 2) * density1_cold / (2 * d_e); //потери на трение d->d_v
+                double Pm_cold = e * pow(v_sr_cold, 2) * density_cold / 2; //потери в местных сопротивлениях
+
+                double Py_cold = (density2_cold * v2_cold - density1_cold * v1_cold); //потери при ускорении потока
+
+                double Pg_cold = (density1_cold - density_atm) * -delta_h_cold; //перепад давления
+
+                double P_cold = Pt_cold + Pm_cold + Py_cold + Pg_cold; //полное давление
+
+
+                double lambda_hot = 1 / pow((1.8 * log(Re_hot) - 1.5), 2); //коэффициент сопротивления трения (логарифм надо исправить!)
+                double Pt_hot = (lambda_hot * L * pow(v_sr_hot, 2) * density1_hot / (2 * (params.Dv_Kzh / 1000))) / pow(10, 6); //потери на трение d->d_v
+                double Pm_hot = (5.5 * pow(v_sr_hot, 2) * density_hot / 2) / pow(10, 6); //потери в местных сопротивлениях
+
+                double Py_hot = (density2_hot * v2_hot - density1_hot * v1_hot) / pow(10, 6); //потери при ускорении потока
+
+                double Pg_hot = ((density1_hot - density_atm) * delta_h_hot) / pow(10, 6); //перепад давления
+
+                double P_hot = Pt_hot + Pm_hot + Py_hot + Pg_hot; //полное давление
+
+                reinoldsHEdit->setText(QString::number(Re_hot));
+                reinoldsCEdit->setText(QString::number(Re_cold));
+
+
+
+                squareSectionEdit->setText(QString::number(Fd) + u8" м\xB2");//Площадь поперечного сечения корпуса
+                squareInterTubeEdit->setText(QString::number(f1) + u8" м\xB2");//Площадь межтрубного пространства
+                speedInterTubeEdit->setText(QString::number(w_cold) + u8" м/c");//Скорость воды в межтрубном пространстве
+                resistanceCoefficientHotEdit->setText(QString::number(lambda_hot) + u8" ");//Коэффициент сопротивления трения
+                resistanceCoefficientColdEdit->setText(QString::number(lambda_cold) + u8" ");
+
+                frictionPressureHotEdit->setText(QString::number(Pt_hot) + u8" МПа");//Потери давления на трение
+                frictionPressureColdEdit->setText(QString::number(Pt_cold) + u8" Па");//
+                localResistanceHotEdit->setText(QString::number(Pm_hot) + u8" МПа");//Потери давления в местных сопротивлениях
+                localResistanceColdEdit->setText(QString::number(Pm_cold) + u8" Па");
+                accelerationFlowHotEdit->setText(QString::number(Py_hot) + u8" МПа");//Потери при ускорении потока
+                accelerationFlowColdEdit->setText(QString::number(Py_cold) + u8" Па");
+                pressureDropHotEdit->setText(QString::number(Pg_hot) + u8" МПа");//Перепад давления
+                pressureDropColdEdit->setText(QString::number(Pg_cold) + u8" Па");
+                fullPressureHotEdit->setText(QString::number(P_hot) + u8" МПа");//Полное давления
+                fullPressureColdEdit->setText(QString::number(P_cold) + u8" Па");
+                averageTemperatureHotEdit->setText(QString::number(temp_hot_av) + u8" °C");//Средняя температура
+                averageTemperatureColdEdit->setText(QString::number(temp_cold_av) + u8" °C");
+                heatEdit->setText(QString::number(Q) + u8" кДж");//количество теплоты
+                consumptionHotEdit->setText(QString::number(Gr_hot) + u8" кг/с"); //Массовый расход греющего теплоносителя
+            }
+            );
+
+
+
+            m_calculationTab->setLayout(formLayout);
             break;
         }
         default:
             break;
     }
 } 
+
+
+bool ExplodeManager::checkValidate() {
+    if ((m_pExplodeWidget->m_pCurrentExchandger == 4 && mp_IP_D_Kzh <= mp_IP_D_Kam) || (m_pExplodeWidget->m_pCurrentExchandger == 3 && mp_IU_D_Kzh <= mp_IU_D_Kam))
+    {
+        QMessageBox::warning(nullptr, u8"Предупреждение", u8"Диаметр кожуха должен быть больше диаметра камеры");
+        return false;
+    }
+
+    if ((m_pExplodeWidget->m_pCurrentExchandger == 4 && mp_IP_D_l2 > mp_IP_D_l3) || (m_pExplodeWidget->m_pCurrentExchandger == 3 && mp_IU_D_l2 > mp_IU_D_l3))
+    {
+        QMessageBox::warning(nullptr, u8"Предупреждение", u8"l2 должна быть меньше, чем l3");
+        return false;
+    }
+
+    return true;
+}
 
 void ExplodeManager::onDrawingShowButtonClicked() {
     m_PmodalDialog = new QDialog();
@@ -1595,9 +2821,13 @@ void ExplodeManager::onDrawingShowButtonClicked() {
         break;
     }case 3:
     {
+        windowTittle = u8"Размеры теплообменника IU";
+        iconPath = ":/res/draws/iu.jpg";
         break;
     }case 4:
     {
+        windowTittle = u8"Размеры теплообменника IP";
+        iconPath = ":/res/draws/ip.jpg";
         break;
     }
     }
@@ -1613,6 +2843,8 @@ void ExplodeManager::onDrawingShowButtonClicked() {
     int screenWidth = screenGeometry.width();
     int screenHeight = screenGeometry.height();
 
+    if (indexOfCurrentExchanger == 3 || indexOfCurrentExchanger == 4) screenWidth += 300;
+
     imageLabel->setMaximumSize(screenWidth, screenHeight);
 
     QVBoxLayout* modalLayout = new QVBoxLayout(m_PmodalDialog);
@@ -1627,7 +2859,6 @@ void ExplodeManager::onReconfigureButtonClicked() {
         manualTTRMParams = findClosestMatch(0, mp_dimCamera, "assortmentCamera");
 
         const int lengthDifference = m_lengthSpinBox->value() - lengthParams.lengthK;
-
         manualTTRMParams.thicknessInnerTubes = mp_thicknessInnerResult;
         manualTTRMParams.thicknessOuterTubes = mp_thicknessOuterResult;      
         manualTTRMParams.LENGTH = lengthParams.LENGTH + lengthDifference;
@@ -1657,6 +2888,26 @@ void ExplodeManager::onReconfigureButtonClicked() {
         manualTTORParams.dU = dUForFlanecTTOR->value();
         manualTTORParams.turnOnStandart = turnOnStandartDetailsTTOR->checkState() == 2 ? true : false;
         manualTTORParams.simpleMode = simpleModeStandartTTOR->checkState() == 2 ? true : false;
+    }
+
+
+    if (isCheckedManualType && indexOfCurrentExchanger == 3) {
+
+        manualIUParams.p = mp_IU_p;
+        manualIUParams.diam = mp_IU_D_Kzh;
+        manualIUParams.D_Kam = mp_IU_D_Kam;
+        manualIUParams.l = mp_IU_D_l;
+        manualIUParams.l2 = mp_IU_D_l2;
+        manualIUParams.l3 = mp_IU_D_l3;
+    }
+
+    if (isCheckedManualType && indexOfCurrentExchanger == 4) {
+        manualIPParams.p = mp_IP_p;
+        manualIPParams.Dv_Kzh = mp_IP_D_Kzh;
+        manualIPParams.DKr = mp_IP_D_Kam;
+        manualIPParams.l0 = mp_IP_D_l;
+        manualIPParams.l2 = mp_IP_D_l2;
+        manualIPParams.l3 = mp_IP_D_l3;
     }
 
     if (m_pExplodeWidget) {

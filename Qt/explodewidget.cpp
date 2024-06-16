@@ -592,7 +592,10 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
                 values.append(QString::fromStdString(config.name));
             }
 
-            ConfigParams_IP config = m_pExplodeManager->dataIP[index > 0 ? index : 0];
+            ConfigParams_IP config = m_pExplodeManager->isCheckedManualType
+                ? m_pExplodeManager->manualIPParams
+                : m_pExplodeManager->dataIP[index > 0 ? index : 0];
+
             m_pModel = ParametricModelCreator::CreatePneymocylinderModelFukina(config);
             openModel();
             break;
@@ -606,7 +609,10 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
                 values.append(QString::fromStdString(config.name));
             }
 
-            ConfigParams_IU config = m_pExplodeManager->dataIU[index > 0 ? index : 0];
+            ConfigParams_IU config = m_pExplodeManager->isCheckedManualType
+                ? m_pExplodeManager->manualIUParams
+                : m_pExplodeManager->dataIU[index > 0 ? index : 0];
+
             m_pModel = ParametricModelCreator::CreatePneymocylinderModelVasinkina(config);
             openModel();
             break;

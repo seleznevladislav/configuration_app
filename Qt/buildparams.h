@@ -61,19 +61,17 @@ namespace BuildMathModel {
 	struct ConfigParams_IP
 	{
 		std::string name;
-		int Dvne; //внешний диаметр кожуха
+		double Dv_Kzh;
 		double L_Base;//длина кожуха
 		double s;//толщина стенки
 		double p;//давление
-		int DKr;//внутренний диаметр камеры
+		double DKr;//внутренний диаметр камеры
 
 		//расстояния для фланцев внизу кожух:
-		/*int l0 = 460;
-		int l = 350;
-		int l2 = 1750;
-		int l3 = 6390;*/
-
-
+		int l0;
+		//	int l = 350;
+		int l2;
+		int l3;
 		//для фланцев
 		double Dn;
 		double Dy;
@@ -83,31 +81,15 @@ namespace BuildMathModel {
 	struct ConfigParams_IU
 	{
 		std::string name;
-		int diamVne = 840;
-		double Length = 5395.;
-		int S = 20;
-		double pressure = 1.6;
-		int diam = 800;
-
-		int D_KamVne = 540;
-		int D_Kam = 500;
-		int Kam_L = 562;
-
 		double p = 1.6;
-
-
-		//float CylS;
-		//float EllS;
-		//float PerS;
-
-		//float napr;
-		//float C;
-
-		//расстояния для фланцев внизу кожух:
-		/*int l0 = 460;
-		int l = 350;
-		int l2 = 1750;
-		int l3 = 6390;*/
+		double diam = 800;
+		double Length = 5395.;
+		double D_Kam = 500;
+		double Kam_L = 562;
+		double S = 20;
+		double l = 350;
+		double l2 = 1750;
+		double l3 = 6390;
 	};
 
 	struct data_fluidProperties {
@@ -131,5 +113,12 @@ namespace BuildMathModel {
 		double d1_diam;				// 0 - Диаметр трубы внутри
 		double d2_diam;				// 1 - Диаметр трубы снаружи
 		double L_length;			// 4 - Длина трубы
+	};
+
+	struct data_fluidPrs_IU_IP {
+		std::string name;
+		double density;    //плотность в кг/м3
+		double viscosity;  //вязкость (м2/c)
+		double c;          //теплоемкость
 	};
 }
