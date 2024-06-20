@@ -433,7 +433,6 @@ void ExplodeManager::calculateThickness(QFormLayout* form) {
     m_reconfigureButton->setDisabled(false);
 }
 
-QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExchanger)
 void ExplodeManager::calculateThickness_IU_IP(QFormLayout* form) {
     QComboBox* pressureComboBox =
         qobject_cast<QComboBox*>(form->itemAt(1)->widget());
@@ -466,7 +465,7 @@ void ExplodeManager::calculateThickness_IU_IP(QFormLayout* form) {
     thicknessElliptic->setText(QString::number(mp_IU_s_ell));
 }
 
-QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExchanger, QVBoxLayout* layout)
+QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExchanger)
 {
     QFormLayout* warmForm = m_vLayoutWarmParams->
         findChild<QFormLayout*>("warmForm");
@@ -805,7 +804,7 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
         connect(m_closestLengthButton, &QToolButton::clicked, [=]() {
             ConfigParams foundElement = findClosestMatch(mp_dimCamera, m_lengthSpinBox->value(), "lengthK");
 
-            m_lengthSpinBox->setValue(foundElement.LENGTH);
+            m_lengthSpinBox->setValue(foundElement.lengthK);
             });
 
         break;
@@ -872,8 +871,6 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
         line->setFrameShadow(QFrame::Sunken);
         line->setContentsMargins(0, 10, 0, 10);
         formLayout->addRow(line);
-
-        layout->addLayout(formLayout);
 
 
         QPushButton* calculateThicknessButton = new QPushButton;
@@ -972,9 +969,6 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
         line->setFrameShadow(QFrame::Sunken);
         line->setContentsMargins(0, 10, 0, 10);
         formLayout->addRow(line);
-
-        layout->addLayout(formLayout);
-
 
         QPushButton* calculateThicknessButton = new QPushButton;
         calculateThicknessButton->setText(u8"Расчитать толщину стенок");
