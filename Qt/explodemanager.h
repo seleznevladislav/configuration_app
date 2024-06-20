@@ -43,12 +43,13 @@ public:
     explicit ExplodeManager(ExplodeWidget* pOpenScene);
     virtual ~ExplodeManager();
 public:
+    QTabWidget* m_mainTabWidget;
     void init(SceneSegment* pSegmModel, ExplodeTreeView* pTreeWidget);
     QGroupBox* createGroupExplode(QWidget& widget, const int heightButton, const std::string& mainTabName);
     void createCalculationTab(const int numberOfHeatExchanger);
     void createParametrizationTab(const int numberOfHeatExchanger);
     void iterateHeatExchanger(double hotOutletTemp, double coldOutletTemp);
-    QFormLayout* createParametrizationForm(const int numberOfHeatExchanger, QVBoxLayout* layout);
+    QFormLayout* createParametrizationForm(const int numberOfHeatExchanger);
     bool isSelectionEnabled() const;
     bool isCreateGroupGeometry() const;
     bool onSelectItem(const SceneSegment* pSegm);
@@ -325,7 +326,6 @@ private:
     /// <summary>
     /// vars tab management
     /// </summary>
-    QTabWidget* m_mainTabWidget;
     QWidget* m_calculationTab;
     QVBoxLayout* m_vLayoutCalculationTabTTOR = nullptr;
     QVBoxLayout* m_vLayoutCalculationTabTTRM = nullptr;

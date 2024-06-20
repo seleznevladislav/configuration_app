@@ -496,32 +496,14 @@ void ExplodeWidget::viewCommandsHeats(Exhanchares cmd)
     int currentIndexofExchanger = action ? action->property("CommandsHeatExhanger").toInt() : static_cast<int>(cmd);
     const bool hasChangeType = m_pCurrentExchandger != currentIndexofExchanger;
 
-    QFormLayout* warmForm = m_pExplodeManager->m_vLayoutWarmParams->
-        findChild<QFormLayout*>("warmForm");
-
     if (hasChangeType) 
     {
+        m_pExplodeManager->isCheckedManualType = false;
+        m_pExplodeManager->createParametrizationForm(currentIndexofExchanger);
+        m_pExplodeManager->createCalculationTab(currentIndexofExchanger);
+
         m_pExplodeManager->m_comboConfigure->clear();
         m_pExplodeManager->m_quantityCombobox->setCurrentIndex(0);
-
-        if (warmForm)
-        {
-            m_pExplodeManager->m_vLayoutWarmParams->removeItem(warmForm);
-
-            QLayoutItem* child;
-            while ((child = warmForm->takeAt(0)) != nullptr) {
-                if (child->widget()) {
-                    delete child->widget();
-                }
-
-                delete child;
-            }
-           
-            delete warmForm;
-        }
-
-        m_pExplodeManager->createCalculationTab(currentIndexofExchanger);
-        m_pExplodeManager->createParametrizationForm(currentIndexofExchanger, m_pExplodeManager->m_vLayoutWarmParams);
     }
 
     m_pExplodeManager->m_quantityCombobox->setHidden(!(currentIndexofExchanger == 1 || currentIndexofExchanger == 2));

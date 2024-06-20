@@ -422,8 +422,60 @@ void ExplodeManager::calculateThickness(QFormLayout* form) {
     m_reconfigureButton->setDisabled(false);
 }
 
-QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExchanger, QVBoxLayout* layout)
+QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExchanger)
 {
+    QFormLayout* warmForm = m_vLayoutWarmParams->
+        findChild<QFormLayout*>("warmForm");
+
+    if (warmForm)
+    {
+        m_mainTabWidget->removeTab(1);
+    }
+
+    QWidget* parametrizationTab = new QWidget;
+
+    m_mainTabWidget->addTab(parametrizationTab, u8"Параметризация");
+
+    m_vLayoutConfigureTab = new QVBoxLayout();
+    m_vLayoutConfigureTab->setSpacing(2);
+
+    parametrizationTab->setLayout(m_vLayoutConfigureTab);
+
+    m_quantityCombobox = createCombobox(m_vLayoutConfigureTab);
+    m_quantityCombobox->addItem(u8"Одиночный", 0);
+    m_quantityCombobox->addItem(u8"Блок. Два элемента", 1);
+    m_quantityCombobox->addItem(u8"Блок. Три элемента", 2);
+    m_quantityCombobox->addItem(u8"Блок. Четыре элемента", 3);
+
+    m_comboConfigure = createCombobox(m_vLayoutConfigureTab);
+
+    QHBoxLayout* hLayoutTypeRadioBox = new QHBoxLayout();
+    hLayoutTypeRadioBox->setContentsMargins(0, 10, 0, 10);
+    m_vLayoutConfigureTab->addLayout(hLayoutTypeRadioBox);
+
+    QRadioButton* techicalSizesRadioItem = createTypeRadioButton(hLayoutTypeRadioBox, u8"Построение по размерам ТУ", true, 1);
+    QRadioButton* manualSizesRadioItem = createTypeRadioButton(hLayoutTypeRadioBox, u8"Построение вручную", false, 2);
+
+    // Группа параметров для расчёта толщины стенок.
+    m_warmParams = createGroupBox(u8"Параметры", false, false, true);
+    m_warmParams->setDisabled(true);
+    m_vLayoutConfigureTab->addWidget(m_warmParams);
+
+    m_vLayoutWarmParams = createVBoxLayout(m_warmParams);
+
+    QToolButton* sizeInfoButton = new QToolButton();
+    sizeInfoButton->setIcon(QIcon(":/res/dimensions.png"));
+    sizeInfoButton->setToolTip(u8"Посмотреть размеры аппарата");
+    m_vLayoutConfigureTab->addWidget(sizeInfoButton);
+
+    connect(sizeInfoButton, &QToolButton::clicked, this, &ExplodeManager::onDrawingShowButtonClicked);
+
+    m_reconfigureButton = new QPushButton;
+    m_reconfigureButton->setText(u8"Перестроить теплообменник");
+    connect(m_reconfigureButton, &QPushButton::clicked, this, &ExplodeManager::onReconfigureButtonClicked);
+
+    m_vLayoutConfigureTab->addWidget(m_reconfigureButton);
+
     QFormLayout* formLayout = new QFormLayout;
     formLayout->setObjectName("warmForm");
 
@@ -702,9 +754,6 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
 
         formLayout->addRow(lengthSpinBoxLabel, widgetContainer);
 
-
-        layout->addLayout(formLayout);
-
         connect(calculateThicknessButton, &QPushButton::clicked, [=]() {
             calculateThickness(formLayout);
             });
@@ -771,7 +820,7 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
     }
     }
 
-    layout->addLayout(formLayout);
+    m_vLayoutWarmParams->addLayout(formLayout);
 
     return formLayout;
 }
@@ -891,8 +940,7 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
 {
 
     if (m_calculationTab) {
-
-        m_mainTabWidget->removeTab(2);
+        m_mainTabWidget->removeTab(1);
     }
 
     m_calculationTab = new QWidget();
@@ -2143,57 +2191,16 @@ QTabWidget* ExplodeManager::createTabWidget(QWidget& widget, const int heightBut
     m_mainTabWidget = new QTabWidget();
 
     m_mainTabWidget->addTab(new QWidget(), m_mainTabName.c_str());
-    m_mainTabWidget->addTab(new QWidget(), u8"Параметризация");
 
     m_vLayoutTab = new QVBoxLayout();
     m_vLayoutTab->setSpacing(2);
 
-    m_vLayoutConfigureTab = new QVBoxLayout();
-    m_vLayoutConfigureTab->setSpacing(2);
-
     m_vLayoutTab->setContentsMargins(4, 2, 4, 2);
-
     m_mainTabWidget->currentWidget()->setLayout(m_vLayoutTab);
-    m_mainTabWidget->widget(1)->setLayout(m_vLayoutConfigureTab);
 
     m_vLayoutTab->setSizeConstraint(QLayout::SetMinimumSize);
     QObject::connect(m_mainTabWidget, &QTabWidget::currentChanged, this, &ExplodeManager::tabWidgetCurrentChanged);
     QObject::connect(m_mainTabWidget, &QTabWidget::tabCloseRequested, this, &ExplodeManager::tabWidgetCloseRequested);
-
-    m_quantityCombobox = createCombobox(m_vLayoutConfigureTab);
-    m_quantityCombobox->addItem(u8"Одиночный", 0);
-    m_quantityCombobox->addItem(u8"Блок. Два элемента", 1);
-    m_quantityCombobox->addItem(u8"Блок. Три элемента", 2);
-    m_quantityCombobox->addItem(u8"Блок. Четыре элемента", 3);
-
-    m_comboConfigure = createCombobox(m_vLayoutConfigureTab);
-
-    QHBoxLayout* hLayoutTypeRadioBox = new QHBoxLayout();
-    hLayoutTypeRadioBox->setContentsMargins(0, 10, 0, 10);
-    m_vLayoutConfigureTab->addLayout(hLayoutTypeRadioBox);
-
-    QRadioButton* techicalSizesRadioItem = createTypeRadioButton(hLayoutTypeRadioBox, u8"Построение по размерам ТУ", true, 1);
-    QRadioButton* manualSizesRadioItem = createTypeRadioButton(hLayoutTypeRadioBox, u8"Построение вручную", false, 2);
-
-    // Группа параметров для расчёта толщины стенок.
-    m_warmParams = createGroupBox(u8"Параметры", false, false, true);
-    m_warmParams->setDisabled(true);
-    m_vLayoutConfigureTab->addWidget(m_warmParams);
-
-    m_vLayoutWarmParams = createVBoxLayout(m_warmParams);
-
-    QToolButton* sizeInfoButton = new QToolButton();
-    sizeInfoButton->setIcon(QIcon(":/res/dimensions.png"));
-    sizeInfoButton->setToolTip(u8"Посмотреть размеры аппарата");
-    m_vLayoutConfigureTab->addWidget(sizeInfoButton);
-
-    connect(sizeInfoButton, &QToolButton::clicked, this, &ExplodeManager::onDrawingShowButtonClicked);
-
-    m_reconfigureButton = new QPushButton;
-    m_reconfigureButton->setText(u8"Перестроить теплообменник");
-    connect(m_reconfigureButton, &QPushButton::clicked, this, &ExplodeManager::onReconfigureButtonClicked);
-
-    m_vLayoutConfigureTab->addWidget(m_reconfigureButton);
 
     // Group for Explode options
     QGroupBox* groupExpl = createGroupBox("", true, false, true);
