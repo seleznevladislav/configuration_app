@@ -50,5 +50,7 @@
         <file>res/drawing/select_32.png</file>
         <file>res/arrow.png</file>
         <file>res/draws/ttor.png</file>
+        <file>res/draws/iu.jpg</file>
+        <file>res/draws/ip.jpg</file>
     </qresource>
 </RCC>
