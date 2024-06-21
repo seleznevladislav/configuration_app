@@ -1806,33 +1806,41 @@ SPtr<MbSolid> ParametricModelCreator::CreateUnionKzh_IP(double Dv_Kzh, double L_
 //Труба
 SPtr<MbSolid> ParametricModelCreator::CreatePipe_IP(double Dv_Kzh, double p, double DKr) {
     const int d = 21, dvne = 25; //для основы тела
-    const int height = 6000; //высота
+    int height; //высота
     double bigD;
 
 
     if ((500 <= DKr) && (DKr < 600)) {
         bigD = 366 + (DKr - 500);
+        height = 6000 - 41;
     }
     else if ((600 <= DKr) && (DKr < 700)) {
         bigD = 462;
+        height = 6000 - 36;
     }
     else if ((700 <= DKr) && (DKr < 800)) {
         bigD = 560;
+        height = 6000 - 31;
     }
     else if ((800 <= DKr) && (DKr < 900)) {
         bigD = 652;
+        height = 6000 - 26;
     }
     else if ((900 <= DKr) && (DKr < 1000)) {
         bigD = 750;
+        height = 6000 - 21;
     }
     else if ((1000 <= DKr) && (DKr < 1100)) {
         bigD = 854;
+        height = 6000 - 16;
     }
     else if ((1100 <= DKr) && (DKr < 1200)) {
         bigD = 948;
+        height = 6000 - 11;
     }
     else if (1200 <= DKr) {
         bigD = 1052;
+        height = 6000 - 6;
     }
 
 
@@ -3774,142 +3782,3 @@ SPtr<MbSolid> ParametricModelCreator::CreateKrPlGol_IP(double p, double Dv_Kzh, 
 
 
 
-/*
-
-MbModel* ParametricModelCreator::CreatePneymocylinderModel
-(testConfigParams params) {
-    MbModel* evaporator_floating_head = new MbModel();
-    params.EllhTickness = EllTicknessCalculation(params);
-    params.CylhTickness = CylTicknessCalculation(params);
-    params.Hydraulic = HydraulicCalculation(params);
-    params.Thermal = ThermalCalculation(params);
-    auto pneumocylinderAssembly = CreatePneumocylinderAssembly
-    (params);
-    evaporator_floating_head->AddItem(*pneumocylinderAssembly);
-    return evaporator_floating_head;
-}
-
-double  EllTicknessCalculation(testConfigParams params) {
-    double Dy = params.Dy;
-    double C = params.C;
-    double G = params.G;
-    double Pn = params.Pn;
-    double F = params.f;
-    double z = params.z;
-    double h = params.h;
-
-
-    z = 1 - params.d0 / Dy;
-    double S = ceil(Pn * Dy / (4 * z * G - Pn) * Dy / 2 * h + C);
-
-    return S;
-}
-
-double  CylTicknessCalculation(testConfigParams params) {
-    double Dy = params.Dy;
-    double C = params.C;
-    double G = params.G;
-    double Pn = params.Pn;
-    double F = params.f;
-
-    double S = ceil(Pn * Dy / (2 * F * G - Pn) + C);
-
-    return S;
-}
-
-double HydraulicCalculation(testConfigParams params) {
-
-    double Re;
-    double w = params.w; //средняя скорость
-    double w1 = params.w1; // скорость на входе
-    double w2 = params.w2; // скорость на выходе
-    double po1 = params.po1; // плотность на входе
-    double po2 = params.po2; //плотность на выходе
-    double L = params.L; //суммарная длина трубок
-    double d = params.D, //внутренний диаметр трубок
-    double p = params.p; //плотность среды
-    po = params.po, //плотность атмосферного воздуха
-    h = params.h; //разница уровней входа и выхода теплоносителя в систему
-
-    double Re = ThermalCalculation_Re(params);
-    double lambda = 1 / pow((1, 8 * log1p(Re) - 1.5), 2); //коэффициент сопротивления трения (логарифм надо исправить!)
-
-    double Pt = lambda * L * pow(w, 2) * po1 / 2 * d; //потери на трение
-
-    double Pm = 5.5 * pow(w, 2) * p / 2; //потери в местных сопротивлениях
-
-    double Py = po2 * w2 - po1 * w1; //потери при ускорении потока
-
-    double Pg = (po1 - po) * h; //перепад давления
-
-    double P = Pt + Pm + Py + Pg; //полное давление
-
-    return P;
-}
-
-
-double ThermalCalculation(testConfigParams params) {
-
-    double i1 = params.i1;
-    double ik = params.ik;
-    double G2 = params.G2;
-    double c2 = params.c2;
-    double r = params.r;
-    double ts = params.ts;
-    double t2 = params.t2;
-
-
-    double Q1 = G2 * c2 * (ts - t2); //
-
-    double Q2 = G2 * r;
-
-    double Qr = Q1 + Q2;
-
-    double D = (G2 * c2 * (ts - t2) + G2 * r) / (i1 - ik) * 0.98;
-
-    double Qpr = D * (i1 - ik);
-
-    return Qpr;
-}
-
-
-double ThermalCalculation_HeatCoefficient
-(testConfigParams params) {
-
-    double d = params.D;
-    double dvn = params.Dn;
-    double lambda = params.lambda;
-    double R = params.r, Nu_y = params.Nu_y,
-        Nu_g = params.Nu_g;
-
-    double dsr = (dvn + d) / 2;
-
-    double a_n = Nu_y * lambda / dvn;
-
-    double a_g = Nu_g * lambda / dvn;
-
-    double K = 1 / (dsr * (1 / a_n * dvn + 1 / 2 * lambda *
-        log(d / dvn) + 1 / a_g * d) + R);
-    return K;
-}
-
-
-double ThermalCalculation_Re
-(testConfigParams params) {
-
-    double Dy = params.Dy,
-    d = params.D; //диаметр труб
-    double n = params.n, //количество труб
-    po1 = params.po1; //плотность теплоносителя
-    double Gr = params.Gr,  //расход  теплоносителя
-    v1 = params.v1; //вязкость среды
-
-    double Fd = M_PI * pow(Dy, 2) / 4; //площадь поперечного сечения корпуса
-    double fm = (M_PI * pow(d, 2) * n) / 4; //площадь, занятая трубами
-    double f1 = Fd - fm; //площадь межрубного пространства
-
-    double w_g = Gr / f1 * po1; //скорость воды в межтрубном пространстве
-    double Re = w_g * d / w1;
-
-    return Re;
-}*/
