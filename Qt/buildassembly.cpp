@@ -3265,8 +3265,6 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     MbProductInfo nineProductInfo    (false, "9", "9", "9");
     MbProductInfo tenProductInfo     (false, "10", "10", "10");
 
-    MbProductInfo AssemblyInfo(false, "TTOR", "TTOR", "TTOR");
-
     Item_001_001->AddAttribute(zeroProductInfo);
     Item_001_002->AddAttribute(zeroProductInfo);
     Item_001_003->AddAttribute(zeroProductInfo);
@@ -3311,8 +3309,9 @@ SPtr<MbAssembly> ParametricModelCreator::CreateTTOR(BuildParamsForHeatExchangerT
     Item_010_001->AddAttribute(nineProductInfo);
     Item_011_001->AddAttribute(tenProductInfo);
 
-    assm->AddAttribute(AssemblyInfo);
     assm->Rotate(axVert, -M_PI / 2);
+    MbProductInfo boltname1234567(false, "26", "26", "26");
+    assm->AddAttribute(boltname1234567);
     if (turnOnStandart) {
         assm->Rotate(azVert, -M_PI / 2);
     }

@@ -43,7 +43,7 @@ TreeObjectItem::TreeObjectItem(SceneSegment* pObject, int currentExhangerType)
                 u8"Болт M8", u8"Шайба M8",  u8"Гайка M8",
                 u8"Болт M10", u8"Шайба M10",  u8"Гайка M10",
                 u8"Болт M12", u8"Шайба M12",  u8"Гайка M12",
-                u8"Болт M16", u8"Шайба M16",  u8"Гайка M16",
+                u8"Болт M16", u8"Шайба M16",  u8"Гайка M16", u8"ТТОР",
             };
 
             break;

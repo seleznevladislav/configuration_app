@@ -451,35 +451,252 @@ void ExplodeWidget::viewCommands(Commands cmd)
 }
 
 
+
+
 bool checkValidityOfParametrsTTOR(BuildParamsForHeatExchangerTTOR params) {
     bool isValid = true;
+    bool isAlreadyWantToPass = false;
 
-    if (params.lK > params.Lt - 200) {
-        QMessageBox::critical(nullptr, "Ошибка построения", "Необходимо указать большую величину для длины теплообменных труб (Lt). Можно также уменьшить длину кожуха (Lk).");
-        isValid = false;
+    //////////////////////////////////////////////////
+    // Проверки на ноль
+    //////////////////////////////////////////////////
+    if (params.ttDiam < 1) {
+        QMessageBox::warning(nullptr, "Ошибка построения", "Введите значения диаметра теплообменных труб."); return isValid = false;
+    }if (params.ttThickness < 1) {
+        QMessageBox::warning(nullptr, "Ошибка построения", "Введите значения толщины стенок теплообменных труб."); return isValid = false;
+    }if (params.ktDiam < 1) {
+        QMessageBox::warning(nullptr, "Ошибка построения", "Введите значения диаметра кожуха."); return isValid = false;
+    }if (params.ktThickness < 1) {
+        QMessageBox::warning(nullptr, "Ошибка построения", "Введите значения толщины стенок кожуха."); return isValid = false;
+    }if (params.lK < 1) {
+        QMessageBox::warning(nullptr, "Ошибка построения", "Введите значения длины кожуховых труб."); return isValid = false;
+    }if (params.dV < 1) {
+        QMessageBox::warning(nullptr, "Ошибка построения", "Введите значения диаметра камеры."); return isValid = false;
+    }if (params.dU < 1) {
+        QMessageBox::warning(nullptr, "Ошибка построения", "Введите значения диаметра фланца соединительного."); return isValid = false;
+    }if (params.H < 1) {
+        QMessageBox::warning(nullptr, "Ошибка построения", "Введите значения высоты фланца соединительного."); return isValid = false;
+    }if (params.H1 < 1) {
+        QMessageBox::warning(nullptr, "Ошибка построения", "Введите значения высоты опоры."); return isValid = false;
+    }if (params.widthFlanec < 1) {
+        QMessageBox::warning(nullptr, "Ошибка построения", "Введите значения ширины опоры."); return isValid = false;
+    }if (params.l0 < 1) {
+        QMessageBox::warning(nullptr, "Ошибка построения", "Введите значения расстояния между опорами."); return isValid = false;
+    }if (params.l1 < 1) {
+        QMessageBox::warning(nullptr, "Ошибка построения", "Введите значения расстояния между фланцем боковым и фланцем соединительным."); return isValid = false;
+    }if (params.l2 < 1) {
+        QMessageBox::warning(nullptr, "Ошибка построения", "Введите значения расстояния между фланцем соединительным и опорой."); return isValid = false;
+    }if (params.l3 < 1) {
+        QMessageBox::warning(nullptr, "Ошибка построения", "Введите значения длины камеры."); return isValid = false;
+    }if (params.t < 1) {
+        QMessageBox::warning(nullptr, "Ошибка построения", "Введите значения расстояния между трубами."); return isValid = false;
+    }if (params.Lt < 1) {
+        QMessageBox::warning(nullptr, "Ошибка построения", "Введите значения длина теплообменных труб."); return isValid = false;
     }
 
-    if (params.lK < params.L - 3000) {
-        QMessageBox::StandardButton reply;
-        reply = QMessageBox::warning(nullptr, "Предупреждение о перестроение", "Длина кожуха (lK) значительно меньше. Вы уверены, что хотите продолжить?",
-            QMessageBox::Yes | QMessageBox::No);
-        if (reply == QMessageBox::No) {
-            isValid = false;
+    //////////////////////////////////////////////////
+    // Диаметры труб 
+    //////////////////////////////////////////////////
+    if (params.ttDiam <= 20) {
+        if (!isAlreadyWantToPass) {
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::warning(nullptr, "Предупреждение о перестроение", "Введены малые значения для теплообменных труб. Вы уверены, что хотите продолжить?",
+                QMessageBox::Yes | QMessageBox::No);
+            if (reply == QMessageBox::No) {
+                return isValid = false;
+            }
+            if (reply == QMessageBox::Yes) {
+                isAlreadyWantToPass = true;
+            }
+        }
+    }
+
+    if (params.ktDiam <= 40) {
+        if (!isAlreadyWantToPass) {
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::warning(nullptr, "Предупреждение о перестроение", "Введены малые значения для кожуха. Вы уверены, что хотите продолжить?",
+                QMessageBox::Yes | QMessageBox::No);
+            if (reply == QMessageBox::No) {
+                return isValid = false;
+            }
+            if (reply == QMessageBox::Yes) {
+                isAlreadyWantToPass = true;
+            }
         }
     }
 
     if (params.ktDiam <= params.ttDiam - params.ttThickness * 2) {
-        QMessageBox::critical(nullptr, "Ошибка построения", "Диаметр кожуха (ktDiam) должен быть больше диаметра теплообменных труб (ttDiam).");
-        isValid = false;
+        QMessageBox::warning(nullptr, "Ошибка построения", "Диаметр кожуха (ktDiam) должен быть больше диаметра теплообменных труб (ttDiam).");
+        return isValid = false;
+    }
+
+    //////////////////////////////////////////////////
+    // Толщина стенок труб 
+    //////////////////////////////////////////////////
+    if (params.ttThickness <= 3) {
+        if (!isAlreadyWantToPass) {
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::warning(nullptr, "Предупреждение о перестроение", "Введены малые значения для толщины стенки теплообменных труб. Вы уверены, что хотите продолжить?",
+                QMessageBox::Yes | QMessageBox::No);
+            if (reply == QMessageBox::No) {
+                return isValid = false;
+            }
+            if (reply == QMessageBox::Yes) {
+                isAlreadyWantToPass = true;
+            }
+        }
+    }
+
+    if (params.ktThickness <= 3) {
+        if (!isAlreadyWantToPass) {
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::warning(nullptr, "Предупреждение о перестроение", "Введены малые значения для толщины стенки кожуха. Вы уверены, что хотите продолжить?",
+                QMessageBox::Yes | QMessageBox::No);
+            if (reply == QMessageBox::No) {
+                return isValid = false;
+            }
+            if (reply == QMessageBox::Yes) {
+                isAlreadyWantToPass = true;
+            }
+        }
+    }
+
+    if (((params.ktThickness * 2 + params.ktDiam) - (params.ttThickness * 2 + params.ttDiam)) / 2 < 10) {
+        if (!isAlreadyWantToPass) {
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::warning(nullptr, "Предупреждение о перестроение", "Пространство между труб имеет расстояние меньше 10 мм. Вы уверены, что хотите продолжить?",
+                QMessageBox::Yes | QMessageBox::No);
+            if (reply == QMessageBox::No) {
+                return isValid = false;
+            }
+            if (reply == QMessageBox::Yes) {
+                isAlreadyWantToPass = true;
+            }
+        }
+    }
+
+    if (params.ttThickness * 2 + params.ttDiam >= params.ktDiam) {
+        QMessageBox::warning(nullptr, "Ошибка построения", "Указано большое значение для толщины стенку у теплообменных труб. Уменьшите значение толщины стенок у труб или увеличьте значение диаметра кожуха.");
+        return isValid = false;
+    }
+
+    //////////////////////////////////////////////////
+    // Расстояние между опорами и соединительной трубой
+    //////////////////////////////////////////////////
+
+
+    if (params.L - (params.l0 + params.l1 + 255) < 1200) {
+        if (!isAlreadyWantToPass) {
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::warning(nullptr, "Предупреждение о перестроение", "Опора или соедининтельные элементы будут выходить за габаритные размеры теплообменного аппарата. Вы уверены, что хотите продолжить?",
+                QMessageBox::Yes | QMessageBox::No);
+            if (reply == QMessageBox::No) {
+                return isValid = false;
+            }
+            if (reply == QMessageBox::Yes) {
+                isAlreadyWantToPass = true;
+            }
+        }
+    }
+
+    if (params.L - (params.l0 + params.l1 + 255) > 3000) {
+        if (!isAlreadyWantToPass) {
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::warning(nullptr, "Предупреждение о перестроение", "Большая часть теплообменного аппарата будет находится в висячем состоянии. Вы уверены, что хотите продолжить?",
+                QMessageBox::Yes | QMessageBox::No);
+            if (reply == QMessageBox::No) {
+                return isValid = false;
+            }
+            if (reply == QMessageBox::Yes) {
+                isAlreadyWantToPass = true;
+            }
+        }
+    }
+
+
+    //////////////////////////////////////////////////
+    // Длина камеры и диаметр пропуска
+    //////////////////////////////////////////////////
+    if (params.dU < 20) {
+        if (!isAlreadyWantToPass) {
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::warning(nullptr, "Предупреждение о перестроение", "Введены малые значения для диаметра пропуска. Вы уверены, что хотите продолжить?",
+                QMessageBox::Yes | QMessageBox::No);
+            if (reply == QMessageBox::No) {
+                return isValid = false;
+            }
+            if (reply == QMessageBox::Yes) {
+                isAlreadyWantToPass = true;
+            }
+        }
     }
 
     if (params.dU >= params.ktDiam) {
-        QMessageBox::critical(nullptr, "Ошибка построения", "Диаметр отверстия (dU) должен быть больше диаметра кожуха (ktDiam).");
-        isValid = false;
+        QMessageBox::warning(nullptr, "Ошибка построения", "Диаметр отверстия (dU) должен быть больше диаметра кожуха (ktDiam).");
+        return isValid = false;
+    }
+
+    if (params.l3 <= 200) {
+        QMessageBox::warning(nullptr, "Ошибка построения", "Необходимо ввести болшее значение для длины камеры (l3).");
+        return isValid = false;
+    }
+
+
+    if (params.l3 < 380) {
+        if (!isAlreadyWantToPass) {
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::warning(nullptr, "Предупреждение о перестроение", "Будет совершено пересечение теплообменных труб с камерой. Вы уверены, что хотите продолжить?",
+                QMessageBox::Yes | QMessageBox::No);
+            if (reply == QMessageBox::No) {
+                return isValid = false;
+            }
+            if (reply == QMessageBox::Yes) {
+                isAlreadyWantToPass = true;
+            }
+        }
+
+    }
+
+    //////////////////////////////////////////////////
+    // Длина труб
+    //////////////////////////////////////////////////
+    if (params.lK > params.Lt - 200) {
+        QMessageBox::warning(nullptr, "Ошибка построения", "Необходимо указать большую величину для длины теплообменных труб (Lt). Можно также уменьшить длину кожуха (Lk).");
+        return isValid = false;
+    }
+
+    if (params.lK < params.L - 3000) {
+        if (!isAlreadyWantToPass) {
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::warning(nullptr, "Предупреждение о перестроение", "Длина кожуха (lK) значительно меньше. Вы уверены, что хотите продолжить?",
+                QMessageBox::Yes | QMessageBox::No);
+            if (reply == QMessageBox::No) {
+                return isValid = false;
+            }
+            if (reply == QMessageBox::Yes) {
+                isAlreadyWantToPass = true;
+            }
+        }
+    }
+    //////////////////////////////////////////////////
+    // Высота ширина опоры
+    //////////////////////////////////////////////////
+    double diametrOporyInner = 620;
+    if (params.dV >= 800.0) {
+        diametrOporyInner = 820;
+    }
+
+    if (params.widthFlanec <= diametrOporyInner) {
+        QMessageBox::warning(nullptr, "Ошибка построения", "Введены малые значения для ширины опоры. Пересечение с диаметром отверстия.");
+        return isValid = false;
+    }
+    if (params.H1 * 2 <= diametrOporyInner) {
+        QMessageBox::warning(nullptr, "Ошибка построения", "Введены малые значения для высоты опоры. Пересечение с диаметром отверстия.");
+        return isValid = false;
     }
 
     return isValid;
-} 
+}
 
 
 //---------------------------------------------------------------------------------------
