@@ -892,7 +892,6 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
         formLayout->addRow(thicknessInnerKzhLabel, thicknessInnerKzh);
         formLayout->addRow(thicknessEllipticLabel, thicknessElliptic);
 
-
         connect(calculateThicknessButton, &QPushButton::clicked, [=]() {
             mp_IU_p = pressureComboBox->currentData().toDouble();
             mp_IU_D_Kzh = innerThicknessSpinBox->value();
@@ -907,6 +906,7 @@ QFormLayout* ExplodeManager::createParametrizationForm(const int numberOfHeatExc
             }
 
         });
+
         break;
     }
     case 4:
@@ -1913,9 +1913,11 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
             QLineEdit* squareInterTubeEdit = new QLineEdit;
             squareInterTubeEdit->setReadOnly(true);
 
+            /*
             QLabel* speedInterTubeLabel = new QLabel(u8"Скорость воды в межтрубном пространстве, м/c:");
             QLineEdit* speedInterTubeEdit = new QLineEdit;
             speedInterTubeEdit->setReadOnly(true);
+            */
 
             QLabel* resistanceCoefficientLabel = new QLabel(u8"Коэффициент сопротивления трения, λ:");
             QLineEdit* resistanceCoefficientHotEdit = new QLineEdit;
@@ -1988,7 +1990,7 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
             formLayout->addRow(reinoldsLabel, reinoldsContainer);
             formLayout->addRow(squareSectionLabel, squareSectionEdit);
             formLayout->addRow(squareInterTubeLabel, squareInterTubeEdit);
-            formLayout->addRow(speedInterTubeLabel, speedInterTubeEdit);
+           // formLayout->addRow(speedInterTubeLabel, speedInterTubeEdit);
             formLayout->addRow(resistanceCoefficientLabel, resistanceCoefficientContainer);
             formLayout->addRow(frictionPressureLabel, frictionPressureContainer);
             formLayout->addRow(localResistancePressureLabel, localResistancePressureContainer);
@@ -2279,7 +2281,7 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
                 reinoldsCEdit->setText(QString::number(Re_cold));
                 squareSectionEdit->setText(QString::number(Fd) + u8" м\xB2");//Площадь поперечного сечения корпуса
                 squareInterTubeEdit->setText(QString::number(f1) + u8" м\xB2");//Площадь межтрубного пространства
-                speedInterTubeEdit->setText(QString::number(w_cold) + u8" м/c");//Скорость воды в межтрубном пространстве
+                //speedInterTubeEdit->setText(QString::number(w_cold) + u8" м/c");//Скорость воды в межтрубном пространстве
                 resistanceCoefficientHotEdit->setText(QString::number(lambda_hot) + u8" ");//Коэффициент сопротивления трения
                 resistanceCoefficientColdEdit->setText(QString::number(lambda_cold) + u8" ");
                 frictionPressureHotEdit->setText(QString::number(Pt_hot) + u8" МПа");//Потери давления на трение
@@ -2428,11 +2430,11 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
 
 
 
-
+            /*            
             QLabel* speedInterTubeLabel = new QLabel(u8"Скорость воды в межтрубном пространстве, м/c:");
             QLineEdit* speedInterTubeEdit = new QLineEdit;
             speedInterTubeEdit->setReadOnly(true);
-
+            */
 
             QLabel* resistanceCoefficientLabel = new QLabel(u8"Коэффициент сопротивления трения, λ:");
             QLineEdit* resistanceCoefficientHotEdit = new QLineEdit;
@@ -2508,7 +2510,7 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
             formLayout->addRow(reinoldsLabel, reinoldsContainer);
             formLayout->addRow(squareSectionLabel, squareSectionEdit);
             formLayout->addRow(squareInterTubeLabel, squareInterTubeEdit);
-            formLayout->addRow(speedInterTubeLabel, speedInterTubeEdit);
+           // formLayout->addRow(speedInterTubeLabel, speedInterTubeEdit);
             formLayout->addRow(resistanceCoefficientLabel, resistanceCoefficientContainer);
             formLayout->addRow(frictionPressureLabel, frictionPressureContainer);
             formLayout->addRow(localResistancePressureLabel, localResistancePressureContainer);
@@ -2598,35 +2600,35 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
                 double n;//количество труб
                 double delta_h_hot;//разница уровней входа и выхода теплоносителя в систему
                 if ((500 <= params.DKr) && (params.DKr < 600)) {
-                    n = 208.;
+                    n = 82.;
                     delta_h_hot = 884. / 1000;//в метрах
                 }
                 else if ((600 <= params.DKr) && (params.DKr < 700)) {
-                    n = 310.;
+                    n = 132.;
                     delta_h_hot = 984. / 1000;//м
                 }
                 else if ((700 <= params.DKr) && (params.DKr < 800)) {
-                    n = 452.;
+                    n = 210.;
                     delta_h_hot = 1088. / 1000;
                 }
                 else if ((800 <= params.DKr) && (params.DKr < 900)) {
-                    n = 590.;
+                    n = 280.;
                     delta_h_hot = 1188. / 1000;
                 }
                 else if ((900 <= params.DKr) && (params.DKr < 1000)) {
-                    n = 778.;
+                    n = 378.;
                     delta_h_hot = 1332. / 1000;
                 }
                 else  if ((1000 <= params.DKr) && (params.DKr < 1100)) {
-                    n = 980.;
+                    n = 456.;
                     delta_h_hot = 1392. / 1000;
                 }
                 else if ((1100 <= params.DKr) && (params.DKr < 1200)) {
-                    n = 1210.;
+                    n = 632.;
                     delta_h_hot = 1492. / 1000;
                 }
                 else if (1200 <= params.DKr) {
-                    n = 1466.;
+                    n = 758.;
                     delta_h_hot = 1694. / 1000;
                 }
 
@@ -2796,7 +2798,7 @@ void ExplodeManager::createCalculationTab(const int numberOfHeatExchanger)
 
                 squareSectionEdit->setText(QString::number(Fd) + u8" м\xB2");//Площадь поперечного сечения корпуса
                 squareInterTubeEdit->setText(QString::number(f1) + u8" м\xB2");//Площадь межтрубного пространства
-                speedInterTubeEdit->setText(QString::number(w_cold) + u8" м/c");//Скорость воды в межтрубном пространстве
+                //speedInterTubeEdit->setText(QString::number(w_cold) + u8" м/c");//Скорость воды в межтрубном пространстве
                 resistanceCoefficientHotEdit->setText(QString::number(lambda_hot) + u8" ");//Коэффициент сопротивления трения
                 resistanceCoefficientColdEdit->setText(QString::number(lambda_cold) + u8" ");
 
