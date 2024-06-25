@@ -3767,7 +3767,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIP(ConfigParams_IP params)
     MbProductInfo FloatingHeadCoverProductInfo(false, FloatingHeadCoverName, FloatingHeadCoverName, FloatingHeadCoverName);
     MbProductInfo PipesProductInfo(false, PipesName, PipesName, PipesName);
 
-    MbProductInfo AssemblyInfo(false, "IP", "IP", "IP");
+    MbProductInfo AssemblyInfo(false, "11", "11", "11");
 
     comp1->AddAttribute(CasingProductInfo);
     comp2->AddAttribute(KameraProductInfo);
@@ -4204,7 +4204,7 @@ SPtr<MbAssembly> ParametricModelCreator::CreateIU(ConfigParams_IU params)
     MbProductInfo pPeregorodkaInfo_1(false, pPeregorodkaName_1, pPeregorodkaName_1, pPeregorodkaName_1);
     MbProductInfo pPipeInfo(false, pPipeName, pPipeName, pPipeName);
 
-    MbProductInfo AssemblyInfo(false, "IU", "IU", "IU");
+    MbProductInfo AssemblyInfo(false, "15", "15", "15");
 
     comp1->AddAttribute(pKozhuhInfo);
     comp2->AddAttribute(pKameraInfo);
